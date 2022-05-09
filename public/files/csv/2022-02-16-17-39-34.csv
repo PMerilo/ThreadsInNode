@@ -1,0 +1,3 @@
+id,datetimeCreated,datetimeModified,user_id,name,email,phone_number,password,role,customer_id,gender,confirm_password,spools,cartStatus
+2022-02-15-15-52-03,2022-02-15 15:52:03.418990,2022-02-15 15:52:03.418990,3,ClassyJack,zien@gmail.com,87667522,12345tit,Customer,2,F,12345tit,0,"['Empty', datetime.datetime(2022, 2, 15, 15, 52, 3, 418990)]"
+2022-02-15-15-58-59,2022-02-15 15:58:59.668155,2022-02-15 15:58:59.668155,5,HIV,revanth@gmail.com,94677317,123,Customer,3,M,123,1536,"['Items in cart', datetime.datetime(2022, 2, 15, 15, 58, 59, 668155)]"

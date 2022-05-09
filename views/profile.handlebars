@@ -1,0 +1,99 @@
+<style>
+  *{
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+  
+  }
+  
+  body{ 
+      background: rgb(219, 226, 226);
+  }
+  
+  
+  
+  .btn:hover{
+      background: white;
+      border: 1px solid;
+      color: rgb(99, 189, 184);
+  
+  }
+  
+  </style>
+
+  <div>
+  <div class="card mx-auto my-5" style="max-width: 70%">
+    <div class="row g-0">
+      <div class="col-md-4 p-4 d-flex justify-content-center align-items-center">
+        <img src="images/logo.png" class="img-fluid rounded-start" alt="">
+      </div>
+      <div class="col-md-8 d-flex justify-content-center align-items-center border-start border-info"> 
+        <div class="card-body">
+          <div class="row mb-5">
+            <h5 class="col-10 card-title mb-0 fs-3">{{user}}</h5>
+            
+            <a class='col-1 btn btn-outline-dark p-1 border-0' href=""><i class="bi bi-pencil-square" title="Update Profile"></i></a>
+            <a class='col-1 btn btn-outline-dark p-1 border-0' href=""><i class="bi bi-box-arrow-left" title="Logout"></i></a>
+            
+          </div>
+          <div class="row">
+            <p class="col-5">Email:</p>
+            <p class="col-7"></p>
+          </div>
+          <div class="row">
+            <p class="col-5">Gender:</p>
+            <p class="col-7"></p>
+          </div>
+          <div class="row">
+            <p class="col-5">Phone Number:</p>
+            <p class="col-7"></p>
+          </div>
+          <div class="row">
+            <p class="col-5">Password:</p>
+            
+            <a class="col-7" href="">Change Password</a>
+            
+          </div>
+          <div class="row">
+            
+            <form action="" style="margin-top: 10px;" method="POST">
+              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal_">
+                Delete Account
+              </button>
+
+              <div class="modal" id="myModal_">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+
+                    <div class="modal-header">
+                      <h4 class="modal-title">Delete Account Confirmation</h4>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                    , are you sure you want to delete your account? You will no longer have an account with us..
+                    </div>
+
+                    <div class="modal-footer">
+                      <input type="submit" value="Delete" class="btn btn-danger">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Cancel</button>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </form>
+            
+
+          </div>
+
+
+<!-- <input type="submit" value="Add Product" class="btn btn-primary col py-3"/>
+      <button onclick="location.href = '/admin/inventory/retrieve_product';" id="goBack" class="align-right submit-button" >Go Back</button> -->
+
+      </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

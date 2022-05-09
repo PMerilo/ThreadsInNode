@@ -1,0 +1,131 @@
+#product_card {
+    padding-bottom: 40px;
+    padding-top: 40px;
+}
+
+#banner {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.card {
+    border-radius: 12px;
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    position: relative;
+    margin: 1rem;
+    padding-bottom:0;
+  
+  }
+
+.card:hover {
+    border-radius: 12px;
+  }
+  
+.card-button {
+  align-items: center;
+  display: inline-block;
+  width: 100%;
+  position: absolute;
+  max-height:100%;
+  overflow: auto;
+  padding-left:60px;
+  bottom: 0;
+  transform: translateY(101%);
+  transition: transform 0.2s ease-in;
+}
+
+.card:hover .card-button {
+  transform: translateY(-120%);
+}
+
+.show-item {
+  text-align: center;
+  background-color: #fff;
+  border: 0.5px solid ;
+  color: black;
+}
+
+@media (min-width: 992px) {
+  .modal-lg {
+      width: 960px;
+  }
+}
+
+.price {
+  font-size: 1.5em;
+  font-weight: bold;
+  padding-bottom: 20px;
+}
+  
+.modal .modal-content {
+  padding: 20px 20px 20px 20px;
+  -webkit-animation-name: modal-animation;
+  -webkit-animation-duration: 0.5s;
+  animation-name: modal-animation;
+  animation-duration: 0.5s;
+}
+  
+@-webkit-keyframes modal-animation {
+  from {
+      top: -100px;
+      opacity: 0;
+  }
+  to {
+      top: 0px;
+      opacity: 1;
+  }
+}
+  
+@keyframes modal-animation {
+  from {
+      top: -100px;
+      opacity: 0;
+  }
+  to {
+      top: 0px;
+      opacity: 1;
+  }
+}
+.modal-info {
+  justify-content: center;
+  align-items: center;
+}
+
+.bx-heart {
+  font-size: 1.5em;
+}
+
+.bxs-star {
+  color:orange;
+}
+
+.review {
+  padding-top: 30px;
+}
+
+.modal-footer {
+  border-top: 0 none;
+  justify-content: center;
+}
+
+.x-button {
+  position: absolute;
+  right: 5px;
+  top:5px;
+  padding: 10px;
+}
+
+.shop-item-button {
+  background-color:black;
+  border:none;
+  width: 200px;
+  height: 50px;
+  padding-right: 20px;
+}
+
+.shop-item-button:hover {
+  background-color: rgb(94, 92, 92);
+}
+

@@ -1,0 +1,48 @@
+const express = require('express');
+const router = express.Router();
+const flashMessage = require('../helpers/messenger');
+const sequelizeUser = require("../../config/DBConfig")
+
+router.get('/', (req,res) => {
+    res.render("index")
+})
+
+router.get('/RewardsPage', (req,res) => {
+    res.render("rewards")
+})
+
+router.get('/CustomerService', (req,res) => {
+    res.render("customerservice")
+})
+
+
+router.get('/profile', (req,res) => {
+    try{
+        var user = sequelizeUser.User.findAll();
+    } catch(e){
+        console.log(e.message)
+    }
+    console.log
+    
+    res.render("profile",{user})
+})
+
+router.post('/flash', (req, res) => {
+	const message = 'This is an important message';
+	const error = 'This is an error message';
+	const error2 = 'This is the second error message';
+
+    // req.flash('message', message);
+    // req.flash('error', error);
+    // req.flash('error', error2);
+
+    flashMessage(res, 'success', message);
+    flashMessage(res, 'info', message);
+    flashMessage(res, 'error', error);
+    flashMessage(res, 'error', error2, 'fas fa-sign-in-alt', true);
+
+	res.redirect('/');
+});
+
+module.exports = router;
+

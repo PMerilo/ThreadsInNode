@@ -1,0 +1,90 @@
+<nav class="navbar navbar-expand-lg navbar-light " style="background-color:#ffffff;">
+
+  <div class="container-fluid">
+
+    <img src="images/logo.png" width="50px" height="50px" style="margin-right:10px" >
+    <a class="navbar-brand" href="/">Threads in Time</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <i class='bx bx-menu toggle'></i>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Category
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li>
+              <a class="dropdown-item" href="">T-Shirts & Tops</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="">Jeans & Joggers</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="">Shorts & Skirts</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="">Dresses</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="">Hoodies</a>
+            </li>
+          </ul>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/RewardsPage">Rewards</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="/CustomerService">Support</a>
+        </li>
+
+      </ul>
+
+      <ul class="navbar-nav d-flex flex-row me-1">
+        <li class="nav-item me-3 me-lg-0 cart">
+          <a class="nav-link bx bxs-cart" href="">
+
+          </a>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link bx bxs-user" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" >
+            
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" style="right: 100px;">
+            {{!-- if user is not authenticated --}}
+            <li>
+              <a class="dropdown-item" href="/login">Log In</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/register">Sign Up</a>
+            </li>
+            
+          </ul>
+        </li>
+      </ul>
+
+  </div>
+</nav>
+
+<style type="text/css">
+  @media only screen and (min-width: 768px) {
+  .dropdown:hover .dropdown-menu{
+    display: block;
+  }
+  .dropdown:hover .dropdown-menu-end{
+    display: block;
+    right: 10px;
+  }
+  }
+  
+  .bx {
+    font-size: 1.5em;
+  }
+  
+</style>

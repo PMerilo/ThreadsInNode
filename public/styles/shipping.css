@@ -1,0 +1,20 @@
+.card {
+    padding: 10px;
+    margin-bottom: 20px;
+  }
+
+.cart-header {
+    font-weight: bold;
+    font-size: 1.25em;
+    color: #333;
+    padding-left: 10px;
+  }
+
+  .total, .shipping{
+    padding: 10px;
+    border-bottom: 1px solid black;
+  }
+  
+  .grandtotal {
+    padding: 10px;
+  }
