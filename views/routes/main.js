@@ -16,20 +16,10 @@ router.get('/CustomerService', (req,res) => {
 })
 
 
-router.get('/profile:id', (req,res) => {
+router.get('/profile', (req,res) => {
 
-    try{
-        var id = User.findByPK(req.params.id).then(u => console.log(u))
-        // if(id != null){
-        //     var user = sequelizeUser.User.findOne({where : {id}});
-        //     var Name = user.name
-        // }
-        
-
-    } catch(e){
-        console.log(e.message)
-    }
-    console.log
+    
+    
     
     res.render("profile")
 })
