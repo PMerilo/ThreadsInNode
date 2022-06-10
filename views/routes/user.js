@@ -28,8 +28,6 @@ router.post('/register', async function (req, res) {
         isValid = false;
     }
     
-
-    
     try {
         if (
           (await sequelizeUser.User.findOne({
@@ -76,7 +74,6 @@ function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next()
     }
-    
     res.redirect("/profile")
     }
 

@@ -60,6 +60,7 @@ app.use(flashMessenger.middleware);
 app.use(function (req, res, next) {
 	res.locals.messages = req.flash('message');
 	res.locals.errors = req.flash('error');
+	res.locals.user = req.user;
 	next();
 });
 

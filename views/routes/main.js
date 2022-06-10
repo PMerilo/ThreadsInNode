@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const flashMessage = require('../helpers/messenger');
-const sequelizeUser = require("../../config/DBConfig")
+const sequelizeUser = require("../../config/DBConfig");
+const { serializeUser } = require('passport');
 const User = require("../../models/User")
 router.get('/', (req,res) => {
     res.render("index")
@@ -17,10 +18,9 @@ router.get('/CustomerService', (req,res) => {
 
 
 router.get('/profile', (req,res) => {
-
     
     
-    
+   
     res.render("profile")
 })
 

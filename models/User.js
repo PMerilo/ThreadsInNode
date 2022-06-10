@@ -1,6 +1,6 @@
 const sequelize = require('sequelize'); 
 const db = require('../config/DBConfig.js');
-
+const bcrypt = require("bcrypt");
 
 class User extends sequelize.Model {
     compareHash(val) {

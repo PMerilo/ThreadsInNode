@@ -1,6 +1,6 @@
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require('bcryptjs');
-const sequelizeUser = require('../config/DBConfig');
+const User = require("../models/User")
 
 function initalize(passport) {
   passport.use(
@@ -8,7 +8,7 @@ function initalize(passport) {
       { usernameField: "email" },
       async (email, password, done) => {
         try {
-          const user = await sequelizeUser.User.findOne({ where: { email } });
+          const user = await User.findOne({ where: { email } });
           console.log(user?.compareHash(password));
           return user?.compareHash(password)
             ? done(null, user, { message: "You have been logged in " })
@@ -24,7 +24,7 @@ function initalize(passport) {
     return done(null, user.id);
   });
   passport.deserializeUser(async (id, done) => {
-    return done(null, await sequelizeUser.User.findOne({where : {id}}));
+    return done(null, await User.findOne({where : {id}}));
   });
 }
 

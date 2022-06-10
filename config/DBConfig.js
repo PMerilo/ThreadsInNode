@@ -81,4 +81,4 @@ User.sync({ alter: true })
     })
   );
 
-module.exports = { sequelizeDB, User };
+module.exports = sequelizeDB;
