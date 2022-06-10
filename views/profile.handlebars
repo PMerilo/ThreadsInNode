@@ -32,26 +32,26 @@
           <div class="row mb-5">
             <h5 class="col-10 card-title mb-0 fs-3">{{user.name}}</h5>
             
-            <a class='col-1 btn btn-outline-dark p-1 border-0' href=""><i class="bi bi-pencil-square" title="Update Profile"></i></a>
-            <a class='col-1 btn btn-outline-dark p-1 border-0' href=""><i class="bi bi-box-arrow-left" title="Logout"></i></a>
+            <a class='col-1 btn btn-outline-dark p-1 border-0' href="/editProfile"><i class="bi bi-pencil-square" title="Update Profile"></i></a>
+            <a class='col-1 btn btn-outline-dark p-1 border-0' href="/logout"><i class="bi bi-box-arrow-left" title="Logout"></i></a>
             
           </div>
           <div class="row">
-            <p class="col-5">Email: {{user.email}}</p>
-            <p class="col-7"></p>
+            <p class="col-5">Email: </p>
+            <p class="col-7">{{user.email}}</p>
           </div>
           <div class="row">
-            <p class="col-5">Gender:</p>
-            <p class="col-7"></p>
+            <p class="col-5">Gender: </p>
+            <p class="col-7">{{user.gender}}</p>
           </div>
           <div class="row">
-            <p class="col-5">Phone Number:</p>
-            <p class="col-7"></p>
+            <p class="col-5">Phone Number: </p>
+            <p class="col-7">{{user.phoneNumber}}</p>
           </div>
           <div class="row">
             <p class="col-5">Password: </p>
             
-            <a class="col-7" href="">Change Password</a>
+            <a class="col-7" href="/changePassword">Change Password</a>
             
           </div>
           <div class="row">

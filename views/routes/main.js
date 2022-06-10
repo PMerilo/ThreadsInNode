@@ -4,6 +4,7 @@ const flashMessage = require('../helpers/messenger');
 const sequelizeUser = require("../../config/DBConfig");
 const { serializeUser } = require('passport');
 const User = require("../../models/User")
+
 router.get('/', (req,res) => {
     res.render("index")
 })
@@ -40,6 +41,28 @@ router.post('/flash', (req, res) => {
 
 	res.redirect('/');
 });
+
+router.get('/editProfile', (req,res) => {
+    res.render("editProfile.handlebars")
+})
+
+router.get('/changePassword', (req,res) => {
+    res.render("userEditPassword.handlebars")
+})
+
+router.get('/myOrders', (req,res) => {
+    res.render("myOrders.handlebars")
+})
+
+router.get('/shoppingCart', (req,res) => {
+    res.render("shoppingCart.handlebars")
+})
+
+router.get('/otherSupport', (req,res) => {
+    res.render("otherSupport.handlebars")
+})
+
+
 
 module.exports = router;
 

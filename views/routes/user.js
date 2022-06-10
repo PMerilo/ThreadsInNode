@@ -44,6 +44,9 @@ router.post('/register', async function (req, res) {
           name: req.body.name,
           email: req.body.email,
           password: req.body.password,
+          gender: req.body.gender,
+          phoneNumber: req.body.phoneNumber
+
         });
         flashMessage(res, 'success', email + ' registered successfully');
         res.redirect("/login");

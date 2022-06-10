@@ -40,6 +40,14 @@ User.init(
       allowNull: false,
       unique: true,
     },
+    gender: {
+      type: sequelize.DataTypes.STRING,
+      allowNull: false,
+    },
+    phoneNumber: {
+      type: sequelize.DataTypes.STRING(8),
+      allowNull: true,
+    },
     password: {
       type: sequelize.DataTypes.STRING,
       allowNull: false,
