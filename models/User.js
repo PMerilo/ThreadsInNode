@@ -20,9 +20,7 @@ class User extends sequelize.Model {
         type: sequelize.DataTypes.STRING,
         allowNull: false,
         unique: true,
-        get() {
-          return this.getDataValue("name").toUpperCase();
-        },
+        
       },
       email: {
         type: sequelize.DataTypes.STRING,
