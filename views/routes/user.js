@@ -4,7 +4,7 @@ const flashMessage = require('../helpers/messenger');
 const sequelizeUser = require("../../config/DBConfig")
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
-
+const User = require("../../models/User")
 router.get('/login', (req, res) => {
     res.render('user/login');
 });
@@ -30,17 +30,17 @@ router.post('/register', async function (req, res) {
     
     try {
         if (
-          (await sequelizeUser.User.findOne({
+          (await User.findOne({
             where: { name: req.body.name },
           })) ||
-          (await sequelizeUser.User.findOne({ where: { email: req.body.name } }))
+          (await User.findOne({ where: { email: req.body.name } }))
         ) {
           flashMessage(res, 'error', 'Name or email is not unique');
           console.log("Name or email is not unique");
   
           return res.redirect("/register");
         }
-        await sequelizeUser.User.create({
+        await User.create({
           name: req.body.name,
           email: req.body.email,
           password: req.body.password,
