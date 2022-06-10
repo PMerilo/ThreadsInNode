@@ -62,6 +62,16 @@ router.get('/otherSupport', (req,res) => {
     res.render("otherSupport.handlebars")
 })
 
+router.get('/gettingStarted', (req,res) => {
+    res.render("qnaPages/gettingStarted.handlebars")
+})
+router.get('/messages', (req,res) => {
+    res.render("messages.handlebars")
+})
+router.get('/feedback', (req,res) => {
+    res.render("feedback.handlebars")
+})
+
 
 
 module.exports = router;
