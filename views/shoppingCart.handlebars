@@ -1,0 +1,104 @@
+<link rel="stylesheet" href="/css/cart.css">
+<div class="row">
+  
+  
+<div class="container content-section col-12 col-md-9">
+    <div class="card cart-card">
+      <div class="card-header">
+        <h2>Item Summary</h2>
+      </div>
+
+      <div class="card-body">
+        <div class="cart-row">
+            <span class="cart-item cart-header cart-column">ITEM</span>
+            <span class="cart-price cart-header cart-column">PRICE</span>
+            <span class="cart-quantity cart-header cart-column">QUANTITY</span>
+            <span class="c-t cart-header cart-column">Total</span>
+        </div>
+        <div class="cart-items">
+        
+        </div>
+      </div>
+    
+    </div> 
+  </div>
+
+  <div class="container col-12 col-md-3">
+
+    <div class="card discount-card">
+      <div class="card-header">
+        <p>Apply Promo Code</p>
+      </div>
+
+      <div class="card-body d-flex align-items-center">
+
+        <input type="text" class="discount-input" placeholder="Enter promo code" >
+        <button class="btn apply-discount-button" type="submit">
+          APPLY
+        </button>
+
+      </div>
+      <div class="flash">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="card summary-card">
+      <div class="cart-header card-header">
+        <p>Order Summary</p>
+      </div>
+      <div class="cart-body">
+        <div class="total  d-flex">
+          <p>Subtotal</p>
+          <p class="cart-total-price ms-auto">$0</p>
+        </div>
+        <div class="shipping d-flex">
+          <p>Shipping</p>
+          <p class="ms-auto">Calculated at checkout</p>
+        </div>
+        <div class="discount d-flex">
+          <p>Discount</p>
+          <p class="cart-discount ms-auto">0%</p>
+        </div>
+        <div class="grandtotal d-flex">
+          <p>Grand Total</p>
+          <p class="cart-grandtotal-price ms-auto" id="total">S$0</p>
+        </div>
+      </div>
+
+      <div class="card-footer d-flex align-items-center">
+        <form action="/shoppingCart" method="POST">
+
+          <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#myModal">
+            <i class="bx bx-trash"></i>
+          </button>
+        
+          <div class="modal" id="myModal">
+            <div class="modal-dialog">
+              <div class="modal-content">
+        
+                <div class="modal-header">
+                  <h4 class="modal-title">Delete Confirmation</h4>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+        
+                <div class="modal-body">
+                  Are you sure you want to delete EVERYTHING in the cart?
+                </div>
+        
+                <div class="modal-footer">
+                  <input type="submit" value="Delete" class="btn btn-danger">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+        
+              </div>
+            </div>
+          </div>
+        </form>
+        <button class="btn btn-purchase checkout" id="checkout" type="submit" onclick="location.href = '/checkout'">Checkout</button>
+      </div>
+      
+    </div>
+  </div>
+
+</div>

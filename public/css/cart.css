@@ -1,0 +1,160 @@
+.cart-header {
+  font-weight: bold;
+  font-size: 1.25em;
+  color: #333;
+  padding-left: 10px;
+}
+
+.cart-column {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid black;
+  margin-right: 1.5em;
+  padding-bottom: 10px;
+  margin-top: 10px;
+}
+
+.cart-row {
+  display: flex;
+}
+
+.cart-item {
+  width: 45%;
+}
+
+.cart-price {
+  width: 10%;
+  font-size: 1.2em;
+  color: #333;
+}
+
+.cart-quantity {
+  width: 20%;
+}
+
+.c-t {
+  width: 25%;
+}
+
+.cart-total {
+  font-size: 1.2em;
+  color: #333;
+  border:none;
+}
+
+.cart-item-title {
+  color: #333;
+  margin-left: .5em;
+  font-size: 1.2em;
+}
+
+.cart-item-image {
+  width: 75px;
+  height: auto;
+  border-radius: 10px;
+}
+
+.btn-danger {
+  color: white;
+  background-color: #EB5757;
+  border: none;
+  border-radius: .3em;
+  font-weight: bold;
+
+}
+
+.btn-danger:hover {
+  background-color: #CC4C4C;
+}
+
+.cart-quantity-input {
+  height: 34px;
+  width: 50px;
+  border-radius: 5px;
+  border: 1px solid #56CCF2;
+  background-color: #eee;
+  color: #333;
+  padding: 0;
+  text-align: center;
+  font-size: 1.2em;
+  margin-right: 25px;
+}
+
+.cart-row:last-child {
+  border-bottom: 1px solid black;
+}
+
+.cart-row:last-child .cart-column {
+  border: none;
+}
+
+
+.btn-purchase {
+  display: block;
+  font-size: 1.1em;
+  background-color: black;
+  color: white;
+  float: right;
+  margin-left:auto;
+
+}
+
+.btn-purchase:hover {
+  color: white;
+  background-color: rgb(73, 73, 73);
+
+}
+
+.btn-danger .bx-x {
+  background-color:white;
+  color: black;
+}
+
+.bx-x{
+    font-size: 2.5em;
+    -webkit-text-stroke: 0.1px black;
+  }
+
+.bx-trash {
+    font-size: 2em;
+  }
+
+.card {
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.cart-card {
+  margin-top:60px;
+}
+
+.discount-card {
+  margin-top: 60px;
+}
+
+.apply-discount-button {
+  background-color:#265F63;
+  color: white;
+}
+.flash {
+  padding : 10px;
+}
+
+.discount-card .card-body input {
+  line-height: 2em;
+  border: 1px solid #dfdfdf;
+  width:100%;
+}
+
+.total, .shipping, .discount{
+  padding: 10px;
+  border-bottom: 1px solid black;
+}
+
+.grandtotal {
+  padding: 10px;
+}
+
+.card-footer {
+  border:none;
+}
