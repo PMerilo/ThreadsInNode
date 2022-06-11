@@ -7,6 +7,7 @@ const path = require('path');
 const session = require('express-session');
 const main = require("./views/routes/main")
 const user = require("./views/routes/user")
+const admin = require("./views/routes/admin")
 const bodypassword = require('body-parser')
 
 app.use(bodypassword.json())
@@ -65,10 +66,19 @@ app.use(function (req, res, next) {
 	next();
 });
 
-app.engine('handlebars', engine({
-    handlebars: allowInsecurePrototypeAccess(Handlebars),
-	defaultLayout: 'main' // Specify default template views/layout/main.handlebar 
-}))
+app.engine(
+	"handlebars",
+	engine({
+	  handlebars: allowInsecurePrototypeAccess(Handlebars),
+	  defaultLayout: "main",
+	  helpers: {
+		equals(arg1, arg2, options) {
+		  return arg1 == arg2 ? options.fn(this) : options.inverse(this);
+		},
+  
+	  },
+	})
+  );
 
 app.set('view engine', 'handlebars');
 
@@ -80,6 +90,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use("/", main)
 app.use("/", user)
+app.use("/admin",admin)
 
 
 const port = 5000;

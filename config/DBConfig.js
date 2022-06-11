@@ -48,6 +48,11 @@ User.init(
       type: sequelize.DataTypes.STRING(8),
       allowNull: true,
     },
+    role: {
+      type: sequelize.DataTypes.STRING,
+      allowNull: true,
+      defaultValue: "C"
+    },
     password: {
       type: sequelize.DataTypes.STRING,
       allowNull: false,
