@@ -4,6 +4,7 @@ const flashMessage = require('../helpers/messenger');
 const sequelizeUser = require("../../config/DBConfig");
 const { serializeUser } = require('passport');
 const User = require("../../models/User")
+const Ticket = require("../../models/Ticket")
 const ensureAuthenticated = require("../helpers/auth");
 
 
@@ -97,8 +98,48 @@ router.get('/messages',ensureAuthenticated, (req,res) => {
 router.get('/feedback',ensureAuthenticated, (req,res) => {
     res.render("feedback.handlebars")
 })
-router.get('/ticket',ensureAuthenticated, (req,res) => {
+router.get('/tickets',ensureAuthenticated, (req,res) => {
     res.render("ticket.handlebars")
+})
+
+router.post('/tickets',ensureAuthenticated, async function (req,res) {
+    let date_ob = new Date();
+    // current date
+    // adjust 0 before single digit date
+    let date = ("0" + date_ob.getDate()).slice(-2);
+
+    // current month
+    let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+
+    // current year
+    let year = date_ob.getFullYear();
+
+    // current hours
+    let hours = date_ob.getHours();
+    // current minutes
+    let minutes = date_ob.getMinutes();
+
+    // current seconds
+    let seconds = date_ob.getSeconds();
+
+    let { title, urgency, description} = req.body;
+    try{
+        await Ticket.create({
+            title: req.body.title,
+            urgency: req.body.urgency,
+            description: req.body.description,
+            pendingStatus: "Pending",
+            dateAdded: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
+            owner: "Hi",
+            ownerID: 1
+  
+          });
+          flashMessage(res,"success",'Ticket Sent Successfully');
+          res.redirect("/tickets")
+    }catch(e){
+         console.log(e)
+         res.redirect("/tickets")
+    }
 })
 
 

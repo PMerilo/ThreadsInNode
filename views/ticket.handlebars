@@ -1,0 +1,54 @@
+
+<div class="container-fluid" style="margin-top: 30px;width:60%">
+    <a href="otherSupport">Back to Other Support</a>
+    <br>
+    <br>
+<div class="bg-gradient-info text-black shadow-lg " style="padding: 35px; text-align:center;">
+  <h1 class="h3 mb-2 " style=" color:black; text-align:center;">Ticket Request</h1>
+  <p class="mb-4">Don't hesitate to request for a ticket if you face an issue on our website. You should get a response in 2 to 3 working days.</p>
+</div>
+<div class="card mx-auto shadow" style="margin-top: 5px; " >
+    <div class="card-body">
+    <h4 class="card-title mb-4">Ticket Form</h4>
+   <form method="POST" action="/tickets">
+
+       <div class="form-group">
+           <img src='' class="img-sm rounded-circle border">
+       </div>
+      <div class="form-col">
+          <div class="form-row">
+        <div class= "form-group col-md-6">
+            <label for="title"></label>
+            <input type="text" class="form-control form-control-user" name="title" id="title" placeholder="Enter Main Title of Issue Here">
+        </div>
+          <div class="form-group col-md-6" >
+            <label for="urgency"></label>
+            <select name="urgency" id="urgency" class="form-control form-control-user">
+                <option value="Very Urgent">Very Urgent</option>
+                <option value="Urgent">Urgent</option>
+                <option value="Slightly Urgent">Slightly Urgent</option>          
+            </select>
+          </div> <!-- form-group end.// -->
+
+          <div class="col form-group">
+            <label for="description"></label>
+            <textarea name="description" class="form-control form-control-user" id="" cols="30" rows="10" placeholder="Describe Your Issue Here"></textarea>
+          </div> <!-- form-group end.// -->
+
+      </div> <!-- form-row.// -->
+
+          </div>
+      <div class="form-row">
+          <div class="form-group col-md-6">
+
+          </div> <!-- form-group end.// -->
+          <div class="form-group col-md-6">
+
+          </div> <!-- form-group end.// -->
+      </div> <!-- form-row.// -->
+      <button type="submit" class="btn btn-primary btn-user btn-block">Submit</button>
+
+    </form>
+    </div> <!-- card-body.// -->
+  </div>
+  </div>
