@@ -4,6 +4,8 @@ const flashMessage = require('../helpers/messenger');
 const sequelizeUser = require("../../config/DBConfig");
 const { serializeUser } = require('passport');
 const User = require("../../models/User")
+const ensureAuthenticated = require("../helpers/auth");
+
 
 router.use((req, res, next) => {
     res.locals.path = req.baseUrl;
@@ -11,6 +13,8 @@ router.use((req, res, next) => {
     //Checks url for normal users and admin
     next();
   });
+
+
 
 router.get('/', (req,res) => {
     res.render("index")
@@ -25,10 +29,8 @@ router.get('/CustomerService', (req,res) => {
 })
 
 
-router.get('/profile', (req,res) => {
+router.get('/profile',ensureAuthenticated, (req,res) => {
     
-    
-   
     res.render("profile")
 })
 
@@ -49,15 +51,15 @@ router.post('/flash', (req, res) => {
 	res.redirect('/');
 });
 
-router.get('/editProfile', (req,res) => {
+router.get('/editProfile',ensureAuthenticated, (req,res) => {
     res.render("editProfile.handlebars")
 })
 
-router.get('/changePassword', (req,res) => {
+router.get('/changePassword',ensureAuthenticated, (req,res) => {
     res.render("userEditPassword.handlebars")
 })
 
-router.get('/myOrders', (req,res) => {
+router.get('/myOrders',ensureAuthenticated, (req,res) => {
     res.render("myOrders.handlebars")
 })
 
@@ -72,10 +74,10 @@ router.get('/otherSupport', (req,res) => {
 router.get('/gettingStarted', (req,res) => {
     res.render("qnaPages/gettingStarted.handlebars")
 })
-router.get('/messages', (req,res) => {
+router.get('/messages',ensureAuthenticated, (req,res) => {
     res.render("messages.handlebars")
 })
-router.get('/feedback', (req,res) => {
+router.get('/feedback',ensureAuthenticated, (req,res) => {
     res.render("feedback.handlebars")
 })
 

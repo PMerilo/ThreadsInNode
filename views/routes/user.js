@@ -5,6 +5,8 @@ const sequelizeUser = require("../../config/DBConfig")
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const User = require("../../models/User")
+const ensureAuthenticated = require("../helpers/auth");
+
 
 router.use((req, res, next) => {
   res.locals.path = req.baseUrl;
@@ -12,6 +14,7 @@ router.use((req, res, next) => {
   //Checks url for normal users and admin
   next();
 });
+
 
 router.get('/login', (req, res) => {
     res.render('user/login');
@@ -84,10 +87,11 @@ function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next()
     }
+
     res.redirect("/profile")
     }
 
-router.get('/logout', (req, res) => {
+router.get('/logout',ensureAuthenticated, (req, res) => {
     const message = 'You Have Logged out';
     flashMessage(res, 'success', message);
     req.logout();
