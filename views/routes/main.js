@@ -68,12 +68,29 @@ router.get('/shoppingCart', (req,res) => {
 })
 
 router.get('/otherSupport', (req,res) => {
-    res.render("otherSupport.handlebars")
+    res.render("qnaPages/otherSupport.handlebars")
 })
 
 router.get('/gettingStarted', (req,res) => {
     res.render("qnaPages/gettingStarted.handlebars")
 })
+
+router.get('/myAccountQNA', (req,res) => {
+    res.render("qnaPages/myAccountQNA.handlebars")
+})
+
+router.get('/payment&shippingQNA', (req,res) => {
+    res.render("qnaPages/payment&shippingQNA.handlebars")
+})
+router.get('/troubleshootingQNA', (req,res) => {
+    res.render("qnaPages/troubleshootingQNA.handlebars")
+})
+
+router.get('/rewards&offersQNA', (req,res) => {
+    res.render("qnaPages/rewards&offersQNA.handlebars")
+})
+
+
 router.get('/messages',ensureAuthenticated, (req,res) => {
     res.render("messages.handlebars")
 })
