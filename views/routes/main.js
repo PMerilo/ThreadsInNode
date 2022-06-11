@@ -97,7 +97,9 @@ router.get('/messages',ensureAuthenticated, (req,res) => {
 router.get('/feedback',ensureAuthenticated, (req,res) => {
     res.render("feedback.handlebars")
 })
-
+router.get('/ticket',ensureAuthenticated, (req,res) => {
+    res.render("ticket.handlebars")
+})
 
 
 module.exports = router;

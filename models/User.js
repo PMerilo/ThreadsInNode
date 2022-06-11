@@ -56,6 +56,11 @@ class User extends sequelize.Model {
         type: sequelize.DataTypes.DATE,
         allowNull: false,
       },
+      MessagesCount: {
+        type: sequelize.DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+      },
     },
     {
       freezeTableName: true,

@@ -69,6 +69,11 @@ User.init(
       type: sequelize.DataTypes.DATE,
       allowNull: false,
     },
+    MessagesCount: {
+      type: sequelize.DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
   },
   {
     freezeTableName: true,
@@ -77,6 +82,30 @@ User.init(
     modelName: "user",
   }
 );
+class Ticket extends sequelize.Model{
+    
+}
+Ticket.init({
+  id:{type: sequelize.INTEGER, autoIncrement: true, primaryKey: true},
+    title: { type: sequelize.STRING,allowNull: false }, 
+    description: { type: sequelize.STRING(2000),allowNull: false }, 
+    pendingStatus: {type: sequelize.STRING,allowNull: false},
+    urgency: {type:sequelize.STRING,allowNull: false},
+    dateAdded: { type: sequelize.DATE,allowNull: false },
+    owner: {type: sequelize.STRING,allowNull: false},
+    ownerID:{type: sequelize.INTEGER, allowNull:false}
+
+},
+  {
+      freezeTableName: true,
+      timestamps: true,
+      sequelize: sequelizeDB,
+      modelName: "ticket",
+  }
+)
+
+
+
 
 sequelizeDB
   .authenticate()
@@ -90,8 +119,18 @@ User.sync({ alter: true })
   .catch((e) =>
     User.sync({ force: true }).then(() => {
       console.log(e);
-      console.log("Created table");
+      console.log("Created User table");
     })
   );
-
+Ticket.sync({ alter: true })
+  .then((v) => {
+    console.log(v);
+    console.log("Successfully altered and sync");
+  })
+  .catch((e) =>
+    User.sync({ force: true }).then(() => {
+      console.log(e);
+      console.log("Created Ticket table");
+    })
+  );
 module.exports = sequelizeDB;
