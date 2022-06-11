@@ -77,8 +77,7 @@ router.post('/register', async function (req, res) {
           
           
       })(req, res, next);
-      const message = 'You been logged in!';
-      flashMessage(res, 'success', message);
+      
   })
 
 function checkAuthenticated(req, res, next) {
