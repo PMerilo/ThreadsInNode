@@ -104,6 +104,28 @@ Ticket.init({
   }
 )
 
+class Feedback extends sequelize.Model{
+    
+}
+Feedback.init({
+    id:{type: sequelize.INTEGER, autoIncrement: true, primaryKey: true},
+    title: { type: sequelize.STRING,allowNull: false }, 
+    description: { type: sequelize.STRING(2000),allowNull: false }, 
+    rating: {type: sequelize.FLOAT,allowNull: false},
+    remarks: {type:sequelize.STRING,allowNull: false},
+    favouriteThing: {type:sequelize.STRING,allowNull: false},
+    leastFavouriteThing: {type:sequelize.STRING,allowNull: false},
+    dateAdded: { type: sequelize.DATE,allowNull: false },
+    owner: {type: sequelize.STRING,allowNull: false},
+    ownerID:{type: sequelize.INTEGER, allowNull:false}
+},
+    {
+        freezeTableName: true,
+        timestamps: true,
+        sequelize: sequelizeDB,
+        modelName: "feedback",
+    }
+)    
 
 
 
@@ -133,4 +155,15 @@ Ticket.sync({ alter: true })
       console.log("Created Ticket table");
     })
   );
+Feedback.sync({ alter: true })
+.then((v) => {
+  console.log(v);
+  console.log("Successfully altered and sync");
+})
+.catch((e) =>
+  User.sync({ force: true }).then(() => {
+    console.log(e);
+    console.log("Created Feedback table");
+  })
+);
 module.exports = sequelizeDB;

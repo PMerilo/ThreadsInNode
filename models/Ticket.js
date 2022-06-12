@@ -1,7 +1,7 @@
 const sequelize = require('sequelize'); 
 const db = require('../config/DBConfig');
 
-// Create ticker table in MySQL Database
+// Create ticket table in MySQL Database
 class Ticket extends sequelize.Model{
     
 }

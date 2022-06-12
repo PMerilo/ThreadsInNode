@@ -57,46 +57,46 @@
         <div class="card mx-auto row" style="max-width: 800px; background-color:#F5F5F5;">
           <div class="card-body">
           <h4 class="card-title mb-4">Send Us Some Feedback!</h4>
-          <form method="POST">
+          <form method="POST" action="/feedback">
             <div class="form-group">
 
 
             <div class="form-group">
                 <label for="">Title</label>
-                <input type="text" name="password" class="form-control" placeholder="Enter Title" required>
+                <input type="text" name="title" class="form-control" placeholder="Enter Title" required>
             </div> <!-- form-group end.// -->
                 <br>
             <div class="form-group">
                 <label for="">Favourite Thing</label>
-                <input type="text" name="password" class="form-control" placeholder="Enter Your Favourite Thing about our Website" required>
+                <input type="text" name="favouriteThing" class="form-control" placeholder="Enter Your Favourite Thing about our Website" required>
             </div> <!-- form-group end.// -->
                 <br>
             <div class="form-group">
                 <label for="">Least Favourite Thing</label>
-                <input type="text" name="password" class="form-control" placeholder="Enter Your Favourite Least Thing about our Website" required>
+                <input type="text" name="leastFavouriteThing" class="form-control" placeholder="Enter Your Favourite Least Thing about our Website" required>
             </div> <!-- form-group end.// -->
               <br>
             <div class="form-group">
                 <label for="text">How Can We Improve?</label>
                 <br>
-                <textarea name="" id="" cols="90" rows="10" placeholder="Enter How We Can Improve to better Serve You"></textarea>
+                <textarea name="description" id="description" cols="90" rows="10" class="form-control form-control-user" placeholder="Enter How We Can Improve to better Serve You"></textarea>
             </div>
             <div class="form-group">
                 <label for="text">Additional Remarks</label>
                 <br>
-                <textarea name="" id="" cols="90" rows="10" placeholder="Enter Additional Remarks"></textarea>
+                <textarea name="remarks" id="remarks" cols="90" rows="10" class="form-control form-control-user" placeholder="Enter Additional Remarks"></textarea>
             </div>
             <div class="rate" style="margin-bottom: 30px;">
               <span style="position: relative; top: 10px;font-size: 17px;"><b>Rating:</b></span>
-              <input type="radio" id="star5" name="rate" value="5" />
+              <input type="radio" id="star5" name="rating" value="5" />
               <label for="star5" title="text">5 stars</label>
-              <input type="radio" id="star4" name="rate" value="4" />
+              <input type="radio" id="star4" name="rating" value="4" />
               <label for="star4" title="text">4 stars</label>
-              <input type="radio" id="star3" name="rate" value="3" />
+              <input type="radio" id="star3" name="rating" value="3" />
               <label for="star3" title="text">3 stars</label>
-              <input type="radio" id="star2" name="rate" value="2" />
+              <input type="radio" id="star2" name="rating" value="2" />
               <label for="star2" title="text">2 stars</label>
-              <input type="radio" id="star1" name="rate" value="1" />
+              <input type="radio" id="star1" name="rating" value="1" />
               <label for="star1" title="text">1 star</label>
             </div>
             </div>

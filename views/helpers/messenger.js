@@ -18,6 +18,7 @@ const flashMessage = (res, messageType, message, icon, dismissable) => {
             break;
         default:
             alert = res.flashMessenger.info(message);
+            
     }
 
     if (icon) {
