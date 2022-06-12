@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 
 const sequelizeDB = new sequelize.Sequelize(
   "threadsintimes",
-  "fortnite",
+  "admin69",
   "password",
   {
     host: "localhost",

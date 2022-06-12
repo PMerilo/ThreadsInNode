@@ -20,6 +20,8 @@
 <!--    Own Css  -->
     
     <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/admin_navbar.css">
     <link rel="stylesheet" href="vendor/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="/styles/home.css">
     <link rel="stylesheet" href="/styles/wholeweb.css">
@@ -71,22 +73,19 @@
 
     {{#equals path "/admin"}}
     
-    {{>navbar}}
     {{>_adminNavBar}}
     {{>flashmsg}}
-    <link rel="stylesheet" href="/styles/admin.css">
     <script src="/scripts/iconToggles.js"></script>
     {{else}}
     {{>navbar}}
-    <div class="container-fluid mt-2 home">
-        
-    </div>
     
+    {{!-- <div class="container-fluid mt-2 home">
+    </div> --}}
     {{/equals}}
-    {{>flashmsg}}
-    {{{body}}}
-    <br>
-    {{>Customerfooter}}
+        {{>flashmsg}}
+        {{{body}}}
+        <br>
+        {{>Customerfooter}}
     
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>

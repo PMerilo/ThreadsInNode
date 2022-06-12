@@ -1,0 +1,456 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Comforter&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    scrollbar-width: none;
+}
+
+:root{
+    --body-color: #F4F6FC;
+    --sidebar-color: #FFF;
+    --primary-color: #695CFE;
+    --primary-color-light: #F6F5FF;
+    --toggle-color: #DDD;
+    --text-color: #000000;
+
+    --tran-03: all 0.2s ease;
+    --tran-03: all 0.3s ease;
+    --tran-04: all 0.3s ease;
+    --tran-05: all 0.3s ease;
+}
+
+body{
+    min-height: 100vh;
+    background-color: var(--body-color);
+    transition: var(--tran-05);
+    
+}
+
+::selection{
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+body.dark{
+    --body-color: #18191a;
+    --sidebar-color: #242526;
+    --primary-color: #0044d6;
+    --primary-color-light: #00b6ce;
+    --toggle-color: #fff;
+    --text-color: rgb(255, 255, 255);
+    --odd-row-color: #595b5c;
+}
+
+ .sidebars{
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 250px;
+    padding: 10px 14px;
+    background: var(--sidebar-color);
+    transition: var(--tran-05);
+    z-index: 100;  
+}
+.sidebars.close{
+    width: 88px;
+}
+
+.sidebars li{
+    height: 50px;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.sidebars header .image,
+.sidebars .icon{
+    min-width: 60px;
+    border-radius: 6px;
+}
+
+.sidebars .icon{
+    min-width: 60px;
+    border-radius: 6px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.sidebars .text,
+.sidebars .icon{
+    color: var(--text-color);
+    transition: var(--tran-03);
+}
+
+.sidebars .text{
+    font-size: 17px;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 1;
+}
+.sidebars.close .text{
+    z-index: 0;
+    opacity: 0;
+}
+
+.sidebars header{
+    position: relative;
+}
+
+.sidebars header .image-text{
+    display: flex;
+    align-items: center;
+}
+.sidebars header .logo-text{
+    display: flex;
+    flex-direction: column;
+}
+header .image-text .name {
+    margin-top: 2px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+header .image-text .profession{
+    font-size: 16px;
+    margin-top: -2px;
+    display: block;
+}
+
+.sidebars header .image{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebars header .image img{
+    width: 40px;
+    border-radius: 6px;
+}
+
+.sidebars header .toggle{
+    position: absolute;
+    top: 50%;
+    right: -25px;
+    transform: translateY(-50%) rotate(180deg);
+    height: 30px;
+    width: 30px;
+    background-color: var(--primary-color);
+    color: var(--sidebar-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    cursor: pointer;
+    transition: var(--tran-05);
+}
+.menu ul{
+    padding-left: 0;
+}
+.menu .nav-link {
+    padding: 0;
+}
+
+body.dark .sidebars header .toggle{
+    color: var(--text-color);
+}
+
+.sidebars.close .toggle{
+    transform: translateY(-50%) rotate(0deg);
+}
+
+.sidebars .menu{
+    margin-top: 40px;
+}
+
+.sidebars li a{
+    list-style: none;
+    height: 100%;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: var(--tran-03);
+}
+
+.sidebars li a:hover{
+    background-color: var(--primary-color);
+}
+.sidebars li a:hover .icon,
+.sidebars li a:hover .text{
+    color: var(--sidebar-color);
+}
+body.dark .sidebars li a:hover .icon,
+body.dark .sidebars li a:hover .text{
+    color: var(--text-color);
+}
+
+.sidebars .menu-bar{
+    height: calc(100% - 55px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow-y: scroll;
+}
+.menu-bar::-webkit-scrollbar{
+    display: none;
+}
+.sidebars .menu-bar .mode{
+    border-radius: 6px;
+    background-color: var(--primary-color-light);
+    position: relative;
+    transition: var(--tran-05);
+}
+
+.menu-bar .mode .sun-moon{
+    height: 50px;
+    width: 60px;
+}
+
+.mode .sun-moon i{
+    position: absolute;
+}
+.mode .sun-moon i.sun{
+    opacity: 0;
+}
+body.dark .mode .sun-moon i.sun{
+    opacity: 1;
+}
+body.dark .mode .sun-moon i.moon{
+    opacity: 0;
+}
+
+.menu-bar .bottom-content .toggle-switch{
+    position: absolute;
+    right: 0;
+    height: 100%;
+    min-width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.toggle-switch .switch{
+    position: relative;
+    height: 22px;
+    width: 40px;
+    border-radius: 25px;
+    background-color: var(--toggle-color);
+    transition: var(--tran-05);
+}
+
+.switch::before{
+    content: '';
+    position: absolute;
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    background-color: var(--sidebar-color);
+    transition: var(--tran-04);
+}
+
+body.dark .switch::before{
+    left: 20px;
+}
+
+.home.shadow-sm{
+    position: absolute;
+    top: 0px;
+    padding: 0px 30px;
+    left: 250px;
+    height: 70px;
+    width: calc(100% - 250px);
+    background-color: var(--sidebar-color);
+    transition: var(--tran-05);
+}
+.home{
+    position: absolute;
+    top: 70px;
+    padding-left: 30px;
+    left: 250px;
+    height: 100vh;
+    width: calc(100% - 250px);
+    background-color: var(--body-color);
+    transition: var(--tran-05);
+}
+.home .text{
+    font-size: 30px;
+    font-weight: 500;
+    color: var(--text-color);
+    padding: 12px 60px;
+}
+.home .content{
+    color: var(--text-color);
+}
+
+.home .card {
+    background-color: var(--sidebar-color);
+    color: var(--text-color);
+}
+
+.home .table-striped thead, tbody{
+    color: var(--text-color);
+}
+.table-striped>tbody>tr:nth-of-type(odd)>* {
+    color: var(--text-color);
+    background-color: var(--odd-row-color)
+}
+
+.card .dataTable-input {
+    background-color: var(--primary-color-light);
+    color: var(--text-color);
+    border: 7px;
+}
+.admin-padding {
+    color: var(--text-color);
+}
+.admin-padding .form-control{
+    color: var(--text-color);
+    background-color: var(--sidebar-color)
+}
+
+.sidebars.close ~ .mt-2.home{
+    left: 78px;
+    height: 100vh;
+    width: calc(100% - 78px);
+}
+.sidebars.close ~ .home.shadow-sm{
+    left: 78px;
+    height: 70px;
+    width: calc(100% - 78px);
+}
+
+body.dark .home .text{
+    color: var(--text-color);
+}
+
+#goBack {
+    float: right;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+#goTo {
+    float: left;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: rgb(72, 189, 224);
+    color: white;
+}
+
+#goright {
+    float: right;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: rgb(72, 189, 224);
+    color: white;
+}
+
+#left {
+    float: left;
+    width: 47%;
+    padding-right: 0.1em;
+}
+
+#right {
+    float: right;
+    width: 47%;
+    padding-left: 0.1em;
+}
+
+#datetime {
+    float: right;
+    float:bottom;
+}
+
+#noofproduct p{
+    padding-top: 0.4em;
+    padding-left: 0.4em;
+    margin-bottom: 0;
+}
+
+
+.sidebars li a.active {
+    background-color: var(--primary-color);
+}
+
+.sidebars li a.active .icon,
+.sidebars li a.active .text{
+    color: var(--sidebar-color);
+}
+
+#back-link, .breadcrumb {
+    z-index: 101;
+    border: 0;
+}
+
+#back-link i {
+    color: #0d6efd !important;
+}
+
+#notificationdropdown + ul {
+    width: 250px;
+    max-height: 400px;
+    border-radius: .25rem 0 0 .25rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) #F5F5F5;
+}
+
+#notificationdropdown + ul::-webkit-scrollbar-track
+{
+	box-shadow: inset 0 0 6px rgba(0,0,0,0.2);
+	background-color: #F5F5F5;
+}
+
+#notificationdropdown + ul::-webkit-scrollbar
+{
+	width: 6px;
+	background-color: #F5F5F5;
+}
+
+#notificationdropdown + ul::-webkit-scrollbar-thumb
+{
+	background-color: var(--primary-color);
+}
+
+
+.notification-title {
+    font-size: 14px;
+}
+
+.notification-time {
+    color: gray;
+    font-size: 12px;
+}
+
+.notification-body {
+    font-size: 12px;
+}
+
+#notificationdropdown:focus{
+    box-shadow: 0 0 0 0 !important;
+}
+
+.btn-primary, .bg-primary {
+    background-color: var(--primary-color) !important;
+}
+
+.modal-dialog.w-75 {
+    max-width: none;
+}
