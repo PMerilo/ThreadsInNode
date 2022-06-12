@@ -185,6 +185,10 @@ router.post('/feedback',ensureAuthenticated, async function (req,res) {
     }
 })
 
+router.get('/addProduct',ensureAuthenticated, (req,res) => {
+    res.render("addProduct.handlebars")
+})
+
 
 module.exports = router;
 
