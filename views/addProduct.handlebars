@@ -2,7 +2,7 @@
   <div class="col py-3" style="width: 60%; margin:0 auto; background:white;box-shadow: 12px 12px 22px grey; border-radius:30px">
     <h1 class="display-4">Add Product</h1><span id="datetime"></span>
 
-    <form method="POST" enctype="multipart/form-data">
+    <form method="POST" enctype="multipart/form-data" accept="/addProduct">
       <div class="form-group col py-3">
         <label for="name">Name</label>
         <input type="text" name="name" id="name" class="form-control">
@@ -40,15 +40,15 @@
         
         
       </div>
-      {{!-- <div class="form-group col py-3">
-        
+      <div class="form-group col py-3">
+        <input class="file-input" type='file' name="pic" onchange="readURL(this);" accept="image/*" />
         <div class="image-preview" id="imagePreview">
           <img src="" alt="Image Preview" class="image-preview__image">
           <span class="image-preview__default-text">
             Image Preview
           </span>
         </div>
-      </div> --}}
+      </div>
       <input type="submit" value="Add Product" class="btn btn-primary col py-3"/>
       <button onclick="location.href = '/admin/inventory/retrieve_product';" id="goBack" class="align-right submit-button" >Go Back</button>
     </form>
