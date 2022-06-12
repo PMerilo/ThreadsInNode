@@ -6,6 +6,7 @@ const { serializeUser } = require('passport');
 const User = require("../../models/User")
 const Ticket = require("../../models/Ticket")
 const Feedback = require("../../models/Feedback")
+const Product = require("../../models/Product")
 const ensureAuthenticated = require("../helpers/auth");
 
 
@@ -185,6 +186,30 @@ router.post('/feedback',ensureAuthenticated, async function (req,res) {
     }
 })
 
+router.get('/addProduct',ensureAuthenticated, (req,res) => {
+    res.render("addProduct.handlebars")
+})
+
+router.post('/addProduct',ensureAuthenticated, async function (req,res) {
+    let { sku,name,description,price,quantity,category } = req.body;
+    try{
+        await Product.create({
+            sku: req.body.sku,
+            name: req.body.name,
+            description: req.body.description,
+            price: req.body.price,
+            quantity: req.body.quantity,
+            category: req.body.category
+            
+  
+          });
+          flashMessage(res,"success",'Product Added Successfully');
+          res.redirect("/addProduct")
+    }catch(e){
+         console.log(e)
+         res.redirect("/addProduct")
+    }
+})
 
 module.exports = router;
 

@@ -1,7 +1,7 @@
 const sequelize = require('sequelize'); 
 const db = require('../config/DBConfig');
 
-// Create videos table in MySQL Database
+// Create Product table in MySQL Database
 
 
 class Product extends sequelize.Model{
