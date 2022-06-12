@@ -2,7 +2,7 @@
   <div class="col py-3" style="width: 60%; margin:0 auto; background:white;box-shadow: 12px 12px 22px grey; border-radius:30px">
     <h1 class="display-4">Add Product</h1><span id="datetime"></span>
 
-    <form method="POST" enctype="multipart/form-data" accept="/addProduct">
+    <form method="POST" action="/addProduct">
       <div class="form-group col py-3">
         <label for="name">Name</label>
         <input type="text" name="name" id="name" class="form-control">
@@ -21,22 +21,22 @@
       </div>
       <div class="form-group col py-3">
         <label for="sku">Sku</label>
-        <input type="text" name="sku" id="sku" class="form-control">
+        <input type="number" name="sku" id="sku" class="form-control" required>
         
       </div>
       <div class="form-group col py-3" id="left">
         <label for="price">Price</label>
-        <input type="text" name="price" id="price" class="form-control">
+        <input type="number" name="price" id="price" class="form-control" required>
         
       </div>
       <div class="form-group col py-3" id="right">
         <label for="quantity">Quantity</label>
-        <input type="text" name="quantity" id="quantity" class="form-control">
+        <input type="number" name="quantity" id="quantity" class="form-control" required>
         
       </div>
       <div class="form-group col py-3">
         <label for="description">Description</label>
-        <textarea name="description" id="description" cols="30" rows="10" class="form-control"></textarea>
+        <textarea name="description" id="description" cols="30" rows="10" class="form-control" required></textarea>
         
         
       </div>
@@ -50,7 +50,7 @@
         </div>
       </div>
       <input type="submit" value="Add Product" class="btn btn-primary col py-3"/>
-      <button onclick="location.href = '/admin/inventory/retrieve_product';" id="goBack" class="align-right submit-button" >Go Back</button>
+      {{!-- <button onclick="location.href = '/admin/inventory/retrieve_product';" id="goBack" class="align-right submit-button" >Go Back</button> --}}
     </form>
   </div>
 </div>
