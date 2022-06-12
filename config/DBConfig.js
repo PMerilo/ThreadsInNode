@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 
 const sequelizeDB = new sequelize.Sequelize(
   "threadsintimes",
-  "fortnite",
+  "admin69",
   "password",
   {
     host: "localhost",
@@ -127,6 +127,25 @@ Feedback.init({
     }
 )    
 
+class Product extends sequelize.Model{
+
+}
+Product.init({
+        sku:{type: sequelize.INTEGER, autoIncrement: false, primaryKey: true},
+        name: { type: sequelize.STRING }, 
+        description: { type: sequelize.STRING(2000) }, 
+        price: { type: sequelize.FLOAT }, 
+        quantity: {type: sequelize.INTEGER},
+        category:{type:sequelize.STRING}
+        
+},
+    {
+        freezeTableName: true,
+        timestamps: true,
+        sequelize: sequelizeDB,
+        modelName: "product",
+    }
+) 
 
 
 sequelizeDB
@@ -164,6 +183,17 @@ Feedback.sync({ alter: true })
   User.sync({ force: true }).then(() => {
     console.log(e);
     console.log("Created Feedback table");
+  })
+);
+Product.sync({ alter: true })
+.then((v) => {
+  console.log(v);
+  console.log("Successfully altered and sync");
+})
+.catch((e) =>
+  User.sync({ force: true }).then(() => {
+    console.log(e);
+    console.log("Created Product table");
   })
 );
 module.exports = sequelizeDB;
