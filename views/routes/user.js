@@ -70,7 +70,7 @@ router.post('/register', async function (req, res) {
     router.post('/login', (req, res, next) => {
       passport.authenticate('local', {
           // Success redirect URL
-          successRedirect: '/profile',
+          successRedirect: '/login/checkrole',
           // Failure redirect URL 
           failureRedirect: '/login',
           /* Setting the failureFlash option to true instructs Passport to flash 
@@ -98,6 +98,17 @@ router.get('/logout',ensureAuthenticated, (req, res) => {
     req.logout();
     res.redirect('/');
 });
+
+router.get('/login/checkrole',ensureAuthenticated, (req,res) => {
+    var role = req.user.role
+    if(role=="C"){
+      res.redirect('/profile');
+    } else if(role == "A"){
+      res.redirect("/admin")
+    }else{
+      res.redirect("/login")
+    }
+})
 
 module.exports = router;
 

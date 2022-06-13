@@ -3,7 +3,8 @@ const router = express.Router();
 const flashMessage = require('../helpers/messenger');
 const sequelizeUser = require("../../config/DBConfig");
 const { serializeUser } = require('passport');
-const User = require("../../models/User")
+const User = require("../../models/User");
+const Ticket = require('../../models/Ticket');
 
 
 router.use((req, res, next) => {
@@ -39,6 +40,11 @@ router.post('/admin/flash', (req, res) => {
 	res.redirect('/');
 });
 
+router.get('/TicketMangement', async (req,res) => {  
+    tickets = (await Ticket.findAll()).map((x)=> x.dataValues)
+
+    res.render("admin/TicketMangement",{tickets})
+})
 
 module.exports = router;
 

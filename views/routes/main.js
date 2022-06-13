@@ -132,8 +132,8 @@ router.post('/tickets',ensureAuthenticated, async function (req,res) {
             description: req.body.description,
             pendingStatus: "Pending",
             dateAdded: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
-            owner: "Hi",
-            ownerID: 1
+            owner: req.user.name,
+            ownerID: req.user.id
   
           });
           flashMessage(res,"success",'Ticket Sent Successfully');
@@ -174,8 +174,8 @@ router.post('/feedback',ensureAuthenticated, async function (req,res) {
             remarks: req.body.remarks,
             rating: req.body.rating,
             dateAdded: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
-            owner: "Hi",
-            ownerID: 1
+            owner: req.user.name,
+            ownerID: req.user.id
   
           });
           flashMessage(res,"success",'Feedback Sent Successfully');

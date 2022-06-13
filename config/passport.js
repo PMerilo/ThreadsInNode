@@ -11,7 +11,7 @@ function initalize(passport) {
           const user = await User.findOne({ where: { email } });
           console.log(user?.compareHash(password));
           return user?.compareHash(password)
-            ? done(null, user, { message: "Password is Incorrect " })
+            ? done(null, user)
             : done(null, false, { message: "No account" });
         } catch (e) {
           console.log(e);

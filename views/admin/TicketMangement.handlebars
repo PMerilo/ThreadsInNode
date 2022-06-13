@@ -1,0 +1,77 @@
+<div class="card">
+  <div>
+    
+    
+    
+    
+  </div>
+  
+  <div>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Pending Status</th>
+          <th>Urgency</th>
+          <th>Owner</th>
+          <th>Reply</th>
+          <th>Delete</th>
+          
+        </tr>
+      </thead>
+      <tbody>
+            {{#each tickets}}
+        <tr>
+          <td>{{this.title }}</td>
+          <td>{{ this.description }}</td>
+          <td>{{ this.pendingStatus }}</td>
+          <td>{{ this.urgency }}</td>
+          <td>{{ this.owner }}</td>
+           <td><a href="" class="btn btn-warning">Reply</a></td>
+          <td>
+             <form action="" method="POST">
+               <!--<input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete {#user.get_first_name()#} {#user.get_last_name()#}?');">-->
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal_{{this.id}}">
+        Delete
+      </button>
+  
+      <!-- The Modal-->
+      <div class="modal" id="myModal_{{this.id}}">">
+        <div class="modal-dialog">
+          <div class="modal-content">
+  
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">Delete Confirmation</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+  
+            <!---- Modal body -->
+  
+             <div class="modal-body">
+              Are you sure you want to delete feedback of id {{this.id}}?
+    
+            </div>
+  
+  
+            <!---- Modal footer -->
+            <div class="modal-footer">
+              <input type="submit" value="Delete" class="btn btn-danger">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+  
+            </div>
+  
+          </div>
+        </div>
+      </div>
+  
+            </form>
+          </td>
+        </tr>
+      {{/each}}
+  
+      </tbody>
+    </table>
+  </div>
+</div>
