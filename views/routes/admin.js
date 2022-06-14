@@ -46,6 +46,8 @@ router.get('/TicketMangement', async (req,res) => {
 
     res.render("admin/TicketMangement",{tickets})
 })
+
+
 router.get('/FeedbackMangement', async (req,res) => {  
     feedbacks = (await Feedback.findAll()).map((x)=> x.dataValues)
 

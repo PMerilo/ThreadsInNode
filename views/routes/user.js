@@ -102,8 +102,10 @@ router.get('/logout',ensureAuthenticated, (req, res) => {
 router.get('/login/checkrole',ensureAuthenticated, (req,res) => {
     var role = req.user.role
     if(role=="C"){
+      flashMessage(res, 'success', "Success You are logged in as: "+ req.user.name);
       res.redirect('/profile');
     } else if(role == "A"){
+      flashMessage(res, 'success', "Success You are logged in as Administrator: "+ req.user.name);
       res.redirect("/admin")
     }else{
       res.redirect("/login")
