@@ -31,7 +31,7 @@
           <td>{{ this.owner }}</td>
            
           <td>
-             <form action="" method="POST">
+             <form action="/admin/FeedbackMangement/deleteFeedback" method="POST">
                <!--<input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete {#user.get_first_name()#} {#user.get_last_name()#}?');">-->
               <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal_{{this.id}}">
         Delete
@@ -45,6 +45,7 @@
             <!-- Modal Header -->
             <div class="modal-header">
               <h4 class="modal-title">Delete Confirmation</h4>
+              
               <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
   
@@ -59,6 +60,7 @@
             <!---- Modal footer -->
             <div class="modal-footer">
               <input type="submit" value="Delete" class="btn btn-danger">
+              <input type="hidden" name="feedbackID" id="feedbackID" value="{{this.id}}">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
   
             </div>

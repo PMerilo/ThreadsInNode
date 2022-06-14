@@ -28,7 +28,7 @@
           <td>{{ this.owner }}</td>
            <td><a href="" class="btn btn-warning">Reply</a></td>
           <td>
-             <form action="" method="POST">
+      <form action="/admin/TicketMangement/deleteTicket" method="POST">
                <!--<input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete {#user.get_first_name()#} {#user.get_last_name()#}?');">-->
               <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal_{{this.id}}">
         Delete
@@ -55,6 +55,7 @@
   
             <!---- Modal footer -->
             <div class="modal-footer">
+              <input type="hidden" name="ticketID" id="ticketID" value="{{this.id}}">
               <input type="submit" value="Delete" class="btn btn-danger">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
   
