@@ -8,6 +8,7 @@ const Ticket = require('../../models/Ticket');
 const Feedback = require('../../models/Feedback');
 
 
+
 router.use((req, res, next) => {
 res.locals.path = req.baseUrl;
 console.log(req.baseUrl);
@@ -47,6 +48,23 @@ router.get('/TicketMangement', async (req,res) => {
     res.render("admin/TicketMangement",{tickets})
 })
 
+router.post('/TicketMangement/deleteTicket', async (req,res) => { 
+    let{ticketID} = req.body;
+    
+    deletedTicket = req.body.ticketID
+    Ticket.destroy({where: {id:ticketID}})
+    flashMessage(res, 'success', "Ticket Deleted Successfully! ID: " + ticketID);
+    res.redirect("/admin/TicketMangement")
+})
+
+router.get('/TicketMangement/reply/:id', async (req,res) => { 
+    let{ticketID} = req.body;
+    
+    deletedTicket = req.body.ticketID
+    Ticket.destroy({where: {id:ticketID}})
+    flashMessage(res, 'success', "Ticket Deleted Successfully! ID: " + ticketID);
+    res.redirect("/admin/TicketMangement")
+})
 
 router.get('/FeedbackMangement', async (req,res) => {  
     feedbacks = (await Feedback.findAll()).map((x)=> x.dataValues)
@@ -54,5 +72,19 @@ router.get('/FeedbackMangement', async (req,res) => {
     res.render("admin/FeedbackManagement",{feedbacks})
 })
 
+router.post('/FeedbackMangement/deleteFeedback', async (req,res) => { 
+    let{feedbackID} = req.body;
+    
+    deletedFeedback = req.body.feedbackID
+    Feedback.destroy({where: {id:feedbackID}})
+    flashMessage(res, 'success', "Feedback Deleted Successfully! ID: " + feedbackID);
+    res.redirect("/admin/FeedbackMangement")
+})
+
+router.get('/UserManagement', async (req,res) => {  
+    Users = (await User.findAll()).map((x)=> x.dataValues)
+
+    res.render("admin/userManagement",{Users})
+})
 module.exports = router;
 
