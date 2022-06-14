@@ -1,7 +1,7 @@
 <div class="card" style="padding:10px">
   <div>
 
-  <h2>Ticket Management</h2>  
+  <h2>Feedback Management</h2>  
   </div>
   
   <div>
@@ -10,23 +10,26 @@
         <tr>
           <th>Title</th>
           <th>Description</th>
-          <th>Pending Status</th>
-          <th>Urgency</th>
+          <th>Rating</th>
+          <th>Remarks</th>
+          <th>Favourite Thing</th>
+          <th>Least Favourite Thing</th>
           <th>Owner</th>
-          <th>Reply</th>
           <th>Delete</th>
           
         </tr>
       </thead>
       <tbody>
-            {{#each tickets}}
+            {{#each feedbacks}}
         <tr>
           <td>{{this.title }}</td>
           <td>{{ this.description }}</td>
-          <td>{{ this.pendingStatus }}</td>
-          <td>{{ this.urgency }}</td>
+          <td>{{ this.rating }}</td>
+          <td>{{ this.remarks }}</td>
+          <td>{{ this.favouriteThing }}</td>
+          <td>{{ this.leastFavouriteThing }}</td>
           <td>{{ this.owner }}</td>
-           <td><a href="" class="btn btn-warning">Reply</a></td>
+           
           <td>
              <form action="" method="POST">
                <!--<input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete {#user.get_first_name()#} {#user.get_last_name()#}?');">-->

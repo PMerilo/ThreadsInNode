@@ -5,6 +5,7 @@ const sequelizeUser = require("../../config/DBConfig");
 const { serializeUser } = require('passport');
 const User = require("../../models/User");
 const Ticket = require('../../models/Ticket');
+const Feedback = require('../../models/Feedback');
 
 
 router.use((req, res, next) => {
@@ -44,6 +45,11 @@ router.get('/TicketMangement', async (req,res) => {
     tickets = (await Ticket.findAll()).map((x)=> x.dataValues)
 
     res.render("admin/TicketMangement",{tickets})
+})
+router.get('/FeedbackMangement', async (req,res) => {  
+    feedbacks = (await Feedback.findAll()).map((x)=> x.dataValues)
+
+    res.render("admin/FeedbackManagement",{feedbacks})
 })
 
 module.exports = router;
