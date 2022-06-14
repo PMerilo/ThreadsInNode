@@ -65,3 +65,20 @@
     {{/each}}
     </tbody>
   </table>
+
+<script>
+  window.addEventListener('DOMContentLoaded', event => {
+                      
+    const customersTable = document.getElementById('customers-table');
+    if (customersTable) {
+        new simpleDatatables.DataTable(customersTable);
+    }
+
+    const adminTable = document.getElementById('admin-table');
+    if (adminTable) {
+        new simpleDatatables.DataTable(adminTable);
+    }
+
+
+  });
+</script>
