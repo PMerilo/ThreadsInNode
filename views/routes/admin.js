@@ -57,7 +57,7 @@ router.post('/TicketMangement/deleteTicket', async (req,res) => {
     res.redirect("/admin/TicketMangement")
 })
 
-router.get('/TicketMangement/reply/:id', async (req,res) => { 
+router.post('/TicketMangement/reply', async (req,res) => { 
     let{ticketID} = req.body;
     
     deletedTicket = req.body.ticketID

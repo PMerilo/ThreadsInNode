@@ -8,7 +8,7 @@ const Ticket = require("../../models/Ticket")
 const Feedback = require("../../models/Feedback")
 const Product = require("../../models/Product")
 const ensureAuthenticated = require("../helpers/auth");
-
+const moment = require("moment");
 
 router.use((req, res, next) => {
     res.locals.path = req.baseUrl;
@@ -209,6 +209,19 @@ router.post('/addProduct',ensureAuthenticated, async function (req,res) {
          console.log(e)
          res.redirect("/addProduct")
     }
+})
+router.get('/ticketHistory',ensureAuthenticated, async function (req,res){
+    tickets = (await Ticket.findAll({where: {ownerID:req.user.id}}))
+    res.render("TicketHistory",{tickets})
+})
+
+router.post('/ticketHistory/deleteTicket', async (req,res) => { 
+    let{ticketID} = req.body;
+    
+    deletedTicket = req.body.ticketID
+    Ticket.destroy({where: {id:ticketID}})
+    flashMessage(res, 'success', "Ticket Deleted Successfully! ID: " + ticketID);
+    res.redirect("/ticketHistory")
 })
 
 module.exports = router;

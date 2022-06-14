@@ -1,0 +1,60 @@
+<div class="container">
+	
+	<div class="card card-body">
+		<h3 class="text-primary">Past Tickets</h3>
+		{{#each tickets}}
+		<div class="card border-primary mb-2 w-100 mx-auto">
+			<div class="card-header">
+				<h5 class="card-title">{{this.title}}</h5>
+			</div>
+			<div class="card-body">
+				<div class="row">
+					
+					<div class="col-sm-12 col-md-12 col-lg-2">
+						<p class="font-italic">Date Sent</p>
+						<p class="text-info">{{this.dateAdded}}</p>
+					</div>
+					<div class="col-sm-12 col-md-12 col-lg-2">
+						
+						<p>
+                            <form action="/ticketHistory/deleteTicket" method="POST">
+                             
+                            
+                            <button type="submit" class="btn btn-outline-primary" data-toggle="confirmation" data-title="Confirm delete?">
+                            <i class="bx bx-trash alt icon"></i>
+							<input type="hidden" name="ticketID" id="ticketID" value="{{this.id}}">
+								<p>Delete Ticket</p>
+								
+							</button>
+                            </form>
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="accordion" id="storyAccordion">
+				<div class="card-header" id="headingOne">
+					<button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne{{this.id}}"
+						aria-expanded="false" aria-controls="collapseOne{{this.id}}" style="text-decoration: none;">
+						Description <i class="bx bx-chevron-down bx-xs icon"></i>
+					</button>
+				</div>
+				<div id="collapseOne{{this.id}}" class="collapse" aria-labelledby="headingOne" data-parent="#storyAccordion">
+					<div class="card-body">
+						{{this.description}}
+					</div>
+				</div>
+			</div>
+		</div>
+		{{/each}}
+	</div>
+	
+	
+	
+</div>
+
+<script>
+	$('[data-toggle=confirmation]').confirmation({
+		rootSelector: '[data-toggle=confirmation]',
+	});
+</script>
