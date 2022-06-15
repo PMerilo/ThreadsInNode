@@ -109,11 +109,15 @@ router.get('/deletemessages',ensureAuthenticated, async function (req,res){
 
 router.post('/deletemessages',ensureAuthenticated, async function (req,res){
     let { messageID } = req.body;
-
-    deletedMessage = req.body.messageID
-    Message.destroy({where: {id:messageID}})
-    flashMessage(res, 'success', "Message Deleted");
-    User.update({MessagesCount:req.user.MessagesCount-1}, {where:{id:req.user.id}})
+    if (messageID!=null){
+        deletedMessage = req.body.messageID
+        Message.destroy({where: {id:messageID}})
+        flashMessage(res, 'success', "Message Deleted");
+        User.update({MessagesCount:req.user.MessagesCount-1}, {where:{id:req.user.id}})
+    }else{
+        flashMessage(res, 'danger', "Please Select a Message to Delete");
+    }
+    
     res.redirect("/deletemessages")
     
 })

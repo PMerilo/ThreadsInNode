@@ -137,7 +137,7 @@
                             <div class="pull-left">                                
                                 <div class="controls">
                                     <div class="checkbox">
-                                        <input type="checkbox" id="messageID" value="">
+                                        <input type="checkbox" id="messageID" name= "messageID" value="{{this.id}}">
                                         <label for="basic_checkbox_1"></label>
                                     </div>
                                     <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down" data-toggle="active"><i class="zmdi zmdi-star-outline"></i></a>
@@ -153,7 +153,7 @@
                                 <p class="msg">{{this.description}}</p>
                             </div>
                         </div>
-                        <input type="hidden" name="messageID" id="messageID" value="{{this.id}}">
+                        
                     </li>
                     </form>
                     {{/each}}
