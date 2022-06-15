@@ -56,6 +56,9 @@
             <!---- Delete Ticket Modal footer -->
             <div class="modal-footer">
               <input type="hidden" name="ticketID" id="ticketID" value="{{this.id}}">
+              <input type="hidden" name="ownerID" id="ownerID" value="{{this.ownerID}}">
+              <input type="hidden" name="owner" id="owner" value="{{this.owner}}">
+              <input type="hidden" name="ticketTitle" id="ticketTitle" value="{{this.title}}">
               <input type="submit" value="Delete" class="btn btn-danger">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
   
@@ -69,7 +72,8 @@
             </form>
           </td>
         </tr>
-        <form action="" method="POST">
+      {{!-- Respond Ticket Form --}}
+      <form action="/admin/TicketMangement/reply" method="POST">
           <!-- The Respond Ticket Modal-->
       <div class="modal" id="myModalResponse_{{this.id}}">">
         <div class="modal-dialog">
@@ -126,6 +130,9 @@
             <!---- Modal footer -->
             <div class="modal-footer">
               <input type="hidden" name="ticketID" id="ticketID" value="{{this.id}}">
+              <input type="hidden" name="ownerID" id="ownerID" value="{{this.ownerID}}">
+              <input type="hidden" name="owner" id="owner" value="{{this.owner}}">
+              
               <input type="submit" value="Send Reply" class="btn btn-primary">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
   

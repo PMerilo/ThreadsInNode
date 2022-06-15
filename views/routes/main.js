@@ -7,6 +7,7 @@ const User = require("../../models/User")
 const Ticket = require("../../models/Ticket")
 const Feedback = require("../../models/Feedback")
 const Product = require("../../models/Product")
+const Message = require("../../models/Messages")
 const ensureAuthenticated = require("../helpers/auth");
 const moment = require("moment");
 
@@ -94,8 +95,27 @@ router.get('/rewards&offersQNA', (req,res) => {
 })
 
 
-router.get('/messages',ensureAuthenticated, (req,res) => {
-    res.render("messages.handlebars")
+router.get('/messages',ensureAuthenticated, async function (req,res){
+    message = (await Message.findAll({where: {ownerID:req.user.id}}))
+
+    res.render("messages.handlebars",{message})
+})
+
+router.get('/deletemessages',ensureAuthenticated, async function (req,res){
+    message = (await Message.findAll({where: {ownerID:req.user.id}}))
+    
+    res.render("deleteMessages.handlebars",{message})
+})
+
+router.post('/deletemessages',ensureAuthenticated, async function (req,res){
+    let { messageID } = req.body;
+
+    deletedMessage = req.body.messageID
+    Message.destroy({where: {id:messageID}})
+    flashMessage(res, 'success', "Message Deleted");
+    User.update({MessagesCount:req.user.MessagesCount-1}, {where:{id:req.user.id}})
+    res.redirect("/deletemessages")
+    
 })
 router.get('/feedback',ensureAuthenticated, (req,res) => {
     res.render("feedback.handlebars")

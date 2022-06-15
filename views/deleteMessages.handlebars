@@ -70,14 +70,14 @@
                     <h2 class="text-white pb-3">Your Inbox</h2>
                     <ul class="nav nav-tabs custom-tab border-bottom-0 mt-4" id="myTab" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active" id="inbox-tab" href="/messages">
+                            <a class="nav-link" id="inbox-tab" href="/messages">
                                 <span class="d-block d-md-none"><i class="ti-email"></i></span>
                                 <span class="d-none d-md-block"> INBOX</span>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" id="delete-tab" href="/deletemessages">
+                            <a class="nav-link active" id="delete-tab" href="deletemessages">
                                 <span class="d-block d-md-none"><i class="ti-trash"></i></span>
                                 <span class="d-none d-md-block">DELETED</span>
                             </a>
@@ -91,7 +91,20 @@
                                 <div class="col-sm-12 col-md-6">
                                     <h3 class="font-light mb-0"><i class="ti-email mr-2"></i>{{user.MessagesCount}} emails</h3>
                                 </div>
-                                
+                                <div class="col-sm-12 col-md-6">
+                                    <form action="/deletemessages" method="POST">
+                                    <ul class="list-inline dl mb-0 float-left float-md-right">
+                                        
+                                        <li class="list-inline-item text-danger">
+                                            <a href="#">
+                                                <button class="btn btn-circle btn-danger text-white" href="javascript:void(0)">
+                                                    <i class="bx bx-trash"></i>
+                                                </button>
+                                                <span class="ml-2 font-normal text-dark">Delete</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
     <div class="container-fluid">
         <div class="row clearfix">
@@ -118,11 +131,15 @@
                 <form action="">
                 <ul class="mail_list list-group list-unstyled">
                     {{#each message}}
+                    
                     <li class="list-group-item">
                         <div class="media">
                             <div class="pull-left">                                
                                 <div class="controls">
-                                    
+                                    <div class="checkbox">
+                                        <input type="checkbox" id="messageID" value="">
+                                        <label for="basic_checkbox_1"></label>
+                                    </div>
                                     <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down" data-toggle="active"><i class="zmdi zmdi-star-outline"></i></a>
                                 </div>
                                 <div class="thumb hidden-sm-down m-r-20"> <img src="assets/images/xs/avatar1.jpg" class="rounded-circle" alt=""> </div>
@@ -136,7 +153,9 @@
                                 <p class="msg">{{this.description}}</p>
                             </div>
                         </div>
+                        <input type="hidden" name="messageID" id="messageID" value="{{this.id}}">
                     </li>
+                    </form>
                     {{/each}}
                 </ul>
                 </form>
