@@ -6,7 +6,7 @@ const { serializeUser } = require('passport');
 const User = require("../../models/User");
 const Ticket = require('../../models/Ticket');
 const Feedback = require('../../models/Feedback');
-
+const Message = require("../../models/Messages")
 
 
 router.use((req, res, next) => {
@@ -62,7 +62,7 @@ router.post('/TicketMangement/reply', async (req,res) => {
     
     deletedTicket = req.body.ticketID
     Ticket.destroy({where: {id:ticketID}})
-    flashMessage(res, 'success', "Ticket Deleted Successfully! ID: " + ticketID);
+    flashMessage(res, 'success', "Ticket Reply Sent Successfully! to ID: " + ticketID);
     res.redirect("/admin/TicketMangement")
 })
 
