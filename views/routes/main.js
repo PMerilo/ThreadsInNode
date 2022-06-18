@@ -8,6 +8,7 @@ const Ticket = require("../../models/Ticket")
 const Feedback = require("../../models/Feedback")
 const Product = require("../../models/Product")
 const Message = require("../../models/Messages")
+const CartProduct = require("../../models/CartProduct")
 const ensureAuthenticated = require("../helpers/auth");
 const moment = require("moment");
 
@@ -20,8 +21,56 @@ router.use((req, res, next) => {
 
 
 
-router.get('/', (req,res) => {
-    res.render("index")
+router.get('/', async (req,res) =>{
+    products = (await Product.findAll({where: {cartOwner:null}}))
+    
+    res.render("index",{products})
+})
+
+router.post('/addtoCart',ensureAuthenticated, async (req,res) =>{
+    purchasedProduct = await Product.findOne({where:{sku:req.body.sku}})
+    if(purchasedProduct.quantity>0){
+        
+        let { sku,name,description,price,category,qtyPurchased } = req.body;
+        newPurchasedProductQTY = purchasedProduct.quantity - req.body.qtyPurchased
+        
+        checkProductinCart = await CartProduct.findOne({where:{sku:req.body.sku}})
+        
+        
+        try{
+            if(checkProductinCart){
+                newCartProductQTY = parseInt(checkProductinCart.qtyPurchased) + parseInt(req.body.qtyPurchased)
+                console.log(newCartProductQTY)
+                CartProduct.update({qtyPurchased: newCartProductQTY},{where:{sku:req.body.sku}} )
+            }else{
+                await CartProduct.create({
+                    sku: req.body.sku,
+                    name: req.body.name,
+                    description: req.body.description,
+                    price: req.body.price,
+                    category: req.body.category,
+                    totalCost: req.body.qtyPurchased * req.body.price,
+                    qtyPurchased: req.body.qtyPurchased,
+                    cartOwner: req.user.name,
+                    cartOwnerID: req.user.id
+                    
+                });
+            }
+            
+            flashMessage(res,"success", req.body.name + ' Purchased Successfully');
+            res.redirect("/")
+        }catch(e){
+            console.log(e)
+            
+            res.redirect("/")
+        }
+        Product.update({quantity:newPurchasedProductQTY},{where:{sku:req.body.sku}} )
+    }else{
+        flashMessage(res,"danger", req.body.name + ' is Out of Stock');
+        res.redirect("/")
+    }
+    
+    
 })
 
 router.get('/RewardsPage', (req,res) => {
@@ -67,8 +116,9 @@ router.get('/myOrders',ensureAuthenticated, (req,res) => {
     res.render("myOrders.handlebars")
 })
 
-router.get('/shoppingCart', (req,res) => {
-    res.render("shoppingCart.handlebars")
+router.get('/shoppingCart', ensureAuthenticated,async (req,res) => {
+    cartproducts = (await CartProduct.findAll({where: {cartOwnerID:req.user.id}}))
+    res.render("shoppingCart.handlebars",{cartproducts})
 })
 
 router.get('/otherSupport', (req,res) => {

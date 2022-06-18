@@ -1,3 +1,67 @@
 <link rel="stylesheet" href="styles/homepage.css">
 <img src="images/banner.jpg" alt="placeholder" id="banner" width="90%" class="img-responsive mt-5" >
-<script src="scripts/cart.js"  async></script> 
+<script src="../static/scripts/cart.js"  async></script> 
+<div class="container">
+<div class="row mt-3">
+{{#each products}}
+<div class="col-12 col-xs-12 col-md-6 col-lg-4 col-xl-3" id="product_card">
+        <div class="card">
+          <img class="card-img-top product-image" src="/images/items/11.jpg" alt="Card image cap" width="153px" height="372px">
+          <div class="card-button">
+            <button type="button" class="btn show-item" data-bs-toggle="modal" data-bs-target="#myModal_{{this.sku}}">
+              Shop This Product
+            </button>
+          </div>
+          
+          <div class="modal" id="myModal_{{this.sku}}">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+              <div class="modal-content">
+                <div class="row">
+                  <div class="container col-12 col-md-6">
+                      <img src="/images/items/11.jpg" height="541px" width="381px" class="image">
+                  </div>
+                  
+                  <div class="container col-12 col-md-6 modal-info">
+                    <button type="button" class="btn-close x-button" data-bs-dismiss="modal"></button>
+                    <div class="modal-header">
+                        <h6 class="modal-title">{{ this.name }}</h6>
+                        <div class="review">
+                          <span class="bx bxs-star"></span>
+                          <span class="bx bxs-star"></span>
+                          <span class="bx bxs-star"></span>
+                          <span class="bx bxs-star"></span>
+                          <span class="bx bx-star"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <div class="price">${{ this.price }}</div>
+                        <div class="desc">{{ this.description }}</div> 
+                    </div>
+
+                    <div class="modal-footer">
+                        <form action="/addtoCart" method="POST">
+                        <input type="hidden" value="{{ this.sku }}" name="sku" id="sku">
+                        <input type="hidden" value="{{this.name}}" name="name" id="name">
+                        <input type="hidden" value="{{this.description}}" name="description" id="description">
+                        <input type="hidden" value="{{this.price}}" name="price" id="price">
+                        <input type="hidden" value="{{this.category}}" name="category" id="category">
+
+                        <input type="hidden" value="1" name="qtyPurchased" id="qtyPurchased">
+                        
+                        
+                        <button value="" class="btn btn-primary shop-item-button" value="1" onclick="addtocartClicked(this)" data-bs-dismiss="modal">Add to Cart</button>
+                        </form>
+                        
+                        <button type="button" value="{{ this.sku }}"class="wishlist btn bx bx-heart" onclick="wishList(this)"></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+{{/each}}
+</div>
+</div>

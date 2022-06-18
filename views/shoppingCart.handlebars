@@ -16,7 +16,26 @@
             <span class="c-t cart-header cart-column">Total</span>
         </div>
         <div class="cart-items">
-        
+          {{#each cartproducts}}
+        <div class="cart-row">
+          <div class="cart-item cart-column">
+            <img class="cart-item-image" src="/images/items/1.jpg" width="100" height="100">
+            <span class="cart-item-title">{{ this.name }}</span>
+          </div>
+          <span class="cart-price cart-column">S${{ this.price }}</span>
+          <div class="cart-quantity cart-column">
+              <input class="cart-quantity-input" type="number" value="{{this.qtyPurchased}}">
+          </div>
+          <div class="c-t cart-column d-flex">
+            <p class="cart-total cart-column">S$0</p>
+            <form action="" method="POST" class="align-self-center ms-auto">
+              <button type="submit" class="btn" data-toggle="tooltip" data-placement="right" title="Clicking this will remove the item from cart"> 
+                <i class="bx bx-x"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+        {{/each}}
         </div>
       </div>
     

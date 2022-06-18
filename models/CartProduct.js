@@ -4,27 +4,27 @@ const db = require('../config/DBConfig');
 // Create Product table in MySQL Database
 
 
-class Product extends sequelize.Model{
+class CartProduct extends sequelize.Model{
 
 }
-Product.init({
+CartProduct.init({
         sku:{type: sequelize.INTEGER, autoIncrement: false, primaryKey: true},
         name: { type: sequelize.STRING }, 
         description: { type: sequelize.STRING(2000) }, 
         price: { type: sequelize.FLOAT }, 
-        quantity: {type: sequelize.INTEGER},
         category:{type:sequelize.STRING},
-        Owner:{type:sequelize.STRING},
-        OwnerID:{type: sequelize.INTEGER}
-        
+        cartOwner:{type:sequelize.STRING},
+        cartOwnerID:{type: sequelize.INTEGER},
+        totalCost:{ type: sequelize.FLOAT },
+        qtyPurchased:{ type: sequelize.INTEGER }
         
 },
     {
         freezeTableName: true,
         timestamps: true,
         sequelize: db,
-        modelName: "product",
+        modelName: "cartproduct",
     }
 )    
 
-module.exports = Product;
+module.exports = CartProduct;
