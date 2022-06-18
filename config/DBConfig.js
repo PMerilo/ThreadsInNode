@@ -74,6 +74,11 @@ User.init(
       allowNull: false,
       defaultValue: 0
     },
+    spools: {
+      type: sequelize.DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
   },
   {
     freezeTableName: true,

@@ -61,6 +61,11 @@ class User extends sequelize.Model {
         allowNull: false,
         defaultValue: 0
       },
+      spools: {
+        type: sequelize.DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+      },
     },
     {
       freezeTableName: true,
