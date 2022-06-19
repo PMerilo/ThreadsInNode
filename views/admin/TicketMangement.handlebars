@@ -13,6 +13,7 @@
           <th>Pending Status</th>
           <th>Urgency</th>
           <th>Owner</th>
+          <th>Image</th>
           <th>Reply</th>
           <th>Delete</th>
           
@@ -26,6 +27,9 @@
           <td>{{ this.pendingStatus }}</td>
           <td>{{ this.urgency }}</td>
           <td>{{ this.owner }}</td>
+          <td>
+            <img src="{{this.posterURL}}" alt="Ticket Image" height="100px"> 
+          </td>
            <td><button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#myModalResponse_{{this.id}}">Reply</button></td>
           <td>
       <form action="/admin/TicketMangement/deleteTicket" method="POST">

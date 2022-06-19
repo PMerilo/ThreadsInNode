@@ -11,9 +11,19 @@
     <div class="card-body">
     <h4 class="card-title mb-4">Ticket Form</h4>
    <form method="POST" action="/tickets">
-
+        <div class="col-lg-3">
        <div class="form-group">
-           <img src='' class="img-sm rounded-circle border">
+           
+					<div class="custom-file mb-2">
+						<input type="file" class="custom-file-input" id="posterUpload" name="posterUpload"
+							accept="image/png,image/jpeg,image/jpg,image/gif">
+						<label class="custom-file-label" for="customFile">Choose File</label>
+					</div>
+					<div class="text-danger small mb-2" id="posterErr" style="display:none"></div>
+					<img id="poster" src="/images/no-image.jpg" alt="Poster" class="border img-thumbnail img-fluid">
+					{{!—- Hidden field to submit URL of poster to the server --}}
+					<input id="posterURL" type="hidden" name="posterURL">
+				</div>
        </div>
       <div class="form-col">
           <div class="form-row">

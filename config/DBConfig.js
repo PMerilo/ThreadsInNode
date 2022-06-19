@@ -97,6 +97,7 @@ Ticket.init({
     pendingStatus: {type: sequelize.STRING,allowNull: false},
     urgency: {type:sequelize.STRING,allowNull: false},
     dateAdded: { type: sequelize.DATE,allowNull: false },
+    posterURL: { type: sequelize.STRING }, 
     owner: {type: sequelize.STRING,allowNull: false},
     ownerID:{type: sequelize.INTEGER, allowNull:false}
 

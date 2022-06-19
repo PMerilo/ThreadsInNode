@@ -3,14 +3,20 @@ const router = express.Router();
 const flashMessage = require('../helpers/messenger');
 const sequelizeUser = require("../../config/DBConfig");
 const { serializeUser } = require('passport');
+//Our Models
 const User = require("../../models/User")
 const Ticket = require("../../models/Ticket")
 const Feedback = require("../../models/Feedback")
 const Product = require("../../models/Product")
 const Message = require("../../models/Messages")
 const CartProduct = require("../../models/CartProduct")
+//Ensures User is autenticated before accessing
+//page
 const ensureAuthenticated = require("../helpers/auth");
 const moment = require("moment");
+// Required for file upload const 
+fs = require('fs'); 
+const upload = require('../helpers/imageUpload');
 
 router.use((req, res, next) => {
     res.locals.path = req.baseUrl;
@@ -22,7 +28,8 @@ router.use((req, res, next) => {
 
 
 router.get('/', async (req,res) =>{
-    products = (await Product.findAll({where: {cartOwner:null}}))
+
+    products = (await Product.findAll()).map((x)=> x.dataValues)
     
     res.render("index",{products})
 })
@@ -198,7 +205,7 @@ router.post('/tickets',ensureAuthenticated, async function (req,res) {
     // current seconds
     let seconds = date_ob.getSeconds();
 
-    let { title, urgency, description} = req.body;
+    let { title, urgency, description, posterURL} = req.body;
     try{
         await Ticket.create({
             title: req.body.title,
@@ -206,6 +213,7 @@ router.post('/tickets',ensureAuthenticated, async function (req,res) {
             description: req.body.description,
             pendingStatus: "Pending",
             dateAdded: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
+            posterURL: req.body.posterURL,
             owner: req.user.name,
             ownerID: req.user.id
   
@@ -217,6 +225,23 @@ router.post('/tickets',ensureAuthenticated, async function (req,res) {
          res.redirect("/tickets")
     }
 })
+
+router.post('/upload', ensureAuthenticated, (req, res) => {
+    // Creates user id directory for upload if not exist
+    if (!fs.existsSync('./public/uploads/' + req.user.id)) {
+        fs.mkdirSync('./public/uploads/' + req.user.id, { recursive: true });
+    }
+  
+    upload(req, res, (err) => {
+        if (err) {
+            // e.g. File too large
+            res.json({ file: '/img/no-image.jpg', err: err });
+        }
+        else {
+            res.json({ file: `/uploads/${req.user.id}/${req.file.filename}` });
+        }
+    });
+  });
 
 router.post('/feedback',ensureAuthenticated, async function (req,res) {
     let date_ob = new Date();
