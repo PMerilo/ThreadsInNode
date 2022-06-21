@@ -15,6 +15,7 @@
        <div class="form-group">
            
 					<div class="custom-file mb-2">
+            
 						<input type="file" class="custom-file-input" id="posterUpload" name="posterUpload"
 							accept="image/png,image/jpeg,image/jpg,image/gif">
 						<label class="custom-file-label" for="customFile">Choose File</label>
@@ -24,16 +25,17 @@
 					{{!—- Hidden field to submit URL of poster to the server --}}
 					<input id="posterURL" type="hidden" name="posterURL">
 				</div>
+        <label for="">Send Us Any Supporting Images if any</label>
        </div>
       <div class="form-col">
           <div class="form-row">
         <div class= "form-group col-md-6">
             <label for="title"></label>
-            <input type="text" class="form-control form-control-user" name="title" id="title" placeholder="Enter Main Title of Issue Here">
+            <input type="text" class="form-control form-control-user" name="title" id="title" placeholder="Enter Main Title of Issue Here" required>
         </div>
           <div class="form-group col-md-6" >
             <label for="urgency"></label>
-            <select name="urgency" id="urgency" class="form-control form-control-user">
+            <select name="urgency" id="urgency" class="form-control form-control-user" required>
                 <option value="Very Urgent">Very Urgent</option>
                 <option value="Urgent">Urgent</option>
                 <option value="Slightly Urgent">Slightly Urgent</option>          
@@ -42,7 +44,7 @@
 
           <div class="col form-group">
             <label for="description"></label>
-            <textarea name="description" class="form-control form-control-user" id="" cols="30" rows="10" placeholder="Describe Your Issue Here"></textarea>
+            <textarea name="description" class="form-control form-control-user" id="" cols="30" rows="10" placeholder="Describe Your Issue Here" required></textarea>
           </div> <!-- form-group end.// -->
 
       </div> <!-- form-row.// -->

@@ -131,7 +131,27 @@ Feedback.init({
         sequelize: sequelizeDB,
         modelName: "feedback",
     }
-)    
+)  
+class FAQ extends sequelize.Model{
+    
+}
+
+FAQ.init({
+  id:{type: sequelize.INTEGER, autoIncrement: true, primaryKey: true},
+  title: { type: sequelize.STRING,allowNull: false }, 
+  description: { type: sequelize.STRING(2000),allowNull: false }, 
+  likes:{type:sequelize.INTEGER,allowNull:false,defaultValue:0},
+  dateAdded: { type: sequelize.DATE,allowNull: false },
+  owner: {type: sequelize.STRING,allowNull: false},
+  ownerID:{type: sequelize.INTEGER, allowNull:false}
+},
+  {
+      freezeTableName: true,
+      timestamps: true,
+      sequelize: sequelizeDB,
+      modelName: "faq",
+  }
+)  
 
 class Product extends sequelize.Model{
 
@@ -235,6 +255,17 @@ Feedback.sync({ alter: true })
   User.sync({ force: true }).then(() => {
     console.log(e);
     console.log("Created Feedback table");
+  })
+);
+FAQ.sync({ alter: true })
+.then((v) => {
+  console.log(v);
+  console.log("Successfully altered and sync");
+})
+.catch((e) =>
+  User.sync({ force: true }).then(() => {
+    console.log(e);
+    console.log("Created FAQ table");
   })
 );
 Product.sync({ alter: true })

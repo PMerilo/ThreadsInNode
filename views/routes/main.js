@@ -10,6 +10,7 @@ const Feedback = require("../../models/Feedback")
 const Product = require("../../models/Product")
 const Message = require("../../models/Messages")
 const CartProduct = require("../../models/CartProduct")
+const FAQ = require("../../models/FAQ")
 //Ensures User is autenticated before accessing
 //page
 const ensureAuthenticated = require("../helpers/auth");
@@ -224,6 +225,58 @@ router.post('/tickets',ensureAuthenticated, async function (req,res) {
          console.log(e)
          res.redirect("/tickets")
     }
+})
+
+router.get('/CommunityFAQPage', async (req,res) => {
+    comments = (await FAQ.findAll()).map((x)=> x.dataValues)
+    res.render("qnaPages/communityFAQpage.handlebars",{comments})
+})
+
+router.post('/addComment',ensureAuthenticated, async function (req,res)  {
+    let date_ob = new Date();
+    // current date
+    // adjust 0 before single digit date
+    let date = ("0" + date_ob.getDate()).slice(-2);
+
+    // current month
+    let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+
+    // current year
+    let year = date_ob.getFullYear();
+
+    // current hours
+    let hours = date_ob.getHours();
+    // current minutes
+    let minutes = date_ob.getMinutes();
+
+    // current seconds
+    let seconds = date_ob.getSeconds();
+    let{title,description} = req.body;
+    try{
+        await FAQ.create({
+            title: req.body.title,
+            description: req.body.description,
+            likes:0,
+            dateAdded: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
+            owner: req.user.name,
+            ownerID: req.user.id
+  
+          });
+          flashMessage(res,"success",'Comment Created Successfully');
+          res.redirect("/CommunityFAQPage")
+    }catch(e){
+         console.log(e)
+         res.redirect("/CommunityFAQPage")
+    }   
+})
+
+router.post('/deleteComment', async (req,res) => { 
+    let{commentID} = req.body;
+    
+    deletedcomment = req.body.commentID
+    FAQ.destroy({where: {id:commentID}})
+    flashMessage(res, 'success', "Comment Deleted Successfully!");
+    res.redirect("/CommunityFAQPage")
 })
 
 router.post('/upload', ensureAuthenticated, (req, res) => {
