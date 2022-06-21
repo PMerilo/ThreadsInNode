@@ -81,6 +81,12 @@ router.post('/addtoCart',ensureAuthenticated, async (req,res) =>{
     
 })
 
+router.post('/deleteFromCart',ensureAuthenticated, async (req,res) =>{
+    cartProduct = await CartProduct.findOne({where:{sku:req.body.sku}})
+    
+    
+})
+
 router.get('/RewardsPage', (req,res) => {
     res.render("rewards")
 })
