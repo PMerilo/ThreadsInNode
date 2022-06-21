@@ -1,0 +1,236 @@
+
+<link rel="stylesheet" href="/styles/shipping.css">
+<link rel="stylesheet" href="/styles/payment.css">
+
+
+<div class="alert alert-warning alert-dismissible">
+  Card  is expired.
+</div>
+
+<div class="row">
+  <div class="container content-section col-12 col-md-9">
+    <form method="POST" enctype="multipart/form-data">
+      <div class="accordion accordion-flush" id="checkout-parent">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="shipping-acc">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#shipping-collapse" aria-expanded="true" aria-controls="shipping-collapse">
+              Shipping information
+            </button>
+          </h2>
+          <div id="shipping-collapse" class="accordion-collapse collapse show" aria-labelledby="shipping-acc" data-bs-parent="#checkout-parent">
+            <div class="accordion-body">
+              <div class="card shipping">
+                <div class="card-header">
+                  <h2>Shipping</h2>
+                </div>
+                <div class="card-body">
+                  
+                    <div class="form-group col py-3">
+                      
+                    </div>
+                    <div class="form-group col py-3">
+                      
+                    </div>
+                    <div class="form-group col py-3">
+                     
+                    </div>
+                    <div class="form-group col py-3">
+                      
+                    </div>
+                    <div class="form-group col py-3" id="right">
+                      
+                    </div>
+                    <div class="form-group col py-3" id="left">
+                      
+                    </div>
+                    <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#payment-collapse" aria-expanded="false" aria-controls="payment-collapse">Save & Continue</button>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="payment-acc">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#payment-collapse" aria-expanded="false" aria-controls="payment-collapse">
+              Payment
+            </button>
+          </h2>
+          <div id="payment-collapse" class="accordion-collapse collapse" aria-labelledby="payment-acc" data-bs-parent="#checkout-parent">
+            <div class="accordion-body">
+              <div class="payment-container">
+                <div class="card-container">
+                    <div class="front">
+                        <div class="image">
+                            <img src="/images/chip.png" alt="">
+                            <img src="/images/all3.png" class='card_type'>
+                        </div>
+                        <div class="card-number-box">################</div>
+                        <div class="flexbox">
+                            <div class="box">
+                                <span>Card Holder</span>
+                                <div class="card-holder-name">Full Name</div>
+                            </div>
+                            <div class="box">
+                                <span>Expires</span>
+                                <div class="expiration">
+                                    <span class="exp-month">MM</span>
+                                    <span class="exp-year">YY</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="back">
+                        <div class="stripe"></div>
+                        <div class="box">
+                            <span>CVV</span>
+                            <div class="cvv-box"></div>
+                            <img src="" class='card_type'>
+                        </div>
+                    </div>
+                </div>
+                <div class="form">
+                    <div class="inputBox"> 
+                        
+                    </div>
+                    <div class="inputBox">
+                        
+                    </div>
+                    <div class="flexbox">
+                        <div class="inputBox">
+                            
+                            
+                        </div>
+                        <div class="inputBox">
+                            
+                        </div>
+                        <div class="inputBox" type="password">
+                            
+                        </div>
+                    </div>
+                    <input type="submit" value="Pay" class="submit-btn">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container col-12 col-md-3 total-card">
+      <div class="card summary-card">
+        <div class="cart-header card-header">
+          <p>Order Summary</p>
+        </div>
+
+        <div class="cart-body">
+          <div class="total  d-flex">
+            <p>Grand Total</p>
+            <p class="cart-total-price ms-auto">S$0</p>
+          </div>
+          <div class="shipping d-flex">
+            <p>Shipping</p>
+            <p class="shipping-fee ms-auto">S$0</p>
+          </div>
+          <div class="grandtotal d-flex">
+            <p>Grand Total after Shipping</p>
+            <p class="cart-grandtotal-price ms-auto">S$0</p>
+          </div>
+        </div>
+        <div class="card-footer">
+          <a class="btn btn-primary w-100" href="">Cancel</a>
+        </div>
+      </div>
+    </form>
+  </div>  
+</div>
+
+
+
+
+<script>
+
+document.querySelector('.card-number-input').oninput = () =>{
+    document.querySelector('.card-number-box').innerText = document.querySelector('.card-number-input').value;
+    value = document.querySelector('.card-number-input').value
+    var card_type = document.querySelectorAll('.card_type')
+    if (value[0] == '4') {
+        card_type.forEach(element => {
+            element.src = '/images/visa.png'
+        });
+    }
+    else if (value[0] == '5') {
+        card_type.forEach(element => {
+            element.src = '/images/mastercard.png'
+        });
+    }
+    else if (value[0] == '3' && value[1] == '4' || value[0] == '3' && value[1] == '7') {
+        card_type.forEach(element => {
+            element.src = '/images/amex.png'
+        });
+    }
+    else {
+        card_type.forEach(element => {
+            element.src = '/images/all3.png'
+
+        });
+        document.querySelector('.card-number-box').innerText = '################'
+    }
+}
+
+document.querySelector('.card-holder-input').oninput = () =>{
+    value = document.querySelector('.card-holder-input').value
+    if (value != '') {
+        document.querySelector('.card-holder-name').innerText = document.querySelector('.card-holder-input').value;
+    }
+    else {
+        document.querySelector('.card-holder-name').innerText = 'full name'
+    }
+}
+
+document.querySelector('.month-input').oninput = () =>{
+    document.querySelector('.exp-month').innerText = document.querySelector('.month-input').value;
+}
+
+document.querySelector('.year-input').oninput = () =>{
+    document.querySelector('.exp-year').innerText = document.querySelector('.year-input').value;
+}
+
+document.querySelector('.cvv-input').onmouseenter = () =>{
+    document.querySelector('.front').style.transform = 'perspective(1000px) rotateY(-180deg)';
+    document.querySelector('.back').style.transform = 'perspective(1000px) rotateY(0deg)';
+}
+
+document.querySelector('.cvv-input').onmouseleave = () =>{
+    document.querySelector('.front').style.transform = 'perspective(1000px) rotateY(0deg)';
+    document.querySelector('.back').style.transform = 'perspective(1000px) rotateY(180deg)';
+}
+
+document.querySelector('.cvv-input').oninput = () =>{
+    document.querySelector('.cvv-box').innerText = document.querySelector('.cvv-input').value;
+}
+
+var total = parseFloat(localStorage.getItem('total'))
+document.getElementsByClassName('cart-total-price')[0].innerText = 'S$' + total
+// var shipping = parseFloat(document.getElementsByClassName('shipping-fee')[0].innerText.replace('S$', ''))
+if(total <= 75) {
+  shipping = 15
+  grandtotal = total + shipping
+  grandtotal = (Math.round(grandtotal * 100) / 100).toFixed(2);
+  document.getElementsByClassName('shipping-fee')[0].innerText = 'S$' + shipping
+  document.getElementsByClassName('cart-grandtotal-price')[0].innerText = 'S$' + grandtotal
+} else if(total <= 150) {
+  shipping = 7.50
+  grandtotal = total + shipping
+  grandtotal = (Math.round(grandtotal * 100) / 100).toFixed(2);
+  document.getElementsByClassName('shipping-fee')[0].innerText = 'S$' + shipping
+  document.getElementsByClassName('cart-grandtotal-price')[0].innerText = 'S$' + grandtotal
+} else {
+  shipping = 0
+  total = (Math.round(total * 100) / 100).toFixed(2);
+  document.getElementsByClassName('shipping-fee')[0].innerText = 'FREE'
+  document.getElementsByClassName('cart-grandtotal-price')[0].innerText = 'S$' + total
+}
+</script>
+
+
+<script src="/scripts/cart.js"  async></script> 

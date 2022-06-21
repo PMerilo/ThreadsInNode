@@ -129,6 +129,11 @@ router.get('/shoppingCart', ensureAuthenticated,async (req,res) => {
     res.render("shoppingCart.handlebars",{cartproducts})
 })
 
+router.get('/checkout', ensureAuthenticated,async (req,res) => {
+    cartproducts = (await CartProduct.findAll({where: {cartOwnerID:req.user.id}}))
+    res.render("checkout.handlebars",{cartproducts})
+})
+
 router.get('/otherSupport', (req,res) => {
     res.render("qnaPages/otherSupport.handlebars")
 })
