@@ -22,6 +22,7 @@ const upload = require('../helpers/imageUpload');
 router.use((req, res, next) => {
     res.locals.path = req.baseUrl;
     console.log(req.baseUrl);
+    console.log("Hi");
     //Checks url for normal users and admin
     next();
   });

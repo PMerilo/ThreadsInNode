@@ -8,6 +8,7 @@ const Ticket = require('../../models/Ticket');
 const Feedback = require('../../models/Feedback');
 const Message = require("../../models/Messages")
 const ensureAuthenticated = require("../helpers/auth");
+const ensureAdminAuthenticated = require("../helpers/adminAuth")
 
 router.use((req, res, next) => {
 res.locals.path = req.baseUrl;
@@ -17,15 +18,15 @@ next();
 });
 
 
-router.get('/',ensureAuthenticated, (req,res) => {  
+router.get('/',ensureAdminAuthenticated, (req,res) => {  
     res.render("admin/adminBase")
 })
 
-router.get('/adminProfile',ensureAuthenticated, (req,res) => {  
+router.get('/adminProfile',ensureAdminAuthenticated, (req,res) => {  
     res.render("admin/adminProfile")
 })
 
-router.post('/admin/flash',ensureAuthenticated,  (req, res) => {
+router.post('/admin/flash',ensureAdminAuthenticated,  (req, res) => {
 	const message = 'This is an important message';
 	const error = 'This is an error message';
 	const error2 = 'This is the second error message';
@@ -42,13 +43,13 @@ router.post('/admin/flash',ensureAuthenticated,  (req, res) => {
 	res.redirect('/');
 });
 
-router.get('/TicketMangement',ensureAuthenticated,  async (req,res) => {  
+router.get('/TicketMangement',ensureAdminAuthenticated,  async (req,res) => {  
     tickets = (await Ticket.findAll()).map((x)=> x.dataValues)
 
     res.render("admin/TicketMangement",{tickets})
 })
 
-router.post('/TicketMangement/deleteTicket',ensureAuthenticated, async (req,res) => { 
+router.post('/TicketMangement/deleteTicket',ensureAdminAuthenticated, async (req,res) => { 
     let{ticketID, ticketTitle,owner,ownerID} = req.body;
     
     deletedTicket = req.body.ticketID
@@ -97,7 +98,7 @@ router.post('/TicketMangement/deleteTicket',ensureAuthenticated, async (req,res)
     res.redirect("/admin/TicketMangement")
 })
 
-router.post('/TicketMangement/reply',ensureAuthenticated,  async (req,res) => {
+router.post('/TicketMangement/reply',ensureAdminAuthenticated,  async (req,res) => {
     let date_ob = new Date();
     // current date
     // adjust 0 before single digit date
@@ -146,13 +147,13 @@ router.post('/TicketMangement/reply',ensureAuthenticated,  async (req,res) => {
     res.redirect("/admin/TicketMangement")
 })
 
-router.get('/FeedbackMangement',ensureAuthenticated,  async (req,res) => {  
+router.get('/FeedbackMangement',ensureAdminAuthenticated,  async (req,res) => {  
     feedbacks = (await Feedback.findAll()).map((x)=> x.dataValues)
 
     res.render("admin/FeedbackManagement",{feedbacks})
 })
 
-router.post('/FeedbackMangement/deleteFeedback',ensureAuthenticated,  async (req,res) => { 
+router.post('/FeedbackMangement/deleteFeedback',ensureAdminAuthenticated,  async (req,res) => { 
     let{feedbackID} = req.body;
     
     deletedFeedback = req.body.feedbackID
@@ -161,7 +162,7 @@ router.post('/FeedbackMangement/deleteFeedback',ensureAuthenticated,  async (req
     res.redirect("/admin/FeedbackMangement")
 })
 
-router.get('/UserManagement', async (req,res) => {  
+router.get('/UserManagement',ensureAdminAuthenticated, async (req,res) => {  
     Users = (await User.findAll()).map((x)=> x.dataValues)
 
     res.render("admin/userManagement",{Users})
