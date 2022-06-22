@@ -1,8 +1,4 @@
-
-<link rel="stylesheet" href="/styles/admin_navbar.css">
-
-
-
+<link rel="stylesheet" href="/css/admin_navbars.css">
 
 <nav class="sidebars close shadow-sm">
     <header>
@@ -24,43 +20,57 @@
     <div class="menu-bar">
         <div class="menu">
             <ul class="menu-links">
-                <a class="nav-link link-light rounded" href="dashboard">
-            <i class="bi bi-grid"></i>
-            <span class="navText d-none">Dashboard</span>
-            </a>
-            <a class="nav-link link-light rounded" href="admin/UserManagement">
-            <i class="bi bi-people-fill"></i>
-            <span class="navText d-none"></span>
-            </a>
-            <a class="nav-link link-light rounded" href="admin/Inventory">
-            <i class="bi bi-boxes"></i>
-            <span class="navText d-inline d-none"></span>
-            </a>
-            <a class="nav-link link-light rounded" href="/admin/ReportsManagement">
-            <i class="bi bi-graph-up"></i>
-            <span class="navText d-none">Ticket Reports</span>
-            </a>
-            <a class="nav-link link-light rounded" href="/admin/FeedbacksMangement">
-            <i class="bi bi-pencil-square"></i>
-            <span class="navText d-none">Feedbacks</span>
-            </a>
-                
-                
                 <li class="nav-link position-relative">
-                    <a href="" class="active">
-                        <i class='icon'></i>
-                        <span class="text nav-text"></span>
+                    <a class="nav-link link-light rounded" href="/admin/Dashboard">
+                        <i class="bx bxs-dashboard icon"></i>
+                        <span class="text nav-text">Dashboard</span>
                     </a>
                 </li>
-            
-               
+                <li class="nav-link position-relative">
+                    <a class="nav-link link-light rounded" href="/admin/UserManagement">
+                        <i class="bx bx-user icon"></i>
+                        <span class="text nav-text">Users</span>
+                    </a>
+                </li>
+                <li class="nav-link position-relative">
+                    <a class="nav-link link-light rounded" href="/admin/Inventory">
+                        <i class="bx bx-package icon"></i>
+                        <span class="text nav-text">Inventory</span>
+                    </a>
+                </li>
+                <li class="nav-link position-relative">
+                    <a class="nav-link link-light rounded" href="">
+                        <i class="bx bxs-discount icon"></i>
+                        <span class="text nav-text">Rewards</span>
+                    </a>
+                </li>
+                
+                <li class="nav-link position-relative">
+                    <a class="nav-link link-light rounded" href="/admin/ReportsManagement">
+                        <i class="bx bx-bar-chart-alt-2 icon"></i>
+                        <span class="text nav-text">Ticket Reports</span>
+                    </a>
+                </li>
+                <li class="nav-link position-relative">
+                    <a class="nav-link link-light rounded" href="">
+                        <i class="bx bx-bar-chart-alt-2 icon"></i>
+                        <span class="text nav-text">Reports</span>
+                    </a>
+                </li>
+                <li class="nav-link position-relative">
+                    <a class="nav-link link-light rounded" href="/admin/FeedbacksMangement">
+                        <i class="bx bx-support icon"></i>
+                        <span class="text nav-text">Customer Support</span>
+                    </a>
+                </li>
+
             </ul>
         </div>
 
         <div class="bottom-content">
             <li class="">
                 <a href="/logout">
-                    <i class='bx bx-log-out icon' ></i>
+                    <i class='bx bx-log-out icon'></i>
                     <span class="text nav-text">Logout</span>
                 </a>
             </li>
@@ -82,25 +92,25 @@
 
 <script>
     const body = document.querySelector('body'),
-    sidebar = body.querySelector('nav'),
-    toggle = body.querySelector(".toggle"),
-    modeSwitch = body.querySelector(".toggle-switch"),
-    modeText = body.querySelector(".mode-text");
+        sidebar = body.querySelector('nav'),
+        toggle = body.querySelector(".toggle"),
+        modeSwitch = body.querySelector(".toggle-switch"),
+        modeText = body.querySelector(".mode-text");
 
 
-toggle.addEventListener("click" , () =>{
-sidebar.classList.toggle("close");
-})
+    toggle.addEventListener("click", () => {
+        sidebar.classList.toggle("close");
+    })
 
 
-modeSwitch.addEventListener("click" , () =>{
-body.classList.toggle("dark");
+    modeSwitch.addEventListener("click", () => {
+        body.classList.toggle("dark");
 
-if(body.classList.contains("dark")){
-    modeText.innerText = "Light mode";
-}else{
-    modeText.innerText = "Dark mode";
-    
-}
-});
+        if (body.classList.contains("dark")) {
+            modeText.innerText = "Light mode";
+        } else {
+            modeText.innerText = "Dark mode";
+
+        }
+    });
 </script>

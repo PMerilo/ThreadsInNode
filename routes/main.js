@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const flashMessage = require('../helpers/messenger');
-const sequelizeUser = require("../../config/DBConfig");
+const flashMessage = require('../views/helpers/messenger');
+const sequelizeUser = require("../config/DBConfig");
 const { serializeUser } = require('passport');
-const User = require("../../models/User")
-const Ticket = require("../../models/Ticket")
-const Feedback = require("../../models/Feedback")
-const Product = require("../../models/Product")
-const ensureAuthenticated = require("../helpers/auth");
+const User = require("../models/User")
+const Ticket = require("../models/Ticket")
+const Feedback = require("../models/Feedback")
+const Product = require("../models/Product")
+const ensureAuthenticated = require("../views/helpers/auth");
 
 
 router.use((req, res, next) => {
@@ -15,8 +15,12 @@ router.use((req, res, next) => {
     console.log(req.baseUrl);
     //Checks url for normal users and admin
     next();
-  });
+});
 
+router.all('/*', function (req, res, next) {
+    req.app.locals.layout = 'main'; // set your layout here
+    next(); // pass control to the next handler
+});
 
 
 router.get('/', (req,res) => {
