@@ -88,8 +88,12 @@
                     <h2>Community FAQ</h2>
                     <h6>Post your queries here</h6>
                     <hr>
+                    <a href="/CommunityFAQPage/ViewComments">View Your Comments</a>
+                    <br>
+                    <br>
                     <h4 class="card-title">Recent Comments</h4>
-                    <h6 class="card-subtitle">Latest Comments section by users</h6>
+                    <h6 class="card-subtitle">Latest Comments section by date</h6>
+                    
                 </div>
                 {{#each comments}}
                 
@@ -101,9 +105,7 @@
                             <div class="comment-footer">
                                 <span class="date">{{this.dateAdded}}</span>
                                 <span class="label label-info">{{this.owner}}</span> <span class="action-icons">
-                                    <a href="#" data-abc="true"><i class="bx bx-pencil"></i></a>
                                     
-                                    <button type="submit" data-bs-toggle="modal" data-bs-target="#myModal_{{this.id}}"><i class="bx bx-trash"></i></button>
                                     
                                     <a href="#" data-abc="true"><i class="bx bx-heart"></i></a>
                                     
@@ -113,31 +115,7 @@
                         </div>
                     </div>
                 </div>
-                <form action="/deleteComment" method="post">
-                {{!-- Delete Comment Modal --}}
-                <div class="modal" id="myModal_{{this.id}}">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-
-                    <div class="modal-header">
-                      <h4 class="modal-title">Delete Comment Confirmation</h4>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-
-                    <div class="modal-body">
-                    Are you sure you want to this comment? This action cannot be undone.
-                    </div>
-
-                    <div class="modal-footer">
-                    <input type="hidden" name="commentID" id="commentID" value="{{this.id}}">
-                      <input type="submit" value="Delete" class="btn btn-danger">
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Cancel</button>
-                    </div>
-
-                  </div>
-                </div>
-              </div>
-                </form>
+                
                 {{/each}}
             </div>
 

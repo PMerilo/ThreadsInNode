@@ -242,6 +242,11 @@ router.get('/CommunityFAQPage', async (req,res) => {
     comments = (await FAQ.findAll()).map((x)=> x.dataValues)
     res.render("qnaPages/communityFAQpage.handlebars",{comments})
 })
+router.get('/CommunityFAQPage/ViewComments',ensureAuthenticated ,async (req,res) => {
+    
+    comments = (await FAQ.findAll({where: {ownerID:req.user.id}}))
+    res.render("qnaPages/ViewComments.handlebars",{comments})
+})
 
 router.post('/addComment',ensureAuthenticated, async function (req,res)  {
     let date_ob = new Date();
@@ -287,9 +292,16 @@ router.post('/deleteComment', async (req,res) => {
     deletedcomment = req.body.commentID
     FAQ.destroy({where: {id:commentID}})
     flashMessage(res, 'success', "Comment Deleted Successfully!");
-    res.redirect("/CommunityFAQPage")
+    res.redirect("/CommunityFAQPage/ViewComments")
 })
-
+router.post('/editComment', async (req,res) => { 
+    let{title,description,commentID} = req.body;
+    
+    FAQ.update({title:title,description:description},{where: {id:commentID}})
+    
+    flashMessage(res, 'success', "Comment Edited Successfully!");
+    res.redirect("/CommunityFAQPage/ViewComments")
+})
 router.post('/upload', ensureAuthenticated, (req, res) => {
     // Creates user id directory for upload if not exist
     if (!fs.existsSync('./public/uploads/' + req.user.id)) {
