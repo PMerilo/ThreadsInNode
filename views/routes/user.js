@@ -84,15 +84,28 @@ router.post('/login', (req, res, next) => {
 })
 
 router.post('/editProfile', ensureAuthenticated, async (req, res) => {
+  x = 0;
+  y = 0
   userr = await User.findOne({ where: { id: req.user.id } })
   if ((await User.findOne({ where: { email: req.body.email } })) && userr.email != req.body.email) {
+    x = 1
+  }
+  if ((await User.findOne({ where: { name: req.body.name } })) && userr.name != req.body.name) {
+    y = 1
+  }
+  if (x == 1 && y != 1){
     flashMessage(res, 'error', 'This email has already been registered');
     return res.redirect("/editProfile");
   }
-  if ((await User.findOne({ where: { name: req.body.name } })) && userr.name != req.body.name) {
+  else if (x != 1 && y == 1){
     flashMessage(res, 'error', 'This name has already been registered');
     return res.redirect("/editProfile");
   }
+  else if (x == 1 && y == 1) {
+    flashMessage(res, 'error', 'Both name and email has already been registered');
+    return res.redirect("/editProfile");
+  }
+
   let name = req.body.name;
   let email = req.body.email;
   let phoneNumber = req.body.phoneNumber;
