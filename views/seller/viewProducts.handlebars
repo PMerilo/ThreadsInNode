@@ -1,0 +1,160 @@
+<div class="row">
+  <div class="container content-section col-12 col-md-9">
+    <div class="card cart-card">
+      <div class="card-header">
+        <h2>Order Summary</h2>
+      </div>
+
+      <div class="card-body">
+        <div class="cart-row">
+            <span class="cart-item cart-header cart-column">ITEM</span>
+            <span class="cart-price cart-header cart-column">PRICE</span>
+            <span class="cart-quantity cart-header cart-column">QUANTITY</span>
+        </div>
+        <div class="cart-items">
+        {{!-- put if statement for cart items here --}}
+        </div>
+      </div>
+    
+    </div> 
+  </div>
+  <div class="container col-12 col-md-3">
+    <div class="card summary-card">
+        <div class="cart-header card-header">
+            <p>Order Summary</p>
+        </div>
+        <div class="grandtotal-after d-flex">
+          <p>Grand Total after discount and shipping </p>
+          <p class="cart-gt-after ms-auto">0</p>
+        </div>
+    </div>
+  </div>
+</div>
+
+<style>
+    .cart-header {
+  font-weight: bold;
+  font-size: 1.25em;
+  color: #333;
+  padding-left: 10px;
+}
+
+.cart-column {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid black;
+  margin-right: 1.5em;
+  padding-bottom: 10px;
+  margin-top: 10px;
+}
+
+.cart-row {
+  display: flex;
+}
+
+.cart-item {
+  width: 45%;
+}
+
+.cart-price {
+  width: 25%;
+  font-size: 1.2em;
+  color: #333;
+}
+
+.cart-quantity {
+  width: 30%;
+}
+
+.cart-item-title {
+  color: #333;
+  margin-left: .5em;
+  font-size: 1.2em;
+}
+
+.cart-item-image {
+  width: 75px;
+  height: auto;
+  border-radius: 10px;
+}
+
+.btn-danger {
+  color: white;
+  background-color: #EB5757;
+  border: none;
+  border-radius: .3em;
+  font-weight: bold;
+
+}
+
+.btn-danger:hover {
+  background-color: #CC4C4C;
+}
+
+.cart-quantityy{
+  height: 34px;
+  width: 50px;
+  border-radius: 5px;
+  color: #333;
+  padding: 0;
+  text-align: center;
+  font-size: 1.2em;
+  margin-right: 25px;
+}
+
+.cart-row:last-child {
+  border-bottom: 1px solid black;
+}
+
+.cart-row:last-child .cart-column {
+  border: none;
+}
+
+.card {
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.cart-card {
+  margin-top:60px;
+}
+
+.summary-card {
+margin-top:60px;
+}
+
+.total, .shipping, .discount{
+  padding: 10px;
+  border-bottom: 1px solid black;
+}
+
+.grandtotal, .grandtotal-after {
+  padding: 10px;
+}
+</style>
+
+
+<script>
+    $(document).ready (function() {
+        var cartItemContainer = document.getElementsByClassName('cart-items')[0]
+        var cartRows = cartItemContainer.getElementsByClassName('cart-row')
+        var tl = $('.total-p').val()
+        console.log(tl)
+        var subtotal = 0
+        for (var i = 0; i < cartRows.length; i++) {
+            var cartRow = cartRows[i]
+            var priceElement = cartRow.getElementsByClassName('cart-price')[0]
+            var quantity = cartRow.getElementsByClassName('cart-quantityy')[0].innerText
+            var price = parseFloat(priceElement.innerText.replace('S$', ''))
+            console.log(price)
+            console.log(quantity)
+            total = price * quantity
+            subtotal = subtotal + (price * quantity)
+
+        }
+        subtotal = Math.round(subtotal * 100) / 100
+        document.getElementsByClassName('cart-gt-after')[0].innerText = 'S$' + tl
+    })
+
+    
+</script>

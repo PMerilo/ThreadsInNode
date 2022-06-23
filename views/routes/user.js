@@ -107,10 +107,64 @@ router.get('/login/checkrole',ensureAuthenticated, (req,res) => {
     } else if(role == "A"){
       flashMessage(res, 'success', "Success You are logged in as Administrator: "+ req.user.name);
       res.redirect("/admin")
-    }else{
+    }else if(role=="S"){
+      flashMessage(res, 'success', "Success You are logged in as Seller: "+ req.user.name);
+      res.redirect("/seller")
+    }
+
+    else{
       res.redirect("/login")
     }
 })
+
+router.get('/sellerRegister', (req, res) => {
+    res.render('seller/sellerRegister');
+});
+
+
+router.post('/sellerRegister', async function (req, res) {
+
+    let { name, email, password, password2 } = req.body;
+
+    let isValid = true;
+    if (password.length < 6) {
+        flashMessage(res, 'error', 'Password must be at least 6 char-acters');
+        isValid = false;
+    }
+    if (password != password2) {
+        flashMessage(res, 'error', 'Passwords do not match');
+        isValid = false;
+    }
+    
+    try {
+        if (
+          (await User.findOne({
+            where: { name: req.body.name },
+          })) ||
+          (await User.findOne({ where: { email: req.body.name } }))
+        ) {
+          flashMessage(res, 'error', 'Name or email is not unique');
+          console.log("Name or email is not unique");
+  
+          return res.redirect("/sellerRegister");
+        }
+        await User.create({
+          name: req.body.name,
+          email: req.body.email,
+          password: req.body.password,
+          gender: req.body.gender,
+          phoneNumber: req.body.phoneNumber,
+          role: "S"
+
+        });
+        flashMessage(res, 'success', email + ' registered Seller Account successfully');
+        res.redirect("/login");
+      } catch (e) {
+        console.log(e);
+        res.redirect("/sellerRegister");
+      }
+    });
+
 
 module.exports = router;
 

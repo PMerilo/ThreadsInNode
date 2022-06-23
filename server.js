@@ -8,6 +8,7 @@ const session = require('express-session');
 const main = require("./views/routes/main")
 const user = require("./views/routes/user")
 const admin = require("./views/routes/admin")
+const seller= require("./views/routes/seller")
 const bodypassword = require('body-parser')
 
 app.use(bodypassword.json())
@@ -92,6 +93,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use("/", main)
 app.use("/", user)
 app.use("/admin",admin)
+app.use("/seller",seller)
 
 
 const port = 5000;

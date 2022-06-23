@@ -72,25 +72,27 @@
 </head>
 <body>
     
-
+    {{!-- Start of Admin layout --}}
     {{#equals path "/admin"}}   
    
     {{>_adminNavBar}}       
     <script src="/scripts/iconToggles.js"></script>
+    {{!-- Start of Customer Layout --}}
     {{else}}
     {{>navbar}}
-    
-    {{!-- <div class="container-fluid mt-2 home">
-    </div> --}}
+    {{!-- End of Customer Layout --}}
     {{/equals}}
+    {{!-- End of Admin Layout --}}
     {{#equals path "/admin"}}
     <div class="container-fluid mt-2 home">
     {{/equals}}
+    
         {{>flashmsg}}
         {{{body}}}
         
         <br>
-        {{>Customerfooter}}
+        
+    
     {{#equals path "/admin"}}
     </div>
     {{/equals}}

@@ -3,12 +3,19 @@
   <div class="container-fluid">
 
     <img src="/images/logo.png" width="50px" height="50px" style="margin-right:10px" >
+    {{#equals path "/seller"}}  
+    <a class="navbar-brand" href="/seller">Threads in Time</a>
+    {{else}}
     <a class="navbar-brand" href="/">Threads in Time</a>
-
+    {{/equals}}
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <i class='bx bx-menu toggle'></i>
     </button>
+    {{#equals path "/seller"}}  
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
+    </div>
+    {{else}}
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
@@ -44,9 +51,12 @@
         </li>
 
       </ul>
+      {{/equals}}
 
       <ul class="navbar-nav d-flex flex-row me-1">
         {{#if authenticated}}
+        {{#equals path "/seller"}}  
+        {{else}}
         <!-- Nav Item - Messages -->
         <li class="nav-item dropdown no-arrow mx-1">
         <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
@@ -79,6 +89,7 @@
                                 
          </div>
         </li>
+        {{/equals}}
         {{/if}}
         <li class="nav-item me-3 me-lg-0 cart">
           <a class="nav-link bx bxs-cart" href="/shoppingCart">
@@ -90,6 +101,28 @@
           <a class="nav-link bx bxs-user" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" >
             
           </a>
+          {{#equals path "/seller"}}  
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" style="right: 100px;">
+            {{!-- if user is not authenticated --}}
+              <a class="dropdown-item" href="/Profile">My Profile</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/myOrders">My Products</a>
+            </li>
+          
+            <li>
+              <a class="dropdown-item" href="/ticketHistory">Past Tickets</a>
+            </li>
+            
+            
+            
+            <li>
+              <a class="dropdown-item" href="/logout">Log Out</a>
+            </li>
+            
+          </ul>
+
+          {{else}}
           {{#if authenticated}}
           
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" style="right: 100px;">
@@ -125,6 +158,9 @@
             <li>
               <a class="dropdown-item" href="/register">Sign Up</a>
             </li>
+            <li>
+              <a class="dropdown-item" href="/sellerRegister">Become a Seller</a>
+            </li>
             
           </ul>
           {{/if}}
@@ -136,7 +172,7 @@
             
         </li> --}}
       </ul>
-
+      {{/equals}}
   </div>
 </nav>
 
