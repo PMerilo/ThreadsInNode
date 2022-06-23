@@ -28,6 +28,11 @@ router.get('/', (req, res) => {
     res.render('seller/sellerHomePage');
 });
 
+router.get('/manageProducts', async (req, res) => {
+    products = (await Product.findAll()).map((x)=> x.dataValues)
+    res.render('seller/viewProducts',{products});
+});
+
 
 
 router.get('/addProduct',ensureAuthenticated, (req,res) => {

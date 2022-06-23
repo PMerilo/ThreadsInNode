@@ -1,160 +1,153 @@
-<div class="row">
-  <div class="container content-section col-12 col-md-9">
-    <div class="card cart-card">
-      <div class="card-header">
-        <h2>Order Summary</h2>
-      </div>
+<div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Your Products</h6>
+        </div>
 
-      <div class="card-body">
-        <div class="cart-row">
-            <span class="cart-item cart-header cart-column">ITEM</span>
-            <span class="cart-price cart-header cart-column">PRICE</span>
-            <span class="cart-quantity cart-header cart-column">QUANTITY</span>
-        </div>
-        <div class="cart-items">
-        {{!-- put if statement for cart items here --}}
-        </div>
-      </div>
-    
-    </div> 
-  </div>
-  <div class="container col-12 col-md-3">
-    <div class="card summary-card">
-        <div class="cart-header card-header">
-            <p>Order Summary</p>
-        </div>
-        <div class="grandtotal-after d-flex">
-          <p>Grand Total after discount and shipping </p>
-          <p class="cart-gt-after ms-auto">0</p>
+            </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="products-table" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Barcode</th>
+                            <th>Item</th>
+							              <th>Price</th>
+                            <th>Quantity</th>
+							              <th>More Info</th>
+                            <th>Restock</th>
+                            <th>Disable Item</th>
+                            </tr>
+                            </thead>
+                            <tfoot>
+                            <tr>
+                            <th>Image</th>
+                            <th>Barcode</th>
+                            <th>Item</th>
+							              <th>Price</th>
+                            <th>Quantity</th>
+                            <th>More Info</th>
+                            <th>Restock</th>
+                            <th>Disable Item</th>
+                        </tr>
+                    </tfoot>
+
+                    <tbody>
+                        {{#each products}}
+                        <tr>
+                            <td><img class="card-img-top" style="max-height:300px" src="" alt="Item Image" /></td>
+                            <td>{{this.sku}}</td>
+                            <td>{{this.name}}</td>
+                            <td>${{this.price}}</td>
+                            <td>{{this.quantity}}</td>
+                            <td>
+                                <button style="margin-top: 15px;" class="btn btn-outline btn-info" data-toggle="modal" data-target="#Modal-MoreInfo--{{this.sku}}">More Info</button>
+                            </td>
+                            <td>
+                                <button style="margin-top: 15px;" class="btn btn-outline btn-warning" data-toggle="modal" data-target="#Modal-Restock--{{this.sku}}">Restock Item</button>
+                            </td>
+                            <td>
+                                
+                                <form action="" method="POST" style="margin-top: 15px;">
+                                        <input id="uuid" name="uuid" type="hidden" value="{{this.sku}}">
+                                        <button class="btn btn-outline btn-danger" type="submit">Disable Item</button>
+                                </form>
+                                
+                                
+                            </td>
+                        </tr>
+                        {{/each}}
+
+                    </tbody>
+
+                </table>
+
+            </div>
         </div>
     </div>
-  </div>
-</div>
-
-<style>
-    .cart-header {
-  font-weight: bold;
-  font-size: 1.25em;
-  color: #333;
-  padding-left: 10px;
-}
-
-.cart-column {
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid black;
-  margin-right: 1.5em;
-  padding-bottom: 10px;
-  margin-top: 10px;
-}
-
-.cart-row {
-  display: flex;
-}
-
-.cart-item {
-  width: 45%;
-}
-
-.cart-price {
-  width: 25%;
-  font-size: 1.2em;
-  color: #333;
-}
-
-.cart-quantity {
-  width: 30%;
-}
-
-.cart-item-title {
-  color: #333;
-  margin-left: .5em;
-  font-size: 1.2em;
-}
-
-.cart-item-image {
-  width: 75px;
-  height: auto;
-  border-radius: 10px;
-}
-
-.btn-danger {
-  color: white;
-  background-color: #EB5757;
-  border: none;
-  border-radius: .3em;
-  font-weight: bold;
-
-}
-
-.btn-danger:hover {
-  background-color: #CC4C4C;
-}
-
-.cart-quantityy{
-  height: 34px;
-  width: 50px;
-  border-radius: 5px;
-  color: #333;
-  padding: 0;
-  text-align: center;
-  font-size: 1.2em;
-  margin-right: 25px;
-}
-
-.cart-row:last-child {
-  border-bottom: 1px solid black;
-}
-
-.cart-row:last-child .cart-column {
-  border: none;
-}
-
-.card {
-  padding: 10px;
-  margin-bottom: 20px;
-}
-
-.cart-card {
-  margin-top:60px;
-}
-
-.summary-card {
-margin-top:60px;
-}
-
-.total, .shipping, .discount{
-  padding: 10px;
-  border-bottom: 1px solid black;
-}
-
-.grandtotal, .grandtotal-after {
-  padding: 10px;
-}
-</style>
+    </section>
 
 
+
+<!-- More Info Modal -->
+{{#each products}}
+<div class="modal fade" style="margin-top:100px;" id="Modal-MoreInfo--{{this.sku}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{this.name}}</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <img class="card-img-top" style="max-height:300px" src="" alt="Item Image" />
+                    <hr>
+                    <p>Sku: {{this.sku}}</p>
+                    <p>Name: {{this.name}}</p>
+                    <p>Description: {{this.description}}</p>
+                    <p>Price: ${{this.price}}</p>
+                    <p>Quantity: {{this.quantity}}</p>
+
+                  </div>
+                   <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+<!--Restock Modal-->
+<div class="modal fade" style="margin-top:100px;" id="Modal-Restock--{{this.sku}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Restock {{this.name}}</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <form action="" method="POST">
+                <div class="modal-body">
+                    
+
+                  </div>
+
+                   <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <input id="uuid" name="uuid" type="hidden" value="{{this.sku}}">
+                    <button class="btn btn-success" type="submit">Restock</button>
+
+                    </div>
+                </div>
+                </form>
+
+            </div>
+        </div>
+{{/each}}
 <script>
-    $(document).ready (function() {
-        var cartItemContainer = document.getElementsByClassName('cart-items')[0]
-        var cartRows = cartItemContainer.getElementsByClassName('cart-row')
-        var tl = $('.total-p').val()
-        console.log(tl)
-        var subtotal = 0
-        for (var i = 0; i < cartRows.length; i++) {
-            var cartRow = cartRows[i]
-            var priceElement = cartRow.getElementsByClassName('cart-price')[0]
-            var quantity = cartRow.getElementsByClassName('cart-quantityy')[0].innerText
-            var price = parseFloat(priceElement.innerText.replace('S$', ''))
-            console.log(price)
-            console.log(quantity)
-            total = price * quantity
-            subtotal = subtotal + (price * quantity)
+  window.addEventListener('DOMContentLoaded', event => {
+                      
+    const customersTable = document.getElementById('products-table');
+    if (customersTable) {
+        new simpleDatatables.DataTable(customersTable);
+    }
 
-        }
-        subtotal = Math.round(subtotal * 100) / 100
-        document.getElementsByClassName('cart-gt-after')[0].innerText = 'S$' + tl
-    })
+    const adminTable = document.getElementById('admin-table');
+    if (adminTable) {
+        new simpleDatatables.DataTable(adminTable);
+    }
 
-    
+
+  });
 </script>
+
+{{!-- <!--Tables Page level plugins -->
+    <script src="/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+<!-- Tables Page level custom scripts -->
+    <script src="/js/demo/datatables-demo.js"></script> --}}

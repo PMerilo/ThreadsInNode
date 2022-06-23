@@ -13,7 +13,16 @@
     </button>
     {{#equals path "/seller"}}  
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="/seller/manageProducts">Manage Products</a>
+        </li>
 
+        <li class="nav-item">
+          <a class="nav-link" href="/seller/addProduct">Add Product</a>
+        </li>
+
+      </ul>
     </div>
     {{else}}
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -91,11 +100,14 @@
         </li>
         {{/equals}}
         {{/if}}
+        {{#equals path "/seller"}}  
+        {{else}}
         <li class="nav-item me-3 me-lg-0 cart">
           <a class="nav-link bx bxs-cart" href="/shoppingCart">
 
           </a>
         </li>
+        {{/equals}}
 
         <li class="nav-item dropdown">
           <a class="nav-link bx bxs-user" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" >
@@ -104,14 +116,14 @@
           {{#equals path "/seller"}}  
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" style="right: 100px;">
             {{!-- if user is not authenticated --}}
-              <a class="dropdown-item" href="/Profile">My Profile</a>
+              <a class="dropdown-item" href="">My Profile</a>
             </li>
             <li>
-              <a class="dropdown-item" href="/myOrders">My Products</a>
+              <a class="dropdown-item" href="/seller/manageProducts">My Products</a>
             </li>
           
             <li>
-              <a class="dropdown-item" href="/ticketHistory">Past Tickets</a>
+              <a class="dropdown-item" href="/seller/addProduct">Add Products</a>
             </li>
             
             
