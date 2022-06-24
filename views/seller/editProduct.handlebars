@@ -22,17 +22,17 @@
      
       <div class="form-group col py-3" id="">
         <label for="price">Price</label>
-        <input type="number" name="price" id="price" class="form-control" required>
+        <input type="number" name="price" id="price" class="form-control" value="{{product.price}}" required>
         
       </div>
       <div class="form-group col py-3" id="">
         <label for="quantity">Quantity</label>
-        <input type="number" name="quantity" id="quantity" class="form-control" required>
+        <input type="number" name="quantity" id="quantity" class="form-control" value="{{product.quantity}}" required>
         
       </div>
       <div class="form-group col py-3">
         <label for="description">Description</label>
-        <textarea name="description" id="description" cols="30" rows="10" class="form-control" required></textarea>
+        <textarea name="description" id="description" cols="30" rows="10" class="form-control" required>{{product.description}}</textarea>
         
         
       </div>
