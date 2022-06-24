@@ -28,16 +28,23 @@ router.get('/', (req, res) => {
     res.render('seller/sellerHomePage');
 });
 
+router.get('/sellerProfile', (req, res) => {
+    res.render('seller/sellerProfile');
+});
+
 router.get('/manageProducts', async (req, res) => {
-    products = (await Product.findAll()).map((x)=> x.dataValues)
+    
+    products = await Product.findAll({where:{ownerID:req.user.id}})
     res.render('seller/viewProducts',{products});
 });
 
 
 
 router.get('/addProduct',ensureAuthenticated, (req,res) => {
-    res.render("addProduct.handlebars")
+    res.render("seller/addProduct")
 })
+
+
 
 router.post('/addProduct',ensureAuthenticated, async function (req,res) {
     let { sku,name,description,price,quantity,category } = req.body;
@@ -48,17 +55,51 @@ router.post('/addProduct',ensureAuthenticated, async function (req,res) {
             description: req.body.description,
             price: req.body.price,
             quantity: req.body.quantity,
-            category: req.body.category
+            category: req.body.category,
+            Owner:req.user.name,
+            OwnerID:req.user.id
             
   
           });
-          flashMessage(res,"success",'Product Added Successfully');
-          res.redirect("/addProduct")
+          flashMessage(res,"success",name+'Product Added Successfully');
+          res.redirect("/seller/addProduct")
     }catch(e){
          console.log(e)
-         res.redirect("/addProduct")
+         res.redirect("/seller/addProduct")
     }
 })
 
+
+
+router.get('/editProduct/:sku',ensureAuthenticated, async (req,res) => {
+    
+    product = await Product.findOne({where:{sku:req.params.sku}})
+    res.render("seller/editProduct",{product})
+})
+
+
+router.post('/editProduct/:sku',ensureAuthenticated, async (req,res) => {
+    let{name,category,price,quantity,description} = req.body;
+    
+    Product.update({
+        name:name,
+        description:description,
+        price:price,
+        quantity:quantity,
+        category:category
+    },{where: {sku:req.params.sku}})
+    
+    flashMessage(res, 'success', name+ " Edited Successfully!");
+    res.redirect("/seller/manageProducts")
+    
+})
+
+router.post('/deleteProduct',ensureAuthenticated, (req,res) => {
+    let {sku, name} = req.body;
+    Product.destroy({where:{sku:sku}})
+    flashMessage(res, 'success', name+ " Deleted successfully");
+    // CartProduct.destroy({where:{sku:sku}})
+    res.redirect("/seller/manageProducts")
+})
 
 module.exports = router;
