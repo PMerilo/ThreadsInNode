@@ -167,5 +167,10 @@ router.get('/UserManagement',ensureAdminAuthenticated, async (req,res) => {
 
     res.render("admin/userManagement",{Users})
 })
+
+
+router.get("/Dashboard",ensureAdminAuthenticated, async (req,res)=>{
+    res.render("admin/AdminDashboard")
+})
 module.exports = router;
 
