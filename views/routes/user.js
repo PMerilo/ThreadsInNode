@@ -82,6 +82,37 @@ router.post('/login', (req, res, next) => {
   })(req, res, next);
 
 })
+router.post('/profile', ensureAuthenticated, (req, res) => {
+  User.destroy({ where: { id: req.user.id } })
+  req.logout();
+  flashMessage(res, 'success', 'Account successfully deleted. Bye bye...');
+  return res.redirect("/");
+
+})
+router.post('/changePassword', ensureAuthenticated, async (req, res) => {
+  userr1 = await User.findOne({ where: { id: req.user.id } })
+  const validPassword = await bcrypt.compare(req.body.oldpassword, userr1.password);
+  if (!validPassword) {
+    flashMessage(res, 'error', 'Incorrect password');
+    return res.redirect('/changePassword')
+  }
+  let { oldpassword, newpassword, newpassword2 } = req.body;
+  if (newpassword.length < 6) {
+    flashMessage(res, 'error', 'Password must be at least 6 characters');
+    return res.redirect('/changePassword')
+  }
+  if (newpassword2 != newpassword) {
+    flashMessage(res, 'error', 'New passwords do not match');
+    return res.redirect('/changePassword')
+  }
+  if (oldpassword == newpassword) {
+    flashMessage(res, 'error', 'New and old passwords are the same');
+    return res.redirect('/changePassword')
+  }
+  User.update({ password: newpassword }, { where: { id: req.user.id } })
+  flashMessage(res, 'success', 'Password updated successfully');
+  return res.redirect('/profile')
+})
 
 router.post('/editProfile', ensureAuthenticated, async (req, res) => {
   x = 0;
@@ -93,11 +124,11 @@ router.post('/editProfile', ensureAuthenticated, async (req, res) => {
   if ((await User.findOne({ where: { name: req.body.name } })) && userr.name != req.body.name) {
     y = 1
   }
-  if (x == 1 && y != 1){
+  if (x == 1 && y != 1) {
     flashMessage(res, 'error', 'This email has already been registered');
     return res.redirect("/editProfile");
   }
-  else if (x != 1 && y == 1){
+  else if (x != 1 && y == 1) {
     flashMessage(res, 'error', 'This name has already been registered');
     return res.redirect("/editProfile");
   }
