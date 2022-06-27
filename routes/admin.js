@@ -47,9 +47,12 @@ router.post('/admin/flash', (req, res) => {
 	res.redirect('/');
 });
 
+router.get('/request', (req,res) => {  
+    res.render("admin/adminProfile")
+})
+
 router.get('/TicketMangement',ensureAdminAuthenticated,  async (req,res) => {  
     tickets = (await Ticket.findAll()).map((x)=> x.dataValues)
-
     res.render("admin/TicketMangement",{tickets})
 })
 

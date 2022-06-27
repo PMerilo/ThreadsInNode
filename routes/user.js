@@ -203,6 +203,10 @@ router.post('/sellerRegister', async function (req, res) {
     });
 
 
+router.get('/requests', (req, res) => {
+  res.render('services/requests')
+})
+
 module.exports = router;
 
 
