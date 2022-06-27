@@ -1,0 +1,187 @@
+{{!-- <style>
+  *{
+    margin: 0;
+    padding: 0;
+}
+.rate {
+    float: left;
+    height: 46px;
+    padding: 0 10px;
+}
+.rate:not(:checked) > input {
+    position:absolute;
+    top:-9999px;
+}
+.rate:not(:checked) > label {
+    float:right;
+    width:1em;
+    overflow:hidden;
+    white-space:nowrap;
+    cursor:pointer;
+    font-size:30px;
+    color:#ccc;
+}
+.rate:not(:checked) > label:before {
+    content: '★ ';
+}
+.rate > input:checked ~ label {
+    color: #ffc700;
+}
+.rate:not(:checked) > label:hover,
+.rate:not(:checked) > label:hover ~ label {
+    color: #deb217;
+}
+.rate > input:checked + label:hover,
+.rate > input:checked + label:hover ~ label,
+.rate > input:checked ~ label:hover,
+.rate > input:checked ~ label:hover ~ label,
+.rate > label:hover ~ input:checked ~ label {
+    color: #c59b08;
+}
+
+</style>
+<div class="card mx-auto row bg-gradient-info text-black shadow-lg" style=" max-width: 800px; text-align: center; margin-bottom:20px;">
+    <h2 style="text-align: center; padding: 20px;">Messages</h2>
+</div>
+<section class="section-content padding-y ">
+    <div class="card mx-auto row" style="max-width: 800px; background-color:#F5F5F5;">
+    <div class="card-body">
+    <h4 class="card-title mb-4">Password Reset</h4>
+    <p style="width: 400px; word-wrap: break-word;"></p>
+    <p>Hi You Never Fixed Messages</p>
+    <p>Owner: Mr Bobby</p>
+    <p class=""><b>Created On: 17/02/22</b></p>
+
+
+
+    <form action="/delete_messages/3" class="d-inline-block" method="POST">
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>&nbsp;
+    </div>
+
+    </div>
+     --}}
+
+<link rel="stylesheet" href="/styles/mail.css">
+<div class="container">
+<section class="content inbox">
+    <div class="card">
+                <div class="card-body bg-primary text-white mailbox-widget pb-0">
+                    <h2 class="text-white pb-3">Your Inbox</h2>
+                    <ul class="nav nav-tabs custom-tab border-bottom-0 mt-4" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link" id="inbox-tab" href="/messages">
+                                <span class="d-block d-md-none"><i class="ti-email"></i></span>
+                                <span class="d-none d-md-block"> INBOX</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link active" id="delete-tab" href="deletemessages">
+                                <span class="d-block d-md-none"><i class="ti-trash"></i></span>
+                                <span class="d-none d-md-block">DELETED</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade active show" id="inbox" aria-labelledby="inbox-tab" role="tabpanel">
+                        <div>
+                            <div class="row p-4 no-gutters align-items-center">
+                                <div class="col-sm-12 col-md-6">
+                                    <h3 class="font-light mb-0"><i class="ti-email mr-2"></i>{{user.MessagesCount}} emails</h3>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                    <form action="/deletemessages" method="POST">
+                                    <ul class="list-inline dl mb-0 float-left float-md-right">
+                                        
+                                        <li class="list-inline-item text-danger">
+                                            <a href="#">
+                                                <button class="btn btn-circle btn-danger text-white" href="javascript:void(0)">
+                                                    <i class="bx bx-trash"></i>
+                                                </button>
+                                                <span class="ml-2 font-normal text-dark">Delete</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+    <div class="container-fluid">
+        <div class="row clearfix">
+            <div class="col-lg-12">
+                <div class="card action_bar">
+                    <div class="body">
+                        <div class="row clearfix">
+                            
+                            <div class="col-lg-5 col-md-4 col-6">
+                                <div class="input-group search">
+                                    <input type="text" class="form-control" placeholder="Search...">
+                                    <span class="input-group-addon">
+                                        <i class="zmdi zmdi-search"></i>
+                                    </span>
+                                </div>
+                            </div>                                                     
+                        </div>
+                    </div>
+                </div>
+            </div>           
+        </div>        
+        <div class="row clearfix">
+            <div class="col-md-12 col-lg-12 col-xl-12">
+                <form action="">
+                <ul class="mail_list list-group list-unstyled">
+                    {{#each message}}
+                    
+                    <li class="list-group-item">
+                        <div class="media">
+                            <div class="pull-left">                                
+                                <div class="controls">
+                                    <div class="checkbox">
+                                        <input type="checkbox" id="messageID" name= "messageID" value="{{this.id}}">
+                                        <label for="basic_checkbox_1"></label>
+                                    </div>
+                                    <a href="javascript:void(0);" class="favourite text-muted hidden-sm-down" data-toggle="active"><i class="zmdi zmdi-star-outline"></i></a>
+                                </div>
+                                <div class="thumb hidden-sm-down m-r-20"> <img src="assets/images/xs/avatar1.jpg" class="rounded-circle" alt=""> </div>
+                            </div>
+                            <div class="media-body">
+                                <div class="media-heading">
+                                    <a href="" class="m-r-10">{{this.title}}</a>
+                                    <span class="badges bg-blue">{{this.sender}}</span>
+                                    <small class="float-right text-muted"><time class="hidden-sm-down" datetime="2017">{{this.dateAdded}}</time><i class="zmdi zmdi-attachment-alt"></i> </small>
+                                </div>
+                                <p class="msg">{{this.description}}</p>
+                            </div>
+                        </div>
+                        
+                    </li>
+                    </form>
+                    {{/each}}
+                </ul>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+ </div>
+    
+    
+    
+
+
+
+
+
+ <script>
+  window.addEventListener('DOMContentLoaded', event => {
+                      
+    const customersTable = document.getElementById('message-table');
+    if (customersTable) {
+        new simpleDatatables.DataTable(customersTable);
+    }
+
+
+
+
+  });
+</script>

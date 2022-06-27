@@ -1,0 +1,91 @@
+<div class="card" style="padding:10px">
+  <div>
+
+  <h2>User Management</h2>  
+  </div>
+  
+  <div>
+<div class="card-body">
+  <table class="table table-striped" id="customers-table">
+    <thead>
+      <tr>
+        <th>User ID</th>
+        <th>Role</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Gender</th>
+        <th>Phone Number</th>
+        <th>Update User</th>
+        <th>Delete User</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each Users}}
+      <tr>
+      
+
+        <td>{{this.id}}</td>
+        <td>{{this.role}}</td>
+        <td>{{this.name}}</td>
+        <td>{{this.email}}</td>
+        <td>{{this.gender}}</td>
+        <td>{{this.phoneNumber}}</td>
+        <td><a href="" class="btn btn-warning">Update User</a></td>
+        <td>
+          <form action="" method="POST">
+            
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal_">
+              Delete user
+            </button>
+        
+            <!-- The Modal -->
+            <div class="modal" id="myModal_">
+              <div class="modal-dialog">
+                <div class="modal-content">
+        
+                  <!-- Modal Header -->
+                  <div class="modal-header">
+                    <h4 class="modal-title">Delete Confirmation</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+        
+                  <!-- Modal body -->
+                  <div class="modal-body">
+                    Are you sure you want to delete ?
+                  </div>
+
+                  <!-- Modal footer -->
+                  <div class="modal-footer">
+                    <input type="submit" value="Delete" class="btn btn-danger">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </form>
+        </td>
+
+
+
+      </tr>
+    {{/each}}
+    </tbody>
+  </table>
+
+<script>
+  window.addEventListener('DOMContentLoaded', event => {
+                      
+    const customersTable = document.getElementById('customers-table');
+    if (customersTable) {
+        new simpleDatatables.DataTable(customersTable);
+    }
+
+    const adminTable = document.getElementById('admin-table');
+    if (adminTable) {
+        new simpleDatatables.DataTable(adminTable);
+    }
+
+
+  });
+</script>

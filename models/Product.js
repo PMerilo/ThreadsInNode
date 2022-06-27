@@ -13,7 +13,10 @@ Product.init({
         description: { type: sequelize.STRING(2000) }, 
         price: { type: sequelize.FLOAT }, 
         quantity: {type: sequelize.INTEGER},
-        category:{type:sequelize.STRING}
+        category:{type:sequelize.STRING},
+        Owner:{type:sequelize.STRING},
+        OwnerID:{type: sequelize.INTEGER}
+        
         
 },
     {

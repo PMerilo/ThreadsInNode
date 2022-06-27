@@ -29,7 +29,7 @@ class User extends sequelize.Model {
       },
       gender: {
         type: sequelize.DataTypes.STRING,
-        allowNull: false,
+        allowNull: true
       },
       phoneNumber: {
         type: sequelize.DataTypes.STRING(8),
@@ -42,10 +42,11 @@ class User extends sequelize.Model {
       },
       password: {
         type: sequelize.DataTypes.STRING,
-        allowNull: false,
         set(value) {
-          const hash = bcrypt.hashSync(value, 10) + "";
-          this.setDataValue("password", hash);
+          if(value){
+            const hash = bcrypt.hashSync(value, 10) + "";
+            this.setDataValue("password", hash);
+          }
         },
       },
       updatedAt: {
@@ -57,6 +58,11 @@ class User extends sequelize.Model {
         allowNull: false,
       },
       MessagesCount: {
+        type: sequelize.DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+      },
+      spools: {
         type: sequelize.DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0

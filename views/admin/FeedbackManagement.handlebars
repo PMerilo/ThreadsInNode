@@ -1,0 +1,80 @@
+<div class="card" style="padding:10px">
+  <div>
+
+  <h2>Feedback Management</h2>  
+  </div>
+  
+  <div>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Rating</th>
+          <th>Remarks</th>
+          <th>Favourite Thing</th>
+          <th>Least Favourite Thing</th>
+          <th>Owner</th>
+          <th>Delete</th>
+          
+        </tr>
+      </thead>
+      <tbody>
+            {{#each feedbacks}}
+        <tr>
+          <td>{{this.title }}</td>
+          <td>{{ this.description }}</td>
+          <td>{{ this.rating }}</td>
+          <td>{{ this.remarks }}</td>
+          <td>{{ this.favouriteThing }}</td>
+          <td>{{ this.leastFavouriteThing }}</td>
+          <td>{{ this.owner }}</td>
+           
+          <td>
+             <form action="/admin/FeedbackMangement/deleteFeedback" method="POST">
+               <!--<input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete {#user.get_first_name()#} {#user.get_last_name()#}?');">-->
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal_{{this.id}}">
+        Delete
+      </button>
+  
+      <!-- The Modal-->
+      <div class="modal" id="myModal_{{this.id}}">">
+        <div class="modal-dialog">
+          <div class="modal-content">
+  
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">Delete Confirmation</h4>
+              
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+  
+            <!---- Modal body -->
+  
+             <div class="modal-body">
+              Are you sure you want to delete feedback of id {{this.id}}?
+    
+            </div>
+  
+  
+            <!---- Modal footer -->
+            <div class="modal-footer">
+              <input type="submit" value="Delete" class="btn btn-danger">
+              <input type="hidden" name="feedbackID" id="feedbackID" value="{{this.id}}">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+  
+            </div>
+  
+          </div>
+        </div>
+      </div>
+  
+            </form>
+          </td>
+        </tr>
+      {{/each}}
+  
+      </tbody>
+    </table>
+  </div>
+</div>

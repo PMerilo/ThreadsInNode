@@ -1,0 +1,240 @@
+<div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Your Products</h6>
+        </div>
+
+            </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="products-table" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Barcode</th>
+                            <th>Item</th>
+							              <th>Price</th>
+                            <th>Quantity</th>
+							              <th>More Info</th>
+                            <th>Restock</th>
+                            <th>Edit Product</th>
+                            <th>Delete Item</th>
+                            </tr>
+                            </thead>
+                            <tfoot>
+                            <tr>
+                            <th>Image</th>
+                            <th>Barcode</th>
+                            <th>Item</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>More Info</th>
+                            <th>Restock</th>
+                            <th>Edit Product</th>
+                            <th>Delete Item</th>
+                        </tr>
+                    </tfoot>
+
+                    <tbody>
+                        {{#each products}}
+                        <tr>
+                            <td><img class="card-img-top" style="max-height:300px" src="" alt="Item Image" /></td>
+                            <td>{{this.sku}}</td>
+                            <td>{{this.name}}</td>
+                            <td>${{this.price}}</td>
+                            <td>{{this.quantity}}</td>
+                            <td>
+                                <button style="margin-top: 15px;" class="btn btn-outline btn-info" data-toggle="modal" data-target="#Modal-MoreInfo--{{this.sku}}">More Info</button>
+                            </td>
+                            <td>
+                                <button style="margin-top: 15px;" class="btn btn-outline btn-secondary" data-toggle="modal" data-target="#Modal-Restock--{{this.sku}}">Restock Item</button>
+                            </td>
+                            <td>
+                                <a href="/seller/editProduct/{{this.sku}}"><button style="margin-top: 15px;" class="btn btn-outline btn-warning" onclick="/seller/editProduct">Edit Item</button></a>
+                            </td>
+                            <td>       
+                                <button class="btn btn-outline btn-danger" type="submit" data-toggle="modal" data-target="#Modal-Delete--{{this.sku}}">Delete Item</button>
+                            </td>
+                        </tr>
+                        {{/each}}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+    </div>
+    </section>
+
+
+
+<!-- More Info Modal -->
+{{#each products}}
+<div class="modal fade" style="margin-top:100px;" id="Modal-MoreInfo--{{this.sku}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{this.name}}</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <img class="card-img-top" style="max-height:300px" src="" alt="Item Image" />
+                    <hr>
+                    <p>Sku: {{this.sku}}</p>
+                    <p>Name: {{this.name}}</p>
+                    <p>Description: {{this.description}}</p>
+                    <p>Price: ${{this.price}}</p>
+                    <p>Quantity: {{this.quantity}}</p>
+
+                  </div>
+                   <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+<!--Restock Modal-->
+<div class="modal fade" style="margin-top:100px;" id="Modal-Restock--{{this.sku}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Restock {{this.name}}</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <form action="" method="POST">
+                <div class="modal-body">
+                    
+
+                  </div>
+
+                   <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <input id="uuid" name="uuid" type="hidden" value="{{this.sku}}">
+                    <button class="btn btn-success" type="submit">Restock</button>
+
+                    </div>
+                </div>
+                </form>
+
+            </div>
+        </div>
+<!-- Delete Modal -->
+
+<div class="modal fade" style="margin-top:100px;" id="Modal-Delete--{{this.sku}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Delete {{this.name}} Confirmation</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <form action="/seller/deleteProduct" method="POST">
+                <div class="modal-body">
+                    <img class="card-img-top" style="max-height:300px" src="" alt="Item Image" />
+                    <hr>
+                    <p>Sku: {{this.sku}}</p>
+                    <p>Name: {{this.name}}</p>
+                    <p>Description: {{this.description}}</p>
+                    <p>Price: ${{this.price}}</p>
+                    <p>Quantity: {{this.quantity}}</p>
+                    <hr>
+                    <p>Are You Sure You want to delete {{this.name}}</p>
+                    <p>This Action cannot be undone</p>
+
+                  </div>
+                   <div class="modal-footer">
+                    <input type="hidden" name="sku" id="sku" value="{{this.sku}}">
+                    <input type="hidden" name="name" id="name" value="{{this.name}}">
+                    <button class="btn btn-danger" type="submit">Delete</button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+
+                    </div>
+                </div>
+                </form>
+
+            </div>
+        </div>
+
+{{/each}}
+<script>
+  window.addEventListener('DOMContentLoaded', event => {
+                      
+    const customersTable = document.getElementById('products-table');
+    if (customersTable) {
+        new simpleDatatables.DataTable(customersTable);
+    }
+
+    const adminTable = document.getElementById('admin-table');
+    if (adminTable) {
+        new simpleDatatables.DataTable(adminTable);
+    }
+
+
+  });
+</script>
+
+{{!-- <!--Tables Page level plugins -->
+    <script src="/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+<!-- Tables Page level custom scripts -->
+    <script src="/js/demo/datatables-demo.js"></script> --}}
+
+<style type="text/css">
+  .image-preview {
+    width:300px;
+    min-height: 100px;
+    border: 2px solid #dddddd;
+    margin-top: 15px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #cccccc;
+  }
+
+  .image-preview__image {
+    display: none;
+    width: 100%;
+  }
+</style>
+
+<script>
+  const fileInput = document.getElementById('file-input');
+  const previewContainer = document.getElementById('imagePreview');
+  const previewImage = previewContainer.querySelector('.image-preview__image');
+  const previewDefaultText = previewContainer.querySelector('.image-preview__default-text');
+
+  fileInput.addEventListener('change', function() {
+    const file = this.files[0]
+
+    if (file) {
+      const reader = new FileReader();
+
+      previewDefaultText.style.display = "none";
+      previewImage.style.display = "block";
+
+      reader.addEventListener('load', function() {
+        console.log(this)
+        previewImage.setAttribute('src', this.result);
+      })
+
+      reader.readAsDataURL(file);
+    } else {
+      previewDefaultText.style.display = null;
+      previewImage.style.display = null;
+      previewImage.setAttribute('src', '');
+    }
+  });
+</script>

@@ -1,0 +1,154 @@
+<div class="card" style="padding:10px">
+  <div>
+
+  <h2>Ticket Management</h2>  
+  </div>
+  
+  <div>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Pending Status</th>
+          <th>Urgency</th>
+          <th>Owner</th>
+          <th>Image</th>
+          <th>Reply</th>
+          <th>Delete</th>
+          
+        </tr>
+      </thead>
+      <tbody>
+            {{#each tickets}}
+        <tr>
+          <td>{{this.title }}</td>
+          <td>{{ this.description }}</td>
+          <td>{{ this.pendingStatus }}</td>
+          <td>{{ this.urgency }}</td>
+          <td>{{ this.owner }}</td>
+          <td>
+            <img src="{{this.posterURL}}" alt="Ticket Image" height="100px"> 
+          </td>
+           <td><button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#myModalResponse_{{this.id}}">Reply</button></td>
+          <td>
+      <form action="/admin/TicketMangement/deleteTicket" method="POST">
+               <!--<input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete {#user.get_first_name()#} {#user.get_last_name()#}?');">-->
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal_{{this.id}}">
+        Delete
+      </button>
+  
+      <!-- The Delete Ticket Modal-->
+      <div class="modal" id="myModal_{{this.id}}">">
+        <div class="modal-dialog">
+          <div class="modal-content">
+  
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">Delete Confirmation</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+  
+            <!---- Modal body -->
+  
+             <div class="modal-body">
+              Are you sure you want to delete feedback of id {{this.id}}?
+    
+            </div>
+  
+  
+            <!---- Delete Ticket Modal footer -->
+            <div class="modal-footer">
+              <input type="hidden" name="ticketID" id="ticketID" value="{{this.id}}">
+              <input type="hidden" name="ownerID" id="ownerID" value="{{this.ownerID}}">
+              <input type="hidden" name="owner" id="owner" value="{{this.owner}}">
+              <input type="hidden" name="ticketTitle" id="ticketTitle" value="{{this.title}}">
+              <input type="submit" value="Delete" class="btn btn-danger">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+  
+            </div>
+  
+          </div>
+        </div>
+      </div>
+      
+  
+            </form>
+          </td>
+        </tr>
+      {{!-- Respond Ticket Form --}}
+      <form action="/admin/TicketMangement/reply" method="POST">
+          <!-- The Respond Ticket Modal-->
+      <div class="modal" id="myModalResponse_{{this.id}}">">
+        <div class="modal-dialog">
+          <div class="modal-content">
+  
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">Send Reply to {{this.owner}}</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+  
+            <!---- Modal body -->
+  
+             <div class="modal-body">
+              <div class="form-group">
+           <img src='' class="img-sm rounded-circle border">
+       </div>
+      <div class="form-col">
+          <div class="form-row">
+        <div class= "form-group col-md-6">
+            <label for="title"></label>
+            <input type="text" class="form-control form-control-user" name="title" id="title" placeholder="Enter Title of Issue Here">
+        </div>
+          <div class="form-group col-md-6" >
+            <label for="urgency"></label>
+            <select name="urgency" id="urgency" class="form-control form-control-user">
+                <option value="Resolved">Resolved</option>
+                <option value="Unresolved">Unresolved</option>
+                         
+            </select>
+          </div> <!-- form-group end.// -->
+
+          <div class="col form-group">
+            <label for="description"></label>
+            <textarea name="description" class="form-control form-control-user" id="" cols="30" rows="10" placeholder="Enter Reply Here"></textarea>
+          </div> <!-- form-group end.// -->
+
+      </div> <!-- form-row.// -->
+
+          </div>
+      <div class="form-row">
+          <div class="form-group col-md-6">
+
+          </div> <!-- form-group end.// -->
+          <div class="form-group col-md-6">
+
+          </div> <!-- form-group end.// -->
+      </div> <!-- form-row.// -->
+      
+    
+            </div>
+  
+  
+            <!---- Modal footer -->
+            <div class="modal-footer">
+              <input type="hidden" name="ticketID" id="ticketID" value="{{this.id}}">
+              <input type="hidden" name="ownerID" id="ownerID" value="{{this.ownerID}}">
+              <input type="hidden" name="owner" id="owner" value="{{this.owner}}">
+              
+              <input type="submit" value="Send Reply" class="btn btn-primary">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+  
+            </div>
+  
+          </div>
+        </div>
+      </div>
+        </form>
+      {{/each}}
+  
+      </tbody>
+    </table>
+  </div>
+</div>

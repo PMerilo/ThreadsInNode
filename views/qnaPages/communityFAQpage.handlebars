@@ -1,0 +1,145 @@
+<style>
+    @import url(http://fonts.googleapis.com/css?family=Calibri:400,300,700);
+
+
+
+    .card-no-border .card {
+        border: 0px;
+        border-radius: 4px;
+        -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.05);
+        box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.05)
+    }
+
+    .card-body {
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        padding: 1.25rem
+    }
+
+    .comment-widgets .comment-row:hover {
+        background: rgba(0, 0, 0, 0.02);
+        cursor: pointer;
+    }
+
+    .comment-widgets .comment-row {
+        border-bottom: 1px solid rgba(120, 130, 140, 0.13);
+        padding: 15px;
+    }
+
+    .comment-text:hover {
+        visibility: hidden;
+    }
+
+    .comment-text:hover {
+        visibility: visible;
+    }
+
+    .label {
+        padding: 3px 10px;
+        line-height: 13px;
+        color: #ffffff;
+        font-weight: 400;
+        border-radius: 4px;
+        font-size: 75%;
+    }
+
+    .round img {
+        border-radius: 100%;
+    }
+
+    .label-info {
+        background-color: #1976d2;
+    }
+
+    .label-success {
+        background-color: green;
+    }
+
+    .label-danger {
+        background-color: #ef5350;
+    }
+
+    .action-icons a {
+        padding-left: 7px;
+        vertical-align: middle;
+        color: #99abb4;
+    }
+
+    .action-icons a:hover {
+        color: #1976d2;
+    }
+
+    .mt-100 {
+        margin-top: 100px
+    }
+
+    .mb-100 {
+        margin-bottom: 100px
+    }
+</style>
+
+<div class="container d-flex justify-content-center mt-100 mb-100">
+    <div class="row">
+        <a href="/customerservice">Back to Topics</a>
+        <div class="col-md-12">
+            
+            <div class="card">
+                <div class="card-body">
+                    <h2>Community FAQ</h2>
+                    <h6>Post your queries here</h6>
+                    <hr>
+                    <a href="/CommunityFAQPage/ViewComments">View Your Comments</a>
+                    <br>
+                    <br>
+                    <h4 class="card-title">Recent Comments</h4>
+                    <h6 class="card-subtitle">Latest Comments section by date</h6>
+                    
+                </div>
+                {{#each comments}}
+                
+                <div class="comment-widgets m-b-20">
+                    <div class="d-flex flex-row comment-row">
+                        <div class="p-2"></div>
+                        <div class="comment-text w-100">
+                            <h5>{{this.title}}</h5>
+                            <div class="comment-footer">
+                                <span class="date">{{this.dateAdded}}</span>
+                                <span class="label label-info">{{this.owner}}</span> <span class="action-icons">
+                                    
+                                    
+                                    <a href="#" data-abc="true"><i class="bx bx-heart"></i></a>
+                                    
+                                </span>
+                            </div>
+                            <p class="m-b-5 m-t-10">{{this.description}}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                {{/each}}
+            </div>
+
+        </div>
+        <div class="container mt-5">
+    <div class="d-flex justify-content-center row">
+        <div class="col-md-8">
+            <div class="d-flex flex-column comment-section">
+                <form action="/addComment" method="POST">
+                <div class="bg-light p-2">
+                    <label for="title">Title</label>
+                    <input type="text" class="form-control ml-1 shadow-none" name="title" id="title" required>
+                    <br>
+                    <label for="description">Description</label>
+                    <div class="d-flex flex-row align-items-start">
+                    
+                    <textarea class="form-control ml-1 shadow-none textarea" name="description" id="description" required></textarea>
+                    </div>
+                    <div class="mt-2 text-right"><button class="btn btn-primary btn-sm shadow-none" type="submit">Post comment</button><button class="btn btn-outline-primary btn-sm ml-1 shadow-none" type="button">Cancel</button></div>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+</div>
