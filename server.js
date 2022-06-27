@@ -8,10 +8,12 @@ const session = require('express-session');
 const main = require("./routes/main")
 const user = require("./routes/user")
 const admin = require("./routes/admin")
-const seller= require("./routes/seller")
+const seller = require("./routes/seller")
+const services = require("./routes/services")
 const datapipeline = require("./routes/datapipeline")
 const bodypassword = require('body-parser')
 const GoogleAuth = require("./config/passportGoogleAuth")
+const DBConnection = require('./config/DBConnection');
 
 app.use(bodypassword.json())
 app.use(bodypassword.urlencoded({extended: false}))
@@ -41,8 +43,7 @@ app.use(session({
 }));
 
 //database
-const sequelizeDB = require("./config/DBConfig")
-  
+DBConnection.setUpDB(false)
 
 // Passport Config 
 
@@ -96,9 +97,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Creates static folder for publicly accessible HTML, CSS and Javascript files
 
+app.use("/*", (req, res, next) => {
+	req.app.locals.layout = 'main';
+	next()
+});
+
+//Set layout for all routes
+
 app.use("/", main)
 app.use("/", user)
 app.use("/admin",admin)
+app.use("/services",services)
 app.use("/seller",seller)
 app.use("/datapipeline",datapipeline)
 

@@ -1,0 +1,54 @@
+<div class="container-fluid">
+    <div class="col-md-12 text-center">
+        <p class="h3 mt-4">Vouchers</p>
+    </div>
+
+    {{#each vouchers}}
+    <div class="container-sm my-5" style="width: 80%;">
+        <div class="row align-items-center voucher">
+            <div class="col">
+                {{!-- <a class="rounded float-start"><img
+                        src="{{url_for('static', filename='reward_uploads/' + voucher.get_filename()) }}" alt=""
+                        width="250" height="150"></a> --}}
+            </div>
+            <div class="col-6 mx-3">
+                <p class="fs-5 mb-0 d-none voucher_id" style="font-weight: 600;">{{ this.id }}</p>
+                <p class="fs-5 mb-0 vname" style="font-weight: 600;">{{ this.name }}</p>
+                <p class="text-start mb-1 vdescription">{{ this.description }}</p>
+                </p>
+                <p class="fs-6 my-0 vcode" id="vcode" style="font-weight: 600;">Code: {{ this.voucher_code }}
+                </p>
+                <p class="fs-6 my-0 spools_needed" style="font-weight: 600;">Spools Needed: {{ this.spools_needed }}
+                </p>
+                <p class="fs-6 my-0 vamount" style="font-weight: 600;">Discount Amount: {{ this.discount_amount
+                    }}%</p>
+                <p class="fs-6 my-0 vexpirydate" style="font-weight: 600;">Expiry Date: {{ this.expiry_date }}
+                </p>
+            </div>
+
+            <div class="col align-self-center">
+                <input type="hidden" name="voucher_id" value="{{ this.voucher_code }}" />
+                <button class="btn btn-sm btn-warning copy-btn">Copy Code</button>
+            </div>
+
+        </div>
+
+    </div>
+    {{/each}}
+
+    <div class="border border-primary w-100 py-3 my-3" style="background-color: rgb(239, 241, 206);">
+        <p class="text-center" style="font-size: 17px;">$1 Spent = 1 Spool</p>
+    </div>
+
+    <script>
+        $('.copy-btn').click(function () {
+            var copyText = $(this).parent('div').prev().find('.vcode').text().split(': ')[1]
+            var $temp = $("<input>");
+            $("body").append($temp);
+            $temp.val(copyText).select();
+            $temp.select()
+            document.execCommand("copy");
+            $temp.remove()
+            alert("Code copied!")
+        }) 
+    </script>

@@ -35,7 +35,7 @@ router.get('/sellerProfile', (req, res) => {
 router.get('/manageProducts', async (req, res) => {
     
     products = await Product.findAll({where:{ownerID:req.user.id}})
-    res.render('seller/viewsProducts',{products});
+    res.render('seller/viewProducts',{products});
 });
 
 

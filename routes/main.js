@@ -8,6 +8,7 @@ const User = require("../models/User")
 const Ticket = require("../models/Ticket")
 const Feedback = require("../models/Feedback")
 const Product = require("../models/Product")
+const Reward = require('../models/Reward')
 const Message = require("../models/Messages")
 const CartProduct = require("../models/CartProduct")
 const FAQ = require("../models/FAQ")
@@ -24,9 +25,7 @@ router.use((req, res, next) => {
     console.log(req.baseUrl);
     //Checks url for normal users and admin
     next();
-  });
-
-
+});
 
 router.get('/', async (req,res) =>{
 
@@ -375,6 +374,11 @@ router.post('/ticketHistory/deleteTicket', async (req,res) => {
     flashMessage(res, 'success', "Ticket Deleted Successfully! ID: " + ticketID);
     res.redirect("/ticketHistory")
 })
+
+router.get('/discover', async (req, res) => {
+    vouchers = (await Reward.findAll()).map((x) => x.dataValues)
+    res.render('rewards/discover', { vouchers });
+});
 
 module.exports = router;
 
