@@ -1,0 +1,67 @@
+<link rel="stylesheet" href="css/services.css">
+
+<div>
+    <h2>Book an Appointment</h2>
+</div>
+<hr>
+<div class="row">
+    <label for="basic-url" class="form-label fs-3">Appointment details</label>
+    <div class="mb-3 col-3">
+        <label for="fName" class="form-label">First Name</label>
+        <input type="text" class="form-control" id="fName">
+    </div>
+    <div class="mb-3 col-3">
+        <label for="lName" class="form-label">Last Name</label>
+        <input type="text" class="form-control" id="lName">
+    </div>
+    <div class="mb-3 col-6">
+        <label for="email" class="form-label">Email address</label>
+        <input type="email" class="form-control" id="email" placeholder="name@example.com">
+    </div>
+</div>
+<div class="row">
+    <div class="mb-3 col-3">
+        <label for="service" class="form-label">Service</label>
+        <select class="form-select" aria-label="Default select example" id="service">
+            <option selected>Select Service</option>
+            <option value="1">Tailoring</option>
+            <option value="2">Alteration</option>
+            {{!-- <option value="3">Three</option> --}}
+        </select>
+    </div>
+    {{!-- <div class="mb-3 col-3">
+        <label for="select1" class="form-label">Type</label>
+        <select class="form-select" aria-label="Default select example" id="select1">
+            <option selected>Select Type</option>
+            <option value="1"></option>
+            <option value="2">Two</option>
+            <option value="3">Three</option>
+        </select>
+    </div> --}}
+    <div class="mb-3 col-3">
+        <label for="tailorID" class="form-label">Tailor</label>
+        <select class="form-select" aria-label="Default select example" id="tailorID">
+            <option selected>Select Tailor</option>
+            <option value="1">Ben Dover</option>
+            <option value="2">Mike Hawk</option>
+            <option value="3">Alan Walker</option>
+        </select>
+    </div>
+    <div class="mb-3 col-3">
+        <label for="date" class="form-label">Date</label>
+        <input type="date" class="form-control" id="date" value="">
+    </div>
+    <div class="mb-3 col-3">
+        <label for="time" class="form-label">Time</label>
+        <input type="time" class="form-control" id="time" value="">
+    </div>
+</div>
+<div class="row">
+    <div class="mb-3 col-12">
+        <span class="">Please write a brief description of your request</span>
+        <textarea id="description" class="form-control" aria-label="With textarea"></textarea>
+    </div>
+</div>
+<div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</div>

@@ -99,6 +99,10 @@ router.get('/logout',ensureAuthenticated, (req, res) => {
     res.redirect('/');
 });
 
+router.get('/requests', (req, res) => {
+  res.render('services/requests')
+})
+
 module.exports = router;
 
 

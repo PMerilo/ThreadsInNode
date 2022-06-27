@@ -17,10 +17,10 @@ router.use((req, res, next) => {
     next();
 });
 
-router.all('/*', function (req, res, next) {
-    req.app.locals.layout = 'main'; // set your layout here
-    next(); // pass control to the next handler
-});
+// router.all('/*', function (req, res, next) {
+//     req.app.locals.layout = 'main'; // set your layout here
+//     next(); // pass control to the next handler
+// });
 
 
 router.get('/', (req,res) => {

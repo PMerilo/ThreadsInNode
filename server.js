@@ -5,9 +5,10 @@ const Handlebars = require('handlebars');
 const app = express()
 const path = require('path');
 const session = require('express-session');
-const main = require("./views/routes/main")
-const user = require("./views/routes/user")
-const admin = require("./views/routes/admin")
+const main = require("./routes/main")
+const user = require("./routes/user")
+const admin = require("./routes/admin")
+const service = require("./routes/services")
 const bodypassword = require('body-parser')
 
 app.use(bodypassword.json())
@@ -91,6 +92,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use("/", main)
 app.use("/", user)
 app.use("/admin",admin)
+app.use("/services", service)
 
 
 const port = 5000;

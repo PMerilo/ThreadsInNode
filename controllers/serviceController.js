@@ -1,3 +1,3 @@
-const Booking = require('../models/Booking')
+const Appointment = require('../models/Appointment')
 
 // const

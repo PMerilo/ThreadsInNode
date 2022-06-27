@@ -6,13 +6,6 @@ const { serializeUser } = require('passport');
 const User = require("../models/User")
 
 
-router.use((req, res, next) => {
-    res.locals.path = req.baseUrl;
-    console.log(req.baseUrl);
-    //Checks url for normal users and admin
-    next();
-});
-
 router.all('/*', function (req, res, next) {
     req.app.locals.layout = 'admin'; // set your layout here
     next(); // pass control to the next handler
@@ -43,6 +36,10 @@ router.post('/admin/flash', (req, res) => {
 
 	res.redirect('/');
 });
+
+router.get('/request', (req,res) => {  
+    res.render("admin/adminProfile")
+})
 
 
 module.exports = router;
