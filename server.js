@@ -5,11 +5,13 @@ const Handlebars = require('handlebars');
 const app = express()
 const path = require('path');
 const session = require('express-session');
-const main = require("./views/routes/main")
-const user = require("./views/routes/user")
-const admin = require("./views/routes/admin")
-const seller= require("./views/routes/seller")
+const main = require("./routes/main")
+const user = require("./routes/user")
+const admin = require("./routes/admin")
+const seller= require("./routes/seller")
+const datapipeline = require("./routes/datapipeline")
 const bodypassword = require('body-parser')
+const GoogleAuth = require("./config/passportGoogleAuth")
 
 app.use(bodypassword.json())
 app.use(bodypassword.urlencoded({extended: false}))
@@ -48,6 +50,10 @@ const passport = require('passport');
 const passportConfig = require('./config/passport');
 passportConfig(passport)
 app.use(passport.session())
+
+
+// Google Authentication
+GoogleAuth()
 
 // Initilize Passport middleware 
 
@@ -94,6 +100,12 @@ app.use("/", main)
 app.use("/", user)
 app.use("/admin",admin)
 app.use("/seller",seller)
+app.use("/datapipeline",datapipeline)
+
+
+
+
+
 
 
 const port = 5000;

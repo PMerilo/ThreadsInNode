@@ -42,7 +42,7 @@ User.init(
     },
     gender: {
       type: sequelize.DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     phoneNumber: {
       type: sequelize.DataTypes.STRING(8),
@@ -55,10 +55,12 @@ User.init(
     },
     password: {
       type: sequelize.DataTypes.STRING,
-      allowNull: false,
       set(value) {
-        const hash = bcrypt.hashSync(value, 10) + "";
-        this.setDataValue("password", hash);
+        if(value){
+          const hash = bcrypt.hashSync(value, 10) + "";
+          this.setDataValue("password", hash);
+        }
+        
       },
     },
     updatedAt: {
@@ -303,4 +305,40 @@ Message.sync({ alter: true })
     console.log("Created Message table");
   })
 );
+
+
+
+
+//Chart Section
+class JoinedUsersLog extends sequelize.Model{
+    
+}
+JoinedUsersLog.init({
+  id:{type: sequelize.INTEGER, autoIncrement: true, primaryKey: true},
+  date: { type: sequelize.DATE,allowNull: false }, 
+  description: { type: sequelize.STRING,allowNull: false }, 
+  role: { type: sequelize.STRING,allowNull: false }, 
+  noOfUsersJoined: { type: sequelize.INTEGER,allowNull: false }, 
+    
+},
+    {
+        freezeTableName: true,
+        timestamps: true,
+        sequelize: sequelizeDB,
+        modelName: "JoinedUsersLog",
+    }
+)
+
+JoinedUsersLog.sync({ alter: true })
+.then((v) => {
+  console.log(v);
+  console.log("Successfully altered and sync");
+})
+.catch((e) =>
+  User.sync({ force: true }).then(() => {
+    console.log(e);
+    console.log("Created NoOfUsersJoined table");
+  })
+);
+
 module.exports = sequelizeDB;
