@@ -1,0 +1,80 @@
+<div class="card">
+  <div class="container-fluid">
+    <div class="col-md-12 text-center">
+      <p class="h3 mt-4">Rewards Management</p>
+    </div>
+
+    {{!-- <div>
+      {% if count == 0 %}
+      <p>There are no vouchers.</p>
+      {% elif count == 1 %}
+      <p>There is 1 voucher.</p>
+      {% else %}
+      <p>There are {{ count }} vouchers.</p>
+      {% endif %}
+    </div> --}}
+
+    {{#each vouchers}}
+    <div class="container-sm my-5 vouchers" style="width: 80%;">
+      <div class="row align-items-center">
+        <div class="col">
+          {{!-- <a class="rounded float-start pic"><img src="{{url_for('static', filename='reward_uploads/' + voucher.get_filename()) }}" width="250" height="150"></a> --}}
+        </div>
+        <div class="col-6 mx-3">
+          <p class="fs-5 mb-0" style="font-weight: 600;">{{ this.name }}</p>
+          <p class="text-start mb-1">{{ this.description }} </p>
+          <p class="fs-6 my-0" style="font-weight: 600;">Code: {{ this.voucher_code }}</p>
+          <p class="fs-6 my-0" style="font-weight: 600;">Spools Needed: {{ this.spools_needed }}</p>
+          <p class="fs-6 my-0" style="font-weight: 600;">Discount Amount: {{ this.discount_amount }}</p>
+          <p class="fs-6 my-0" style="font-weight: 600;">Expiry Date: {{ this.expiry_date }}</p>
+          <p class="fs-6 my-0" style="font-weight: 600;">QTY: {{ this.quantity }}</p>
+        </div>
+        <div class="col align-self-center">
+
+          <a href="/admin/editVoucher/{{this.id}}" class="btn btn-warning my-2" >Edit</a>
+
+          <form action="/admin/deleteVoucher" method="POST">
+              <!-- Button to Open the Modal -->
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal_{{this.id}}">
+              Delete
+            </button>
+
+            <!-- The Modal -->
+            <div class="modal" id="myModal_{{this.id}}">
+              <div class="modal-dialog">
+                <div class="modal-content">
+
+                  <!-- Modal Header -->
+                  <div class="modal-header">
+                    <h4 class="modal-title">Delete Confirmation</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+
+                  <!-- Modal body -->
+                  <div class="modal-body">
+                    Are you sure you want to delete {{this.name}}?
+                  </div>
+
+                  <!-- Modal footer -->
+                  <div class="modal-footer">
+                    <input type="submit" value="Delete" class="btn btn-danger">
+                    <input type="hidden" name="id" id="id" value="{{this.id}}">
+                    <input type="hidden" name="name" id="name" value="{{this.name}}">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </form>
+
+              
+        </div>
+      </div>
+    </div>
+    {{/each}}
+  </div>
+  <div class="" style="width: 95%; padding: 15px;">
+    <a href="/admin/addVouchers" class="btn btn-warning" >Add Voucher</a>   
+  </div>
+</div>

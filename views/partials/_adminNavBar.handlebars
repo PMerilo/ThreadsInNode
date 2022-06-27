@@ -39,13 +39,13 @@
                     </a>
                 </li>
                 <li class="nav-link position-relative">
-                    <a class="nav-link link-light rounded" href="">
+                    <a href="/admin/manageVouchers">
                         <i class="bx bxs-discount icon"></i>
                         <span class="text nav-text">Rewards</span>
                     </a>
                 </li>
-                
-                
+
+
                 <li class="nav-link position-relative">
                     <a class="nav-link link-light rounded" href="/admin/ReportsManagement">
                         <i class="bx bx-bar-chart-alt-2 icon"></i>
@@ -70,7 +70,7 @@
                         <span class="text nav-text">Feedbacks</span>
                     </a>
                 </li>
-                
+
 
             </ul>
         </div>
@@ -105,6 +105,15 @@
         modeSwitch = body.querySelector(".toggle-switch"),
         modeText = body.querySelector(".mode-text");
 
+    let mode = localStorage.getItem("mode");
+
+    if (mode == null) {
+        localStorage.setItem("mode", "dark")
+    }
+
+    if (mode == "dark") {
+        body.classList.add("dark");
+    }
 
     toggle.addEventListener("click", () => {
         sidebar.classList.toggle("close");
@@ -115,8 +124,10 @@
         body.classList.toggle("dark");
 
         if (body.classList.contains("dark")) {
+            localStorage.setItem("mode", "dark")
             modeText.innerText = "Light mode";
         } else {
+            localStorage.setItem("mode", "light")
             modeText.innerText = "Dark mode";
 
         }
