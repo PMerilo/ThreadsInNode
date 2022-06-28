@@ -79,14 +79,17 @@ app.use(function (req, res, next) {
 app.engine(
 	"handlebars",
 	engine({
-	  handlebars: allowInsecurePrototypeAccess(Handlebars),
-	  defaultLayout: "main",
-	  helpers: {
-		equals(arg1, arg2, options) {
-		  return arg1 == arg2 ? options.fn(this) : options.inverse(this);
+		handlebars: allowInsecurePrototypeAccess(Handlebars),
+		defaultLayout: "main",
+		helpers: {
+			equals(arg1, arg2, options) {
+				return arg1 == arg2 ? options.fn(this) : options.inverse(this);
+			},
+
+			setVar(name, value, options) {
+				options.data.root[name] = value;
+			}
 		},
-  
-	  },
 	})
   );
 
