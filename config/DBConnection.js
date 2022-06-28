@@ -3,14 +3,14 @@ const Appointment = require('../models/Appointment')
 const CartProduct = require('../models/CartProduct')
 const FAQ = require('../models/FAQ')
 const Feedback = require('../models/FAQ')
-const Messages = require('../models/Messages')
+const Message = require('../models/Messages')
 const Product = require('../models/Product')
 const Request = require('../models/Request')
 const Reward = require('../models/Reward')
 const Ticket = require('../models/Ticket')
 const User = require('../models/User')
 
-const JoinedUsersLogs = require('../models/Logs/JoinedUsersLogs')
+const JoinedUsersLog = require('../models/Logs/JoinedUsersLogs')
 
 // If drop is true, all existing tables are dropped and recreated
 const setUpDB = (drop) => {
@@ -30,115 +30,117 @@ const setUpDB = (drop) => {
     })
     .catch(err => console.log(err));
 };
-//     mySQLDB
-//     .authenticate()
-//     .then((result) => console.log(result))
-//     .catch((err) => console.log(err));
 
-//     User.sync({ alter: true })
-//     .then((v) => {
-//         console.log(v);
-//         console.log("Successfully altered and sync");
-//     })
-//     .catch((e) =>
-//         User.sync({ force: true }).then(() => {
-//         console.log(e);
-//         console.log("Created User table");
-//         })
-//     );
-//     Ticket.sync({ alter: true })
-//     .then((v) => {
-//         console.log(v);
-//         console.log("Successfully altered and sync");
-//     })
-//     .catch((e) =>
-//         User.sync({ force: true }).then(() => {
-//         console.log(e);
-//         console.log("Created Ticket table");
-//         })
-//     );
-//     Feedback.sync({ alter: true })
-//     .then((v) => {
-//         console.log(v);
-//         console.log("Successfully altered and sync");
-//     })
-//     .catch((e) =>
-//         User.sync({ force: true }).then(() => {
-//         console.log(e);
-//         console.log("Created Feedback table");
-//         })
-//     );
-//     FAQ.sync({ alter: true })
-//     .then((v) => {
-//         console.log(v);
-//         console.log("Successfully altered and sync");
-//     })
-//     .catch((e) =>
-//         User.sync({ force: true }).then(() => {
-//         console.log(e);
-//         console.log("Created FAQ table");
-//         })
-//     );
-//     Product.sync({ alter: true })
-//     .then((v) => {
-//         console.log(v);
-//         console.log("Successfully altered and sync");
-//     })
-//     .catch((e) =>
-//         User.sync({ force: true }).then(() => {
-//         console.log(e);
-//         console.log("Created Product table");
-//         })
-//     );
 
-//     CartProduct.sync({ alter: true })
-//     .then((v) => {
-//         console.log(v);
-//         console.log("Successfully altered and sync");
-//     })
-//     .catch((e) =>
-//         User.sync({ force: true }).then(() => {
-//         console.log(e);
-//         console.log("Created Product Cart table");
-//         })
-//     );
+mySQLDB
+.authenticate()
+.then((result) => console.log(result))
+.catch((err) => console.log(err));
 
-//     Message.sync({ alter: true })
-//     .then((v) => {
-//         console.log(v);
-//         console.log("Successfully altered and sync");
-//     })
-//     .catch((e) =>
-//         User.sync({ force: true }).then(() => {
-//         console.log(e);
-//         console.log("Created Message table");
-//         })
-//     );
+User.sync({ alter: true })
+.then((v) => {
+    console.log(v);
+    console.log("Successfully altered and sync");
+})
+.catch((e) =>
+    User.sync({ force: true }).then(() => {
+    console.log(e);
+    console.log("Created User table");
+    })
+);
+Ticket.sync({ alter: true })
+.then((v) => {
+    console.log(v);
+    console.log("Successfully altered and sync");
+})
+.catch((e) =>
+    User.sync({ force: true }).then(() => {
+    console.log(e);
+    console.log("Created Ticket table");
+    })
+);
+Feedback.sync({ alter: true })
+.then((v) => {
+    console.log(v);
+    console.log("Successfully altered and sync");
+})
+.catch((e) =>
+    User.sync({ force: true }).then(() => {
+    console.log(e);
+    console.log("Created Feedback table");
+    })
+);
+FAQ.sync({ alter: true })
+.then((v) => {
+    console.log(v);
+    console.log("Successfully altered and sync");
+})
+.catch((e) =>
+    User.sync({ force: true }).then(() => {
+    console.log(e);
+    console.log("Created FAQ table");
+    })
+);
+Product.sync({ alter: true })
+.then((v) => {
+    console.log(v);
+    console.log("Successfully altered and sync");
+})
+.catch((e) =>
+    User.sync({ force: true }).then(() => {
+    console.log(e);
+    console.log("Created Product table");
+    })
+);
 
-//     Reward.sync({ alter: true })
-//     .then((v) => {
-//         console.log(v);
-//         console.log("Successfully altered and sync");
-//     })
-//     .catch((e) =>
-//         User.sync({ force: true }).then(() => {
-//         console.log(e);
-//         console.log("Created Reward table");
-//         })
-//     );
-//     JoinedUsersLog.sync({ alter: true })
-//     .then((v) => {
-//         console.log(v);
-//         console.log("Successfully altered and sync");
-//     })
-//     .catch((e) =>
-//         User.sync({ force: true }).then(() => {
-//         console.log(e);
-//         console.log("Created NoOfUsersJoined table");
-//         })
-//     );
+CartProduct.sync({ alter: true })
+.then((v) => {
+    console.log(v);
+    console.log("Successfully altered and sync");
+})
+.catch((e) =>
+    User.sync({ force: true }).then(() => {
+    console.log(e);
+    console.log("Created Product Cart table");
+    })
+);
 
-// };
+Message.sync({ alter: true })
+.then((v) => {
+    console.log(v);
+    console.log("Successfully altered and sync");
+})
+.catch((e) =>
+    User.sync({ force: true }).then(() => {
+    console.log(e);
+    console.log("Created Message table");
+    })
+);
+
+Reward.sync({ alter: true })
+.then((v) => {
+    console.log(v);
+    console.log("Successfully altered and sync");
+})
+.catch((e) =>
+    User.sync({ force: true }).then(() => {
+    console.log(e);
+    console.log("Created Reward table");
+    })
+);
+JoinedUsersLog.sync({ alter: true })
+.then((v) => {
+    console.log(v);
+    console.log("Successfully altered and sync");
+})
+.catch((e) =>
+    User.sync({ force: true }).then(() => {
+    console.log(e);
+    console.log("Created NoOfUsersJoined table");
+    })
+);
+
+
 
 
 
