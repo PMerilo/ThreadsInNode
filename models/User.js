@@ -19,13 +19,13 @@ class User extends sequelize.Model {
       name: {
         type: sequelize.DataTypes.STRING,
         allowNull: false,
-        unique: true,
+        unique: 'name',
         
       },
       email: {
         type: sequelize.DataTypes.STRING,
         allowNull: false,
-        unique: true,
+        unique: 'email',
       },
       gender: {
         type: sequelize.DataTypes.STRING,

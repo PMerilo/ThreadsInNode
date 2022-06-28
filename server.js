@@ -38,6 +38,7 @@ var options = {
 app.use(session({
 	key: 'vidjot_session',
 	secret: 'tojdiv',
+	store: new MySQLStore(options),
 	resave: false,
 	saveUninitialized: false,
 }));

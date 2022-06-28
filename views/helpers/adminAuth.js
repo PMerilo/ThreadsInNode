@@ -9,9 +9,10 @@ const ensureAdminAuthenticated = (req, res, next) => {
             res.redirect("/");
         }
       
+    } else {
+        flashMessage(res, 'error', 'You Need to Login to Access this Page!');
+        res.redirect("/login");
     }
-    flashMessage(res, 'error', 'You Need to Login to Access this Page!');
-    res.redirect("/login");
   };
 
 

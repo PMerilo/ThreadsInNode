@@ -9,6 +9,8 @@ const UsersJoinedLog = require("../models/Logs/JoinedUsersLogs")
 const ensureAuthenticated = require("../views/helpers/auth");
 const moment = require('moment')
 
+const userController = require('../controllers/userController')
+
 router.use((req, res, next) => {
   res.locals.path = req.baseUrl;
   console.log(req.baseUrl);
@@ -24,19 +26,14 @@ router.get("/login-google",passport.authenticate("google",{scope:["profile","ema
     
 router.get("/login-google/callback",
   passport.authenticate("google", {
-     // Success redirect URL
-     successRedirect: '/login/checkrole',
      // Failure redirect URL 
      failureRedirect: '/login',
      /* Setting the failureFlash option to true instructs Passport to flash 
      an error message using the message given by the strategy's verify callback.
      When a failure occur passport passes the message object as error */
      failureFlash: true
-  }),
-  (req,res) =>{
-    res.redirect("/login/checkrole")
-  }
-)
+  }), userController.loginRedirect
+);
 
 
 router.get('/login', (req, res) => {
@@ -98,21 +95,15 @@ router.post('/register', async function (req, res) {
       }
     });
 
-    router.post('/login', (req, res, next) => {
-      passport.authenticate('local', {
-          // Success redirect URL
-          successRedirect: '/login/checkrole',
-          // Failure redirect URL 
-          failureRedirect: '/login',
-          /* Setting the failureFlash option to true instructs Passport to flash 
-          an error message using the message given by the strategy's verify callback.
-          When a failure occur passport passes the message object as error */
-          failureFlash: true
-          
-          
-      })(req, res, next);
-      
-  })
+router.post('/login',
+  passport.authenticate('local', {
+      // Failure redirect URL 
+      failureRedirect: '/login',
+      /* Setting the failureFlash option to true instructs Passport to flash 
+      an error message using the message given by the strategy's verify callback.
+      When a failure occur passport passes the message object as error */
+      failureFlash: true    
+  }), userController.loginRedirect);
 
 function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
@@ -129,24 +120,6 @@ router.get('/logout',ensureAuthenticated, (req, res) => {
     req.logout();
     res.redirect('/');
 });
-
-router.get('/login/checkrole',ensureAuthenticated, (req,res) => {
-    var role = req.user.role
-    if(role=="C"){
-      flashMessage(res, 'success', "Success You are logged in as: "+ req.user.name);
-      res.redirect('/profile');
-    } else if(role == "A"){
-      flashMessage(res, 'success', "Success You are logged in as Administrator: "+ req.user.name);
-      res.redirect("/admin")
-    }else if(role=="S"){
-      flashMessage(res, 'success', "Success You are logged in as Seller: "+ req.user.name);
-      res.redirect("/seller")
-    }
-
-    else{
-      res.redirect("/login")
-    }
-})
 
 router.get('/sellerRegister', (req, res) => {
     res.render('seller/sellerRegister');
