@@ -10,6 +10,7 @@ const Message = require("../models/Messages")
 const Reward = require('../models/Reward')
 const ensureAuthenticated = require("../views/helpers/auth");
 const ensureAdminAuthenticated = require("../views/helpers/adminAuth");
+const Request = require('../models/Request');
 
 router.all('/*', ensureAdminAuthenticated, function (req, res, next) {
     req.app.locals.layout = 'admin'; // set your layout here
@@ -41,9 +42,27 @@ router.post('/admin/flash', (req, res) => {
     res.redirect('/');
 });
 
-router.get('/request', (req, res) => {
-    res.render("admin/adminProfile")
-})
+router.get('/requests', (req, res) => {
+    res.render("admin/requests")
+});
+
+router.post('/requests/edit', async (req, res) => {
+    await Request.update({ status: req.body.status }, {
+        where: {
+          id: req.body.id
+        }
+    });
+    return res.json({})
+});
+
+router.delete('/requests/delete', async (req, res) => {
+    await Request.destroy({
+        where: {
+          id: req.body.id
+        }
+    });
+    return res.json({})
+});
 
 router.get('/TicketMangement', ensureAdminAuthenticated, async (req, res) => {
     tickets = (await Ticket.findAll()).map((x) => x.dataValues)

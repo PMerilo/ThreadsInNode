@@ -11,6 +11,7 @@ const admin = require("./routes/admin")
 const seller = require("./routes/seller")
 const services = require("./routes/services")
 const datapipeline = require("./routes/datapipeline")
+const api = require("./routes/api")
 const bodypassword = require('body-parser')
 const GoogleAuth = require("./config/passportGoogleAuth")
 const DBConnection = require('./config/DBConnection');
@@ -114,10 +115,7 @@ app.use("/admin",admin)
 app.use("/services",services)
 app.use("/seller",seller)
 app.use("/datapipeline",datapipeline)
-
-
-
-
+app.use("/api",api)
 
 
 

@@ -13,14 +13,13 @@ Request.init({
     service: {type:sequelize.STRING,allowNull: false},
     tailorID: {type:sequelize.INTEGER,allowNull: false},
     description:{type: sequelize.STRING(1000)},
-    status:{type: sequelize.STRING},
+    status:{type: sequelize.STRING, allowNull: false, defaultValue: "Pending Appointment Booking"},
     
 },
     {
-        freezeTableName: true,
         timestamps: true,
         sequelize: db,
-        modelName: "Request",
+        modelName: "request",
     }
 )    
 module.exports = Request;
