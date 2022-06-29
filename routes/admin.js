@@ -9,14 +9,7 @@ const Feedback = require('../models/Feedback');
 const Message = require("../models/Messages")
 const Reward = require('../models/Reward')
 const ensureAuthenticated = require("../views/helpers/auth");
-const ensureAdminAuthenticated = require("../views/helpers/adminAuth")
-
-router.use((req, res, next) => {
-    res.locals.path = req.baseUrl;
-    console.log(req.baseUrl);
-    //Checks url for normal users and admin
-    next();
-});
+const ensureAdminAuthenticated = require("../views/helpers/adminAuth");
 
 router.all('/*', ensureAdminAuthenticated, function (req, res, next) {
     req.app.locals.layout = 'admin'; // set your layout here

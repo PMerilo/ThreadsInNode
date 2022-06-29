@@ -12,14 +12,6 @@ const moment = require('moment')
 const dfd = require("danfojs-node")
 const tf = dfd.tensorflow
 
-
-router.use((req, res, next) => {
-  res.locals.path = req.baseUrl;
-  console.log(req.baseUrl);
-  //Checks url for normal users and admin
-  next();
-});
-
 router.get('/NoOfUsersJoined', async (req, res) => {
   let dates = ["02/13/2021","02/13/2021","067/13/2021"];
   let noOfUsers = [7,2,87];
