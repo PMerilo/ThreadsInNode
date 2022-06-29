@@ -11,6 +11,7 @@ const admin = require("./routes/admin")
 const seller = require("./routes/seller")
 const services = require("./routes/services")
 const datapipeline = require("./routes/datapipeline")
+const api = require("./routes/api")
 const bodypassword = require('body-parser')
 const GoogleAuth = require("./config/passportGoogleAuth")
 const DBConnection = require('./config/DBConnection');
@@ -38,6 +39,7 @@ var options = {
 app.use(session({
 	key: 'vidjot_session',
 	secret: 'tojdiv',
+	store: new MySQLStore(options),
 	resave: false,
 	saveUninitialized: false,
 }));
@@ -78,14 +80,17 @@ app.use(function (req, res, next) {
 app.engine(
 	"handlebars",
 	engine({
-	  handlebars: allowInsecurePrototypeAccess(Handlebars),
-	  defaultLayout: "main",
-	  helpers: {
-		equals(arg1, arg2, options) {
-		  return arg1 == arg2 ? options.fn(this) : options.inverse(this);
+		handlebars: allowInsecurePrototypeAccess(Handlebars),
+		defaultLayout: "main",
+		helpers: {
+			equals(arg1, arg2, options) {
+				return arg1 == arg2 ? options.fn(this) : options.inverse(this);
+			},
+
+			setVar(name, value, options) {
+				options.data.root[name] = value;
+			}
 		},
-  
-	  },
 	})
   );
 
@@ -110,10 +115,7 @@ app.use("/admin",admin)
 app.use("/services",services)
 app.use("/seller",seller)
 app.use("/datapipeline",datapipeline)
-
-
-
-
+app.use("/api",api)
 
 
 

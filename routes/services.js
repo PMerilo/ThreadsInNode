@@ -5,6 +5,7 @@ const serviceController = require('../controllers/serviceController');
 const User = require('../models/User');
 const Appointment = require('../models/Appointment');
 const Request = require('../models/Request');
+const flashMessage = require('../views/helpers/messenger');
 
 router.use((req, res, next) => {
     res.locals.path = req.baseUrl;
@@ -17,29 +18,31 @@ router.get('/', (req, res) => {
     res.render('services/index')
 });
 
-router.get('/request', (req, res) => {
+router.get('/request', ensureAuthenticated, (req, res) => {
     res.render('services/request')
 });
 
-router.post('/request', (req, res) => {
-    let title = req.body.title
-    let fName = req.body.fName
-    let lName = req.body.lName
-    let email = req.body.email
-    let service = req.body.service
-    let tailorID = req.body.tailorID
-    let description = req.body.description
-    let userID = req.user.id
-    Request.create(
-        {fName, lName, email, service, tailorID, datetime, description, userID, reqestID}
-    )
+router.post('/request', ensureAuthenticated, async (req, res) => {
+    let {fName, lName, email, title, service, tailorID, description} = req.body;
+    console.log(req.body)
+    await Request.create({
+        title: title,
+        fName: fName, 
+        lName: lName, 
+        email: email, 
+        service: service,
+        tailorID: tailorID, 
+        description: description, 
+        userID: req.user.id
+    })
         .then((request) => {
-            // console.log(request.toJSON());
             res.redirect('/user/myRequests');
-            })
-        .catch(err => console.log(err))
-    res.render('services/request')
-    
+        })
+        .catch(err => {
+            console.log(err);
+            flashMessage(res, 'error', 'Failed to Add to Create Request' )
+            res.redirect('/services/request')
+        });
 });
 
 router.get('/booking', (req, res) => {

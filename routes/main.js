@@ -20,13 +20,6 @@ const moment = require("moment");
 fs = require('fs'); 
 const upload = require('../views/helpers/imageUpload');
 
-router.use((req, res, next) => {
-    res.locals.path = req.baseUrl;
-    console.log(req.baseUrl);
-    //Checks url for normal users and admin
-    next();
-});
-
 router.get('/', async (req,res) =>{
 
     products = (await Product.findAll()).map((x)=> x.dataValues)
