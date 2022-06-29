@@ -23,7 +23,9 @@ const setUpDB = (drop) => {
         */
 
        User.hasMany(Request)
+       Request.belongsTo(User)
        Request.hasMany(Appointment)
+       Appointment.belongsTo(Request)
        
         mySQLDB.sync({
             alter: true,

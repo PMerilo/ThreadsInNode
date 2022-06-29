@@ -24,7 +24,7 @@ $(document).ready(function(){
     });
 
     $('.del').click(function() {
-        console.log($(this).attr('data-bs-id'))
+        // console.log($(this).attr('data-bs-id'))
         $.ajax({
             url: '/admin/requests/delete',
             type: 'DELETE',
