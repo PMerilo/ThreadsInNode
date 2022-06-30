@@ -32,11 +32,14 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 var getUsersJoinedData = $.get('/datapipeline/NoOfUsersJoined')
 var ctxUsersJoined = document.getElementById("NoOfUsersJoinedChart").getContext('2d');
 getUsersJoinedData.done(function(data){
-    console.log(data)
-    console.log(data.df[0])
-    console.log(data.df[0])
-    var NoOfUsers = data.df[0].NoOfUsers
-    var dates = data.df[0].Dates
+  var NoOfUsers = []
+  var dates = []
+    data.data.forEach(element => {
+      NoOfUsers.push(element["NoOfUsersJoined_sum"])
+      dates.push(element["Dates"])
+      
+    });
+  
       var myLineChart = new Chart(ctxUsersJoined, {
       type: 'line',
       data: {
@@ -118,7 +121,7 @@ getUsersJoinedData.done(function(data){
           callbacks: {
             label: function(tooltipItem, chart) {
               var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-              return datasetLabel + number_format(tooltipItem.yLabel);
+              return datasetLabel + " "+ number_format(tooltipItem.yLabel);
             }
           }
         }

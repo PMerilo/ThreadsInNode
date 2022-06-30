@@ -14,15 +14,17 @@
             <!-- Area Chart -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Area Chart</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">User Activity</h6>
                 </div>
                 <div class="card-body">
                     <div class="chart-area">
                         <canvas id="NoOfUsersJoinedChart"></canvas>
                     </div>
                     <hr>
-                    Styling for the area chart can be found in the
-                    <code>/js/demo/chart-area-demo.js</code> file.
+                    <div class="text-center">
+                        <h5 class="text-gray-900 m-0">No. of Users Joined</h5>
+                        {{!-- <span class="text-gray-600 small">Last 7 days</span> --}}
+                    </div>
                 </div>
             </div>
 
@@ -48,16 +50,17 @@
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Donut Chart</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">User Roles</h6>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
                     <div class="chart-pie pt-4">
-                        <canvas id="myPieChart"></canvas>
+                        <canvas id="UserRolesPieChart"></canvas>
                     </div>
                     <hr>
-                    Styling for the donut chart can be found in the
-                    <code>/js/demo/chart-pie-demo.js</code> file.
+                    <div class="text-center">
+                        <h5 class="text-gray-900 m-0">User Roles</h5>
+                        <span class="text-gray-600 small">List Of Our Users</span>
                 </div>
             </div>
         </div>
@@ -65,9 +68,10 @@
 
 </div>
 <!-- /.container-fluid -->
-
 <script src="/js/demo/chart-area-demo.js"></script>
 <script src="/js/demo/chart-bar-demo.js"></script>
 <script src="/js/demo/chart-pie-demo.js"></script>
 <script src="/js/sb-admin-2.js"></script>
-<script src="/js/vendor/chart.js/Chart.min.js"></script>
+<script src="/js/chart.js/Chart.min.js"></script>
+
+

@@ -375,6 +375,15 @@ router.post('/ticketHistory/deleteTicket', async (req,res) => {
     res.redirect("/ticketHistory")
 })
 
+router.post('/ticketHistory/editTicket', async (req,res) => { 
+    let{ticketID,title,description,urgency,posterURL} = req.body;
+    
+    
+    Ticket.update({title:title,description:description,urgency:urgency,posterURL:posterURL},{where: {id:ticketID}})
+    flashMessage(res, 'success', "Ticket Edited Successfully! ID: " + ticketID);
+    res.redirect("/ticketHistory")
+})
+
 router.get('/discover', async (req, res) => {
     vouchers = (await Reward.findAll()).map((x) => x.dataValues)
     res.render('rewards/discover', { vouchers });

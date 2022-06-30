@@ -57,11 +57,11 @@
           <div class="row">
             
             <form action="" style="margin-top: 10px;" method="POST">
-              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal_">
+              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal_{{this.id}}">
                 Delete Account
               </button>
 
-              <div class="modal" id="myModal_">
+              <div class="modal" id="myModal_{{this.id}}">
                 <div class="modal-dialog">
                   <div class="modal-content">
 
@@ -71,7 +71,7 @@
                     </div>
 
                     <div class="modal-body">
-                    , are you sure you want to delete your account? You will no longer have an account with us..
+                    {{user.name}}, are you sure you want to delete your account? You will no longer have an account with us..
                     </div>
 
                     <div class="modal-footer">
