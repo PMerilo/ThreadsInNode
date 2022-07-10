@@ -17,11 +17,24 @@ $(document).ready (function() {
 
 function addtocartClicked(element) {
     var item = element.value;
-    $.post("/transactions/cart",
+    console.log(item)
+    $.post("/addtoCart",
     {
         sku: item
     })
 }
+
+// function addtocartClicked(element) {
+//     var item = element.value;
+//     console.log(item)
+
+//     $.ajax({
+//         url: '/addtoCart',
+//         method: 'POST',
+//         contentType: 'application/json',
+//         data: JSON.stringify({sku: item})
+//     })
+// }
 
 function disc(){
     var discountamount = $('.cart-discount').text().replace('%', '')
@@ -68,15 +81,25 @@ function updateCartTotal() {
 }
 
 $('.cart-quantity-input').change(function() {
-    var sku = $(this).parent('div').next().find("form").attr('action').split('/')[3]
+    var sku = $(this).next().val()
     var quantity = $(this).val()
+    console.log(quantity)
+    console.log(sku)
     // var subtotal = $(this).parent('div').parent('div').parent('div').parent('div').parent('div').next().children().next().children().next().children().find('cart-total-price').text()
-    $.getJSON('/transactions/update_cart', {
+    $.post('updateCart', {
         sku: sku,
         quantity : quantity,
       })
     disc()
-}) 
+})
+
+// $('.delete-button').click(function() {
+//     var sku = $(this).val()
+//     console.log(sku)
+//     $.post('deleteitem',{
+//         sku: sku
+//     })
+// })
 
 $('.apply-discount-button').click(function() {
     var discountcode = document.getElementsByClassName('discount-input')[0].value
@@ -104,7 +127,73 @@ $('.checkout').click(function() {
     })
 })
 
+$('.show-item').click(function() {
+    var sku = this.value
+    var ele = $(this).parent("div").next().find(".wishlist")
+    console.log(sku)
+    $.ajax({
+        url: "/wishlist",
+        method: 'POST',
+        contentType: "application/json",
+        data: JSON.stringify({sku : sku, status : "check"}),
+        success: function(res){
+            if (res.response == 'add' && res.status == "check") {
+                ele.addClass("bxs-bookmark-heart")
+                // console.log("added")
+            } else if (res.response == 'remove' && res.status == "check") {
+                ele.removeClass("bxs-bookmark-heart")
+                // console.log("removed")
+            }
+        }
+    })
+})
 
 function wishList(element) {
-    element.classList.toggle("bxs-heart")
+    // element.classList.toggle("bxs-bookmark-heart")
+    element.classList.add("bx-tada")
+    var sku = element.value
+
+    // $.post('wishlist', {
+    //     sku: sku
+    //   })
+    $.ajax({
+        url: "/wishlist",
+        method: 'POST',
+        contentType: "application/json",
+        data: JSON.stringify({sku : sku, status : "add/remove"}),
+        success: function(res){
+            if (res.response == 'add' && res.status == "add/remove") {
+                element.classList.add("bxs-bookmark-heart")
+                new SnackBar({
+                    message:"Item has been added to your wishlist!",
+                    status: "info",
+                    fixed : true
+                })
+            } else if (res.response == 'remove' && res.status == "add/remove"){
+                element.classList.remove("bxs-bookmark-heart")
+                new SnackBar({
+                    message:"Item has been removed from your wishlist!",
+                    status: "info",
+                    fixed : true
+                })
+            }
+        }
+    })
+    
+    if (element.classList.contains("bx-tada")) {
+        setTimeout(() => element.classList.remove('bx-tada'), 1100);
+    }
+    // if (element.classList.contains("bxs-bookmark-heart")) {
+    //     new SnackBar({
+    //         message:"Item has been added to your wishlist!",
+    //         status: "info",
+    //         fixed : true
+    //     })
+    // } else {
+    //     new SnackBar({
+    //         message:"Item has been removed from your wishlist!",
+    //         status: "info",
+    //         fixed : true
+    //     })
+    // }
 }

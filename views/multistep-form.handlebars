@@ -1,0 +1,126 @@
+<link rel="stylesheet" href="/styles/multistep-form.css">
+<link rel="stylesheet" href="/styles/payment.css">
+<!-- MultiStep Form -->
+<div class="row multi-form">
+    <div class="col-md-6 col-md-offset-3">
+        <form id="msform" class="m-auto">
+            <!-- progressbar -->
+            <ul id="progressbar">
+                <li class="active">Personal Details</li>
+                <li>Shipping Address</li>
+                <li>Pay</li>
+            </ul>
+            <!-- fieldsets -->
+            <fieldset>
+                <h2 class="fs-title">Personal Details</h2>
+                <input type="text" name="fname" placeholder="First Name" />
+                <input type="text" name="email" placeholder="Email" />
+                <input type="text" name="phone" placeholder="Phone" />
+                <input type="button" name="next" class="next action-button" value="Next" />
+            </fieldset>
+            <fieldset>
+                <h2 class="fs-title">Shipping Address</h2>
+                <h3 class="fs-subtitle">Fill in your shipping details</h3>
+                <input type="text" name="twitter" placeholder="Twitter" />
+                <input type="text" name="facebook" placeholder="Facebook" />
+                <input type="text" name="gplus" placeholder="Google Plus" />
+                <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
+                <input type="button" name="next" class="next action-button" value="Next" />
+            </fieldset>
+            <fieldset>
+                <h2 class="fs-title">Pay</h2>
+                <h3 class="fs-subtitle">Fill in your payment information</h3>
+                <div class="payment-container">
+                    <div class="card-container">
+                        <div class="front">
+                            <div class="image">
+                                <img src="/images/chip.png" alt="">
+                                <img src="/images/all3.png" class='card_type'>
+                            </div>
+                            <div class="card-number-box">################</div>
+                            <div class="flexbox">
+                                <div class="box">
+                                    <span>Card Holder</span>
+                                    <div class="card-holder-name">Full Name</div>
+                                </div>
+                                <div class="box">
+                                    <span>Expires</span>
+                                    <div class="expiration">
+                                        <span class="exp-month">MM</span>
+                                        <span class="exp-year">YY</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="back">
+                            <div class="stripe"></div>
+                            <div class="box">
+                                <span>CVV</span>
+                                <div class="cvv-box"></div>
+                                <img src="" class='card_type'>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form">
+                        <div class="inputBox">
+                            <label for="card-number">Card Number</label>
+                            <input type="text" name="card-number" id="card-number"
+                                class="form-control card-number-input" maxlength="16">
+                        </div>
+                        <div class="inputBox">
+                            <label for="card-holder-name">Card Holder Name</label>
+                            <input type="text" name="card-holder-name" id="card-holder-name"
+                                class="form-control card-number-input">
+                        </div>
+                        <div class="flexbox">
+                            <div class="inputBox">
+                                <label for="csrf-token-MM">Expiration MM</label>
+                                <select name="csrf-token-MM" id="csrf-token-MM" class="form-check month-input">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                </select>
+
+                            </div>
+                            <div class="inputBox">
+                                <label for="csrf-token-YY">Expiration YY</label>
+                                <select name="csrf-token-YY" id="csrf-token-YY" class="form-check year-input">
+                                    <option value="2022">2022</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2025">2025</option>
+                                    <option value="2026">2026</option>
+                                    <option value="2027">2027</option>
+                                    <option value="2028">2028</option>
+                                    <option value="2029">2029</option>
+                                    <option value="2030">2030</option>
+                                    <option value="2031">2031</option>
+                                    <option value="2032">2032</option>
+                                    <option value="2033">2033</option>
+                                </select>
+
+                            </div>
+                            <div class="inputBox" type="password">
+                                <label for="csrf-token-CVV">CVV</label>
+                                <input type="password" name="csrf-token-CVV" id="csrf-token-CVV">
+                            </div>
+                        </div>
+                        <input type="submit" value="Pay" class="submit-btn">
+                    </div>
+                </div>
+                <input type="submit" name="submit" class="submit action-button" value="Submit" />
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+<!-- /.MultiStep Form -->

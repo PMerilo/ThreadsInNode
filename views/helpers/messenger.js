@@ -3,7 +3,7 @@ const flashMessage = (res, messageType, message, icon, dismissable) => {
     switch (messageType) {
         case 'success':
             alert = res.flashMessenger.success(message);
-            alert.titleIcon = 'fas fa-check-circle';
+            alert.titleIcon = 'fa-solid fa-circle-check';
             alert.canBeDismissed = true;
             break;
         case 'error':

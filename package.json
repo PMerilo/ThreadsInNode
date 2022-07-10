@@ -33,6 +33,7 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
     "sequelize": "^6.19.0",
-    "sessions": "^0.0.2-7"
+    "sessions": "^0.0.2-7",
+    "toast-me": "^1.4.8"
   }
 }

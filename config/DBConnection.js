@@ -7,6 +7,7 @@ const Messages = require('../models/Messages')
 const Product = require('../models/Product')
 const Request = require('../models/Request')
 const Reward = require('../models/Reward')
+const Wishlist = require('../models/Wishlist')
 const Ticket = require('../models/Ticket')
 const User = require('../models/User')
 

@@ -1,6 +1,6 @@
 {{#each messages}}
 <div class="alert alert-success alert-dismissible">
-	<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+	<button type="button" class="btn-close" aria-label="Close" data-dismiss="alert"></button>
 	<h6><i class="bx bx-check-circle icon"></i> {{this}}</h6>
 </div>
 {{/each}}
@@ -14,7 +14,7 @@
 {{#each flashMessenger.alertsBeforeFlush}}
 <div class="alert alert-{{this.type}} {{#if this.canBeDismissed}}alert-dismissible{{/if}}">
     {{#if this.canBeDismissed}}
-    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    <button type="button" class="btn-close" aria-label="Close" data-dismiss="alert"></button>
     {{/if}}
     <h6>
         {{#if this.titleIcon}}

@@ -1,3 +1,5 @@
+{{setVar "scriptsPath" "_copyCodeScript"}}
+    
 <div class="container-fluid">
     <div class="col-md-12 text-center">
         <p class="h3 mt-4">Vouchers</p>
@@ -39,16 +41,4 @@
     <div class="border border-primary w-100 py-3 my-3" style="background-color: rgb(239, 241, 206);">
         <p class="text-center" style="font-size: 17px;">$1 Spent = 1 Spool</p>
     </div>
-
-    <script>
-        $('.copy-btn').click(function () {
-            var copyText = $(this).parent('div').prev().find('.vcode').text().split(': ')[1]
-            var $temp = $("<input>");
-            $("body").append($temp);
-            $temp.val(copyText).select();
-            $temp.select()
-            document.execCommand("copy");
-            $temp.remove()
-            alert("Code copied!")
-        }) 
-    </script>
+</div>

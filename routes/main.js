@@ -9,6 +9,7 @@ const Ticket = require("../models/Ticket")
 const Feedback = require("../models/Feedback")
 const Product = require("../models/Product")
 const Reward = require('../models/Reward')
+const Wishlist = require('../models/Wishlist')
 const Message = require("../models/Messages")
 const CartProduct = require("../models/CartProduct")
 const FAQ = require("../models/FAQ")
@@ -19,6 +20,7 @@ const moment = require("moment");
 // Required for file upload const 
 fs = require('fs'); 
 const upload = require('../views/helpers/imageUpload');
+const console = require('console');
 
 router.get('/', async (req,res) =>{
 
@@ -28,55 +30,132 @@ router.get('/', async (req,res) =>{
 })
 
 router.post('/addtoCart',ensureAuthenticated, async (req,res) =>{
+    var sku = req.body.sku;
+    console.log(sku)
     purchasedProduct = await Product.findOne({where:{sku:req.body.sku}})
     if(purchasedProduct.quantity>0){
         
-        let { sku,name,description,price,category,qtyPurchased } = req.body;
-        newPurchasedProductQTY = purchasedProduct.quantity - req.body.qtyPurchased
+        let quantity = 1;
+        newPurchasedProductQTY = purchasedProduct.quantity - quantity
         
-        checkProductinCart = await CartProduct.findOne({where:{sku:req.body.sku}})
-        
+        checkProductinCart = await CartProduct.findOne({where:{id:req.user.id+sku}})
         
         try{
             if(checkProductinCart){
-                newCartProductQTY = parseInt(checkProductinCart.qtyPurchased) + parseInt(req.body.qtyPurchased)
-                console.log(newCartProductQTY)
-                CartProduct.update({qtyPurchased: newCartProductQTY},{where:{sku:req.body.sku}} )
+                newCartProductQTY = parseInt(checkProductinCart.qtyPurchased) + parseInt(quantity)
+                newtotalCost = parseInt(newCartProductQTY) *  parseInt(purchasedProduct.price)
+                console.log(newtotalCost)
+                CartProduct.update({qtyPurchased: newCartProductQTY, totalCost: newtotalCost},{where:{id:req.user.id+sku}} )
             }else{
+                
                 await CartProduct.create({
+                    id: req.user.id+sku,
                     sku: req.body.sku,
-                    name: req.body.name,
-                    description: req.body.description,
-                    price: req.body.price,
-                    category: req.body.category,
-                    totalCost: req.body.qtyPurchased * req.body.price,
-                    qtyPurchased: req.body.qtyPurchased,
+                    name: purchasedProduct.name,
+                    description: purchasedProduct.description,
+                    price: purchasedProduct.price,
+                    category: purchasedProduct.category,
+                    totalCost: quantity * purchasedProduct.price,
+                    qtyPurchased: quantity,
                     cartOwner: req.user.name,
                     cartOwnerID: req.user.id
-                    
                 });
             }
-            
-            flashMessage(res,"success", req.body.name + ' Purchased Successfully');
-            res.redirect("/")
+            // flashMessage(res,"success", req.body.name + ' Purchased Successfully');
+            // res.redirect("/")
         }catch(e){
             console.log(e)
-            
             res.redirect("/")
         }
-        Product.update({quantity:newPurchasedProductQTY},{where:{sku:req.body.sku}} )
+        Product.update({quantity:newPurchasedProductQTY},{where:{sku:req.body.sku}})
     }else{
         flashMessage(res,"danger", req.body.name + ' is Out of Stock');
         res.redirect("/")
     }
-    
+})
+
+router.post('/updateCart',ensureAuthenticated, async (req,res) =>{
+    var quantity = req.body.quantity
+    var sku = req.body.sku
+    console.log(quantity)
+    cartProduct = await CartProduct.findOne({where:{id:req.user.id+sku}})
+    product = await Product.findOne({where:{sku:sku}})
+    productQuantity = cartProduct.qtyPurchased
+    console.log(productQuantity)
+    if (parseInt(quantity) <= 0) {
+        quantity = 1
+        console.log(quantity)
+        // CartProduct.update({qtyPurchased: newqty},{where:{id:req.user.id+sku}} )
+        // console.log(cartProduct.qtyPurchased + "hi")
+    }
+    if (parseInt(product.quantity) == 0) {
+        CartProduct.destroy({where:{id:req.user.id+sku}})
+        flashMessage(res, 'error', product.name + 'is out of stock!')
+    } else {
+        CartProduct.update({qtyPurchased: quantity},{where:{id:req.user.id+sku}} )
+    }
     
 })
 
-router.post('/deleteFromCart',ensureAuthenticated, async (req,res) =>{
-    cartProduct = await CartProduct.findOne({where:{sku:req.body.sku}})
+router.post('/deleteitem/:sku',ensureAuthenticated, async (req,res) =>{
+    cartProduct = await CartProduct.findOne({where:{sku:req.params.sku}})
+    // flashMessage(res, 'success', product.name + 'has been deleted from your cart!')
+    await CartProduct.destroy({where:{id:req.user.id+req.params.sku}})
+    res.redirect('/shoppingCart')
+})
+
+router.post('/deletecart',ensureAuthenticated, async (req,res) =>{
+    var ownerID = req.user.id
+    await CartProduct.destroy({where:{cartownerID: ownerID}})
+    res.redirect('/shoppingCart')
+
+})
+
+router.post('/wishlist',ensureAuthenticated, async (req,res) => {
+    var sku = req.body.sku
+    var status = req.body.status
+    checkProductinWishlist = await Wishlist.findOne({where:{id:req.user.id+sku}})
+    product = await Product.findOne({where:{sku:sku}})
     
-    
+    if (status == "check") {
+        if (checkProductinWishlist) {
+            res.send({response: "add", status : "check"})
+        } else {
+            res.send({response: "remove", status : "check"})
+        }
+    } else if (status == "add/remove") {
+
+        try{
+            if(checkProductinWishlist){
+                Wishlist.destroy({where:{id:req.user.id+sku}})
+                var newwishlistcount = product.wishlistcount - 1
+                Product.update({wishlistcount:newwishlistcount}, {where:{sku:sku}})
+                console.log('Item removed')
+                res.send({response: "remove", status : "add/remove"})
+            }else{
+                
+                await Wishlist.create({
+                    id: req.user.id+sku,
+                    sku: sku,
+                    name: product.name,
+                    description: product.description,
+                    price: product.price,
+                    category: product.category,
+                    Owner: req.user.name,
+                    OwnerID: req.user.id
+                });
+                var newwishlistcount = product.wishlistcount + 1
+                Product.update({wishlistcount:newwishlistcount}, {where:{sku:sku}})
+                console.log('Item added')
+                res.send({response: "add", status : "add/remove"})
+            }
+            // flashMessage(res,"success", req.body.name + ' Purchased Successfully');
+            // res.redirect("/")
+        }catch(e){
+            console.log(e)
+            res.redirect("/")
+        }
+    }
 })
 
 router.get('/RewardsPage', (req,res) => {
@@ -127,6 +206,12 @@ router.get('/shoppingCart', ensureAuthenticated,async (req,res) => {
     res.render("shoppingCart.handlebars",{cartproducts})
 })
 
+router.get('/wishlist', ensureAuthenticated,async (req,res) => {
+    wishlistproducts = (await Wishlist.findAll({where: {OwnerID:req.user.id}}))
+    // products = (await Product.findAll({where: {sku:wishlistproducts.sku}}))
+    res.render("wishlist.handlebars",{wishlistproducts})
+})
+
 router.get('/checkout', ensureAuthenticated,async (req,res) => {
     cartproducts = (await CartProduct.findAll({where: {cartOwnerID:req.user.id}}))
     res.render("checkout.handlebars",{cartproducts})
@@ -153,6 +238,10 @@ router.get('/troubleshootingQNA', (req,res) => {
 
 router.get('/rewards&offersQNA', (req,res) => {
     res.render("qnaPages/rewards&offersQNA.handlebars")
+})
+
+router.get('/multistep', (req,res) => {
+    res.render("multistep-form.handlebars")
 })
 
 
