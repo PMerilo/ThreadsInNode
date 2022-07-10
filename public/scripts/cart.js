@@ -148,6 +148,22 @@ $('.show-item').click(function() {
     })
 })
 
+$(".delete-item-button").mouseover(function() {
+    new SnackBar({
+        message: "Clicking this will delete this item",
+        status: "info",
+        fixed: true
+    })
+})
+
+$(".delete-cart").mouseover(function() {
+    new SnackBar({
+        message: "Clicking this will delete the cart",
+        status: "error",
+        fixed: true
+    })
+})
+
 function wishList(element) {
     // element.classList.toggle("bxs-bookmark-heart")
     element.classList.add("bx-tada")
