@@ -50,11 +50,21 @@ router.get('/UserRoles', async (req, res) => {
   const totalCustomers = await User.count({where: {role:"C"}});
   const totalAdmins = await User.count({where: {role:"A"}});
   const totalSellers = await User.count({where: {role:"S"}});
-  
-  
-  
 
   json_data = [{ Customers:totalCustomers , Admins: totalAdmins, Sellers:totalSellers }]
+
+  df = new dfd.DataFrame(json_data)
+  
+  res.status(200).json({ df })
+});
+
+router.get('/UserGenders', async (req, res) => {
+
+  const Males = await User.count({where: {gender:"Male"}});
+  const Females = await User.count({where: {gender:"Female"}});
+
+
+  json_data = [{ Male:Males , Female: Females }]
 
   df = new dfd.DataFrame(json_data)
   
