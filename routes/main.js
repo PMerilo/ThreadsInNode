@@ -20,6 +20,11 @@ const moment = require("moment");
 fs = require('fs'); 
 const upload = require('../views/helpers/imageUpload');
 
+// For mail
+const nodemailer = require("nodemailer");
+// const { where } = require('sequelize/types');
+const Mail = require("../config/MailConfig");
+
 router.use((req, res, next) => {
     res.locals.path = req.baseUrl;
     console.log(req.baseUrl);
@@ -387,6 +392,51 @@ router.post('/ticketHistory/editTicket', async (req,res) => {
 router.get('/discover', async (req, res) => {
     vouchers = (await Reward.findAll()).map((x) => x.dataValues)
     res.render('rewards/discover', { vouchers });
+});
+
+router.get('/newsLetter', async (req, res) => {
+    
+    res.render("newsLetter.handlebars" );
+});
+
+router.post('/newsLetter', ensureAuthenticated,async (req, res) => {
+    email = req.user.email
+    console.log(email)
+    link = "http://localhost:5000/newsLetter"
+    
+    Mail.send(res, {
+        to: email,
+        subject: "Threads in Times Subcription to News Letter",
+        text: "Thank you for subscribing to our news letter",
+        template: `../views/MailTemplates/NewsLetter`,
+        context: { link },
+        html:`Thank you for subscribing to our news letter`,
+        amp:`<div class="page">
+        <div class="container">
+          <div class="email_header">
+            
+            <img class="logo" src="https://raw.githubusercontent.com/PMerilo/ThreadsInNode/master/public/images/logo.png" alt="Threads In Times" />
+            <h1>Email Confirmation</h1>
+          </div>
+          <div class="email_body">
+            <p><b>Hi ,</b></p>
+            <p>Thanks for subscribing to the <b>Threads In Times Newsletter!</b></p>
+            
+            </a>
+            <p>Thanks for supporting,<br/>
+              <b>The Threads in Times Team</b>
+            </p>
+          </div>
+          <div class="email_footer">© Threads in Times 2020</div>
+        </div>
+      </div>`
+    
+    
+     });
+     console.log("Mail sent")
+    
+    flashMessage(res, 'success', "Thank you for subscribing to our newsletter! Check for an email from us soon!");
+    res.redirect("/newsLetter" );
 });
 
 module.exports = router;
