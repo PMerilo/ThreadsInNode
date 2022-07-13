@@ -148,7 +148,7 @@ $('.show-item').click(function() {
     })
 })
 
-$(".delete-item-button").mouseover(function() {
+$(".delete-item-button").mouseenter(function() {
     new SnackBar({
         message: "Clicking this will delete this item",
         status: "info",
@@ -156,7 +156,7 @@ $(".delete-item-button").mouseover(function() {
     })
 })
 
-$(".delete-cart").mouseover(function() {
+$(".delete-cart").mouseenter(function() {
     new SnackBar({
         message: "Clicking this will delete the cart",
         status: "error",

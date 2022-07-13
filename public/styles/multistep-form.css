@@ -3,9 +3,12 @@
 
 /*form styles*/
 #msform {
+    margin: 0;
+    padding: 0;
     text-align: center;
-    position: relative;
+    /* position: relative; */
     margin-top: 30px;
+    width: 100%;
 }
 
 #msform fieldset {
