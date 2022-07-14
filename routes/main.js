@@ -442,6 +442,47 @@ router.post('/newsLetter', ensureAuthenticated,async (req, res) => {
     User.update({newsLetter:true},{where: {id:req.user.id}})
     res.redirect("/newsLetter" );
 });
+router.post('/newsLetterUnSubscribe', ensureAuthenticated,async (req, res) => {
+    email = req.user.email
+    console.log(email)
+    link = "http://localhost:5000/newsLetter"
+    
+    Mail.send(res, {
+        to: email,
+        subject: "Threads in Times Unsubcription to News Letter",
+        text: "Thank you for subscribing to our news letter",
+        template: `../views/MailTemplates/NewsLetter`,
+        context: { link },
+        html:`<div class="page">
+        <div class="container">
+          <div class="email_header">
+            
+            <img class="logo" src="https://raw.githubusercontent.com/PMerilo/ThreadsInNode/master/public/images/logo.png" alt="Threads In Times" />
+            <h1>Email Confirmation</h1>
+          </div>
+          <div class="email_body">
+            <p><b>Hi ,</b></p>
+            <p>You have unsubscribed from the <b>Threads In Times Newsletter</b></p>
+            
+            </a>
+            <p>Be sure to check us out again sometime soon to get the latest threads out there, goodbye for now.<br/>
+              <b>The Threads in Times Team</b>
+            </p>
+          </div>
+          <div class="email_footer">© Threads in Times 2020</div>
+        </div>
+      </div>`,
+        
+    
+    
+     });
+     console.log("Mail sent")
+    
+    flashMessage(res, 'success', "You have unsubscribed to our newsletter! Come checkback sometime soon!");
+    User.update({newsLetter:false},{where: {id:req.user.id}})
+    res.redirect("/newsLetter" );
+});
+
 
 module.exports = router;
 

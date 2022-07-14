@@ -242,7 +242,14 @@ h2 {
         </ul> </div>
     </div>
   </div>
-  <p class="info"><a href=#>Unsubscribe</a> from our Newsletter </p>
+  <form action="/newsLetterUnSubscribe" method="post">
+  <p class="info">
+  <button type="submit" class="btn btn" style="color:blue">
+  Unsubscribe from our Newsletter 
+  </button>
+  </p>
+  </form>
+ 
 </div>
 {{else}}
 <link rel="stylesheet" href="css/services.css">
