@@ -50,9 +50,9 @@ router.post('/requests/edit', async (req, res) => {
     await Request.update({ status: req.body.status }, {
         where: {
           id: req.body.id
-        }
+        },
     });
-    return res.json({})
+    return res.json({});
 });
 
 router.delete('/requests/delete', async (req, res) => {

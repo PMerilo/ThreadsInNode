@@ -5,8 +5,8 @@ class Appointment extends sequelize.Model{
     
 }
 Appointment.init({
-    id:{type: sequelize.INTEGER, autoIncrement: true, primaryKey: true},
-    datetime: {type:sequelize.DATE,allowNull: false},
+    date: {type:sequelize.DATEONLY,allowNull: false},
+    time: {type:sequelize.TIME,allowNull: false},
     description: { type: sequelize.STRING(1000),allowNull: false }
 },
     {

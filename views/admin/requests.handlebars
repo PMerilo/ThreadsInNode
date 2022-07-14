@@ -1,67 +1,23 @@
 {{setVar "scriptsPath" "_serviceScripts"}}
 
 
-<h2>My Requests</h2>
-<ul class="nav nav-tabs" id="myTab" role="tablist">
-  <li class="nav-item" role="presentation">
-    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Pending</button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Completed</button>
-  </li>
-</ul>
-<div class="tab-content">
-  <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
-      <table id="appt-table" class="table table-hover">
-        <thead>
-            <tr>
-                <th scope="col" data-field="id">Request_ID</th>
-                <th scope="col" data-field="fname" >Completed On</th>
-                <th scope="col" data-field="title">Type</th>
-                <th scope="col" data-field="service">Details</th>
-                <th scope="col" data-field="tailorID">Tailor</th>
-                <th scope="col" data-field="description">Status</th>
-            </tr>
-        </thead>
-        <tbody>
-          {{#if requests}}
-          {{#each requests}}
-            <tr>
-              <td>{{id}}</td>
-              <td>{{title}}</td>
-              <td>{{service}}</td>
-              <td>{{tailorID}}</td>
-              <td>{{createdAt}}</td>
-              <td>{{description}}</td>
-              <td>{{fName}} {{lName}}</td>
-              <td>{{email}}</td>
-            </tr>         
-          {{/each}} 
-          {{/if}} 
-        </tbody>
-    </table>
-  </div>
-  <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-    <table 
-      id="reqTable"
-      data-toggle="table"
-      data-url="/api/requests">
-      <thead>
-          <tr>
-              <th scope="col" data-field="id">Request_ID</th>
-              <th scope="col" data-field="fName" data-formatter="nameFormatter">Completed On</th>
-              <th scope="col" data-field="title">Type</th>
-              <th scope="col" data-field="service">Details</th>
-              <th scope="col" data-field="tailorID">Tailor</th>
-              <th scope="col" data-field="description">Description</th>
-              <th scope="col" data-field="status">Status</th>
-              <th scope="col" data-field="operate" data-formatter="operateFormatter" data-events="operateEvents"></th>
-          </tr>
-      </thead>
-    </table>
-  </div>
-  <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">...</div>
-  <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">...</div>
+<div class="card p-2">
+  <h2>My Requests</h2>
+
+  <table id="reqTable" data-toggle="table" data-url="/api/requests">
+    <thead>
+      <tr>
+        <th scope="col" data-field="id">Request_ID</th>
+        <th scope="col" data-field="title">Request Title</th>
+        <th scope="col" data-field="user.name">Customer Name</th>
+        <th scope="col" data-field="service.name">Service</th>
+        <th scope="col" data-field="tailorID">Tailor</th>
+        <th scope="col" data-field="description">Description</th>
+        <th scope="col" data-field="status">Status</th>
+        <th scope="col" data-field="operate" data-formatter="operateFormatter" data-events="operateEvents"></th>
+      </tr>
+    </thead>
+  </table>
 </div>
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -73,9 +29,9 @@
       <div class="modal-body">
         <button type="button" class="btn btn-primary statusbtn">Pending</button>
         <button type="button" class="btn btn-primary statusbtn">Completed</button>
-        <button type="button" class="btn btn-primary statusbtn"></button>
-        <button type="button" class="btn btn-primary statusbtn"></button>
-        <button type="button" class="btn btn-primary statusbtn"></button>
+        {{!-- <button type="button" class="btn btn-primary statusbtn">In Progress</button>
+        <button type="button" class="btn btn-primary statusbtn">Pending Delivery</button>
+        <button type="button" class="btn btn-primary statusbtn">Pending Collection</button> --}}
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -101,4 +57,3 @@
     </div>
   </div>
 </div>
-
