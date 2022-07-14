@@ -134,8 +134,8 @@
                     {{#each message}}
                     
                     <li class="list-group-item">
-                        <div class="media">
-                            <div class="float-sm-left">                                
+                        <div class="media row">
+                            <div class="col-1">                                
                                 <div class="controls">
                                     <div class="checkbox">
                                         <input type="checkbox" id="messageID" name= "messageID" value="{{this.id}}">
@@ -145,7 +145,7 @@
                                 </div>
                                 <div class="thumb hidden-sm-down m-r-20"> <img src="assets/images/xs/avatar1.jpg" class="rounded-circle" alt=""> </div>
                             </div>
-                            <div class="media-body">
+                            <div class="media-body col-11">
                                 <div class="media-heading">
                                     <a href="" class="m-r-10">{{this.title}}</a>
                                     <span class="badges bg-blue">{{this.sender}}</span>

@@ -315,9 +315,12 @@ router.post('/upload', ensureAuthenticated, (req, res) => {
     upload(req, res, (err) => {
         if (err) {
             // e.g. File too large
-            res.json({ file: '/img/no-image.jpg', err: err });
+            res.json({ file: '/images/defaultImage.png', err: err });
         }
-        else {
+        else if (req.file == undefined) {
+            res.json({ file: '/images/defaultImage.png', err: 'No file selected' });
+        
+        }else{
             res.json({ file: `/uploads/${req.user.id}/${req.file.filename}` });
         }
     });
@@ -410,8 +413,7 @@ router.post('/newsLetter', ensureAuthenticated,async (req, res) => {
         text: "Thank you for subscribing to our news letter",
         template: `../views/MailTemplates/NewsLetter`,
         context: { link },
-        html:`Thank you for subscribing to our news letter`,
-        amp:`<div class="page">
+        html:`<div class="page">
         <div class="container">
           <div class="email_header">
             
@@ -429,13 +431,15 @@ router.post('/newsLetter', ensureAuthenticated,async (req, res) => {
           </div>
           <div class="email_footer">© Threads in Times 2020</div>
         </div>
-      </div>`
+      </div>`,
+        
     
     
      });
      console.log("Mail sent")
     
     flashMessage(res, 'success', "Thank you for subscribing to our newsletter! Check for an email from us soon!");
+    User.update({newsLetter:true},{where: {id:req.user.id}})
     res.redirect("/newsLetter" );
 });
 

@@ -1,3 +1,250 @@
+
+{{#if user.newsLetter}}
+<style>
+
+.info{
+  text-align: center;
+}
+
+.bodyNewsLetter {
+  max-width: 680px;
+  background-color: white;
+  margin: 0 auto;
+  padding: 20px;
+}
+.newsimg {
+  max-width: 100%;
+  height: auto;
+  object-fit: scale-down;
+}
+.header_img {
+  width: 100%;
+  height: 200px;
+  
+  background-size: contain;
+  background-position: right;
+  background-repeat: no-repeat;
+  position: relative;
+  border-bottom: 5px solid #0080bd;
+  
+}
+.header_img2{
+    width: 100%;
+  height: 200px;
+  background: url("https://cdn.pixabay.com/photo/2016/09/04/17/42/news-1644686_960_720.png");
+  background-size: contain;
+  background-position: right;
+  background-repeat: no-repeat;
+  position: relative;
+  border-bottom: 5px solid #0080bd;
+
+}
+#header_text {
+  font-size: 42px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+.row,
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 25px;
+  border-top: 1px solid #e3e3e3;
+}
+.col {
+  margin-top: 50px;
+  flex: 50%;
+}
+.col3 {
+  margin-top: 50px;
+  flex: 33%;
+  border-top: 2px solid black;
+}
+.col3 li {
+  list-style: none;
+}
+
+h2 {
+  font-size: 20px;
+}
+
+.buy_btn {
+  color: white;
+  font-weight: 600;
+  width: 60%;
+  text-align: center;
+  padding: 15px;
+  background-color: #0080bd;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.hero {
+  width: 100%;
+  height: 400px;
+  margin-top: 50px;
+  position: relative;
+  background: url("https://cdn.pixabay.com/photo/2020/06/04/06/22/mockup-5257439_960_720.jpg");
+  background-size: cover;
+  background-position: center;
+}
+.hero_text {
+  position: absolute;
+  bottom: 0;
+  left: 5px;
+  width: 30%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.hero_text .buy_btn {
+  margin: 0 auto;
+}
+
+.hero_text .hero_caption {
+  color: white;
+  margin: 50px 25px;
+}
+
+@media (max-width: 600px) {
+  .col {
+    flex: 100%;
+  }
+  .header_img {
+    background: none;
+    height: 150px;
+  }
+  .hero_text {
+    width: 100%;
+    left: 0;
+  }
+}
+
+</style>
+<script src="https://kit.fontawesome.com/5246a174b0.js" crossorigin="anonymous"></script>
+
+<div class="bodyNewsLetter">
+
+  <div class="main">
+   <img src="https://cdn.pixabay.com/photo/2016/09/04/17/42/news-1644686_960_720.png" alt="" style="height:150px; position:relative; left:60%">
+    <div class="header_img">
+      <span id="header_text">The Latest Threads With Threads In Timess</span>
+     
+    </div>
+    
+    <div class="hero"></div>
+    <div class="greetings">
+      <p>
+        Thanks for reading in. In this article, we will be discussing
+        on the latest fashion trends and tips to look out for. <br>
+        Opt for a T-shirt with a thread on the neck, a T-shirt with a
+        a natural touch by Liberty of London that you can wear with some all-white
+        Bermuda shorts. Its a pair you can wear with ease!
+        Styling Tip, add a printed pocket to your T-shirt to step up
+        your summer style.
+      </p>
+
+    </div>
+    <div class="row">
+      <div class="col"><img src="/images/nico-marks-fNYpIaUOZ6I-unsplash.jpg" class="newsimg"></div>
+      <div class="col">
+        <h2>Liberty Floral Red T-shirt</h2>
+        <h3>Full Sweat No Regret.</h3>
+        <p>Desgined for comfort when this quick drying layer won't stick to you when things heat up</p>
+        
+        <ul>
+          <li>Drysense Short sleeves</li>
+          <li>All natural cotton</li>
+          <li>Non-stick Fabric</li>
+        </ul>
+        <p class="buy_btn">
+          <i class=""></i> MORE
+        </p>
+      </div>
+    </div>
+    <div class="row">
+        <div class=""><img src="/images/amir-javadzadeh-tET9om4c8CU-unsplash.jpg" class="newsimg" height="200px"></div>
+      <div class="">
+        <h3>Comfort is Confidence</h3>
+        <h2>#Comfortisconfidence</h2>
+        <p>Be Free and be yourself, stay warm and free with your own fluffy fluff scuff and red canadian long sleeved shirt</p>
+        <ul>
+          <li>All Natural Hemp</li>
+          <li>Cotton</li>
+          
+        </ul>
+        <p class="buy_btn">
+          <i class=""></i> MORE
+        </p>
+      </div>
+    
+
+    </div>
+    <div class="row">
+      <div class="col"><img src="/images/Therightlayer.jpg" class="newsimg"></div>
+      <div class="col"><img src="/images/retroactive.jpg" class="newsimg"></div>
+    </div>
+   
+    <div class="row">
+{{!-- <div class="col">
+        <h2>Lorem ipsum</h2>
+        <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</p>
+        <ul>
+          <li>Stet clita kasd gubergren</li>
+          <li>Stet clita kasd gubergren</li>
+          <li>Stet clita kasd gubergren</li>
+        </ul>
+        <p class="buy_btn">
+          <i class=""></i> MORE
+        </p>
+      </div>
+      <div class="col">
+        <h2>Lorem ipsum</h2>
+        <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</p>
+        <ul>
+          <li>Stet clita kasd gubergren</li>
+          <li>Stet clita kasd gubergren</li>
+          <li>Stet clita kasd gubergren</li>
+        </ul>
+        <p class="buy_btn">
+          <i class=""></i> MORE
+        </p>
+      </div>
+    </div> --}}
+     <div class="hero">
+      <div class="hero_text">
+      <p class="hero_caption">Thanks for reading and exploring the latest threads with us. We hope you learnt a little more of the current trends in our society today.<p>
+      <p class="buy_btn"><a href="/" style="color:white">Visit Our Store</a></p>
+      
+        
+      </div>
+    </div>
+    <div class="footer">
+      {{!-- <div class="col3">
+        <ul>
+        <li>Stet clita kasd gubergren</li>
+        <li>Stet clita kasd gubergren</li>
+        <li>Stet clita kasd gubergren</li>
+        </ul>  
+      </div> --}}
+      {{!-- <div class="col3">   
+        <ul>
+        <li>Stet clita kasd gubergren</li>
+        <li>Stet clita kasd gubergren</li>
+        <li>Stet clita kasd gubergren</li>
+        </ul> </div>
+      <div class="col3">   <ul> --}}
+        {{!-- <li><i class="fa fa-facebook-square" aria-hidden="true"></i> <i class="fab fa-instagram"></i> <i class="fab fa-youtube"></i> --}}
+</li>
+        
+        
+        </ul> </div>
+    </div>
+  </div>
+  <p class="info"><a href=#>Unsubscribe</a> from our Newsletter </p>
+</div>
+{{else}}
 <link rel="stylesheet" href="css/services.css">
 
 <div>
@@ -22,4 +269,5 @@
     </div>
 </div>
 <hr>
+{{/if}}
 

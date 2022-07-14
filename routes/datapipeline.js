@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 const passport = require('passport');
 // Our Modals
 const User = require("../models/User")
+
 const UsersJoinedLog = require("../models/Logs/JoinedUsersLogs")
 const ensureAuthenticated = require("../views/helpers/auth");
 const ensureAdminAuthenticated = require("../views/helpers/adminAuth");
@@ -13,7 +14,8 @@ const { sequelize, sum } = require('../models/User');
 // For DateTime
 const moment = require('moment')
 // For Editing Data
-const dfd = require("danfojs-node")
+const dfd = require("danfojs-node");
+const Product = require('../models/Product');
 
        
 router.use((req, res, next) => {
@@ -69,6 +71,28 @@ router.get('/UserGenders', async (req, res) => {
   df = new dfd.DataFrame(json_data)
   
   res.status(200).json({ df })
+});
+
+router.get('/InventoryReport', ensureAuthenticated, async (req, res) => {
+  const Inventory = await Product.findAll({where:{ownerID:req.user.id}})
+
+
+  let data = [];
+  let cols = ["Stocks","ProductName"];
+
+
+  Inventory.forEach(element => {
+    let rawData = [element.quantity, element.name];
+    data.push(rawData)
+    
+    
+  });
+
+  df = new dfd.DataFrame(data,{columns:["Stocks","ProductName"]})
+  // group_df = df.groupby(["Dates"]).sum()
+  // console.log(group_df)
+  // const df2 = dfd.toJSON(df,{format:"json"})
+  res.status(200).json({ 'data':df })
 });
 
 module.exports = router;

@@ -28,6 +28,10 @@ router.get('/', (req, res) => {
     res.render('seller/sellerHomePage');
 });
 
+router.get('/reports', (req, res) => {
+    res.render('seller/reports');
+});
+
 router.get('/sellerProfile', (req, res) => {
     res.render('seller/sellerProfile');
 });
