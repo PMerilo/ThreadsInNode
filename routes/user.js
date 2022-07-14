@@ -53,10 +53,17 @@ router.post('/register', async function (req, res) {
   if (password.length < 6) {
     flashMessage(res, 'error', 'Password must be at least 6 char-acters');
     isValid = false;
+
+    return res.redirect("/register");
+
   }
   if (password != password2) {
     flashMessage(res, 'error', 'Passwords do not match');
     isValid = false;
+    
+    return res.redirect("/register");
+
+
   }
 
   try {
