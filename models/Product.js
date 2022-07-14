@@ -17,8 +17,6 @@ Product.init({
         wishlistcount:{type: sequelize.INTEGER},
         Owner:{type:sequelize.STRING},
         OwnerID:{type: sequelize.INTEGER}
-        
-        
 },
     {
         freezeTableName: true,

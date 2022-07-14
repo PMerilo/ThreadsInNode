@@ -39,9 +39,8 @@ function addtocartClicked(element) {
 function disc(){
     var discountamount = $('.cart-discount').text().replace('%', '')
     var subtotal = $('.cart-total-price').text().replace('S$', '')
-    subtotal = (subtotal/100) * (100- discountamount)
+    subtotal = ((subtotal/100) * (100- discountamount)).toFixed(2)
     document.getElementsByClassName('cart-grandtotal-price')[0].innerText = 'S$' + subtotal
-    localStorage.setItem('discountcode',discountcode)
 }
 
 
@@ -74,9 +73,17 @@ function updateCartTotal() {
     subtotal = Math.round(subtotal * 100) / 100
     document.getElementsByClassName('cart-total-price')[0].innerText = 'S$' + subtotal
     document.getElementsByClassName('cart-grandtotal-price')[0].innerText = 'S$' + subtotal
-    // if(subtotal == 0) {
-    //     var checkout = document.getElementsById('checkout').disabled = true;
-    // }
+    var checkout = document.getElementById('checkout')
+    if(subtotal == 0) {
+        checkout.disabled = true;
+        new SnackBar({
+            message: "You need atleast one product in yout cart to checkout",
+            status: "info",
+            fixed: true,
+            dismissible: false,
+            timeout: 100000000
+        })
+    }
     
 }
 
@@ -93,28 +100,90 @@ $('.cart-quantity-input').change(function() {
     disc()
 })
 
-// $('.delete-button').click(function() {
-//     var sku = $(this).val()
-//     console.log(sku)
-//     $.post('deleteitem',{
-//         sku: sku
-//     })
-// })
-
 $('.apply-discount-button').click(function() {
     var discountcode = document.getElementsByClassName('discount-input')[0].value
-    if (discountcode != localStorage.getItem('discountcode')) {
-        console.log(discountcode)
-        $.getJSON('/transactions/discount', {
-            discount_code: discountcode
-        }, function(data) {
-            console.log(data)
-            $('.cart-discount').text(data.discountcode + "%")
-            $('.flash').text(data.flash)
-            disc()
-        })
-    }
-    
+    var discount_card = document.getElementById('discount-card')
+    console.log(discountcode)
+    // if (discountcode != localStorage.getItem('discountcode')) {
+    //     console.log(discountcode)
+    //     $.getJSON('/transactions/discount', {
+    //         discount_code: discountcode
+    //     }, function(data) {
+    //         console.log(data)
+    //         $('.cart-discount').text(data.discountcode + "%")
+    //         $('.flash').text(data.flash)
+    //         disc()
+    //     })
+    // }
+    $.ajax({
+        url: "/discount",
+        method: 'POST',
+        contentType: "application/json",
+        data: JSON.stringify({code : discountcode, status : "check"}),
+        success: function(res){
+            if (res.status == "success") {
+                new SnackBar({
+                    message: "Discount has been applied!",
+                    status: "success",
+                    fixed: true
+                })
+                discount_card.style.display = "";
+                $('.cart-discount').text(res.discount_amount + "%")
+                localStorage.setItem("discount_amount",res.discount_amount)
+                disc()
+            } else if (res.status == "spools_shortage") {
+                new SnackBar({
+                    message: "You do not have enough spools to use this voucher!",
+                    status: "error",
+                    fixed: true
+                })
+                discount_card.style.cssText = "display:none !important;";
+                $('.cart-discount').text(0 + "%")
+                localStorage.setItem("discount_amount", "")
+                disc()
+            } else if (res.status == "voucher_expired") {
+                new SnackBar({
+                    message: "This voucher has expired!",
+                    status: "error",
+                    fixed: true
+                })
+                discount_card.style.cssText = "display:none !important;";
+                $('.cart-discount').text(0 + "%")
+                localStorage.setItem("discount_amount", "")
+                disc()
+            } else if (res.status == "voucher_ran_out") {
+                new SnackBar({
+                    message: "Be faster next time! Voucher has been used up",
+                    status: "error",
+                    fixed: true
+                })
+                discount_card.style.cssText = "display:none !important;";
+                $('.cart-discount').text(0 + "%")
+                localStorage.setItem("discount_amount", "")
+                disc()
+            } else if (res.status == "no_such_voucher") {
+                new SnackBar({
+                    message: "There is no such voucher!",
+                    status: "error",
+                    fixed: true
+                })
+                discount_card.style.cssText = "display:none !important;";
+                $('.cart-discount').text(0 + "%")
+                localStorage.setItem("discount_amount", "")
+                disc()
+            } else {
+                new SnackBar({
+                    message: "Please contact an admin to fix the issue!",
+                    status: "error",
+                    fixed: true
+                })
+                discount_card.style.cssText = "display:none !important;";
+                $('.cart-discount').text(0 + "%")
+                localStorage.setItem("discount_amount", "")
+                disc()
+            }
+        }
+    })
 })
 
 $('.checkout').click(function() {

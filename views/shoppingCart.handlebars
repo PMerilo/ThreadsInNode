@@ -24,7 +24,7 @@
           </div>
           <span class="cart-price cart-column">S${{ this.price }}</span>
           <div class="cart-quantity cart-column">
-              <input class="cart-quantity-input" type="number" value="{{this.qtyPurchased}}">
+              <input class="cart-quantity-input" type="number" min="1" value="{{this.qtyPurchased}}">
               <input class="" type="hidden" value="{{this.sku}}">
           </div>
           <div class="c-t cart-column d-flex">
@@ -76,9 +76,10 @@
           <p>Shipping</p>
           <p class="ms-auto">Calculated at checkout</p>
         </div>
-        <div class="discount d-flex">
+        <div class="discount d-flex" id="discount-card" style="display:none !important;">
           <p>Discount</p>
           <p class="cart-discount ms-auto">0%</p>
+          <input type="hidden" value="" id="discount_name">
         </div>
         <div class="grandtotal d-flex">
           <p>Grand Total</p>

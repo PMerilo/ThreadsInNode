@@ -9,7 +9,7 @@ class CartProduct extends sequelize.Model{
 }
 CartProduct.init({
         id: {type: sequelize.INTEGER, autoIncrement: false, primaryKey: true},
-        sku:{type: sequelize.INTEGER,},
+        sku:{type: sequelize.INTEGER},
         name: { type: sequelize.STRING }, 
         description: { type: sequelize.STRING(2000) }, 
         price: { type: sequelize.FLOAT }, 

@@ -111,6 +111,56 @@ router.post('/deletecart',ensureAuthenticated, async (req,res) =>{
 
 })
 
+router.post('/deletecart',ensureAuthenticated, async (req,res) =>{
+    var ownerID = req.user.id
+    await CartProduct.destroy({where:{cartownerID: ownerID}})
+
+})
+
+router.post('/discount',ensureAuthenticated, async (req,res) =>{
+    let date_ob = new Date();
+    var todaysdate = date_ob.getFullYear() + "-" + ("0" + (date_ob.getMonth() + 1)).slice(-2) + "-" + ("0" + date_ob.getDate()).slice(-2) 
+    console.log(todaysdate)
+    var ownerID = req.user.id
+    var discountcodeused = req.body.code
+    var status = req.body.status
+    console.log(discountcodeused)
+    var discountcodeinDB = await Reward.findOne({where:{voucher_code: discountcodeused}})
+    
+    // res.send({discount_amount:discount_amount, status:"success"})
+    // res.send({discount_amount:discount_amount, status:"spools_shortage"})
+    // res.send({discount_amount:discount_amount, status:"voucher_expired"})
+    // res.send({discount_amount:discount_amount, status:"voucher_ran_out"})
+    try {
+        if (discountcodeinDB) {
+            var discount_amount = discountcodeinDB.discount_amount
+            var rewardexpirydate = discountcodeinDB.expiry_date
+            rewardexpirydate = moment(rewardexpirydate).format("YYYY-MM-DD")
+            console.log(rewardexpirydate)
+            if (discountcodeinDB.quantity > 0) {
+                if (rewardexpirydate > todaysdate) {
+                    if(discountcodeinDB.spools_needed <= req.user.spools) {
+                        console.log(discount_amount)
+                        res.send({discount_amount:discount_amount, status:"success"})
+                    } else {
+                        res.send({discount_amount:discount_amount, status:"spools_shortage"})
+                    }
+                } else {
+                    res.send({discount_amount:discount_amount, status:"voucher_expired"})
+                }
+            } else {
+                res.send({discount_amount:discount_amount, status:"voucher_ran_out"})
+            }
+        } else {
+            res.send({discount_amount:discount_amount, status:"no_such_voucher"})
+        }
+
+    }catch(e){
+        console.log(e)
+        res.redirect("/")
+    }
+})
+
 router.post('/wishlist',ensureAuthenticated, async (req,res) => {
     var sku = req.body.sku
     var status = req.body.status

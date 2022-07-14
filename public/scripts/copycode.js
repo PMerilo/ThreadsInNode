@@ -11,6 +11,10 @@ $(document).ready(function() {
       $temp.select()
       document.execCommand("copy");
       $temp.remove()
-      alert("Code copied!")
+      new SnackBar({
+        message:"Code Copied",
+        status: "info",
+        fixed: true
+      });
   }) 
 })
