@@ -81,7 +81,7 @@ function updateCartTotal() {
             status: "info",
             fixed: true,
             dismissible: false,
-            timeout: 100000000
+            timeout: false
         })
     }
     
