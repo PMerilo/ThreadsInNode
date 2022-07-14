@@ -9,32 +9,41 @@ const Request = require('../models/Request')
 const Reward = require('../models/Reward')
 const Ticket = require('../models/Ticket')
 const User = require('../models/User')
+const Service = require('../models/Service')
 
 const JoinedUsersLogs = require('../models/Logs/JoinedUsersLogs')
 
 // If drop is true, all existing tables are dropped and recreated
 const setUpDB = (drop) => {
     mySQLDB.authenticate()
-    .then(() => {
-        console.log('Database connected');
-        /*
-        Defines the relationship where a user has many videos.
-        The primary key from user will be a foreign key in video.
-        */
+        .then(() => {
+            console.log('Database connected');
+            /*
+            Defines the relationship where a user has many videos.
+            The primary key from user will be a foreign key in video.
+            */
 
-       User.hasMany(Request)
-       Request.belongsTo(User)
-       Request.hasMany(Appointment)
-       Appointment.belongsTo(Request)
-       
-        mySQLDB.sync({
-            alter: true,
-            force: drop
+            User.hasMany(Request)
+            User.hasMany(Appointment)
+
+            Request.belongsTo(User)
+            Request.hasMany(Appointment)
+            Request.belongsTo(Service, { as: 'service' });
+
+            Appointment.belongsTo(Request)
+            Appointment.belongsTo(User)
+
+
+            Service.hasMany(Request, { as: 'requests'})
+
+            mySQLDB.sync({
+                alter: true,
+                force: drop
+            })
+                .then(console.log("Successfully altered and sync"))
+                .catch(err => console.log(err));
         })
-        .then(console.log("Successfully altered and sync"))
         .catch(err => console.log(err));
-    })
-    .catch(err => console.log(err));
 };
 //     mySQLDB
 //     .authenticate()
