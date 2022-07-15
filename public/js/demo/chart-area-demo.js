@@ -36,7 +36,7 @@ getUsersJoinedData.done(function(data){
   var dates = []
     data.data.forEach(element => {
       NoOfUsers.push(element["NoOfUsersJoined_sum"])
-      dates.push(element["Dates"])
+      dates.push(element["Dates"].slice(0,10))
       
     });
   
@@ -80,7 +80,8 @@ getUsersJoinedData.done(function(data){
               drawBorder: false
             },
             ticks: {
-              maxTicksLimit: 7
+              maxTicksLimit: 7,
+              
             }
           }],
           yAxes: [{
