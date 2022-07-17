@@ -129,7 +129,7 @@
             
           </a>
           {{#equals path "/seller"}}  
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" style="right: 100px;">
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
             {{!-- if user is not authenticated --}}
               <a class="dropdown-item" href="/seller/sellerProfile">My Profile</a>
             </li>
@@ -155,7 +155,7 @@
           {{else}}
           {{#if authenticated}}
           
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" style="right: 100px;">
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
             {{!-- if user is not authenticated --}}
               <a class="dropdown-item" href="/Profile">My Profile</a>
             </li>
@@ -183,7 +183,7 @@
           </ul>
           
           {{else}}
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" style="right: 100px;">
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
             {{!-- if user is not authenticated --}}
             <li>
               <a class="dropdown-item" href="/login">Log In</a>

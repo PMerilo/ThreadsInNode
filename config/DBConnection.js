@@ -54,113 +54,113 @@ const setUpDB = (drop) => {
 };
 
 
-mySQLDB
-.authenticate()
-.then((result) => console.log(result))
-.catch((err) => console.log(err));
+// mySQLDB
+// .authenticate()
+// .then((result) => console.log(result))
+// .catch((err) => console.log(err));
 
-User.sync({ alter: true })
-.then((v) => {
-    console.log(v);
-    console.log("Successfully altered and sync");
-})
-.catch((e) =>
-    User.sync({ force: true }).then(() => {
-    console.log(e);
-    console.log("Created User table");
-    })
-);
-Ticket.sync({ alter: true })
-.then((v) => {
-    console.log(v);
-    console.log("Successfully altered and sync");
-})
-.catch((e) =>
-    User.sync({ force: true }).then(() => {
-    console.log(e);
-    console.log("Created Ticket table");
-    })
-);
-Feedback.sync({ alter: true })
-.then((v) => {
-    console.log(v);
-    console.log("Successfully altered and sync");
-})
-.catch((e) =>
-    User.sync({ force: true }).then(() => {
-    console.log(e);
-    console.log("Created Feedback table");
-    })
-);
-FAQ.sync({ alter: true })
-.then((v) => {
-    console.log(v);
-    console.log("Successfully altered and sync");
-})
-.catch((e) =>
-    User.sync({ force: true }).then(() => {
-    console.log(e);
-    console.log("Created FAQ table");
-    })
-);
-Product.sync({ alter: true })
-.then((v) => {
-    console.log(v);
-    console.log("Successfully altered and sync");
-})
-.catch((e) =>
-    User.sync({ force: true }).then(() => {
-    console.log(e);
-    console.log("Created Product table");
-    })
-);
+// User.sync({ alter: true })
+// .then((v) => {
+//     console.log(v);
+//     console.log("Successfully altered and sync");
+// })
+// .catch((e) =>
+//     User.sync({ force: true }).then(() => {
+//     console.log(e);
+//     console.log("Created User table");
+//     })
+// );
+// Ticket.sync({ alter: true })
+// .then((v) => {
+//     console.log(v);
+//     console.log("Successfully altered and sync");
+// })
+// .catch((e) =>
+//     User.sync({ force: true }).then(() => {
+//     console.log(e);
+//     console.log("Created Ticket table");
+//     })
+// );
+// Feedback.sync({ alter: true })
+// .then((v) => {
+//     console.log(v);
+//     console.log("Successfully altered and sync");
+// })
+// .catch((e) =>
+//     User.sync({ force: true }).then(() => {
+//     console.log(e);
+//     console.log("Created Feedback table");
+//     })
+// );
+// FAQ.sync({ alter: true })
+// .then((v) => {
+//     console.log(v);
+//     console.log("Successfully altered and sync");
+// })
+// .catch((e) =>
+//     User.sync({ force: true }).then(() => {
+//     console.log(e);
+//     console.log("Created FAQ table");
+//     })
+// );
+// Product.sync({ alter: true })
+// .then((v) => {
+//     console.log(v);
+//     console.log("Successfully altered and sync");
+// })
+// .catch((e) =>
+//     User.sync({ force: true }).then(() => {
+//     console.log(e);
+//     console.log("Created Product table");
+//     })
+// );
 
-CartProduct.sync({ alter: true })
-.then((v) => {
-    console.log(v);
-    console.log("Successfully altered and sync");
-})
-.catch((e) =>
-    User.sync({ force: true }).then(() => {
-    console.log(e);
-    console.log("Created Product Cart table");
-    })
-);
+// CartProduct.sync({ alter: true })
+// .then((v) => {
+//     console.log(v);
+//     console.log("Successfully altered and sync");
+// })
+// .catch((e) =>
+//     User.sync({ force: true }).then(() => {
+//     console.log(e);
+//     console.log("Created Product Cart table");
+//     })
+// );
 
-Message.sync({ alter: true })
-.then((v) => {
-    console.log(v);
-    console.log("Successfully altered and sync");
-})
-.catch((e) =>
-    User.sync({ force: true }).then(() => {
-    console.log(e);
-    console.log("Created Message table");
-    })
-);
+// Message.sync({ alter: true })
+// .then((v) => {
+//     console.log(v);
+//     console.log("Successfully altered and sync");
+// })
+// .catch((e) =>
+//     User.sync({ force: true }).then(() => {
+//     console.log(e);
+//     console.log("Created Message table");
+//     })
+// );
 
-Reward.sync({ alter: true })
-.then((v) => {
-    console.log(v);
-    console.log("Successfully altered and sync");
-})
-.catch((e) =>
-    User.sync({ force: true }).then(() => {
-    console.log(e);
-    console.log("Created Reward table");
-    })
-);
-JoinedUsersLog.sync({ alter: true })
-.then((v) => {
-    console.log(v);
-    console.log("Successfully altered and sync");
-})
-.catch((e) =>
-    User.sync({ force: true }).then(() => {
-    console.log(e);
-    console.log("Created NoOfUsersJoined table");
-    })
-);
+// Reward.sync({ alter: true })
+// .then((v) => {
+//     console.log(v);
+//     console.log("Successfully altered and sync");
+// })
+// .catch((e) =>
+//     User.sync({ force: true }).then(() => {
+//     console.log(e);
+//     console.log("Created Reward table");
+//     })
+// );
+// JoinedUsersLog.sync({ alter: true })
+// .then((v) => {
+//     console.log(v);
+//     console.log("Successfully altered and sync");
+// })
+// .catch((e) =>
+//     User.sync({ force: true }).then(() => {
+//     console.log(e);
+//     console.log("Created NoOfUsersJoined table");
+//     })
+// );
 
 
 
