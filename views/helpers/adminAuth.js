@@ -2,7 +2,7 @@ const flashMessage = require("./messenger");
 
 const ensureAdminAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
-        if(req.user.role == "A"){
+        if(req.user.role == "A" || "T"){
             return next();
         }else{
             flashMessage(res, 'error', 'You are unauthorized to view this page.');

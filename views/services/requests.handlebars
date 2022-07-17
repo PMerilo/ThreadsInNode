@@ -1,136 +1,120 @@
-<link rel="stylesheet" href="css/services.css">
-<link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
-<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
-<script src="scripts/data-tables.js" type="text/javascript"></script>
+{{setVar "scriptsPath" "_serviceScripts"}}
 
-<h2>My Requests</h2>
-<ul class="nav nav-tabs" id="myTab" role="tablist">
-  <li class="nav-item" role="presentation">
-    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Pending</button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Completed</button>
-  </li>
-</ul>
-<div class="tab-content">
-  <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
-      <table id="appt-table" class="table table-hover">
-        <thead>
-            <tr>
-                <th scope="col">Request_ID</th>
-                <th scope="col">Completed On</th>
-                <th scope="col">Type</th>
-                <th scope="col">Details</th>
-                <th scope="col">Tailor</th>
-                <th scope="col">Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <th scope="row">A_02</th>
-                <th>6/05/2022</th>
-                <td>Alterations</td>
-                <td><a href="" type="button" data-bs-toggle="modal" data-bs-target="#myModal">View Request </a></td>
-                <td>Yue Ming</td>
-                <td>Pending completion</td>
 
-            </tr>
-            <tr>
-                <th scope="row">A_01</th>
-                <th>6/05/2022</th>
-                <td>Alterations</td>
-                <td><a href="" type="button" data-bs-toggle="modal" data-bs-target="#myModal">View Request</a></td>
-                <td>Yue Ming</td>
-                <td>Completed - Set to <a href="" type="button" data-bs-toggle="modal" data-bs-target="#myModal1">Delivery </a></td>
-            </tr>
-            <tr>
-                <th scope="row">A_00</th>
-                <th>8/05/2022</th>
-                <td>Alterations</td>
-                <td><a href="" type="button" data-bs-toggle="modal" data-bs-target="#myModal">View Request</a></td>
-                <td>Yue Ming</td>
-                <td>Completed - <a href="">Set a delivery mode and date</a></td>
-            </tr>
-            
-
-        </tbody>
-    </table>
+{{!-- <div class="card">
+  <div class="card-header">
   </div>
-  <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-    <table id="uappt-table" class="table table-hover">
-      <thead>
-          <tr>
-              <th scope="col">Date</th>
-              <th scope="col">Time</th>
-              <th scope="col">Type</th>
-              <th scope="col">Request</th>
-              <th scope="col">Tailor</th>
-              <th scope="col"></th>
-          </tr>
-      </thead>
-      <tbody>
-          <tr>
-              <th scope="row">7/05/2022</th>
-              <th>1200</th>
-              <td>Tailor</td>
-              <td><a href="">View Details</a></td>
-              <td>Mike Oxlong</td>
-              <td><a href="" class="btn btn-primary" role="button"><i class="bi bi-pencil"></i></a></td>
-
-          </tr>
-      </tbody>
-    </table>
+  <div id="toolbar">
+    <button></button>
   </div>
-  <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab">...</div>
-  <div class="tab-pane" id="settings" role="tabpanel" aria-labelledby="settings-tab">...</div>
+  <table id="reqTable" data-toggle="table" data-url="/api/requests" data-detail-view="true"
+    data-detail-view-by-click="false" data-detail-view-icon="false" data-detail-formatter="apptDetailFormatter"
+    data-toolbar="#toolbar">
+    <thead>
+      <tr>
+        <th scope="col" data-field="title">Request Title</th>
+        <th scope="col" data-field="service.name">Service</th>
+        <th scope="col" data-field="tailorID">Tailor</th>
+        <th scope="col" data-field="description">Description</th>
+        <th scope="col" data-field="status">Status</th>
+        <th scope="col" data-field="appointments" data-formatter="apptFormatter" data-events="apptEvents">Appointments
+        </th>
+        <th scope="col" data-field="operate" data-formatter="operateFormatter" data-events="operateEvents"></th>
+      </tr>
+    </thead>
+  </table>
+</div> --}}
+
+<div>
+  <h2>My Requests</h2>
 </div>
-<div class="modal" tabindex="-1" id="myModal">
+<hr>
+{{#each requests}}
+<div class="card">
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <a href="" class="text-black stretched-link">
+        <h3 class="m-0">{{service.name}} - {{title}}</h3>
+      </a>
+      <p class="m-0">{{tailor.user.name}}</p>
+    </li>
+    <li class="list-group-item">
+      <p>
+        {{description}}
+      </p>
+    </li>
+    <li class="list-group-item">
+      <a class="stretched-link" href="">
+        Appointment
+      </a>
+      <i class="bi bi-chevron-right float-end"></i>
+    </li>
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <div class="my-auto">
+        {{status}}
+      </div>
+      <div class="my-auto">
+        {{!-- <button href='' class="btn btn-primary mx-2" style="width: 110px;" data-bs-toggle="modal"
+          data-bs-target="">
+          View more
+        </button> --}}
+        <button class="btn btn-danger delete" style="width: 80px;" data-bs-toggle="modal" data-bs-target="#delModal"
+          title="Delete">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+    </li>
+
+  </ul>
+</div>
+{{/each}}
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Request Details</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Edit Request</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div class="d-flex justify-content-center">
-            <img  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvea0VYV4hLEq1ZhUgB886VAUT5ugRHL2QVA&usqp=CAU" alt="">
-        </div>
         <div class="row">
-            <div class="mb-3 col-12">
-                <span class="">Request Details</span>
-                <textarea class="form-control" aria-label="With textarea" readonly>Pants length shortened by 3cm. Taper of 1 inch</textarea>
-            </div>
+          <div class="mb-3 col-6">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" name="title">
+          </div>
+          <div class="mb-3 col-6">
+            <label for="service" class="form-label">Service</label>
+            <select class="form-select" aria-label="Default select example" name="service">
+              <option selected>Select Service</option>
+              {{>options}}
+            </select>
+          </div>
+          <div class="mb-3 col-12">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" name="description"></textarea>
+          </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary confirm">Save Changes</button>
       </div>
     </div>
   </div>
 </div>
-<div class="modal" tabindex="-1" id="myModal1">
+<div class="modal fade" id="delModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Delivery Details</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Cancel Request?</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-          <p>
-
-            Tracking Number: Delivery_9301823
-          </p>
-          <p>
-
-            Deliver to: 123 Haji Lane 727127
-          </p>
-          <p>
-
-            Time: 2-4pm
-          </p>
+        <p class="text-danger">Warning this action is irreversable</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger del">Delete</button>
       </div>
     </div>
   </div>

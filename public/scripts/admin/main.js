@@ -3,16 +3,21 @@ var $editModal = $('#exampleModal')
 var $delModal = $('#delModal')
 
 $(document).ready(function(){
-    
+    let data = {};
+    $('.statusbtn').click(function() {
+        data = {
+            id: $(this).attr('data-bs-id'),
+            status: $(this).text()
+        }
+        
+        $('.statusbtn').removeClass("btn-success btn-primary")
+        $('.statusbtn').not($(this)).addClass("btn-primary")
+        $(this).addClass("btn-success")
+    })
+
     $(".confirm").click(function(){
-        let data = {
-            id: $(this).attr("data-bs-id"),
-            title: $('input', $editModal).val(),
-            description: $('textarea', $editModal).val(),
-            service: $('[name=service]', $editModal).val()
-        };
-        console.log(data)
-        $.post("/services/request/edit", data, function(result) {
+        // console.log($(this).attr('data-bs-id'))
+        $.post("/admin/requests/edit", data, function() {
             $editModal.modal('hide');
             $table.bootstrapTable('refresh');
         });
@@ -31,8 +36,5 @@ $(document).ready(function(){
                 $table.bootstrapTable('refresh')
             }
           });
-    });
-
-    console.log($('.toggle-view'))
-    
+    })
 });

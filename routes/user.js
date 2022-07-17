@@ -8,6 +8,9 @@ const User = require("../models/User")
 const UsersJoinedLog = require("../models/Logs/JoinedUsersLogs")
 const ensureAuthenticated = require("../views/helpers/auth");
 const moment = require('moment')
+const Request = require('../models/Request')
+const { Op } = require('sequelize');
+
 
 const userController = require('../controllers/userController')
 
@@ -20,168 +23,182 @@ router.use((req, res, next) => {
 
 
 
-router.get("/login-google",passport.authenticate("google",{scope:["profile","email"] }))
+router.get("/login-google", passport.authenticate("google", { scope: ["profile", "email"] }))
 
 
-    
+
 router.get("/login-google/callback",
   passport.authenticate("google", {
-     // Failure redirect URL 
-     failureRedirect: '/login',
-     /* Setting the failureFlash option to true instructs Passport to flash 
-     an error message using the message given by the strategy's verify callback.
-     When a failure occur passport passes the message object as error */
-     failureFlash: true
+    // Failure redirect URL 
+    failureRedirect: '/login',
+    /* Setting the failureFlash option to true instructs Passport to flash 
+    an error message using the message given by the strategy's verify callback.
+    When a failure occur passport passes the message object as error */
+    failureFlash: true
   }), userController.loginRedirect
 );
 
 
 router.get('/login', (req, res) => {
-    res.render('user/login');
+  res.render('user/login');
 });
 
 router.get('/register', (req, res) => {
-    res.render('user/register');
+  res.render('user/register');
 });
 
 
 router.post('/register', async function (req, res) {
 
-    let { name, email, password, password2 } = req.body;
+  let { name, email, password, password2 } = req.body;
 
-    let isValid = true;
-    if (password.length < 6) {
-        flashMessage(res, 'error', 'Password must be at least 6 char-acters');
-        isValid = false;
-    }
-    if (password != password2) {
-        flashMessage(res, 'error', 'Passwords do not match');
-        isValid = false;
-    }
-    if(isValid == true){
-      try {
-        if (
-          (await User.findOne({
-            where: { name: req.body.name },
-          })) ||
-          (await User.findOne({ where: { email: req.body.name } }))
-        ) {
-          flashMessage(res, 'error', 'Name or email is not unique');
-          console.log("Name or email is not unique");
-  
-          return res.redirect("/register");
-        }
-        await User.create({
-          name: req.body.name,
-          email: req.body.email,
-          password: req.body.password,
-          gender: req.body.gender,
-          phoneNumber: req.body.phoneNumber
+  let isValid = true;
+  if (password.length < 6) {
+    flashMessage(res, 'error', 'Password must be at least 6 char-acters');
+    isValid = false;
 
-        });
+    return res.redirect("/register");
 
-        await UsersJoinedLog.create({
-          date: moment().format('L'),
-          description: req.body.name + " joined as a Customer",
-          role: "C",
-          noOfUsersJoined: 1
-        })
-
-        flashMessage(res, 'success', email + ' registered successfully');
-        res.redirect("/login");
-      } catch (e) {
-        console.log(e);
-        res.redirect("/register");
-      }
-    }else{
-      res.redirect("/register");
-    }
+  }
+  if (password != password2) {
+    flashMessage(res, 'error', 'Passwords do not match');
+    isValid = false;
     
+    return res.redirect("/register");
+
+
+  }
+
+  try {
+    if (
+      (await User.findOne({
+        where: { name: req.body.name },
+      })) ||
+      (await User.findOne({ where: { email: req.body.name } }))
+    ) {
+      flashMessage(res, 'error', 'Name or email is not unique');
+      console.log("Name or email is not unique");
+
+      return res.redirect("/register");
+    }
+    await User.create({
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+      gender: req.body.gender,
+      phoneNumber: req.body.phoneNumber
+
     });
+
+    await UsersJoinedLog.create({
+      date: moment().format('L'),
+      description: req.body.name + " joined as a Customer",
+      role: "C",
+      noOfUsersJoined: 1
+    })
+
+    flashMessage(res, 'success', email + ' registered successfully');
+    res.redirect("/login");
+  } catch (e) {
+    console.log(e);
+    res.redirect("/register");
+  }
+});
 
 router.post('/login',
   passport.authenticate('local', {
-      // Failure redirect URL 
-      failureRedirect: '/login',
-      /* Setting the failureFlash option to true instructs Passport to flash 
-      an error message using the message given by the strategy's verify callback.
-      When a failure occur passport passes the message object as error */
-      failureFlash: true    
+    // Failure redirect URL 
+    failureRedirect: '/login',
+    /* Setting the failureFlash option to true instructs Passport to flash 
+    an error message using the message given by the strategy's verify callback.
+    When a failure occur passport passes the message object as error */
+    failureFlash: true
   }), userController.loginRedirect);
 
 function checkAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        
-        return next()
-    }
+  if (req.isAuthenticated()) {
 
-    res.redirect("/profile")
-    }
+    return next()
+  }
 
-router.get('/logout',ensureAuthenticated, (req, res) => {
-    const message = 'You Have Logged out';
-    flashMessage(res, 'success', message);
-    req.logout();
-    res.redirect('/');
+  res.redirect("/profile")
+}
+
+router.get('/logout', ensureAuthenticated, (req, res) => {
+  const message = 'You Have Logged out';
+  flashMessage(res, 'success', message);
+  req.logout();
+  res.redirect('/');
 });
 
 router.get('/sellerRegister', (req, res) => {
-    res.render('seller/sellerRegister');
+  res.render('seller/sellerRegister');
 });
 
 
 router.post('/sellerRegister', async function (req, res) {
 
-    let { name, email, password, password2 } = req.body;
+  let { name, email, password, password2 } = req.body;
 
-    let isValid = true;
-    if (password.length < 6) {
-        flashMessage(res, 'error', 'Password must be at least 6 char-acters');
-        isValid = false;
-    }
-    if (password != password2) {
-        flashMessage(res, 'error', 'Passwords do not match');
-        isValid = false;
-    }
-    
-    try {
-        if (
-          (await User.findOne({
-            where: { name: req.body.name },
-          })) ||
-          (await User.findOne({ where: { email: req.body.name } }))
-        ) {
-          flashMessage(res, 'error', 'Name or email is not unique');
-          console.log("Name or email is not unique");
-  
-          return res.redirect("/sellerRegister");
-        }
-        await User.create({
-          name: req.body.name,
-          email: req.body.email,
-          password: req.body.password,
-          gender: req.body.gender,
-          phoneNumber: req.body.phoneNumber,
-          role: "S"
+  let isValid = true;
+  if (password.length < 6) {
+    flashMessage(res, 'error', 'Password must be at least 6 char-acters');
+    isValid = false;
+  }
+  if (password != password2) {
+    flashMessage(res, 'error', 'Passwords do not match');
+    isValid = false;
+  }
 
-        });
-        await UsersJoinedLog.create({
-          date: moment().format('L'),
-          description: req.body.name + " joined as a Seller",
-          role: "S",
-          noOfUsersJoined: 1
-        })
-        flashMessage(res, 'success', email + ' registered Seller Account successfully');
-        res.redirect("/login");
-      } catch (e) {
-        console.log(e);
-        res.redirect("/sellerRegister");
-      }
+  try {
+    if (
+      (await User.findOne({
+        where: { name: req.body.name },
+      })) ||
+      (await User.findOne({ where: { email: req.body.name } }))
+    ) {
+      flashMessage(res, 'error', 'Name or email is not unique');
+      console.log("Name or email is not unique");
+
+      return res.redirect("/sellerRegister");
+    }
+    await User.create({
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+      gender: req.body.gender,
+      phoneNumber: req.body.phoneNumber,
+      role: "S"
+
     });
+    await UsersJoinedLog.create({
+      date: moment().format('L'),
+      description: req.body.name + " joined as a Seller",
+      role: "S",
+      noOfUsersJoined: 1
+    })
+    flashMessage(res, 'success', email + ' registered Seller Account successfully');
+    res.redirect("/login");
+  } catch (e) {
+    console.log(e);
+    res.redirect("/sellerRegister");
+  }
+});
 
 
-router.get('/requests', (req, res) => {
-  res.render('services/requests')
+router.get('/user/requests', ensureAuthenticated, async (req, res) => {
+  let requests = await Request.findAll({
+    include: { all: true, nested: true },
+    where: {
+      [Op.or]: [
+        { userId: req.user.id },
+        { "$tailor.userId$": req.user.id }
+      ]
+
+    }
+  })
+  // console.log(requests)
+  res.render('services/requests', { requests })
 })
 
 module.exports = router;

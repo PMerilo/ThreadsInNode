@@ -11,6 +11,7 @@ const Reward = require('../models/Reward')
 const ensureAuthenticated = require("../views/helpers/auth");
 const ensureAdminAuthenticated = require("../views/helpers/adminAuth");
 const Request = require('../models/Request');
+const Tailor = require('../models/Tailor');
 
 router.all('/*', ensureAdminAuthenticated, function (req, res, next) {
     req.app.locals.layout = 'admin'; // set your layout here
@@ -50,9 +51,9 @@ router.post('/requests/edit', async (req, res) => {
     await Request.update({ status: req.body.status }, {
         where: {
           id: req.body.id
-        }
+        },
     });
-    return res.json({})
+    return res.json({});
 });
 
 router.delete('/requests/delete', async (req, res) => {
@@ -253,6 +254,16 @@ router.post('/deleteVoucher', ensureAuthenticated, (req, res) => {
     flashMessage(res, 'success', name + " Deleted successfully");
     res.redirect("/admin/manageVouchers")
 })
+
+router.get('/tailor/register', async (req, res) => {
+    res.render("admin/tailor")
+});
+
+router.post('/tailor/register', async (req, res) => {
+    await Tailor.create({userId: req.user.id})
+    flashMessage(res,"success", 'Registered as Tailor Successfully');
+    res.redirect("/admin")
+});
 
 module.exports = router;
 

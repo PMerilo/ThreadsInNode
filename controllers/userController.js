@@ -8,7 +8,7 @@ const loginRedirect = (req, res) => {
     if(role=="C"){
       flashMessage(res, 'success', "Success You are logged in as: "+ req.user.name);
       res.redirect(redirectTo || '/profile');
-    } else if(role == "A"){
+    } else if(role == "A" || "T"){
       flashMessage(res, 'success', "Success You are logged in as Administrator: "+ req.user.name);
       res.redirect(redirectTo || "/admin")
     }else if(role=="S"){

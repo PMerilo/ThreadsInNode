@@ -15,6 +15,7 @@ const api = require("./routes/api")
 const bodypassword = require('body-parser')
 const GoogleAuth = require("./config/passportGoogleAuth")
 const DBConnection = require('./config/DBConnection');
+const Request = require('./models/Request')
 
 app.use(bodypassword.json())
 app.use(bodypassword.urlencoded({extended: false}))
@@ -89,6 +90,22 @@ app.engine(
 
 			setVar(name, value, options) {
 				options.data.root[name] = value;
+			},
+
+			async options() {
+				return res.json({
+					total: await Request.count(),
+					rows: await Request.findAll({
+						where: {
+							[Op.or]: [
+								{ userId: req.user.id },
+								{ tailorID: req.user.id }
+							]
+			
+						},
+						include: ['service', "user"],
+					})
+				})
 			}
 		},
 	})
