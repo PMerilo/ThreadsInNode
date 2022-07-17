@@ -16,7 +16,6 @@ Reward.init({
         discount_amount: { type: sequelize.INTEGER }, 
         quantity: {type: sequelize.INTEGER},
         expiry_date:{type:sequelize.DATE}
-        
 },
     {
         freezeTableName: true,

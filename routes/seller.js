@@ -60,6 +60,7 @@ router.post('/addProduct',ensureAuthenticated, async function (req,res) {
             price: req.body.price,
             quantity: req.body.quantity,
             category: req.body.category,
+            wishlistcount: 0,
             Owner:req.user.name,
             OwnerID:req.user.id
             

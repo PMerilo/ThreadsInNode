@@ -1,9 +1,8 @@
 <link rel="stylesheet" href="styles/homepage.css">
 <link rel="stylesheet" href="styles/product.css">
-<img src="images/banner.jpg" alt="placeholder" id="banner" width="90%" class="img-responsive mt-5">
 <div class="container">
   <div class="row mt-3">
-    {{#each products}}
+    {{#each wishlistproducts}}
     <div class="col-12 col-xs-12 col-md-6 col-lg-4 col-xl-3" id="product_card">
       <div class="card">
         <img class="card-img-top product-image" src="/images/items/11.jpg" alt="Card image cap" width="153px"
@@ -51,28 +50,13 @@
                         </svg>
                       </div>
                     </button>
-                    {{!-- <form action="/addtoCart" method="POST">
-                      <input type="hidden" value="{{ this.sku }}" name="sku" id="sku">
-                      <input type="hidden" value="{{this.name}}" name="name" id="name">
-                      <input type="hidden" value="{{this.description}}" name="description" id="description">
-                      <input type="hidden" value="{{this.price}}" name="price" id="price">
-                      <input type="hidden" value="{{this.category}}" name="category" id="category">
-
-                      <input type="hidden" value="1" name="qtyPurchased" id="qtyPurchased">
-
-
-                      <button value="" class="btn btn-primary shop-item-button" value="1"
-                        onclick="addtocartClicked(this)" data-bs-dismiss="modal">Add to Cart</button>
-                    </form> --}}
 
                     <button type="button" value="{{ this.sku }}" class="wishlist btn bx bx-bookmark-heart" style="font-size: 1.75em;"
                       onclick="wishList(this)"></button>
                   </div>
-
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>
@@ -92,4 +76,3 @@
     e.preventDefault();
   }));
 </script>
-
