@@ -58,8 +58,8 @@ router.post('/register', async function (req, res) {
         flashMessage(res, 'error', 'Passwords do not match');
         isValid = false;
     }
-    
-    try {
+    if(isValid == true){
+      try {
         if (
           (await User.findOne({
             where: { name: req.body.name },
@@ -93,6 +93,10 @@ router.post('/register', async function (req, res) {
         console.log(e);
         res.redirect("/register");
       }
+    }else{
+      res.redirect("/register");
+    }
+    
     });
 
 router.post('/login',

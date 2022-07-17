@@ -21,6 +21,11 @@
         <li class="nav-item">
           <a class="nav-link" href="/seller/addProduct">Add Product</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/seller/reports">Dashboard</a>
+        </li>
+        
+        
 
       </ul>
     </div>
@@ -62,6 +67,9 @@
         <li class="nav-item">
           <a class="nav-link" href="/CustomerService">Support</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/newsLetter">News Letter</a>
+        </li>
 
       </ul>
       {{/equals}}
@@ -79,7 +87,7 @@
         <span class="badge badge-danger badge-counter">{{user.MessagesCount}}</span>
         </a>
         <!-- Dropdown - Messages -->
-        <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+        <div class="dropdown-list dropdown-menu dropdown-menu-end shadow animated--grow-in"
         aria-labelledby="messagesDropdown">
         <h6 class="dropdown-header">
          Message Center
@@ -129,6 +137,9 @@
             <li>
               <a class="dropdown-item" href="/seller/addProduct">Add Products</a>
             </li>
+            <li>
+              <a class="dropdown-item" href="/seller/reports">Dashboard</a>
+            </li>
             
             
             
@@ -152,7 +163,7 @@
               <a class="dropdown-item" href="">My Wishlist</a>
             </li>
             <li>
-              <a class="dropdown-item" href="/ticketHistory">Past Tickets</a>
+              <a class="dropdown-item" href="/ticketHistory">Pending Tickets</a>
             </li>
             <li>
               <a class="dropdown-item" href="">{{user.spools}} spools</a>

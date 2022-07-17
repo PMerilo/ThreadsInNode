@@ -91,13 +91,13 @@ img{
 				<div class="form-group">
                     <div class="col-lg-6">
 					<label for="password">Password</label>
-					<input type="password" name="password" class="form-control" value="{{password1}}" required>
+					<input type="password" name="password" class="form-control" value="{{password1}}" min="6" required>
                     </div>
 				</div>
 				<div class="form-group">
                     <div class="col-lg-6">
 					<label for="password2">Confirm Password</label>
-					<input type="password" name="password2" class="form-control" value="{{password2}}" required>
+					<input type="password" name="password2" class="form-control" value="{{password2}}" min="6"required>
                     </div>
 				</div>
                            
@@ -111,12 +111,10 @@ img{
                     <p>Have an account? <a href="/login"><strong>Login</strong></a></p>
                     <p>Forgot Password? <a href="/forgotPassword"><strong>Reset Password</strong></a></p>
                     <p><a href="/login-google" class="btn btn-google btn-user btn-block">
-                    <i class="bx bx-google fa-fw"></i> Register with Google
+                    <i class="bx bx-google fa-fw"></i> Register Or Login with Google
                     </a></p>
                     
-                    <a href="index.html" class="btn btn-facebook btn-user btn-block">
-                        <i class="fab fa-facebook-f fa-fw"></i> Register with Facebook
-                    </a>
+                    
               
             
             </div>

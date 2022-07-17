@@ -31,7 +31,9 @@
         <div class="card-body">
           <div class="row mb-5">
             <h5 class="col-10 card-title mb-0 fs-3">{{user.name}}</h5>
-            
+            {{!-- {{if user.name = "Ben"}}
+            hi
+            {{/if}} --}}
             <a class='col-1 btn btn-outline-dark p-1 border-0' href="/editProfile"><i class="bi bi-pencil-square" title="Update Profile"></i></a>
             <a class='col-1 btn btn-outline-dark p-1 border-0' href="/logout"><i class="bi bi-box-arrow-left" title="Logout"></i></a>
             
@@ -49,6 +51,13 @@
             <p class="col-7">{{user.phoneNumber}}</p>
           </div>
           <div class="row">
+          {{#if user.newsLetter}}
+          <div class="row">
+            <p class="col-5">Subscribed to NewsLetter ☆</p>
+            
+          </div>
+          {{else}}
+          {{/if}}
             <p class="col-5">Password: </p>
             
             <a class="col-7" href="/changePassword">Change Password</a>
@@ -57,11 +66,11 @@
           <div class="row">
             
             <form action="" style="margin-top: 10px;" method="POST">
-              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal_">
+              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal_{{this.id}}">
                 Delete Account
               </button>
 
-              <div class="modal" id="myModal_">
+              <div class="modal" id="myModal_{{this.id}}">
                 <div class="modal-dialog">
                   <div class="modal-content">
 
@@ -71,7 +80,7 @@
                     </div>
 
                     <div class="modal-body">
-                    , are you sure you want to delete your account? You will no longer have an account with us..
+                    {{user.name}}, are you sure you want to delete your account? You will no longer have an account with us..
                     </div>
 
                     <div class="modal-footer">

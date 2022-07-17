@@ -21,7 +21,7 @@ router.get('/', (req, res) => {
     res.render("admin/adminBase")
 })
 
-router.get('/adminProfile', (req, res) => {
+router.get('/profile', (req, res) => {
     res.render("admin/adminProfile")
 })
 

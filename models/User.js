@@ -67,6 +67,10 @@ class User extends sequelize.Model {
         allowNull: false,
         defaultValue: 0
       },
+      newsLetter: {
+        type: sequelize.DataTypes.INTEGER,
+        defaultValue: false
+      },
     },
     {
       freezeTableName: true,

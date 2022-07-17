@@ -12,9 +12,9 @@
                             <th>Image</th>
                             <th>Barcode</th>
                             <th>Item</th>
-							              <th>Price</th>
+                            <th>Price</th>
                             <th>Quantity</th>
-							              <th>More Info</th>
+                            <th>More Info</th>
                             <th>Restock</th>
                             <th>Edit Product</th>
                             <th>Delete Item</th>
@@ -43,16 +43,16 @@
                             <td>${{this.price}}</td>
                             <td>{{this.quantity}}</td>
                             <td>
-                                <button style="margin-top: 15px;" class="btn btn-outline btn-info" data-toggle="modal" data-target="#Modal-MoreInfo--{{this.sku}}">More Info</button>
+                                <button style="margin-top: 15px;" class="btn btn-outline btn-info" data-bs-toggle="modal" data-bs-target="#Modal-MoreInfo--{{this.sku}}">More Info</button>
                             </td>
                             <td>
-                                <button style="margin-top: 15px;" class="btn btn-outline btn-secondary" data-toggle="modal" data-target="#Modal-Restock--{{this.sku}}">Restock Item</button>
+                                <button style="margin-top: 15px;" class="btn btn-outline btn-secondary" data-bs-toggle="modal" data-bs-target="#Modal-Restock--{{this.sku}}">Restock Item</button>
                             </td>
                             <td>
                                 <a href="/seller/editProduct/{{this.sku}}"><button style="margin-top: 15px;" class="btn btn-outline btn-warning" onclick="/seller/editProduct">Edit Item</button></a>
                             </td>
                             <td>       
-                                <button class="btn btn-outline btn-danger" type="submit" data-toggle="modal" data-target="#Modal-Delete--{{this.sku}}">Delete Item</button>
+                                <button class="btn btn-outline btn-danger" type="submit" data-bs-toggle="modal" data-bs-target="#Modal-Delete--{{this.sku}}">Delete Item</button>
                             </td>
                         </tr>
                         {{/each}}
@@ -76,7 +76,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">{{this.name}}</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
@@ -91,7 +91,7 @@
 
                   </div>
                    <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
 
                     </div>
                 </div>
@@ -106,7 +106,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Restock {{this.name}}</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
@@ -117,7 +117,7 @@
                   </div>
 
                    <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
                     <input id="uuid" name="uuid" type="hidden" value="{{this.sku}}">
                     <button class="btn btn-success" type="submit">Restock</button>
 
@@ -135,7 +135,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Delete {{this.name}} Confirmation</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
@@ -157,7 +157,7 @@
                     <input type="hidden" name="sku" id="sku" value="{{this.sku}}">
                     <input type="hidden" name="name" id="name" value="{{this.name}}">
                     <button class="btn btn-danger" type="submit">Delete</button>
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
 
                     </div>
                 </div>
