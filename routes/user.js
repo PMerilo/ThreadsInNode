@@ -8,6 +8,9 @@ const User = require("../models/User")
 const UsersJoinedLog = require("../models/Logs/JoinedUsersLogs")
 const ensureAuthenticated = require("../views/helpers/auth");
 const moment = require('moment')
+const Request = require('../models/Request')
+const { Op } = require('sequelize');
+
 
 const userController = require('../controllers/userController')
 
@@ -184,7 +187,18 @@ router.post('/sellerRegister', async function (req, res) {
 
 
 router.get('/user/requests', ensureAuthenticated, async (req, res) => {
-  res.render('services/requests')
+  let requests = await Request.findAll({
+    include: { all: true, nested: true },
+    where: {
+      [Op.or]: [
+        { userId: req.user.id },
+        { "$tailor.userId$": req.user.id }
+      ]
+
+    }
+  })
+  // console.log(requests)
+  res.render('services/requests', { requests })
 })
 
 module.exports = router;

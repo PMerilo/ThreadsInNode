@@ -11,7 +11,8 @@ const Ticket = require('../models/Ticket')
 const User = require('../models/User')
 const Service = require('../models/Service')
 
-const JoinedUsersLogs = require('../models/Logs/JoinedUsersLogs')
+const JoinedUsersLogs = require('../models/Logs/JoinedUsersLogs');
+const Tailor = require('../models/Tailor');
 
 // If drop is true, all existing tables are dropped and recreated
 const setUpDB = (drop) => {
@@ -25,9 +26,11 @@ const setUpDB = (drop) => {
 
             User.hasMany(Request)
             User.hasMany(Appointment)
+            User.hasOne(Tailor, {foreignKey: {allowNull: false}})
 
             Request.belongsTo(User)
             Request.hasMany(Appointment)
+            Request.belongsTo(Tailor)
             Request.belongsTo(Service, { as: 'service' });
 
             Appointment.belongsTo(Request)
@@ -35,6 +38,9 @@ const setUpDB = (drop) => {
 
 
             Service.hasMany(Request, { as: 'requests'})
+
+            Tailor.belongsTo(User)
+            Tailor.hasMany(Request)
 
             mySQLDB.sync({
                 alter: true,

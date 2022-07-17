@@ -1,13 +1,15 @@
 {{setVar "scriptsPath" "_serviceScripts"}}
 
 
-<div class="card p-2">
-  <h2>My Requests</h2>
+{{!-- <div class="card">
+  <div class="card-header">
+  </div>
   <div id="toolbar">
     <button></button>
   </div>
   <table id="reqTable" data-toggle="table" data-url="/api/requests" data-detail-view="true"
-    data-detail-view-by-click="false" data-detail-view-icon="false" data-detail-formatter="apptDetailFormatter" data-toolbar="#toolbar">
+    data-detail-view-by-click="false" data-detail-view-icon="false" data-detail-formatter="apptDetailFormatter"
+    data-toolbar="#toolbar">
     <thead>
       <tr>
         <th scope="col" data-field="title">Request Title</th>
@@ -15,12 +17,58 @@
         <th scope="col" data-field="tailorID">Tailor</th>
         <th scope="col" data-field="description">Description</th>
         <th scope="col" data-field="status">Status</th>
-        <th scope="col" data-field="appointments" data-formatter="apptFormatter" data-events="apptEvents">Appointments</th>
+        <th scope="col" data-field="appointments" data-formatter="apptFormatter" data-events="apptEvents">Appointments
+        </th>
         <th scope="col" data-field="operate" data-formatter="operateFormatter" data-events="operateEvents"></th>
       </tr>
     </thead>
   </table>
+</div> --}}
+
+<div>
+  <h2>My Requests</h2>
 </div>
+<hr>
+{{#each requests}}
+<div class="card">
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <a href="" class="text-black stretched-link">
+        <h3 class="m-0">{{service.name}} - {{title}}</h3>
+      </a>
+      <p class="m-0">{{tailor.user.name}}</p>
+    </li>
+    <li class="list-group-item">
+      <p>
+        {{description}}
+      </p>
+    </li>
+    <li class="list-group-item">
+      <a class="stretched-link" href="">
+        Appointment
+      </a>
+      <i class="bi bi-chevron-right float-end"></i>
+    </li>
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <div class="my-auto">
+        {{status}}
+      </div>
+      <div class="my-auto">
+        {{!-- <button href='' class="btn btn-primary mx-2" style="width: 110px;" data-bs-toggle="modal"
+          data-bs-target="">
+          View more
+        </button> --}}
+        <button class="btn btn-danger delete" style="width: 80px;" data-bs-toggle="modal" data-bs-target="#delModal"
+          title="Delete">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+    </li>
+
+  </ul>
+</div>
+{{/each}}
+
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
