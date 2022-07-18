@@ -8,6 +8,7 @@ const User = require("../models/User")
 const Ticket = require("../models/Ticket")
 const Feedback = require("../models/Feedback")
 const Product = require("../models/Product")
+const ProductReview = require("../models/ProductReview")
 const Reward = require('../models/Reward')
 const Wishlist = require('../models/Wishlist')
 const Message = require("../models/Messages")
@@ -620,6 +621,21 @@ router.post('/newsLetterUnSubscribe', ensureAuthenticated,async (req, res) => {
     flashMessage(res, 'success', "You have unsubscribed to our newsletter! Come checkback sometime soon!");
     User.update({newsLetter:false},{where: {id:req.user.id}})
     res.redirect("/newsLetter" );
+});
+
+
+router.get('/ProductReview/:sku', async (req, res) => {
+    let product = await Product.findOne({where:{sku:req.params.sku}})
+    console.log(product.OwnerID)
+    let review = await ProductReview.findOne({where:{sku:req.params.sku}})
+    res.render('ProductReview.handlebars',{product,review});
+});
+
+router.get('/ProductReview/:sku', async (req, res) => {
+    let product = await Product.findOne({where:{sku:req.params.sku}})
+    console.log(product.OwnerID)
+    let review = await ProductReview.findOne({where:{sku:req.params.sku}})
+    res.render('ProductReview.handlebars',{product,review});
 });
 
 

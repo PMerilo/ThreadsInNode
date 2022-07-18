@@ -1,0 +1,231 @@
+
+<link rel="stylesheet" href="/styles/productreview.css">
+<div class = "card-wrapper">
+  <div class = "card">
+    <!-- card left -->
+    <div class = "product-imgs">
+      <div class = "itemimage-display">
+        <div class = "itemimage-showcase">
+          <img src = "https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/shoe_1.jpg" alt = "shoe image" class="itemimage"> 
+          
+          
+        </div>
+      </div>
+      <div class = "itemimage-select">
+        <div class = "itemimage-item">
+          <a href = "#" data-id = "1">
+            
+          </a>
+        </div>
+        
+      </div>
+    </div>
+    <!-- card right -->
+    <div class = "product-content">
+      <h2 class = "product-title">{{product.name}}</h2>
+      
+      <div class = "product-rating">
+        <i class = "bx bx-star"></i>
+        <i class = "bx bx-star"></i>
+        <i class = "bx bx-star"></i>
+        <i class = "bx bx-star"></i>
+        <i class = "bx bx-star-half-alt"></i>
+        <span>4.7(21)</span>
+      </div>
+
+      <div class = "product-price">
+       
+        <p class = "new-price">Price: <span>${{product.price}}</span></p>
+      </div>
+
+      <div class = "product-detail">
+        <h2>about this item: </h2>
+        <p>{{product.description}}</p>
+        
+        <ul>
+          <li>Stock: <span>{{product.quantity}}</span></li>
+          <li>Category: <span>{{product.category}}</span></li>
+          <li>Seller: <span>{{product.Owner}}</span></li>
+          {{!-- <li>Shipping Area: <span>All over the world</span></li>
+          <li>Shipping Fee: <span>Free</span></li> --}}
+        </ul>
+      </div>
+
+      <div class = "purchase-info">
+        {{!-- <input type = "number" min = "0" value = "1"> --}}
+        <button type = "button" class = "btn">
+          Add to Cart <i class="bi bi-cart"></i>
+        </button>
+        <button type = "button" class = "btn">
+          Add to Wishlist &nbsp;<i class = "bi bi-heart"></i>
+        </button>
+        
+      </div>
+
+      {{!-- <div class = "social-links">
+        <p>Share At: </p>
+        <a href = "#">
+          <i class = "fab fa-facebook-f"></i>
+        </a>
+        <a href = "#">
+          <i class = "fab fa-twitter"></i>
+        </a>
+        <a href = "#">
+          <i class = "fab fa-instagram"></i>
+        </a>
+        <a href = "#">
+          <i class = "fab fa-whatsapp"></i>
+        </a>
+        <a href = "#">
+          <i class = "fab fa-pinterest"></i>
+        </a>
+      </div> --}}
+    </div>
+  </div>
+</div>
+
+<style>
+    @import url(http://fonts.googleapis.com/css?family=Calibri:400,300,700);
+
+
+
+    .card-no-border .card {
+        border: 0px;
+        border-radius: 4px;
+        -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.05);
+        box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.05)
+    }
+
+    .card-body {
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        padding: 1.25rem
+    }
+
+    .comment-widgets .comment-row:hover {
+        background: rgba(0, 0, 0, 0.02);
+        cursor: pointer;
+    }
+
+    .comment-widgets .comment-row {
+        border-bottom: 1px solid rgba(120, 130, 140, 0.13);
+        padding: 15px;
+    }
+
+    .comment-text:hover {
+        visibility: hidden;
+    }
+
+    .comment-text:hover {
+        visibility: visible;
+    }
+
+    .label {
+        padding: 3px 10px;
+        line-height: 13px;
+        color: #ffffff;
+        font-weight: 400;
+        border-radius: 4px;
+        font-size: 75%;
+    }
+
+    .round img {
+        border-radius: 100%;
+    }
+
+    .label-info {
+        background-color: #1976d2;
+    }
+
+    .label-success {
+        background-color: green;
+    }
+
+    .label-danger {
+        background-color: #ef5350;
+    }
+
+    .action-icons a {
+        padding-left: 7px;
+        vertical-align: middle;
+        color: #99abb4;
+    }
+
+    .action-icons a:hover {
+        color: #1976d2;
+    }
+
+    .mt-100 {
+        margin-top: 50px
+    }
+
+    .mb-100 {
+        margin-bottom: 50px
+    }
+</style>
+
+<div class="container d-flex justify-content-center mt-100 mb-100">
+    <div class="row">
+        
+        <div class="col-md-12">
+            
+            <div class="card">
+                <div class="card-body">
+                    <h2>Customer Reviews</h2>
+                    <h6>Reviews of Customers who previously bought this product</h6>
+                    <hr>
+                    <a href="/CommunityFAQPage/ViewComments">View Your Comments</a>
+                    <br>
+                    <br>
+                    <h4 class="card-title">Recent Comments</h4>
+                    <h6 class="card-subtitle">Latest Comments section by date</h6>
+                    
+                </div>
+                {{#each review}}
+                
+                <div class="comment-widgets m-b-20">
+                    <div class="d-flex flex-row comment-row">
+                        <div class="p-2"></div>
+                        <div class="comment-text w-100">
+                            <h5>{{this.title}}</h5>
+                            <div class="comment-footer">
+                                <span class="date">{{this.dateAdded}}</span>
+                                <span class="label label-info">{{this.owner}}</span> <span class="action-icons">
+                                    
+                                    
+                                    <a href="#" data-abc="true"><i class="bx bx-heart"></i></a>
+                                    
+                                </span>
+                            </div>
+                            <p class="m-b-5 m-t-10">{{this.description}}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                {{/each}}
+            </div>
+
+        </div>
+        <div class="container mt-5">
+    <div class="d-flex justify-content-center row">
+        <div class="col-md-8">
+            <div class="d-flex flex-column comment-section">
+                <form action="/addComment" method="POST">
+                <div class="bg-light p-2">
+                    <label for="title">Title</label>
+                    <input type="text" class="form-control ml-1 shadow-none" name="title" id="title" required>
+                    <br>
+                    <label for="description">Description</label>
+                    <div class="d-flex flex-row align-items-start">
+                    
+                    <textarea class="form-control ml-1 shadow-none textarea" name="description" id="description" required></textarea>
+                    </div>
+                    <div class="mt-2 text-right"><button class="btn btn-primary btn-sm shadow-none" type="submit">Post comment</button><button class="btn btn-outline-primary btn-sm ml-1 shadow-none" type="button">Cancel</button></div>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+  </div>
+    </div>
+</div>

@@ -5,12 +5,14 @@ const FAQ = require('../models/FAQ')
 const Feedback = require('../models/FAQ')
 const Message = require('../models/Messages')
 const Product = require('../models/Product')
+const ProductReview = require("../models/ProductReview")
 const Request = require('../models/Request')
 const Reward = require('../models/Reward')
 const Wishlist = require('../models/Wishlist')
 const Ticket = require('../models/Ticket')
 const User = require('../models/User')
 const Service = require('../models/Service')
+
 
 const JoinedUsersLogs = require('../models/Logs/JoinedUsersLogs');
 const Tailor = require('../models/Tailor');
