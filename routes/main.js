@@ -3,6 +3,7 @@ const router = express.Router();
 const flashMessage = require('../views/helpers/messenger');
 const sequelizeUser = require("../config/DBConfig");
 const { serializeUser } = require('passport');
+const bcrypt = require('bcryptjs');
 //Our Models
 const User = require("../models/User")
 const Ticket = require("../models/Ticket")
