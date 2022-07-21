@@ -61,6 +61,11 @@ class User extends sequelize.Model {
         allowNull: false,
         defaultValue: 0
       },
+      isban: {
+        type: sequelize.DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "F",
+      },
     },
     {
       freezeTableName: true,

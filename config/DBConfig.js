@@ -9,7 +9,7 @@ const sequelizeDB = new sequelize.Sequelize(
   {
     host: "localhost",
     dialect: "mysql",
-    port:3306
+    port: 3306
   }
 );
 
@@ -74,6 +74,11 @@ User.init(
       allowNull: false,
       defaultValue: 0
     },
+    isban: {
+      type: sequelize.DataTypes.STRING,
+      allowNull: false,
+      defaultValue: "F",
+    },
   },
   {
     freezeTableName: true,
@@ -82,70 +87,70 @@ User.init(
     modelName: "user",
   }
 );
-class Ticket extends sequelize.Model{
-    
+class Ticket extends sequelize.Model {
+
 }
 Ticket.init({
-  id:{type: sequelize.INTEGER, autoIncrement: true, primaryKey: true},
-    title: { type: sequelize.STRING,allowNull: false }, 
-    description: { type: sequelize.STRING(2000),allowNull: false }, 
-    pendingStatus: {type: sequelize.STRING,allowNull: false},
-    urgency: {type:sequelize.STRING,allowNull: false},
-    dateAdded: { type: sequelize.DATE,allowNull: false },
-    owner: {type: sequelize.STRING,allowNull: false},
-    ownerID:{type: sequelize.INTEGER, allowNull:false}
+  id: { type: sequelize.INTEGER, autoIncrement: true, primaryKey: true },
+  title: { type: sequelize.STRING, allowNull: false },
+  description: { type: sequelize.STRING(2000), allowNull: false },
+  pendingStatus: { type: sequelize.STRING, allowNull: false },
+  urgency: { type: sequelize.STRING, allowNull: false },
+  dateAdded: { type: sequelize.DATE, allowNull: false },
+  owner: { type: sequelize.STRING, allowNull: false },
+  ownerID: { type: sequelize.INTEGER, allowNull: false }
 
 },
   {
-      freezeTableName: true,
-      timestamps: true,
-      sequelize: sequelizeDB,
-      modelName: "ticket",
+    freezeTableName: true,
+    timestamps: true,
+    sequelize: sequelizeDB,
+    modelName: "ticket",
   }
 )
 
-class Feedback extends sequelize.Model{
-    
+class Feedback extends sequelize.Model {
+
 }
 Feedback.init({
-    id:{type: sequelize.INTEGER, autoIncrement: true, primaryKey: true},
-    title: { type: sequelize.STRING,allowNull: false }, 
-    description: { type: sequelize.STRING(2000),allowNull: false }, 
-    rating: {type: sequelize.FLOAT,allowNull: false},
-    remarks: {type:sequelize.STRING,allowNull: false},
-    favouriteThing: {type:sequelize.STRING,allowNull: false},
-    leastFavouriteThing: {type:sequelize.STRING,allowNull: false},
-    dateAdded: { type: sequelize.DATE,allowNull: false },
-    owner: {type: sequelize.STRING,allowNull: false},
-    ownerID:{type: sequelize.INTEGER, allowNull:false}
+  id: { type: sequelize.INTEGER, autoIncrement: true, primaryKey: true },
+  title: { type: sequelize.STRING, allowNull: false },
+  description: { type: sequelize.STRING(2000), allowNull: false },
+  rating: { type: sequelize.FLOAT, allowNull: false },
+  remarks: { type: sequelize.STRING, allowNull: false },
+  favouriteThing: { type: sequelize.STRING, allowNull: false },
+  leastFavouriteThing: { type: sequelize.STRING, allowNull: false },
+  dateAdded: { type: sequelize.DATE, allowNull: false },
+  owner: { type: sequelize.STRING, allowNull: false },
+  ownerID: { type: sequelize.INTEGER, allowNull: false }
 },
-    {
-        freezeTableName: true,
-        timestamps: true,
-        sequelize: sequelizeDB,
-        modelName: "feedback",
-    }
-)    
+  {
+    freezeTableName: true,
+    timestamps: true,
+    sequelize: sequelizeDB,
+    modelName: "feedback",
+  }
+)
 
-class Product extends sequelize.Model{
+class Product extends sequelize.Model {
 
 }
 Product.init({
-        sku:{type: sequelize.INTEGER, autoIncrement: false, primaryKey: true},
-        name: { type: sequelize.STRING }, 
-        description: { type: sequelize.STRING(2000) }, 
-        price: { type: sequelize.FLOAT }, 
-        quantity: {type: sequelize.INTEGER},
-        category:{type:sequelize.STRING}
-        
+  sku: { type: sequelize.INTEGER, autoIncrement: false, primaryKey: true },
+  name: { type: sequelize.STRING },
+  description: { type: sequelize.STRING(2000) },
+  price: { type: sequelize.FLOAT },
+  quantity: { type: sequelize.INTEGER },
+  category: { type: sequelize.STRING }
+
 },
-    {
-        freezeTableName: true,
-        timestamps: true,
-        sequelize: sequelizeDB,
-        modelName: "product",
-    }
-) 
+  {
+    freezeTableName: true,
+    timestamps: true,
+    sequelize: sequelizeDB,
+    modelName: "product",
+  }
+)
 
 
 sequelizeDB
@@ -175,25 +180,25 @@ Ticket.sync({ alter: true })
     })
   );
 Feedback.sync({ alter: true })
-.then((v) => {
-  console.log(v);
-  console.log("Successfully altered and sync");
-})
-.catch((e) =>
-  User.sync({ force: true }).then(() => {
-    console.log(e);
-    console.log("Created Feedback table");
+  .then((v) => {
+    console.log(v);
+    console.log("Successfully altered and sync");
   })
-);
+  .catch((e) =>
+    User.sync({ force: true }).then(() => {
+      console.log(e);
+      console.log("Created Feedback table");
+    })
+  );
 Product.sync({ alter: true })
-.then((v) => {
-  console.log(v);
-  console.log("Successfully altered and sync");
-})
-.catch((e) =>
-  User.sync({ force: true }).then(() => {
-    console.log(e);
-    console.log("Created Product table");
+  .then((v) => {
+    console.log(v);
+    console.log("Successfully altered and sync");
   })
-);
+  .catch((e) =>
+    User.sync({ force: true }).then(() => {
+      console.log(e);
+      console.log("Created Product table");
+    })
+  );
 module.exports = sequelizeDB;

@@ -31,7 +31,13 @@ router.get('/CustomerService', (req,res) => {
 })
 
 
-router.get('/profile',ensureAuthenticated, (req,res) => {
+router.get('/profile',ensureAuthenticated, async (req,res) => {
+    userr1 = await User.findOne({ where: { id: req.user.id } })
+    if (userr1.isban == "T"){
+        req.logout()
+        flashMessage(res, 'error', 'You have been banned! Please contact your local administrator');
+        return res.redirect('/login')
+    }
     
     res.render("profile")
 })

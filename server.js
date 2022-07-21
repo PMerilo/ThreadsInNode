@@ -87,7 +87,16 @@ app.engine(
 				return true;
 			}
 			return false;
-		}
+		},
+		isbanTrue(boo) {
+			if (boo == "T"){
+				return true;
+			}
+			return false;
+		},
+		radioCheck(value, radioValue) {
+			return (value == radioValue) ? 'checked' : '';
+		},
   
 	  },
 	})

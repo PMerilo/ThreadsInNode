@@ -142,6 +142,7 @@ router.post('/editProfile', ensureAuthenticated, async (req, res) => {
   let phoneNumber = req.body.phoneNumber;
   let gender = req.body.gender;
   User.update({ name, email, phoneNumber, gender }, { where: { id: req.user.id } })
+  flashMessage(res, 'success', 'Account successfully edited');
   res.redirect("/profile");
 
 })
