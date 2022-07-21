@@ -5,7 +5,9 @@ const sequelizeUser = require("../../config/DBConfig")
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const User = require("../../models/User")
-const ensureAuthenticated = require("../helpers/auth");
+const ensureAuthenticated = require("../helpers/auth")
+const nodemailer = require("nodemailer");
+const Mail = require("../../config/MailConfig");
 
 
 router.use((req, res, next) => {
@@ -24,6 +26,112 @@ router.get('/register', (req, res) => {
   res.render('user/register');
 });
 
+router.get('/forgetpassword', (req, res) => {
+  res.render('forgetPassword');
+});
+router.post('/forgetpassword', async (req, res) => {
+  let { email } = req.body;
+  emailvariable = email;
+  console.log(emailvariable)
+
+
+  // if (await TempUser.findOne({ where: { email: email } })){
+  //   return res.redirect('/forgetpassword_otp')
+  // }
+  if (await User.findOne({ where: { email: email } })) {
+    otp = Math.floor(100000 + Math.random() * 900000)
+    console.log(otp, 'HLEOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO HERE')
+    
+
+
+    Mail.send(res, {
+      to: email,
+      subject: "Your OTP is ready "+ otp,
+      text: "Thank you for subscribing to our news letter",
+      template: "../views/MailTemplates/NewsLetter",
+      html: `<div class="page">
+      <div class="container">
+        <div class="email_header">
+          
+          <img class="logo" src="https://raw.githubusercontent.com/PMerilo/ThreadsInNode/master/public/images/logo.png" alt="Threads In Times" />
+          <h1>Email Confirmation</h1>
+        </div>
+        <div class="email_body">
+          <p><b>Hi ,</b></p>
+          <p>Your OTP is example</b></p>
+          
+          </a>
+          <p>Thanks for supporting,<br/>
+            <b>The Threads in Times Team</b>
+          </p>
+        </div>
+        <div class="email_footer">:copyright: Threads in Times 2020</div>
+      </div>
+    </div>`
+    })
+  
+    // await TempUser.create({
+    //   email: req.body.email,
+    // })
+    flashMessage(res, 'success', 'An OTP has been sent out. Please check your email!');
+    return res.redirect('/forgetpassword_otp')
+  }
+  flashMessage(res, 'error', 'Email does not exist!');
+  return res.redirect('/forgetpassword')
+})
+
+router.get('/forgetpassword_otp', (req, res) => {
+  if (otp == "placeholder"){
+    flashMessage(res, 'error', 'You do not have permission for that page');
+    return res.redirect("/")
+  }
+  // otp = "placeholder"
+  res.render('otpPage');
+
+});
+
+router.post('/forgetpassword_otp', async (req, res) => {
+  console.log(otp)
+  if (otp == req.body.otp) {
+    console.log('hello111111')
+    otp = "placeholder"
+    otp2 = 'allowpwchange'
+    flashMessage(res, 'success', 'Valid OTP entered. Please change your password!');
+    return res.redirect('/forgetpasswordchange')
+  }
+  flashMessage(res, 'error', 'Incorrect OTP!');
+  return res.redirect('/forgetpassword_otp')
+})
+
+router.get("/forgetpasswordchange", (req, res) => {
+  console.log(otp2)
+  if (otp2 == 'disallowpwchange') {
+    flashMessage(res, 'error', 'You do not have permission for that page');
+    res.redirect('/')
+  }
+  res.render('forgetpasswordchange')
+})
+
+router.post('/forgetpasswordchange', async (req, res) => {
+  let { newpassword, newpassword2 } = req.body
+  if (newpassword.length < 6) {
+    flashMessage(res, 'error', 'Password must be at least 6 characters');
+    return res.redirect('/forgetpasswordchange')
+  }
+  if (newpassword2 != newpassword) {
+    flashMessage(res, 'error', 'New passwords do not match');
+    return res.redirect('/forgetpasswordchange')
+  }
+  // user1 = await TempUser.findOne({ where: { email: emailvariable } })
+
+  User.update({ password: newpassword }, { where: { email: emailvariable } })
+  // TempUser.destroy({ where: { email: user1.email } })
+  otp = "placeholder"
+  otp2 = "disallowpwchange"
+  emailvariable = 'placeholder'
+  flashMessage(res, 'success', 'Password updated successfully');
+  return res.redirect('/login')
+})
 
 router.post('/register', async function (req, res) {
 
@@ -31,7 +139,7 @@ router.post('/register', async function (req, res) {
 
   let isValid = true;
   if (password.length < 6) {
-    flashMessage(res, 'error', 'Password must be at least 6 char-acters');
+    flashMessage(res, 'error', 'Password must be at least 6 characters');
     isValid = false;
   }
   if (password != password2) {

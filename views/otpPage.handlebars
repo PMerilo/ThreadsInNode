@@ -1,0 +1,73 @@
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+
+    }
+
+    body {
+        background: rgb(219, 226, 226);
+    }
+
+    #rows {
+        background: white;
+        border-radius: 30px;
+        box-shadow: 12px 12px 22px grey;
+    }
+
+
+
+    img {
+        border-top-left-radius: 30px;
+        border-bottom-left-radius: 30px;
+
+    }
+
+    .btn {
+        border: none;
+        outline: none;
+        height: 50px;
+        width: 100%;
+        background-color: rgb(95, 153, 207);
+        color: white;
+        border-radius: 4px;
+        font-weight: bold;
+
+    }
+
+    .btn:hover {
+        background: white;
+        border: 1px solid;
+        color: rgb(99, 189, 184);
+
+    }
+</style>
+
+
+<section class="Form my-4 mx-5">
+    <div class="container">
+        <div class="row no-gutters" id="rows">
+            <div class="col-lg-6" style="padding: 0;">
+                <img src="images/our_model.jpg" class="img-fluid" alt="">
+            </div>
+            <div class="col-lg-6 px-5 pt-5">
+                <h1 class="font-weight-bold py-3">Enter OTP</h1>
+                <form method="POST" action="">
+                    <div class="form-group">
+                        <div class="col-lg-6">
+                            <label for="otp">OTP</label>
+                            <input type="number" name="otp" class="form-control" value="" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-6">
+                            <button type="submit" type="submit" class="btn btn-primary mt-3 mb-5">Submit password reset</button>
+                        </div>
+                    </div>
+                </form>
+                <p>Don't have an account? <a href="/register"><strong>Register here now!</strong></a></p>
+            </div>
+        </div>
+    </div>
+</section>

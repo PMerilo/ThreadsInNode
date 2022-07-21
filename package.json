@@ -24,6 +24,8 @@
     "hbs": "^4.2.0",
     "install": "^0.13.0",
     "mysql2": "^2.3.3",
+    "node-mailer": "^0.1.1",
+    "nodemailer-express-handlebars": "^5.0.0",
     "nodemon": "^2.0.16",
     "npm": "^8.9.0",
     "passport": "^0.5.2",

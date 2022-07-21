@@ -2,6 +2,9 @@
 const sequelize = require("sequelize");
 const bcrypt = require("bcrypt");
 
+
+
+
 const sequelizeDB = new sequelize.Sequelize(
   "threadsintimes",
   "admin69",
@@ -152,6 +155,24 @@ Product.init({
   }
 )
 
+class TempUser extends sequelize.Model {
+}
+
+TempUser.init(
+  {
+    email: {
+      type: sequelize.DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+  },
+  {
+    freezeTableName: true,
+    timestamps: true,
+    sequelize: sequelizeDB,
+    modelName: "Tempuser",
+  }
+);
 
 sequelizeDB
   .authenticate()
@@ -191,6 +212,17 @@ Feedback.sync({ alter: true })
     })
   );
 Product.sync({ alter: true })
+  .then((v) => {
+    console.log(v);
+    console.log("Successfully altered and sync");
+  })
+  .catch((e) =>
+    User.sync({ force: true }).then(() => {
+      console.log(e);
+      console.log("Created Product table");
+    })
+  );
+TempUser.sync({ alter: true })
   .then((v) => {
     console.log(v);
     console.log("Successfully altered and sync");

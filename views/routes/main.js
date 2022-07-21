@@ -7,6 +7,9 @@ const User = require("../../models/User")
 const Ticket = require("../../models/Ticket")
 const Feedback = require("../../models/Feedback")
 const ensureAuthenticated = require("../helpers/auth");
+otp = "placeholder"
+otp2 = "disallowpwchange"
+emailvariable = 'placeholder'
 
 
 router.use((req, res, next) => {
@@ -19,6 +22,9 @@ router.use((req, res, next) => {
 
 
 router.get('/', (req,res) => {
+    otp = "placeholder"
+    otp2 = "disallowpwchange"
+    emailvariable = 'placeholder'
     res.render("index")
 })
 
