@@ -27,6 +27,11 @@ const nodemailer = require("nodemailer");
 // const { where } = require('sequelize/types');
 const Mail = require("../config/MailConfig");
 
+// for forgetpassword
+otp = 'placeholder'
+otp2 = 'disallowpwchange'
+emailvariable = 'placeholder'
+
 router.use((req, res, next) => {
     res.locals.path = req.baseUrl;
     console.log(req.baseUrl);
@@ -254,6 +259,87 @@ router.post('/flash', (req, res) => {
 router.get('/editProfile',ensureAuthenticated, (req,res) => {
     res.render("editProfile.handlebars")
 })
+
+router.post('/profile', ensureAuthenticated, (req, res) => {
+    User.destroy({ where: { id: req.user.id } })
+    req.logout();
+    flashMessage(res, 'success', 'Account successfully deleted. Bye bye...');
+    return res.redirect("/");
+  
+  })
+  router.post('/changePassword', ensureAuthenticated, async (req, res) => {
+    userr1 = await User.findOne({ where: { id: req.user.id } })
+    const validPassword = await bcrypt.compare(req.body.oldpassword, userr1.password);
+    if (!validPassword) {
+      flashMessage(res, 'error', 'Incorrect password');
+      return res.redirect('/changePassword')
+    }
+    let { oldpassword, newpassword, newpassword2 } = req.body;
+    if (newpassword.length < 6) {
+      flashMessage(res, 'error', 'Password must be at least 6 characters');
+      return res.redirect('/changePassword')
+    }
+    if (newpassword2 != newpassword) {
+      flashMessage(res, 'error', 'New passwords do not match');
+      return res.redirect('/changePassword')
+    }
+    if (oldpassword == newpassword) {
+      flashMessage(res, 'error', 'New and old passwords are the same');
+      return res.redirect('/changePassword')
+    }
+    User.update({ password: newpassword }, { where: { id: req.user.id } })
+    flashMessage(res, 'success', 'Password updated successfully');
+    return res.redirect('/profile')
+  })
+  
+  router.post('/editProfile', ensureAuthenticated, async (req, res) => {
+    x = 0;
+    y = 0
+    userr = await User.findOne({ where: { id: req.user.id } })
+    if ((await User.findOne({ where: { email: req.body.email } })) && userr.email != req.body.email) {
+      x = 1
+    }
+    if ((await User.findOne({ where: { name: req.body.name } })) && userr.name != req.body.name) {
+      y = 1
+    }
+    if (x == 1 && y != 1) {
+      flashMessage(res, 'error', 'This email has already been registered');
+      return res.redirect("/editProfile");
+    }
+    else if (x != 1 && y == 1) {
+      flashMessage(res, 'error', 'This name has already been registered');
+      return res.redirect("/editProfile");
+    }
+    else if (x == 1 && y == 1) {
+      flashMessage(res, 'error', 'Both name and email has already been registered');
+      return res.redirect("/editProfile");
+    }
+  
+    let name = req.body.name;
+    let email = req.body.email;
+    let phoneNumber = req.body.phoneNumber;
+    let gender = req.body.gender;
+    User.update({ name, email, phoneNumber, gender }, { where: { id: req.user.id } })
+    flashMessage(res, 'success', 'Account successfully edited');
+    res.redirect("/profile");
+  
+  })
+  
+  function checkAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+  
+      return next()
+    }
+  
+    res.redirect("/profile")
+  }
+  
+  router.get('/logout', ensureAuthenticated, (req, res) => {
+    const message = 'You Have Logged out';
+    flashMessage(res, 'success', message);
+    req.logout();
+    res.redirect('/');
+  });
 
 router.get('/changePassword',ensureAuthenticated, (req,res) => {
     res.render("userEditPassword.handlebars")
