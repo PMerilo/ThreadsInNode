@@ -234,7 +234,7 @@ router.get('/CustomerService', (req,res) => {
 })
 
 
-router.get('/profile',ensureAuthenticated, (req,res) => {
+router.get('/profile',ensureAuthenticated, async (req,res) => {
     
     res.render("profile")
 })

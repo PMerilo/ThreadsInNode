@@ -22,7 +22,7 @@ router.get('/', (req, res) => {
     res.render("admin/adminBase")
 })
 
-router.get('/profile', (req, res) => {
+router.get('/profile', ensureAuthenticated, (req, res) => {
     res.render("admin/adminProfile")
 })
 
