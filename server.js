@@ -106,9 +106,33 @@ app.engine(
 						include: ['service', "user"],
 					})
 				})
-			}
+			},
+			identifygender(v1, v2) {
+				if (String(v1) == v2) {
+					return true;
+					
+				}
+				return false;
+			},
+			phonenumbercheck(number) {
+				if (number) {
+					return true;
+				}
+				return false;
+			},
+			isbanTrue(boo) {
+				if (boo == "T"){
+					return true;
+				}
+				return false;
+			},
+			radioCheck(value, radioValue) {
+				return (value == radioValue) ? 'checked' : '';
+			},
+	  
 		},
-	})
+		
+	  })
   );
 
 app.set('view engine', 'handlebars');

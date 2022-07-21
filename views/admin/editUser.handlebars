@@ -1,4 +1,3 @@
-
 <style>
   * {
     padding: 0;
@@ -73,6 +72,25 @@
                   <option value="Female">Female</option>
                   {{/if}}
                 </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-lg-6">
+                <label for="isban">BAN</label><br>
+                <label for="true">True</label>
+                <input type="radio" value="T" id="true"name="isban" {{radioCheck user.isban "T" }}>
+                <label for="false">False</label>
+                <input type="radio" value="F" id="false" name="isban" {{radioCheck user.isban "F" }}>
+
+
+                {{!-- <select class="form-control" name="isban">
+                  <option value="{{user.isban}}">{{user.isban}}</option>
+                  {{#if (isbanTrue user.isban)}}
+                  <option value="F">F</option>
+                  {{else}}
+                  <option value="T">T</option>
+                  {{/if}}
+                </select> --}}
               </div>
             </div>
 

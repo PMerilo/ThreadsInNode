@@ -18,10 +18,6 @@ const sequelize = new Sequelize(
 );
 
 
-
-
-
-
 //Chart Section
 
 module.exports = sequelize;
