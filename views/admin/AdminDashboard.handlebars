@@ -8,10 +8,93 @@
 
     <!-- Content Row -->
     <div class="row">
+        <!-- Total Number Of Users  -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Our Registered Users (Total)</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Spending Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Spending (Total)</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders Card  -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Orders
+                            </div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"></div>
+                                </div>
+<!--                                <div class="col">-->
+<!--                                    <div class="progress progress-sm mr-2">-->
+<!--                                        <div class="progress-bar bg-info" role="progressbar"-->
+<!--                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"-->
+<!--                                            aria-valuemax="100"></div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Number of Messages Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Messages</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
 
         <div class="col-xl-8 col-lg-7">
 
-            <!-- Area Chart -->
+            <!-- Area Chart Users Joined By Day -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">User Activity</h6>
@@ -22,7 +105,41 @@
                     </div>
                     <hr>
                     <div class="text-center">
-                        <h5 class="text-gray-900 m-0">No. of Users Joined</h5>
+                        <h5 class="text-gray-900 m-0">No. of Users Joined By Day</h5>
+                        {{!-- <span class="text-gray-600 small">Last 7 days</span> --}}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Area Chart Users Joined By Month -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">User Activity</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="NoOfUsersJoinedChartMonth"></canvas>
+                    </div>
+                    <hr>
+                    <div class="text-center">
+                        <h5 class="text-gray-900 m-0">No. of Users Joined by Month</h5>
+                        {{!-- <span class="text-gray-600 small">Last 7 days</span> --}}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Area Chart Users Joined By Year -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">User Activity</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="NoOfUsersJoinedChartYear"></canvas>
+                    </div>
+                    <hr>
+                    <div class="text-center">
+                        <h5 class="text-gray-900 m-0">No. of Users Joined By Year</h5>
                         {{!-- <span class="text-gray-600 small">Last 7 days</span> --}}
                     </div>
                 </div>

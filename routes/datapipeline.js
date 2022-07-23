@@ -40,7 +40,7 @@ router.get('/NoOfUsersJoined', async (req, res) => {
     
   });
 
-  df = new dfd.DataFrame(data,{columns:["Dates","NoOfUsersJoined"]})
+  df = new dfd.DataFrame(data,{columns:cols})
   group_df = df.groupby(["Dates"]).sum()
   console.log(group_df)
   const df2 = dfd.toJSON(group_df,{format:"json"})
@@ -53,10 +53,47 @@ router.get('/NoOfUsersJoinedMonth', async (req, res) => {
 
   let data = [];
   let cols = ["Dates","NoOfUsersJoined"];
-
-
+  
   usersJoined.forEach(element => {
     let rawData = [element.date, element.noOfUsersJoined];
+    rawData[0] = moment(rawData[0]).format("MMMM")
+    data.push(rawData)
+    
+    
+  });
+
+  df = new dfd.DataFrame(data,{columns:["Dates","NoOfUsersJoined"]})
+  group_df = df.groupby(["Dates"]).sum()
+  console.log(group_df)
+  const df2 = dfd.toJSON(group_df,{format:"json"})
+  res.status(200).json({ 'data':df2 })
+});
+
+router.get('/NoOfUsersJoinedYear', async (req, res) => {
+  const usersJoined = await UsersJoinedLog.findAll({where: {role:"C"}});
+
+
+  let data = [];
+  let cols = ["Dates","NoOfUsersJoined"];
+  // var months = {
+  //   1: "January",
+  //   2: "February",
+  //   3: "March",
+  //   4: "April",
+  //   5: "May",
+  //   6: "June",
+  //   7: "July",
+  //   8: "August",
+  //   9: "September",
+  //   10: "October",
+  //   11: "November",
+  //   12: "December"
+
+
+  // };
+  usersJoined.forEach(element => {
+    let rawData = [element.date, element.noOfUsersJoined];
+    rawData[0] = moment(rawData[0]).format("YYYY")
     data.push(rawData)
     
     

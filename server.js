@@ -2,6 +2,7 @@ const express = require("express")
 const { engine } = require('express-handlebars');
 const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-access');
 const Handlebars = require('handlebars');
+const handlebarhelper = require("./views/helpers/handlebars");
 const app = express()
 const path = require('path');
 const session = require('express-session');
@@ -75,6 +76,7 @@ app.use(function (req, res, next) {
 	res.locals.user = req.user;
 	res.locals.authenticated = req.isAuthenticated();
 	
+	
 	next();
 });
 
@@ -83,9 +85,13 @@ app.engine(
 	engine({
 		handlebars: allowInsecurePrototypeAccess(Handlebars),
 		defaultLayout: "main",
-		helpers: {
+		helpers:
+		{
 			equals(arg1, arg2, options) {
 				return arg1 == arg2 ? options.fn(this) : options.inverse(this);
+			},
+			identifystring(s1,s2){
+				return s1 == s2;
 			},
 
 			setVar(name, value, options) {
@@ -107,7 +113,7 @@ app.engine(
 					})
 				})
 			}
-		},
+		}, 
 	})
   );
 

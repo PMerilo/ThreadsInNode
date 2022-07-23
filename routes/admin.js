@@ -71,7 +71,7 @@ router.get('/TicketMangement', ensureAdminAuthenticated, async (req, res) => {
 })
 
 router.post('/TicketMangement/deleteTicket', ensureAdminAuthenticated, async (req, res) => {
-    let { ticketID, ticketTitle, owner, ownerID } = req.body;
+    let { ticketID, ticketTitle, owner, ownerID} = req.body;
 
     deletedTicket = req.body.ticketID
     let date_ob = new Date();
@@ -112,6 +112,7 @@ router.post('/TicketMangement/deleteTicket', ensureAdminAuthenticated, async (re
     newMessageCount = recepientuser.MessagesCount + 1
     User.update({ MessagesCount: newMessageCount }, { where: { id: req.body.ownerID } })
     Ticket.destroy({ where: { id: ticketID } })
+    
 
 
 
@@ -142,7 +143,7 @@ router.post('/TicketMangement/reply', ensureAdminAuthenticated, async (req, res)
     let { ticketID, title, urgency, description, owner, ownerID } = req.body;
 
 
-    Ticket.urgency = req.body.urgency
+    
 
     try {
         await Message.create({
@@ -164,7 +165,8 @@ router.post('/TicketMangement/reply', ensureAdminAuthenticated, async (req, res)
     newMessageCount = recepientuser.MessagesCount + 1
     User.update({ MessagesCount: newMessageCount }, { where: { id: req.body.ownerID } })
     flashMessage(res, 'success', "Ticket Reply Sent Successfully! to ID: " + req.body.owner);
-    Ticket.destroy({ where: { id: ticketID } })
+    Ticket.update({ pendingStatus:urgency }, { where: { id: ticketID } })
+    
     res.redirect("/admin/TicketMangement")
 })
 

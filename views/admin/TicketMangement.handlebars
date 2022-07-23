@@ -24,13 +24,20 @@
         <tr>
           <td>{{this.title }}</td>
           <td>{{ this.description }}</td>
+          {{#if (identifystring this.pendingStatus "Pending") }}
           <td>{{ this.pendingStatus }}</td>
+          {{else}}
+          <td>{{ this.pendingStatus }}</td>
+          {{/if}}
           <td>{{ this.urgency }}</td>
           <td>{{ this.owner }}</td>
           <td>
             <img src="{{this.posterURL}}" alt="Ticket Image" height="100px"> 
           </td>
+          {{#if (identifystring this.pendingStatus "Pending") }}
            <td><button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#myModalResponse_{{this.id}}">Reply</button></td>
+           {{else}}
+           {{/if}}
           <td>
       <form action="/admin/TicketMangement/deleteTicket" method="POST">
                <!--<input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete {#user.get_first_name()#} {#user.get_last_name()#}?');">-->
@@ -136,6 +143,7 @@
               <input type="hidden" name="ticketID" id="ticketID" value="{{this.id}}">
               <input type="hidden" name="ownerID" id="ownerID" value="{{this.ownerID}}">
               <input type="hidden" name="owner" id="owner" value="{{this.owner}}">
+              
               
               <input type="submit" value="Send Reply" class="btn btn-primary">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

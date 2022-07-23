@@ -50,7 +50,7 @@ getInventoryData.done(function(data){
         datasets: [{
           label: "Current Stock",
           lineTension: 0.3,
-          backgroundColor: "rgba(78, 115, 223, 0.05)",
+          backgroundColor: "red",
           borderColor: "rgba(78, 115, 223, 1)",
           pointRadius: 3,
           pointBackgroundColor: "rgba(78, 115, 223, 1)",
@@ -76,7 +76,7 @@ getInventoryData.done(function(data){
         scales: {
           xAxes: [{
             time: {
-              unit: 'name'
+              unit: 'productname'
             },
             gridLines: {
               display: false,

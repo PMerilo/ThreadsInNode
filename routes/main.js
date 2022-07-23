@@ -17,6 +17,7 @@ const FAQ = require("../models/FAQ")
 //Ensures User is autenticated before accessing
 //page
 const ensureAuthenticated = require("../views/helpers/auth");
+
 const moment = require("moment");
 // Required for file upload const 
 fs = require('fs'); 
