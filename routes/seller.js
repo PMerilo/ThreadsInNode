@@ -3,6 +3,7 @@ const router = express.Router();
 const flashMessage = require('../views/helpers/messenger');
 const sequelizeUser = require("../config/DBConfig");
 const { serializeUser } = require('passport');
+const uuid = require('uuid')
 //Our Models
 const User = require("../models/User")
 const Ticket = require("../models/Ticket")
@@ -51,10 +52,19 @@ router.get('/addProduct',ensureAuthenticated, (req,res) => {
 
 
 router.post('/addProduct',ensureAuthenticated, async function (req,res) {
-    let { sku,name,description,price,quantity,category } = req.body;
+    let { name,description,price,quantity,category,posterURL } = req.body;
+    let Uuid = (Math.floor(Date.now() + Math.random())).toString()
+    Uuid = parseInt(Uuid.slice(1,10))
+    // let random = Math.floor(Math.random() * 9)
+    // let nums = ['0','1','2','3','4','5','6','7','8','9']
+    // for (let i= 0; i++; i<length(nums)){
+    //     Uuid += nums[random]
+    // }
+    // console.log(Uuid)
+    // Uuid = parseInt(Uuid)
     try{
         await Product.create({
-            sku: req.body.sku,
+            sku: Uuid,
             name: req.body.name,
             description: req.body.description,
             price: req.body.price,
@@ -62,7 +72,8 @@ router.post('/addProduct',ensureAuthenticated, async function (req,res) {
             category: req.body.category,
             wishlistcount: 0,
             Owner:req.user.name,
-            OwnerID:req.user.id
+            OwnerID:req.user.id,
+            posterURL: posterURL
             
   
           });
