@@ -20,7 +20,7 @@ body {
 #TransferModalContainer {
   align-items: center;
   flex-direction: column;
-  background-image: linear-gradient(to right, rgb(140, 156, 247), rgb(93, 109, 201));
+  background-image: linear-gradient(to right, lightblue, rgb(0, 102, 255));
   /* background-color: rgb(113, 132, 238) !important;  */
   padding: 0 !important;
   width: 100%;
@@ -30,14 +30,14 @@ body {
 }
 
 #TransferModalContainer:hover {
-    background-image: linear-gradient(to right, rgb(152, 166, 243), rgb(104, 121, 214));
+    background-image: linear-gradient(to right, rgb(0, 102, 255), lightblue);
     transition: 0.5s ease-in-out;
   }
 
 #ShoppingModalContainer {
     align-items: center;
     flex-direction: column;
-    background-image: linear-gradient(to right, rgb(247, 192, 140), rgb(228, 139, 80));
+    background-image: linear-gradient(to right, #30496B, #30B8D2);
     /* background-color: rgb(113, 132, 238) !important;  */
     padding: 0 !important;
     width: 100%;
@@ -47,14 +47,14 @@ body {
 }
 
 #ShoppingModalContainer:hover {
-    background-image: linear-gradient(to right, rgb(250, 207, 166), rgb(233, 153, 101));
+    background-image: linear-gradient(to right, #30B8D2, #30496B);
     transition: 0.5s ease-in-out;
 }
 
 #ProfileModalContainer {
     align-items: center;
     flex-direction: column;
-    background-image: linear-gradient(to right, rgb(183, 163, 228), rgb(169, 97, 228));
+    background-image: linear-gradient(to right, #B6C1D4, #EC68B1);
     /* background-color: rgb(113, 132, 238) !important;  */
     padding: 0 !important;
     width: 100%;
@@ -65,14 +65,14 @@ body {
 
   
 #ProfileModalContainer:hover {
-    background-image: linear-gradient(to right, rgb(194, 178, 230), rgb(189, 131, 236));
+    background-image: linear-gradient(to right, #EC68B1, #B6C1D4);
     transition: 0.5s ease-in-out;
 }
 
 #DashboardModalContainer {
     align-items: center;
     flex-direction: column;
-    background-image: linear-gradient(to right, rgb(221, 221, 221), rgb(173, 173, 173));
+    background-image: linear-gradient(to right, #476892, #59355D);
     /* background-color: rgb(113, 132, 238) !important;  */
     padding: 0 !important;
     width: 100%;
@@ -82,7 +82,7 @@ body {
   }
   
   #DashboardModalContainer:hover {
-      background-image: linear-gradient(to right, rgb(247, 247, 247), rgb(212, 212, 212));
+      background-image: linear-gradient(to right, #59355D, #476892);
       transition: 0.5s ease-in-out;
     }
 
@@ -123,26 +123,30 @@ body {
 .TransferModalContainer__Button {
     display: flex;
     position: relative;
-    height: 250px;
-    width: 100%;
+    height: 150px;
+    width: 50%;
     justify-content: left !important;
     text-decoration: none;
 }
 
 #TransferContainerWord {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: rgb(111, 90, 187);
 }
 
 #ShoppingContainerWord {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: rgb(199, 131, 91);
 }
 
-#ProfilerContainerWord {
+#ProfileContainerWord {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: rgb(84, 62, 165);
 }
 
 #DashboardContainerWord {
-    color: rgb(87, 87, 87);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #474747;
 }
 
 #TransferWord {
@@ -164,7 +168,7 @@ body {
     transition: 0.5s ease-in-out;
 }
 
-.TransferModalContainer__Button:hover > #TransferWord {
+.TransferModalContainer__Button:hover > #ProfileContainerWord {
     color: rgb(14, 13, 66);
     transition: 0.5s ease-in-out;
 }
@@ -180,7 +184,7 @@ body {
 }
 
 .TransferModalContainer__Button:hover > #DashboardContainerWord {
-    color: rgb(46, 46, 46);
+    color: white;
     transition: 0.5s ease-in-out;
 }
 

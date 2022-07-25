@@ -5,6 +5,7 @@ const sequelizeUser = require("../config/DBConfig")
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const User = require("../models/User")
+const Product = require("../models/Product")
 const ensureAuthenticated = require("../views/helpers/auth");
 const ensureAdminAuthenticated = require("../views/helpers/adminAuth");
 const { sequelize } = require('../models/User');
@@ -30,6 +31,28 @@ router.get('/NoOfUsersJoined', async (req, res) => {
   df = new dfd.DataFrame(json_data)
   
   res.status(200).json({ df })
+});
+
+router.get('/InventoryReport', ensureAuthenticated, async (req, res) => {
+  const Inventory = await Product.findAll({where:{ownerID:req.user.id}})
+
+
+  let data = [];
+  let cols = ["Stocks","ProductName"];
+
+
+  Inventory.forEach(element => {
+    let rawData = [element.quantity, element.name];
+    data.push(rawData)
+    
+    
+  });
+
+  df = new dfd.DataFrame(data,{columns:["Stocks","ProductName"]})
+  // group_df = df.groupby(["Dates"]).sum()
+  // console.log(group_df)
+  // const df2 = dfd.toJSON(df,{format:"json"})
+  res.status(200).json({ 'data':df })
 });
 
 module.exports = router;

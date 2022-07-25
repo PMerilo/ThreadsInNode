@@ -15,7 +15,8 @@ Product.init({
         quantity: {type: sequelize.INTEGER},
         category:{type:sequelize.STRING},
         Owner:{type:sequelize.STRING},
-        OwnerID:{type: sequelize.INTEGER}
+        OwnerID:{type: sequelize.INTEGER},
+        posterURL: { type: sequelize.STRING }, 
         
         
 },

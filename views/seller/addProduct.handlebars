@@ -1,77 +1,80 @@
-<div class="admin-padding" >
-  <div class="col py-3" style="width: 60%; margin:0 auto; background:white;box-shadow: 12px 12px 22px grey; border-radius:30px">
+<div class="admin-padding">
+  <div class="col py-3"
+    style="width: 60%; margin:0 auto; background:white;box-shadow: 12px 12px 22px grey; border-radius:30px; padding: 40px;">
     <h1 class="display-4">Add Product</h1><span id="datetime"></span>
 
     <form method="POST" action="/seller/addProduct">
       <div class="form-group col py-3">
         <label for="name">Name</label>
         <input type="text" name="name" id="name" class="form-control">
-        
+
       </div>
       <div class="form-group col py-3">
         <label for="category">Category</label>
         <select name="category" id="category">
-        <option value="T-Shirts & Tops">T-Shirts & Tops</option>
-        <option value="Jeans & Joggers">Jeans & Joggers</option>
-        <option value="Shorts & Skirts">Shorts & Skirts</option>
-        <option value="Dresses">Dresses</option>
-        <option value="Hoodies">Hoodies</option>
+          <option value="T-Shirts & Tops">T-Shirts & Tops</option>
+          <option value="Jeans & Joggers">Jeans & Joggers</option>
+          <option value="Shorts & Skirts">Shorts & Skirts</option>
+          <option value="Dresses">Dresses</option>
+          <option value="Hoodies">Hoodies</option>
         </select>
-        
+
       </div>
-      <div class="form-group col py-3">
-        <label for="sku">Sku</label>
+      {{!-- <div class="form-group col py-3">
+        <label for="sku">SKU</label>
         <input type="number" name="sku" id="sku" class="form-control" required>
-        
-      </div>
+
+      </div> --}}
       <div class="form-group col py-3" id="">
         <label for="price">Price</label>
         <input type="number" name="price" id="price" class="form-control" required>
-        
+
       </div>
       <div class="form-group col py-3" id="">
         <label for="quantity">Quantity</label>
         <input type="number" name="quantity" id="quantity" class="form-control" required>
-        
+
       </div>
       <div class="form-group col py-3">
         <label for="description">Description</label>
         <textarea name="description" id="description" cols="30" rows="10" class="form-control" required></textarea>
-        
-        
+
+
       </div>
       <div class="form-group col py-3">
-        <input class="file-input" type='file' name="pic" onchange="readURL(this);" accept="image/*" />
-        <div class="image-preview" id="imagePreview">
-          <img src="" alt="Image Preview" class="image-preview__image">
-          <span class="image-preview__default-text">
-            Image Preview
-          </span>
-        </div>
+        <input type="file" class="custom-file-input" id="posterUpload" name="posterUpload"
+          accept="image/png,image/jpeg,image/jpg,image/gif">
       </div>
-      <input type="submit" value="Add Product" class="btn btn-primary col py-3"/>
-      {{!-- <button onclick="location.href = '/admin/inventory/retrieve_product';" id="goBack" class="align-right submit-button" >Go Back</button> --}}
+      <div class="text-danger small mb-2" id="posterErr" style="display:none">
+        <img id="poster" src="/images/no-image.jpg" alt="Poster" class="border img-thumbnail img-fluid">
+        <input id="posterURL" type="hidden" name="posterURL">
+      </div>
+    <input type="submit" value="Add Product" class="btn btn-primary col py-3" style="border-radius: 30px;" />
     </form>
+    {{!-- <button onclick="location.href = '/admin/inventory/retrieve_product';" id="goBack"
+      class="align-right submit-button">Go Back</button> --}}
   </div>
+
+
 </div>
 
 <style type="text/css">
   .image-preview {
-    width:300px;
+    width: 300px;
     min-height: 100px;
-    border: 2px solid #dddddd;
+    border: 1px solid #000;
     margin-top: 15px;
 
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    color: #cccccc;
+    color: #6c757d;
   }
 
   .image-preview__image {
     display: none;
-    width: 100%;
+    width: 20%;
   }
 </style>
 
@@ -81,7 +84,7 @@
   const previewImage = previewContainer.querySelector('.image-preview__image');
   const previewDefaultText = previewContainer.querySelector('.image-preview__default-text');
 
-  fileInput.addEventListener('change', function() {
+  fileInput.addEventListener('change', function () {
     const file = this.files[0]
 
     if (file) {
@@ -90,7 +93,7 @@
       previewDefaultText.style.display = "none";
       previewImage.style.display = "block";
 
-      reader.addEventListener('load', function() {
+      reader.addEventListener('load', function () {
         console.log(this)
         previewImage.setAttribute('src', this.result);
       })
