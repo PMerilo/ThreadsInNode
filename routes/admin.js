@@ -50,7 +50,7 @@ router.get('/requests', (req, res) => {
 router.post('/requests/edit', async (req, res) => {
     await Request.update({ status: req.body.status }, {
         where: {
-          id: req.body.id
+            id: req.body.id
         },
     });
     return res.json({});
@@ -59,7 +59,7 @@ router.post('/requests/edit', async (req, res) => {
 router.delete('/requests/delete', async (req, res) => {
     await Request.destroy({
         where: {
-          id: req.body.id
+            id: req.body.id
         }
     });
     return res.json({})
@@ -260,9 +260,17 @@ router.get('/tailor/register', async (req, res) => {
 });
 
 router.post('/tailor/register', async (req, res) => {
-    await Tailor.create({userId: req.user.id})
-    flashMessage(res,"success", 'Registered as Tailor Successfully');
-    res.redirect("/admin")
+    await Tailor.findOrCreate({ where: { id: req.user.id }, defaults: { id: req.user.id, userId: req.user.id } })
+        .then(([tailor, created]) => {
+            console.log(created)
+            if(created) {
+                flashMessage(res, "success", 'Registered as Tailor Successfully');
+            } else {
+                flashMessage(res, "error", 'Already registered as tailor');
+            }
+        })
+        res.redirect("/admin")
+    
 });
 
 module.exports = router;

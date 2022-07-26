@@ -7,8 +7,7 @@ class Request extends sequelize.Model{
 Request.init({
     title:{type: sequelize.STRING,allowNull: false},
     description:{type: sequelize.STRING(1000)},
-    status:{type: sequelize.STRING, allowNull: false, defaultValue: "Pending Appointment Booking"},
-    
+    status:{type: sequelize.STRING, allowNull: false, defaultValue: "Pending Appointment Booking"},    
 },
     {
         timestamps: true,

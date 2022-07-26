@@ -25,11 +25,11 @@
             <label for="title" class="form-label">Request Title</label>
             <input type="text" class="form-control" name="title">
         </div>
-        <div class="mb-3 col-3">
+        <div class="mb-3 col-6">
             <label for="service" class="form-label">Service</label>
             <select class="form-select" aria-label="Default select example" name="service">
                 <option selected>Select Service</option>
-                {{>options}}
+                {{>options object=services}}
             </select>
         </div>
         {{!-- <div class="mb-3 col-3">
@@ -41,15 +41,6 @@
                 <option value="3">Three</option>
             </select>
         </div> --}}
-        <div class="mb-3 col-3">
-            <label for="tailorID" class="form-label">Tailor</label>
-            <select class="form-select" aria-label="Default select example" name="tailorID">
-                <option selected>Select Tailor</option>
-                <option value="1">Ben Dover</option>
-                <option value="2">Mike Hawk</option>
-                <option value="3">Alan Walker</option>
-            </select>
-        </div>
     </div>
     <div class="row">
         <div class="mb-3 col-12">

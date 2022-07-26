@@ -29,51 +29,94 @@
   <h2>My Requests</h2>
 </div>
 <hr>
+{{#unless requests}}
+You have no requests
+{{/unless}}
 {{#each requests}}
 <div class="card">
   <ul class="list-group list-group-flush">
     <li class="list-group-item d-flex justify-content-between align-items-center">
-      <a href="" class="text-black stretched-link">
-        <h3 class="m-0">{{service.name}} - {{title}}</h3>
-      </a>
-      <p class="m-0">{{tailor.user.name}}</p>
+      <h3 class="req-title m-0 flex-grow-1">{{service.name}} - {{title}}</h3>
+      <div class="d-flex align-items-center">
+        {{#if tailorChange}}
+        <button class="cancel-tailor btn p-0 m-0 me-1" style="display: none; height: 24px;" data-bs-toggle="modal"
+          data-bs-target="#cancelTailorModal" data-bs-id="{{id}}"><i
+            class='bx bx-block'></i></button>
+        <p class="m-0"><span class="text-decoration-line-through">{{tailor.name}}</span> <i class='bx bxs-chevrons-right align-middle fs-5'></i> {{tailorChange.name}}</p>
+        {{else}}
+        {{#if tailor}}
+        <button class="edit-tailor btn p-0 m-0 me-1" style="display: none; height: 24px;" data-bs-toggle="modal"
+          data-bs-target="#tailorModal" data-bs-id="{{tailor.id}}" data-bs-reqId="{{id}}"><i
+            class='bx bx-refresh'></i></button>
+        {{/if}}
+        <p class="m-0">{{#if tailor}}{{tailor.name}}{{else}}Book an appointment to select your tailor{{/if}}</p>
+        {{/if}}
+
+
+      </div>
     </li>
     <li class="list-group-item">
-      <p>
+      <p class="req-description">
         {{description}}
       </p>
     </li>
     <li class="list-group-item">
-      <a class="stretched-link" href="">
-        Appointment
+      {{#if tailorChange}}
+      <a href="#" onclick="return false;" class="text-primary pe-none">Your tailor change is being approved</a>
+      {{else}}
+      {{#if appointments.[0]}}
+      <a href="#appt_{{id}}" data-bs-toggle="collapse" class="pe-auto text-black stretched-link">
+        Your appointment is scheduled for {{appointments.[0].datetimeHuman}}
       </a>
+      {{else}}
+      <a href="/services/book/{{id}}" class="pe-auto text-black stretched-link">
+        You have not booked your appointment. Click here to book
+      </a>
+      {{/if}}
       <i class="bi bi-chevron-right float-end"></i>
+      {{/if}}
     </li>
-    <li class="list-group-item d-flex justify-content-between align-items-center">
-      <div class="my-auto">
-        {{status}}
-      </div>
-      <div class="my-auto">
-        {{!-- <button href='' class="btn btn-primary mx-2" style="width: 110px;" data-bs-toggle="modal"
-          data-bs-target="">
-          View more
-        </button> --}}
-        <button class="btn btn-danger delete" style="width: 80px;" data-bs-toggle="modal" data-bs-target="#delModal"
-          title="Delete">
-          <i class="bi bi-trash"></i>
-        </button>
-      </div>
-    </li>
-
   </ul>
+  <div class="collapse" id="appt_{{id}}">
+    <div class="p-3">
+      <table id="apptTable" data-toggle="table" data-url="/api/appointment/{{id}}">
+        <thead>
+          <tr>
+            <th data-field="id" data-visible="false">Id</th>
+            <th data-field="date">Date</th>
+            <th data-field="time">Time</th>
+            <th data-field="description">Description</th>
+            <th data-width="150" data-field="operate" data-formatter="operateFormatter" data-events="operateEvents">
+            </th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+  </div>
+
+  <div class="card-footer d-flex justify-content-between align-items-center border-0">
+    <div class="my-auto">
+      {{status}}
+    </div>
+    <div class="my-auto">
+      <button class="btn btn-primary edit mx-2" style="width: 80px;" data-bs-toggle="modal" data-bs-target="#editModal"
+        data-bs-id="{{id}}">
+        <i class="bi bi-pencil-square"></i>
+      </button>
+      <button class="btn btn-danger delete" style="width: 80px;" data-bs-toggle="modal" data-bs-target="#delModal"
+        title="Delete" data-bs-id="{{id}}">
+        <i class="bi bi-trash"></i>
+      </button>
+    </div>
+  </div>
+
 </div>
 {{/each}}
-
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Edit Request</h5>
+        <h5 class="modal-title" id="editModalLabel">Edit Request</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -85,8 +128,8 @@
           <div class="mb-3 col-6">
             <label for="service" class="form-label">Service</label>
             <select class="form-select" aria-label="Default select example" name="service">
-              <option selected>Select Service</option>
-              {{>options}}
+              <option>Select Service</option>
+              {{>options object=services}}
             </select>
           </div>
           <div class="mb-3 col-12">
@@ -102,11 +145,59 @@
     </div>
   </div>
 </div>
-<div class="modal fade" id="delModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="tailorModal" tabindex="-1" aria-labelledby="tailorModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Cancel Request?</h5>
+        <h5 class="modal-title" id="tailorModalLabel">Request tailor change</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row d-flex justify-content-center">
+          <div class="mb-3 col-10">
+            <label for="service" class="form-label">Tailor</label>
+            <select class="form-select" aria-label="Default select example" name="tailor">
+              <option selected>Select Tailor</option>
+              {{>options object=tailors}}
+            </select>
+          </div>
+        </div>
+        <div class="row d-flex justify-content-center">
+          <div class="mb-3 col-10">
+            <p class="text-danger">You will have to rebook your appointments if you do this</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary confirm">Request</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="cancelTailorModal" tabindex="-1" aria-labelledby="cancelTailorModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cancelTailorModalLabel">Cancel your request to change tailor?</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-info">Your previously booked appointments will remain unchanged</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
+        <button type="button" class="btn btn-danger del" data-bs-url="/services/tailorChange/cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="delModal" tabindex="-1" aria-labelledby="delModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="delModalLabel">Cancel Request?</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -114,8 +205,114 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-danger del">Delete</button>
+        <button type="button" class="btn btn-danger del" data-bs-url="/services/request/cancel">Delete</button>
       </div>
     </div>
   </div>
 </div>
+<div class="modal fade" id="delApptModal" tabindex="-1" aria-labelledby="delApptModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="delApptModalLabel">Are you sure you want to cancel your appointment?</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-danger">Warning this action is irreversable</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger del" data-bs-url="/services/appointment/cancel">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="editApptModal" tabindex="-1" aria-labelledby="editApptModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editApptModalLabel">Edit Appointment</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="mb-3 col-12">
+            <label for="date" class="form-label">Date</label>
+            <input type="date" class="form-control" name="date" min="{{today}}" required>
+          </div>
+        </div>
+        <div class="row timings">
+          <div class="container overflow-hidden mb-3">
+            <label class="form-label">Time</label>
+            <div class="border border-1 rounded mx-auto row g-2 pb-2 m-0">
+              <div class="col-lg-2 col-md-6 d-grid">
+                <button type="button" class="btn btn-lg btn-primary" value="09:00:00">9:00AM</button>
+              </div>
+              <div class="col-lg-2 col-md-6 d-grid">
+                <button type="button" class="btn btn-lg btn-primary" value="10:30:00">10:30AM</button>
+              </div>
+              <div class="col-lg-2 col-md-6 d-grid">
+                <button type="button" class="btn btn-lg btn-primary" value="12:00:00">12:00PM</button>
+              </div>
+              <div class="col-lg-2 col-md-6 d-grid">
+                <button type="button" class="btn btn-lg btn-primary" value="15:00:00">3:00PM</button>
+              </div>
+              <div class="col-lg-2 col-md-6 d-grid">
+                <button type="button" class="btn btn-lg btn-primary" value="16:30:00">4:30PM</button>
+              </div>
+              <div class="col-lg-2 col-md-6 d-grid">
+                <button type="button" class="btn btn-lg btn-primary" value="18:00:00">6:00PM</button>
+              </div>
+            </div>
+          </div>
+          <input type="hidden" class="form-control" name="time" required>
+        </div>
+        <input type="hidden" class="form-control" name="tailorID" required>
+        <div class="row">
+          <div class="mb-3 col-12">
+            <span class="">Please write a brief description of your request</span>
+            <textarea name="description" class="form-control" aria-label="With textarea" required></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary confirm">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+{{!--
+<script src="/scripts/services/datapicker.js"></script> --}}
+<script>
+  $('.card').hover(function () {
+    if ($(this).find('.edit-tailor, .cancel-tailor').css("display") == 'none') {
+      $(this).find('.edit-tailor, .cancel-tailor').show()
+    } else if ($(this).find('.edit-tailor, .cancel-tailor').css("display") == 'block') {
+      $(this).find('.edit-tailor, .cancel-tailor').hide()
+    }
+
+  })
+
+  $('.edit').click(function () {
+    let s = $(this).closest('.card').find('.req-title').text()
+    s = s.split(' - ')
+    $('#editModal').find('input[name=title]').val(s[1])
+    $('#editModal').find(`option`).attr("selected", false)
+    $('#editModal').find(`textarea`).text($(this).closest('.card').find('.req-description').text().trim())
+    $('#editModal').find(`option:contains("${s[0]}")`).attr("selected", '')
+
+    $('#editModal').find('.btn.confirm').attr('data-bs-id', $(this).attr('data-bs-id'))
+
+  })
+
+  $('.edit-tailor').click(function () {
+    $('#tailorModal').find('[name="tailor"]').val($(this).attr('data-bs-id'))
+    $('#tailorModal').find('.confirm').attr('data-bs-reqid', $(this).attr('data-bs-reqid'))
+  })
+
+  $('.cancel-tailor').click(function () {
+    $('#cancelTailorModal').find('.del').attr('data-bs-id', $(this).attr('data-bs-id'))
+  })
+
+</script>

@@ -12,6 +12,7 @@ const Reward = require('../models/Reward')
 const Wishlist = require('../models/Wishlist')
 const Message = require("../models/Messages")
 const CartProduct = require("../models/CartProduct")
+const Appointment = require("../models/Appointment")
 const FAQ = require("../models/FAQ")
 //Ensures User is autenticated before accessing
 //page

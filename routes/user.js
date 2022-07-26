@@ -12,7 +12,10 @@ const Request = require('../models/Request')
 const { Op } = require('sequelize');
 
 
-const userController = require('../controllers/userController')
+const userController = require('../controllers/userController');
+const Service = require('../models/Service');
+const Appointment = require('../models/Appointment');
+const Tailor = require('../models/Tailor');
 
 router.use((req, res, next) => {
   res.locals.path = req.baseUrl;
@@ -63,7 +66,7 @@ router.post('/register', async function (req, res) {
   if (password != password2) {
     flashMessage(res, 'error', 'Passwords do not match');
     isValid = false;
-    
+
     return res.redirect("/register");
 
 
@@ -187,18 +190,46 @@ router.post('/sellerRegister', async function (req, res) {
 
 
 router.get('/user/requests', ensureAuthenticated, async (req, res) => {
+  let now = moment(`${res.locals.today} ${res.locals.time}`, 'YYYY-MM-DD HH:mm:ss')
   let requests = await Request.findAll({
-    include: { all: true, nested: true },
+    include: [
+      { model: User, as: 'user' },
+      {
+        model: Appointment,
+        where: {
+          datetime: {
+            [Op.gte]: now
+          }
+        },
+        order: [['createdAt', 'DESC']],
+        limit: 1
+      },
+      {
+        model: User,
+        as: 'tailor',
+      },
+      { model: Service, as: 'service' },
+      {
+        model: User,
+        as: 'tailorChange',
+      },
+    ],
     where: {
       [Op.or]: [
         { userId: req.user.id },
-        { "$tailor.userId$": req.user.id }
-      ]
-
+        { "$tailor.id$": req.user.id }
+      ],
     }
   })
-  // console.log(requests)
-  res.render('services/requests', { requests })
+  let services = await Service.findAll()
+  let tailors = await User.findAll({
+    include: {
+      model: Tailor,
+      required: true
+    }
+  })
+  // console.log(requests[0].toJSON())
+  res.render('services/requests', { requests, services, tailors })
 })
 
 module.exports = router;

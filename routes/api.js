@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
+const moment = require('moment')
 const User = require("../models/User");
 const Ticket = require('../models/Ticket');
 const Feedback = require('../models/Feedback');
@@ -20,7 +20,7 @@ router.get('/requests', async (req, res) => {
     //                     { userId: req.user.id },
     //                     { tailorID: req.user.id }
     //                 ]
-    
+
     //             },
     //             include: ['service', "user", 'appointments'],
     //         })
@@ -28,28 +28,38 @@ router.get('/requests', async (req, res) => {
     return res.json({
         total: await Request.count(),
         rows: await Request.findAll({
+            include: { all: true, nested: true },
             where: {
                 [Op.or]: [
                     { userId: req.user.id },
-                    { tailorID: req.user.id }
+                    { "$tailor.userId$": req.user.id }
                 ]
 
-            },
-            include: ['service', "user", 'appointments'],
+            }
         })
     })
+
+});
+
+router.get('/appointments', async (req, res) => {
+    if (req.query.date && req.query.id) {
+        let date = moment(`${req.query.date}`)
+        return res.json({
+            total: await Appointment.count(),
+            rows: await Appointment.findAll({ where: {datetime:{[Op.gte]: date}, tailorId: req.query.id } })
+        })
+    }
+    else {
+        return res.status(400).send("Invalid Query Params")
+    }
     
 });
 
-router.get('/appointments/:date', async (req, res) => {
-    console.log("request receieved")
+router.get('/appointment/:id', async (req, res) => {
+    let now = moment(res.locals.now)
     return res.json({
         total: await Appointment.count(),
-        rows: await Appointment.findAll({
-            where: {
-                date: req.params.date
-            }
-        })
+        rows: await Appointment.findAll({ where: {userId:req.user.id, requestId: req.params.id } })
     })
 });
 
