@@ -28,12 +28,12 @@ const nodemailer = require("nodemailer");
 // const { where } = require('sequelize/types');
 const Mail = require("../config/MailConfig");
 
-router.use((req, res, next) => {
-    res.locals.path = req.baseUrl;
-    console.log(req.baseUrl);
+// router.use((req, res, next) => {
+//     res.locals.path = req.baseUrl;
+//     console.log(req.baseUrl);
     //Checks url for normal users and admin
-    next();
-});
+//     next();
+// });
 
 router.get('/', async (req,res) =>{
 

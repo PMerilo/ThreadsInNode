@@ -19,6 +19,7 @@ const Request = require('./models/Request')
 const Service = require('./models/Service')
 const User = require('./models/User')
 const moment = require("moment")
+const serviceController = require("./controllers/serviceController")
 
 app.use(bodypassword.json())
 app.use(bodypassword.urlencoded({ extended: false }))
@@ -80,6 +81,7 @@ app.use(async function (req, res, next) {
 	res.locals.authenticated = req.isAuthenticated();
 	res.locals.today = moment().format('YYYY-MM-DD')
 	res.locals.time = moment().format('HH:mm:ss')
+	res.locals.statuses = {"-1": "Appointment Denied. Request another appointment", "0": 'Awaiting next Appointment', "1": 'Pending Appointment Booking', "2": 'Pending Appointment Confirmation', "3": "Appointment Confirmed", "4": 'In Progress', "5": 'Completed' }
 	res.locals.tailors = await User.findAll({
 		include: { model: Tailor, required: true }
 	});
@@ -99,6 +101,16 @@ app.engine(
 
 			setVar(name, value, options) {
 				options.data.root[name] = value;
+			},
+
+			gt(a, b) {
+				var next = arguments[arguments.length - 1];
+				return (a > b) ? next.fn(this) : next.inverse(this);
+			},
+
+			ge( a, b ){
+				var next =  arguments[arguments.length-1];
+				return (a >= b) ? next.fn(this) : next.inverse(this);
 			},
 
 			async options() {
@@ -128,10 +140,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Creates static folder for publicly accessible HTML, CSS and Javascript files
 
-app.use("/*", (req, res, next) => {
+app.all("/*", (req, res, next) => {
 	req.app.locals.layout = 'main';
 	next()
 });
+
+app.all('/*', serviceController.checkAppointment)
 
 //Set layout for all routes
 

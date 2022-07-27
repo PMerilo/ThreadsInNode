@@ -60,11 +60,12 @@ router.get('/book/:reqId', async (req, res) => {
     let reqId = req.params.reqId;
     let request = await Request.findByPk(reqId);
     let now = moment()
+    let min = now.add(7, 'd').format('YYYY-MM-DD')
     let max = now.add(1, 'M').format('YYYY-MM-DD')
     let tailorId = request.tailorId
     // console.log(max)
     if (request && req.user.id == request.userId) {
-        res.render('services/booking', { reqId, max, tailorId })
+        res.render('services/booking', { reqId, min, max, tailorId })
     }
     else {
         flashMessage(res, 'error', 'You do not have permission to access this page');
@@ -72,32 +73,44 @@ router.get('/book/:reqId', async (req, res) => {
     }
 });
 
-router.post('/book/:reqId', async (req, res) => {
+router.post('/book/:reqId', async (req, res, next) => {
     let reqId = req.params.reqId;
     let userId = req.user.id
     let { date, time, description, tailorID } = req.body;
-    console.log(req.body)
+    req.body.status = 2
+    req.body.statusId = reqId
     let datetime = moment(`${date} ${time}`)
-    if (!datetime.isBetween(moment(), moment().add(1, "M"))) {
-        flashMessage(res, 'error', 'Appointment date out of range')
+    if (!datetime.isBetween(moment().add(7, 'd'), moment().add(1, "M"), 'date', '[]')) {
+        flashMessage(res, 'error', `Appointment date out of range. Please pick a date between ${moment().add(7, 'd').format('DD-MM-YYYY')} and ${moment().add(1, "M").format('DD-MM-YYYY')}`)
         res.redirect(`/services/book/${reqId}`)
     } else {
         await Appointment.findOrCreate({
             where: {
                 datetime: datetime,
-                tailorId: tailorID
+                tailorId: tailorID,
+                confirmed: {
+                    [Op.ne]: false
+                }
             },
             defaults: {
                 datetime: datetime,
                 description: description,
                 userId: userId,
                 requestId: reqId,
-                tailorId: tailorID
+                tailorId: tailorID,
+                confirmed: null
             }
         })
             .then(async ([appt, created]) => {
                 // console.log(created)
                 if (created) {
+                    await Appointment.destroy({
+                        where: {
+                            datetime: datetime,
+                            tailorId: tailorID,
+                            confirmed: false
+                        }
+                    })
                     await Request.update({ tailorId: tailorID }, { where: { id: reqId, tailorID: null } })
                     flashMessage(res, 'success', 'Appointment booking sucessful!')
                     res.redirect('/user/requests');
@@ -112,12 +125,11 @@ router.post('/book/:reqId', async (req, res) => {
                 res.redirect('/services/book')
             });
     }
+    next()
+}, serviceController.requestStatus);
 
-});
-
-router.post('/appointment/edit', async (req, res) => {
+router.post('/appointment/edit', async (req, res, next) => {
     let { id, date, time, description } = req.body
-    console.log(req.body)
     let datetime = moment(`${date} ${time}`)
     await Appointment.findByPk(id)
         .then(async (appt) => {
@@ -127,13 +139,16 @@ router.post('/appointment/edit', async (req, res) => {
             } else if (appt.date == date && appt.time == time && appt.description == description) {
                 flashMessage(res, 'error', 'No changes were made')
                 // return res.json({})
-            } else if (!moment(date).isBetween(moment(), moment().add(1, "M"))) {
-                flashMessage(res, 'error', 'Appointment date out of range')
+            } else if (!moment(datetime).isBetween(moment().add(7, 'd'), moment().add(1, "M"), 'date', '[]')) {
+                flashMessage(res, 'error', `Appointment date out of range. Please pick a date between ${moment().add(7, 'd').format('DD-MM-YYYY')} and ${moment().add(1, "M").format('DD-MM-YYYY')}`)
                 // return res.json({})
             } else {
-                await Appointment.update({ datetime: datetime, description: description }, { where: { id: id } })
+                req.body.statusId = (await appt.getRequest()).id
+                req.body.status = (appt.date != date || appt.time != time ? 2 : 3)
+                await Appointment.update({ datetime: datetime, description: description, confirmed: null }, { where: { id: id } })
                     .then(() => {
                         flashMessage(res, 'success', 'Appointment updated sucessfully!')
+
                         // return res.json({})
                     })
                     .catch(err => {
@@ -146,8 +161,9 @@ router.post('/appointment/edit', async (req, res) => {
         .catch((e) => {
             console.log(e)
         })
+    next()
     return res.json({})
-});
+}, serviceController.requestStatus);
 
 router.post('/request/tailorChange', async (req, res) => {
     let { id, tailorId } = req.body;

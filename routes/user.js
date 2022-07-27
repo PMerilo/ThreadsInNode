@@ -190,17 +190,14 @@ router.post('/sellerRegister', async function (req, res) {
 
 
 router.get('/user/requests', ensureAuthenticated, async (req, res) => {
-  let now = moment(`${res.locals.today} ${res.locals.time}`, 'YYYY-MM-DD HH:mm:ss')
+  let now = moment()
+  let min = now.add(7, 'd').format('YYYY-MM-DD')
+  let max = now.add(1, 'M').format('YYYY-MM-DD')
   let requests = await Request.findAll({
     include: [
       { model: User, as: 'user' },
       {
         model: Appointment,
-        where: {
-          datetime: {
-            [Op.gte]: now
-          }
-        },
         order: [['createdAt', 'DESC']],
         limit: 1
       },
@@ -221,15 +218,10 @@ router.get('/user/requests', ensureAuthenticated, async (req, res) => {
       ],
     }
   })
-  let services = await Service.findAll()
-  let tailors = await User.findAll({
-    include: {
-      model: Tailor,
-      required: true
-    }
-  })
-  // console.log(requests[0].toJSON())
-  res.render('services/requests', { requests, services, tailors })
+  requests.forEach(element => {
+    console.log(element.toJSON())
+  });
+  res.render('services/requests', { requests, min, max })
 })
 
 module.exports = router;

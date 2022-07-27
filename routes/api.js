@@ -12,7 +12,6 @@ const Appointment = require('../models/Appointment');
 const { Op } = require('sequelize');
 
 router.get('/requests', async (req, res) => {
-    console.log("request receieved")
     // console.log(
     //     await Request.findAll({
     //             where: {
@@ -44,22 +43,33 @@ router.get('/requests', async (req, res) => {
 router.get('/appointments', async (req, res) => {
     if (req.query.date && req.query.id) {
         let date = moment(`${req.query.date}`)
+        let date2 = moment(`${req.query.date}`).add(1, 'd')
         return res.json({
             total: await Appointment.count(),
-            rows: await Appointment.findAll({ where: {datetime:{[Op.gte]: date}, tailorId: req.query.id } })
+            rows: await Appointment.findAll({ where: { datetime: { [Op.gte]: date, [Op.lt]: date2 }, tailorId: req.query.id, confirmed: { [Op.ne]: false } } })
         })
     }
     else {
         return res.status(400).send("Invalid Query Params")
     }
-    
+
 });
 
 router.get('/appointment/:id', async (req, res) => {
-    let now = moment(res.locals.now)
     return res.json({
         total: await Appointment.count(),
-        rows: await Appointment.findAll({ where: {userId:req.user.id, requestId: req.params.id } })
+        rows: await Appointment.findAll({
+            where: {
+                [Op.or]: {
+                    userId: req.user.id,
+                    tailorId: req.user.id
+                },
+                requestId: req.params.id
+            },
+            order: [["createdAt", "DESC"]],
+            limit: 1
+
+        })
     })
 });
 

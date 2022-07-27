@@ -1,17 +1,22 @@
 const express = require('express');
+const moment = require('moment');
 const router = express.Router();
 const flashMessage = require('../views/helpers/messenger');
 const sequelizeUser = require("../config/DBConfig");
 const { serializeUser } = require('passport');
+const { Op } = require('sequelize');
 const User = require("../models/User");
 const Ticket = require('../models/Ticket');
 const Feedback = require('../models/Feedback');
 const Message = require("../models/Messages")
 const Reward = require('../models/Reward')
-const ensureAuthenticated = require("../views/helpers/auth");
-const ensureAdminAuthenticated = require("../views/helpers/adminAuth");
 const Request = require('../models/Request');
 const Tailor = require('../models/Tailor');
+const Service = require('../models/Service');
+const Appointment = require('../models/Appointment');
+const ensureAuthenticated = require("../views/helpers/auth");
+const serviceController = require("../controllers/serviceController")
+const ensureAdminAuthenticated = require("../views/helpers/adminAuth");
 
 router.all('/*', ensureAdminAuthenticated, function (req, res, next) {
     req.app.locals.layout = 'admin'; // set your layout here
@@ -43,16 +48,70 @@ router.post('/admin/flash', (req, res) => {
     res.redirect('/');
 });
 
-router.get('/requests', (req, res) => {
-    res.render("admin/requests")
+router.get('/requests', async (req, res) => {
+    let x = await req.user.getTailor()
+    if (!x) {
+        res.redirect('tailor/register')
+    } else {
+
+        let now = moment(`${res.locals.today} ${res.locals.time}`, 'YYYY-MM-DD HH:mm:ss')
+        let requests = await Request.findAll({
+            include: [
+                { model: User, as: 'user' },
+                {
+                    model: Appointment,
+                    order: [['createdAt', 'DESC']],
+                    limit: 1
+                },
+                {
+                    model: User,
+                    as: 'tailor',
+                },
+                { model: Service, as: 'service' },
+                {
+                    model: User,
+                    as: 'tailorChange',
+                },
+            ],
+            where: {
+                [Op.or]: [
+                    { userId: req.user.id },
+                    { "$tailor.id$": req.user.id }
+                ],
+            }
+        })
+        // console.log(requests[0].toJSON())
+        res.render('admin/requests', { requests })
+    }
 });
 
-router.post('/requests/edit', async (req, res) => {
-    await Request.update({ status: req.body.status }, {
-        where: {
-            id: req.body.id
-        },
-    });
+router.post('/request/status', serviceController.requestStatus, (req, res) => {
+    return res.json({})
+});
+
+router.post('/request/tailorChange', async (req, res) => {
+    await Request.findByPk(req.body.id)
+        .then(async (request) => {
+            await Appointment.destroy({ where: { requestId: req.body.id, tailorId: request.tailorId, datetime: { [Op.gte]: moment() } } })
+            await Request.update({ tailorChangeId: null, tailorId: request.tailorChangeId, statusCode: 1 }, {
+                where: {
+                    id: req.body.id
+                },
+            });
+        })
+    return res.json({});
+});
+
+router.post('/appointment/status', async (req, res) => {
+    let x = await Request.findOne({ include: { model: Appointment, where: { id: req.body.id } } })
+    x.appointments[0].confirmed = req.body.status
+    x.appointments[0].save()
+    if (req.body.status === "true") {
+        x.statusCode = 3
+    } else {
+        x.statusCode = -1
+    }
+    x.save()
     return res.json({});
 });
 
@@ -262,15 +321,14 @@ router.get('/tailor/register', async (req, res) => {
 router.post('/tailor/register', async (req, res) => {
     await Tailor.findOrCreate({ where: { id: req.user.id }, defaults: { id: req.user.id, userId: req.user.id } })
         .then(([tailor, created]) => {
-            console.log(created)
-            if(created) {
+            if (created) {
                 flashMessage(res, "success", 'Registered as Tailor Successfully');
             } else {
                 flashMessage(res, "error", 'Already registered as tailor');
             }
         })
-        res.redirect("/admin")
-    
+    res.redirect("/admin/requests")
+
 });
 
 module.exports = router;

@@ -11,6 +11,7 @@ function timeClick() {
 function getTimings() {
     $.get(`/api/appointments?date=${$('input[name=date]').val()}&id=${$('[name=tailorID]').val()}`, function (data) {
         data = data.rows
+        console.log(data)
         var timings = `
             <div class="container overflow-hidden mb-3">
                 <label class="form-label">Time</label>

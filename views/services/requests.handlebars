@@ -1,6 +1,3 @@
-{{setVar "scriptsPath" "_serviceScripts"}}
-
-
 {{!-- <div class="card">
   <div class="card-header">
   </div>
@@ -40,9 +37,9 @@ You have no requests
       <div class="d-flex align-items-center">
         {{#if tailorChange}}
         <button class="cancel-tailor btn p-0 m-0 me-1" style="display: none; height: 24px;" data-bs-toggle="modal"
-          data-bs-target="#cancelTailorModal" data-bs-id="{{id}}"><i
-            class='bx bx-block'></i></button>
-        <p class="m-0"><span class="text-decoration-line-through">{{tailor.name}}</span> <i class='bx bxs-chevrons-right align-middle fs-5'></i> {{tailorChange.name}}</p>
+          data-bs-target="#cancelTailorModal" data-bs-id="{{id}}"><i class='bx bx-block'></i></button>
+        <p class="m-0"><span class="text-decoration-line-through">{{tailor.name}}</span> <i
+            class='bx bxs-chevrons-right align-middle fs-5'></i> {{tailorChange.name}}</p>
         {{else}}
         {{#if tailor}}
         <button class="edit-tailor btn p-0 m-0 me-1" style="display: none; height: 24px;" data-bs-toggle="modal"
@@ -65,9 +62,16 @@ You have no requests
       <a href="#" onclick="return false;" class="text-primary pe-none">Your tailor change is being approved</a>
       {{else}}
       {{#if appointments.[0]}}
-      <a href="#appt_{{id}}" data-bs-toggle="collapse" class="pe-auto text-black stretched-link">
-        Your appointment is scheduled for {{appointments.[0].datetimeHuman}}
+      {{#equals statusCode -1}}
+      <a href="/services/book/{{id}}" class="pe-auto text-black stretched-link">
+        Your appointment scheduled for {{appointments.[0].datetimeHuman}} was denied. Click here to book again.
       </a>
+      {{else}}
+      <a href="#appt_{{id}}" data-bs-toggle="collapse" class="pe-auto text-black stretched-link">
+        Your appointment scheduled for {{appointments.[0].datetimeHuman}}{{#equals statusCode 2}}, pending
+        confirmation{{else}} is confirmed!{{/equals}}
+      </a>
+      {{/equals}}
       {{else}}
       <a href="/services/book/{{id}}" class="pe-auto text-black stretched-link">
         You have not booked your appointment. Click here to book
@@ -96,7 +100,7 @@ You have no requests
 
   <div class="card-footer d-flex justify-content-between align-items-center border-0">
     <div class="my-auto">
-      {{status}}
+      {{#with (lookup ../statuses [statusCode])~}}{{this}}{{/with}}
     </div>
     <div class="my-auto">
       <button class="btn btn-primary edit mx-2" style="width: 80px;" data-bs-toggle="modal" data-bs-target="#editModal"
@@ -238,7 +242,7 @@ You have no requests
         <div class="row">
           <div class="mb-3 col-12">
             <label for="date" class="form-label">Date</label>
-            <input type="date" class="form-control" name="date" min="{{today}}" required>
+            <input type="date" class="form-control" name="date" min="{{min}}" max="{{max}}" required>
           </div>
         </div>
         <div class="row timings">
@@ -284,35 +288,6 @@ You have no requests
 </div>
 {{!--
 <script src="/scripts/services/datapicker.js"></script> --}}
-<script>
-  $('.card').hover(function () {
-    if ($(this).find('.edit-tailor, .cancel-tailor').css("display") == 'none') {
-      $(this).find('.edit-tailor, .cancel-tailor').show()
-    } else if ($(this).find('.edit-tailor, .cancel-tailor').css("display") == 'block') {
-      $(this).find('.edit-tailor, .cancel-tailor').hide()
-    }
-
-  })
-
-  $('.edit').click(function () {
-    let s = $(this).closest('.card').find('.req-title').text()
-    s = s.split(' - ')
-    $('#editModal').find('input[name=title]').val(s[1])
-    $('#editModal').find(`option`).attr("selected", false)
-    $('#editModal').find(`textarea`).text($(this).closest('.card').find('.req-description').text().trim())
-    $('#editModal').find(`option:contains("${s[0]}")`).attr("selected", '')
-
-    $('#editModal').find('.btn.confirm').attr('data-bs-id', $(this).attr('data-bs-id'))
-
-  })
-
-  $('.edit-tailor').click(function () {
-    $('#tailorModal').find('[name="tailor"]').val($(this).attr('data-bs-id'))
-    $('#tailorModal').find('.confirm').attr('data-bs-reqid', $(this).attr('data-bs-reqid'))
-  })
-
-  $('.cancel-tailor').click(function () {
-    $('#cancelTailorModal').find('.del').attr('data-bs-id', $(this).attr('data-bs-id'))
-  })
-
-</script>
+<script src="/scripts/services/tableFormatters.js"></script>
+<script src="/scripts/services/tableEvents.js"></script>
+<script src="/scripts/services/main.js"></script>

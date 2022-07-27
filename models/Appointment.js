@@ -31,7 +31,6 @@ Appointment.init({
             throw new Error('Do not try to set the `time` value!');
         }
     },
-    description: { type: sequelize.STRING(1000), allowNull: false },
     datetimeHuman: {
         type: sequelize.VIRTUAL,
         get() {
@@ -42,6 +41,9 @@ Appointment.init({
             throw new Error('Do not try to set the `datetime` value!');
         }
     },
+    description: { type: sequelize.STRING(1000), allowNull: false },
+    confirmed: { type: sequelize.BOOLEAN, defaultValue: null},
+
 },
     {
         defaultScope: {
@@ -55,7 +57,7 @@ Appointment.init({
             {
                 name: 'apptKey',
                 unique: true,
-                fields: ['datetime', 'tailorId']
+                fields: ['datetime', 'tailorId', 'confirmed']
             }
         ],
         timestamps: true,

@@ -51,7 +51,7 @@
             </div> --}}
             <div class="mb-3 col-6">
                 <label for="date" class="form-label">Date</label>
-                <input type="date" class="form-control" name="date" min={{today}} required>
+                <input type="date" class="form-control" name="date" min={{min}} max={{max}} required value="{{min}}">
             </div>
             <div class="mb-3 col-6 tailor-select">
                 <label for="tailorID" class="form-label">Tailor</label>
@@ -63,30 +63,6 @@
             </div>
         </div>
         <div class="row timings">
-            <div class="container overflow-hidden mb-3">
-                <label class="form-label">Time</label>
-                <div class="border border-1 rounded mx-auto row g-2 pb-2 m-0">
-                    <div class="col-lg-2 col-md-6 d-grid">
-                        <button type="button" class="btn btn-lg btn-primary" value="09:00:00">9:00AM</button>
-                    </div>
-                    <div class="col-lg-2 col-md-6 d-grid">
-                        <button type="button" class="btn btn-lg btn-primary" value="10:30:00">10:30AM</button>
-                    </div>
-                    <div class="col-lg-2 col-md-6 d-grid">
-                        <button type="button" class="btn btn-lg btn-primary" value="12:00:00">12:00PM</button>
-                    </div>
-                    <div class="col-lg-2 col-md-6 d-grid">
-                        <button type="button" class="btn btn-lg btn-primary" value="15:00:00">3:00PM</button>
-                    </div>
-                    <div class="col-lg-2 col-md-6 d-grid">
-                        <button type="button" class="btn btn-lg btn-primary" value="16:30:00">4:30PM</button>
-                    </div>
-                    <div class="col-lg-2 col-md-6 d-grid">
-                        <button type="button" class="btn btn-lg btn-primary" value="18:00:00">6:00PM</button>
-                    </div>
-                </div>
-            </div>
-            <input type="hidden" class="form-control" name="time">
         </div>
         <div class="row">
             <div class="mb-3 col-12">
@@ -108,5 +84,7 @@
             $('select[name="tailorID"]').attr('disabled', true)
             $('.tailor-select').append(`<input type="hidden" class="form-control" name="tailorID" value=${id}>`)
         }
+
+        getTimings()
     })
 </script>
