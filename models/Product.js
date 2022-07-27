@@ -15,6 +15,8 @@ Product.init({
         quantity: {type: sequelize.INTEGER},
         category:{type:sequelize.STRING},
         wishlistcount:{type: sequelize.INTEGER},
+        sold: {type: sequelize.INTEGER},
+        sales: {type: sequelize.INTEGER},
         Owner:{type:sequelize.STRING},
         OwnerID:{type: sequelize.INTEGER}
 },

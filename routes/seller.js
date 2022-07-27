@@ -12,10 +12,16 @@ const Message = require("../models/Messages")
 const CartProduct = require("../models/CartProduct")
 const FAQ = require("../models/FAQ")
 const ensureAuthenticated = require("../views/helpers/auth");
+const ensureSellerAuthenticated = require("../views/helpers/sellerAuth");
 const moment = require("moment");
 // Required for file upload const 
 fs = require('fs'); 
 const upload = require('../views/helpers/imageUpload');
+
+router.all('/*', ensureSellerAuthenticated, function (req, res, next) {
+    req.app.locals.layout = 'seller'; // set your layout here
+    next(); // pass control to the next handler
+});
 
 router.use((req, res, next) => {
     res.locals.path = req.baseUrl;
@@ -61,6 +67,8 @@ router.post('/addProduct',ensureAuthenticated, async function (req,res) {
             quantity: req.body.quantity,
             category: req.body.category,
             wishlistcount: 0,
+            sold: 0,
+            sales: 0,
             Owner:req.user.name,
             OwnerID:req.user.id
             

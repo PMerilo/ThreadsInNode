@@ -1,0 +1,163 @@
+{{!--
+<link rel="stylesheet" href="styles/cart.css"> --}}
+
+
+<div class="row">
+  <div class="container content-section col-12 col-md-9">
+    <div class="card cart-card">
+      <div class="card-header">
+        <h2>Order Summary</h2>
+      </div>
+
+      <div class="card-body">
+        <div class="cart-row">
+          <span class="cart-item cart-header cart-column">ITEM</span>
+          <span class="cart-price cart-header cart-column">PRICE</span>
+          <span class="cart-quantity cart-header cart-column">QUANTITY</span>
+        </div>
+        <div class="cart-items">
+          {{#each orderitems}}
+          <div class="cart-row">
+            <div class="cart-item cart-column">
+              <img class="cart-item-image" src="/images/items/11.jpg" width="100" height="100">
+              <span class="cart-item-title">{{ this.product_name }}</span>
+            </div>
+            <span class="cart-price cart-column">S${{ this.product_price }}</span>
+            <div class="cart-quantity cart-column">
+              <span class="cart-quantityy">{{this.qtyPurchased}}</span>
+            </div>
+          </div>
+          <input type="hidden" value="{{ order.orderTotal}}" class="total-p">
+          {{/each}}
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="container col-12 col-md-3">
+    <div class="card summary-card">
+      <div class="cart-header card-header">
+        <p>Order Summary</p>
+      </div>
+      <div class="grandtotal-after d-flex">
+        <p>Order Total:</p>
+        <p class="cart-gt-after ms-auto">S${{ order.orderTotal}}</p>
+      </div>
+      <div class="grandtotal-after d-flex">
+        <p>Order Status:</p>
+        <p class="cart-gt-after ms-auto">{{ order.orderStatus}}</p>
+      </div>
+      {{!-- {{#if order.discountcodeused}}
+      <div class="grandtotal-after d-flex">
+        <p>Discount Code Used:</p>
+        <p class="cart-gt-after ms-auto">{{ order.discountcodeused}}</p>
+      </div>
+      {{/if}} --}}
+    </div>
+  </div>
+</div>
+
+<style>
+  .cart-header {
+    font-weight: bold;
+    font-size: 1.25em;
+    color: #333;
+    padding-left: 10px;
+  }
+
+  .cart-column {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid black;
+    margin-right: 1.5em;
+    padding-bottom: 10px;
+    margin-top: 10px;
+  }
+
+  .cart-row {
+    display: flex;
+  }
+
+  .cart-item {
+    width: 45%;
+  }
+
+  .cart-price {
+    width: 25%;
+    font-size: 1.2em;
+    color: #333;
+  }
+
+  .cart-quantity {
+    width: 30%;
+  }
+
+  .cart-item-title {
+    color: #333;
+    margin-left: .5em;
+    font-size: 1.2em;
+  }
+
+  .cart-item-image {
+    width: 75px;
+    height: auto;
+    border-radius: 10px;
+  }
+
+  .btn-danger {
+    color: white;
+    background-color: #EB5757;
+    border: none;
+    border-radius: .3em;
+    font-weight: bold;
+
+  }
+
+  .btn-danger:hover {
+    background-color: #CC4C4C;
+  }
+
+  .cart-quantityy {
+    height: 34px;
+    width: 50px;
+    border-radius: 5px;
+    color: #333;
+    padding: 0;
+    text-align: center;
+    font-size: 1.2em;
+    margin-right: 25px;
+  }
+
+  .cart-row:last-child {
+    border-bottom: 1px solid black;
+  }
+
+  .cart-row:last-child .cart-column {
+    border: none;
+  }
+
+  .card {
+    padding: 10px;
+    margin-bottom: 20px;
+  }
+
+  .cart-card {
+    margin-top: 60px;
+  }
+
+  .summary-card {
+    margin-top: 60px;
+  }
+
+  .total,
+  .shipping,
+  .discount {
+    padding: 10px;
+    border-bottom: 1px solid black;
+  }
+
+  .grandtotal,
+  .grandtotal-after {
+    padding: 10px;
+  }
+</style>

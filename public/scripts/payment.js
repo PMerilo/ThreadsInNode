@@ -25,7 +25,7 @@ document.querySelector('.card-number-input').oninput = () => {
     }
     else {
         card_type.forEach(element => {
-            element.src ='images/all3.png'
+            element.src = 'images/all3.png'
 
         });
         // document.querySelector('.card-number-box').innerText = '################'
@@ -84,4 +84,29 @@ if (total <= 75) {
     total = (Math.round(total * 100) / 100).toFixed(2);
     document.getElementsByClassName('shipping-fee')[0].innerText = 'FREE'
     document.getElementsByClassName('cart-grandtotal-price')[0].innerText = 'S$' + total
+}
+
+
+function checkoutcheck() {
+    var fname = document.getElementById('fname').value
+    var email = document.getElementById('email').value
+    var phone = document.getElementById('phone').value
+    var address = document.getElementById('address').value
+    var unit_number = document.getElementById('unit_number').value
+    var postalcode = document.getElementById('postalcode').value
+
+    $.ajax({
+        url: "/checkout",
+        method: 'POST',
+        contentType: "application/json",
+        data: JSON.stringify({
+            fname : fname,
+            email : email,
+            phone : phone,
+            address : address,
+            unit_number : unit_number,
+            postal_code : postalcode
+        })
+
+    })
 }

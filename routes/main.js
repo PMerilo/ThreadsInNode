@@ -3,6 +3,7 @@ const router = express.Router();
 const flashMessage = require('../views/helpers/messenger');
 const sequelizeUser = require("../config/DBConfig");
 const { serializeUser } = require('passport');
+const sequelize = require('sequelize')
 //Our Models
 const User = require("../models/User")
 const Ticket = require("../models/Ticket")
@@ -13,19 +14,25 @@ const Wishlist = require('../models/Wishlist')
 const Message = require("../models/Messages")
 const CartProduct = require("../models/CartProduct")
 const FAQ = require("../models/FAQ")
+const { v4: uuidv4 } = require('uuid');
 //Ensures User is autenticated before accessing
 //page
 const ensureAuthenticated = require("../views/helpers/auth");
 const moment = require("moment");
 // Required for file upload const 
-fs = require('fs'); 
+fs = require('fs');
 const upload = require('../views/helpers/imageUpload');
 const console = require('console');
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY
+const stripePublicKey = process.env.STRIPE_PUBLIC_KEY
 
 // For mail
 const nodemailer = require("nodemailer");
 // const { where } = require('sequelize/types');
 const Mail = require("../config/MailConfig");
+const Cart = require('../models/Cart');
+const Order = require('../models/Orders');
+const OrderItems = require('../models/OrderItems');
 
 router.use((req, res, next) => {
     res.locals.path = req.baseUrl;
@@ -34,64 +41,55 @@ router.use((req, res, next) => {
     next();
 });
 
-router.get('/', async (req,res) =>{
+router.get('/', async (req, res) => {
 
-    products = (await Product.findAll()).map((x)=> x.dataValues)
-    
-    res.render("index",{products})
+    products = (await Product.findAll()).map((x) => x.dataValues)
+
+    res.render("index", { products })
 })
 
-router.post('/addtoCart',ensureAuthenticated, async (req,res) =>{
+router.post('/addtoCart', ensureAuthenticated, async (req, res) => {
     var sku = req.body.sku;
     console.log(sku)
-    purchasedProduct = await Product.findOne({where:{sku:req.body.sku}})
-    if(purchasedProduct.quantity>0){
-        
-        let quantity = 1;
-        newPurchasedProductQTY = purchasedProduct.quantity - quantity
-        
-        checkProductinCart = await CartProduct.findOne({where:{id:req.user.id+sku}})
-        
-        try{
-            if(checkProductinCart){
-                newCartProductQTY = parseInt(checkProductinCart.qtyPurchased) + parseInt(quantity)
-                newtotalCost = parseInt(newCartProductQTY) *  parseInt(purchasedProduct.price)
-                console.log(newtotalCost)
-                CartProduct.update({qtyPurchased: newCartProductQTY, totalCost: newtotalCost},{where:{id:req.user.id+sku}} )
-            }else{
-                
-                await CartProduct.create({
-                    id: req.user.id+sku,
-                    sku: req.body.sku,
-                    name: purchasedProduct.name,
-                    description: purchasedProduct.description,
-                    price: purchasedProduct.price,
-                    category: purchasedProduct.category,
-                    totalCost: quantity * purchasedProduct.price,
-                    qtyPurchased: quantity,
-                    cartOwner: req.user.name,
-                    cartOwnerID: req.user.id
-                });
-            }
+    purchasedProduct = await Product.findOne({ where: { sku: req.body.sku } })
+    if (purchasedProduct.quantity > 0) {
+        try {
+            let [cart, cartStatus] = await Cart.findOrCreate({
+                where: {
+                    userId: req.user.id
+                },
+                defaults: {
+                    id: req.user.id
+                }
+            })
+            await CartProduct.findOrCreate({
+                where: {
+                    cartId: cart.id,
+                    productSku: sku
+                },
+                defaults: {
+                    qtyPurchased: 0
+                }
+            })
+            await CartProduct.increment({ qtyPurchased: 1 }, { where: { cartId: cart.id, productSku: sku } })
             // flashMessage(res,"success", req.body.name + ' Purchased Successfully');
             // res.redirect("/")
-        }catch(e){
+        } catch (e) {
             console.log(e)
             res.redirect("/")
         }
-        Product.update({quantity:newPurchasedProductQTY},{where:{sku:req.body.sku}})
-    }else{
-        flashMessage(res,"danger", req.body.name + ' is Out of Stock');
+    } else {
+        flashMessage(res, "danger", req.body.name + ' is Out of Stock');
         res.redirect("/")
     }
 })
 
-router.post('/updateCart',ensureAuthenticated, async (req,res) =>{
+router.post('/updateCart', ensureAuthenticated, async (req, res) => {
     var quantity = req.body.quantity
     var sku = req.body.sku
     console.log(quantity)
-    cartProduct = await CartProduct.findOne({where:{id:req.user.id+sku}})
-    product = await Product.findOne({where:{sku:sku}})
+    cartProduct = await CartProduct.findOne({ where: { cartId: req.user.id, productSku: sku } })
+    product = await Product.findOne({ where: { sku: sku } })
     productQuantity = cartProduct.qtyPurchased
     console.log(productQuantity)
     if (parseInt(quantity) <= 0) {
@@ -101,44 +99,38 @@ router.post('/updateCart',ensureAuthenticated, async (req,res) =>{
         // console.log(cartProduct.qtyPurchased + "hi")
     }
     if (parseInt(product.quantity) == 0) {
-        CartProduct.destroy({where:{id:req.user.id+sku}})
+        // CartProduct.destroy({where:{id:req.user.id+sku}})
+        await CartProduct.destroy({ where: { cartId: req.user.id, productSku: sku } })
         flashMessage(res, 'error', product.name + 'is out of stock!')
     } else {
-        CartProduct.update({qtyPurchased: quantity},{where:{id:req.user.id+sku}} )
+        CartProduct.update({ qtyPurchased: quantity }, { where: { cartId: req.user.id, productSku: sku } })
     }
-    
+
 })
 
-router.post('/deleteitem/:sku',ensureAuthenticated, async (req,res) =>{
-    cartProduct = await CartProduct.findOne({where:{sku:req.params.sku}})
+router.post('/deleteitem/:sku', ensureAuthenticated, async (req, res) => {
+    // cartProduct = await CartProduct.findOne({where:{sku:req.params.sku}})
     // flashMessage(res, 'success', product.name + 'has been deleted from your cart!')
-    await CartProduct.destroy({where:{id:req.user.id+req.params.sku}})
-    res.redirect('/shoppingCart')
+    await CartProduct.destroy({ where: { cartId: req.user.id, productSku: req.params.sku } })
+    res.redirect('/cart')
 })
 
-router.post('/deletecart',ensureAuthenticated, async (req,res) =>{
+router.post('/deletecart', ensureAuthenticated, async (req, res) => {
     var ownerID = req.user.id
-    await CartProduct.destroy({where:{cartownerID: ownerID}})
-    res.redirect('/shoppingCart')
-
+    await Cart.destroy({ where: { id: ownerID } })
+    res.redirect('/cart')
 })
 
-router.post('/deletecart',ensureAuthenticated, async (req,res) =>{
-    var ownerID = req.user.id
-    await CartProduct.destroy({where:{cartownerID: ownerID}})
-
-})
-
-router.post('/discount',ensureAuthenticated, async (req,res) =>{
+router.post('/discount', ensureAuthenticated, async (req, res) => {
     let date_ob = new Date();
-    var todaysdate = date_ob.getFullYear() + "-" + ("0" + (date_ob.getMonth() + 1)).slice(-2) + "-" + ("0" + date_ob.getDate()).slice(-2) 
+    var todaysdate = date_ob.getFullYear() + "-" + ("0" + (date_ob.getMonth() + 1)).slice(-2) + "-" + ("0" + date_ob.getDate()).slice(-2)
     console.log(todaysdate)
     var ownerID = req.user.id
     var discountcodeused = req.body.code
     var status = req.body.status
     console.log(discountcodeused)
-    var discountcodeinDB = await Reward.findOne({where:{voucher_code: discountcodeused}})
-    
+    var discountcodeinDB = await Reward.findOne({ where: { voucher_code: discountcodeused } })
+
     // res.send({discount_amount:discount_amount, status:"success"})
     // res.send({discount_amount:discount_amount, status:"spools_shortage"})
     // res.send({discount_amount:discount_amount, status:"voucher_expired"})
@@ -151,53 +143,53 @@ router.post('/discount',ensureAuthenticated, async (req,res) =>{
             console.log(rewardexpirydate)
             if (discountcodeinDB.quantity > 0) {
                 if (rewardexpirydate > todaysdate) {
-                    if(discountcodeinDB.spools_needed <= req.user.spools) {
+                    if (discountcodeinDB.spools_needed <= req.user.spools) {
                         console.log(discount_amount)
-                        res.send({discount_amount:discount_amount, status:"success"})
+                        res.send({ discount_amount: discount_amount, status: "success" })
                     } else {
-                        res.send({discount_amount:discount_amount, status:"spools_shortage"})
+                        res.send({ discount_amount: discount_amount, status: "spools_shortage" })
                     }
                 } else {
-                    res.send({discount_amount:discount_amount, status:"voucher_expired"})
+                    res.send({ discount_amount: discount_amount, status: "voucher_expired" })
                 }
             } else {
-                res.send({discount_amount:discount_amount, status:"voucher_ran_out"})
+                res.send({ discount_amount: discount_amount, status: "voucher_ran_out" })
             }
         } else {
-            res.send({discount_amount:discount_amount, status:"no_such_voucher"})
+            res.send({ discount_amount: discount_amount, status: "no_such_voucher" })
         }
 
-    }catch(e){
+    } catch (e) {
         console.log(e)
         res.redirect("/")
     }
 })
 
-router.post('/wishlist',ensureAuthenticated, async (req,res) => {
+router.post('/wishlist', ensureAuthenticated, async (req, res) => {
     var sku = req.body.sku
     var status = req.body.status
-    checkProductinWishlist = await Wishlist.findOne({where:{id:req.user.id+sku}})
-    product = await Product.findOne({where:{sku:sku}})
-    
+    checkProductinWishlist = await Wishlist.findOne({ where: { id: req.user.id + sku } })
+    product = await Product.findOne({ where: { sku: sku } })
+
     if (status == "check") {
         if (checkProductinWishlist) {
-            res.send({response: "add", status : "check"})
+            res.send({ response: "add", status: "check" })
         } else {
-            res.send({response: "remove", status : "check"})
+            res.send({ response: "remove", status: "check" })
         }
     } else if (status == "add/remove") {
 
-        try{
-            if(checkProductinWishlist){
-                Wishlist.destroy({where:{id:req.user.id+sku}})
+        try {
+            if (checkProductinWishlist) {
+                Wishlist.destroy({ where: { id: req.user.id + sku } })
                 var newwishlistcount = product.wishlistcount - 1
-                Product.update({wishlistcount:newwishlistcount}, {where:{sku:sku}})
+                Product.update({ wishlistcount: newwishlistcount }, { where: { sku: sku } })
                 console.log('Item removed')
-                res.send({response: "remove", status : "add/remove"})
-            }else{
-                
+                res.send({ response: "remove", status: "add/remove" })
+            } else {
+
                 await Wishlist.create({
-                    id: req.user.id+sku,
+                    id: req.user.id + sku,
                     sku: sku,
                     name: product.name,
                     description: product.description,
@@ -207,37 +199,86 @@ router.post('/wishlist',ensureAuthenticated, async (req,res) => {
                     OwnerID: req.user.id
                 });
                 var newwishlistcount = product.wishlistcount + 1
-                Product.update({wishlistcount:newwishlistcount}, {where:{sku:sku}})
+                Product.update({ wishlistcount: newwishlistcount }, { where: { sku: sku } })
                 console.log('Item added')
-                res.send({response: "add", status : "add/remove"})
+                res.send({ response: "add", status: "add/remove" })
             }
             // flashMessage(res,"success", req.body.name + ' Purchased Successfully');
             // res.redirect("/")
-        }catch(e){
+        } catch (e) {
             console.log(e)
             res.redirect("/")
         }
     }
 })
 
-router.get('/RewardsPage', (req,res) => {
+router.post('/checkout', ensureAuthenticated, async (req, res) => {
+     var order = await Order.create({
+        orderUUID: ("#" + uuidv4().slice(-12)).toUpperCase(),
+        orderOwnerID: req.user.id,
+        orderOwnerName : req.body.fname,
+        orderTotal: cart.cartTotal,
+        discountcodeused: cart.discountcodeused,
+        orderStatus: "Processing",
+        address: req.body.address,
+        unit_number: req.body.unit_number,
+        postal_code: req.body.postal_code,
+        email: req.body.email,
+        phone_number: req.body.phone,
+        userId: req.user.id
+    })
+ 
+    var cartproducts = await Cart.findOne({ where: { id: req.user.id }, include: { model: Product } })
+    // console.log(JSON.stringify(cartproducts))
+    cartproducts.products.forEach(element => {
+        OrderItems.create({
+            orderId: order.id,
+            productSku: element.sku,
+            qtyPurchased: element.cartproduct.qtyPurchased,
+            product_name: element.name,
+            product_price: element.price,
+            seller_name: element.Owner,
+        })
+        // var sold = element.sold + element.cartproduct.qtyPurchased
+        // var sales = element.sales + (element.cartproduct.qtyPurchased*element.price)
+        // var qty = element.quantity - element.cartproduct.qtyPurchased
+        Product.update({quantity: element.quantity - element.cartproduct.qtyPurchased, sold: element.sold + element.cartproduct.qtyPurchased,sales:element.sales + (element.cartproduct.qtyPurchased*element.price)}, {where: {sku: element.sku }})
+    });
+    var discountcode = await Reward.findOne({where: {voucher_code : cartproducts.discountcodeused}})
+    if (discountcode) {
+        User.update({spools: req.user.spools - discountcode.spools_needed}, {where: {id:req.user.id}})
+        Reward.update({quantity: discountcode.quantity - 1}, {where: {voucher_code : cartproducts.discountcodeused}})
+    }
+    await Cart.destroy({ where: { id: req.user.id } })  
+    console.log("Order created")
+    res.redirect("/")
+})
+
+router.post('/checkoutsave', ensureAuthenticated, async (req, res) => {
+    var subtotal = req.body.subtotal
+    var discountcode = req.body.discount_code
+    console.log(subtotal)
+    console.log(discountcode)
+    Cart.update({ cartTotal: subtotal, discountcodeused: discountcode }, { where: { id: req.user.id } })
+})
+
+router.get('/RewardsPage', (req, res) => {
     res.render("rewards")
 })
 
-router.get('/CustomerService', (req,res) => {
+router.get('/CustomerService', (req, res) => {
     res.render("customerservice")
 })
 
 
-router.get('/profile',ensureAuthenticated, (req,res) => {
-    
+router.get('/profile', ensureAuthenticated, (req, res) => {
     res.render("profile")
 })
 
 router.post('/flash', (req, res) => {
-	const message = 'This is an important message';
-	const error = 'This is an error message';
-	const error2 = 'This is the second error message';
+    const message = 'This is an important message';
+    const error = 'This is an error message';
+    const error2 = 'This is the second error message';
 
     // req.flash('message', message);
     // req.flash('error', error);
@@ -248,99 +289,111 @@ router.post('/flash', (req, res) => {
     flashMessage(res, 'error', error);
     flashMessage(res, 'error', error2, 'fas fa-sign-in-alt', true);
 
-	res.redirect('/');
+    res.redirect('/');
 });
 
-router.get('/editProfile',ensureAuthenticated, (req,res) => {
+router.get('/editProfile', ensureAuthenticated, (req, res) => {
     res.render("editProfile.handlebars")
 })
 
-router.get('/changePassword',ensureAuthenticated, (req,res) => {
+router.get('/changePassword', ensureAuthenticated, (req, res) => {
     res.render("userEditPassword.handlebars")
 })
 
-router.get('/myOrders',ensureAuthenticated, (req,res) => {
-    res.render("myOrders.handlebars")
+router.get('/myOrders', ensureAuthenticated, async (req, res) => {
+    orders = (await Order.findAll({where: { orderOwnerID: req.user.id }}))
+    // console.log(orders)
+    // console.log(orders[0].orderUUID)
+    res.render("pastOrder.handlebars", {orders})
 })
 
-router.get('/shoppingCart', ensureAuthenticated,async (req,res) => {
-    cartproducts = (await CartProduct.findAll({where: {cartOwnerID:req.user.id}}))
-    res.render("shoppingCart.handlebars",{cartproducts})
+router.get('/orderdetails/:id', ensureAuthenticated, async (req, res) => {
+    var id = req.params.id
+    orderitems = (await OrderItems.findAll({ where: { orderId: id }}))
+    order = (await Order.findOne({where: { id: id }}))
+    res.render("pastOrderDetails.handlebars", {orderitems, order})
 })
 
-router.get('/wishlist', ensureAuthenticated,async (req,res) => {
-    wishlistproducts = (await Wishlist.findAll({where: {OwnerID:req.user.id}}))
+router.get('/cart', ensureAuthenticated, async (req, res) => {
+    cartproducts = (await Cart.findOne({ where: { id: req.user.id }, include: Product, nested: true }))
+    res.render("shoppingCart.handlebars", { cartproducts })
+})
+
+router.get('/wishlist', ensureAuthenticated, async (req, res) => {
+    wishlistproducts = (await Wishlist.findAll({ where: { OwnerID: req.user.id } }))
     // products = (await Product.findAll({where: {sku:wishlistproducts.sku}}))
-    res.render("wishlist.handlebars",{wishlistproducts})
+    res.render("wishlist.handlebars", { wishlistproducts })
 })
 
-router.get('/checkout', ensureAuthenticated,async (req,res) => {
-    cartproducts = (await CartProduct.findAll({where: {cartOwnerID:req.user.id}}))
-    res.render("checkout.handlebars",{cartproducts})
+router.get('/checkout', ensureAuthenticated, async (req, res) => {
+    // cartproducts = (await Cart.findOne({where: {id:req.user.id}, include: Product, nested: true}))
+    cart = (await Cart.findOne({ where: { id: req.user.id } }))
+    var carttotal = cart.cartTotal
+    res.render("multistep-form.handlebars", { carttotal })
 })
 
-router.get('/otherSupport', (req,res) => {
+router.get('/otherSupport', (req, res) => {
     res.render("qnaPages/otherSupport.handlebars")
 })
 
-router.get('/gettingStarted', (req,res) => {
+router.get('/gettingStarted', (req, res) => {
     res.render("qnaPages/gettingStarted.handlebars")
 })
 
-router.get('/myAccountQNA', (req,res) => {
+router.get('/myAccountQNA', (req, res) => {
     res.render("qnaPages/myAccountQNA.handlebars")
 })
 
-router.get('/payment&shippingQNA', (req,res) => {
+router.get('/payment&shippingQNA', (req, res) => {
     res.render("qnaPages/payment&shippingQNA.handlebars")
 })
-router.get('/troubleshootingQNA', (req,res) => {
+router.get('/troubleshootingQNA', (req, res) => {
     res.render("qnaPages/troubleshootingQNA.handlebars")
 })
 
-router.get('/rewards&offersQNA', (req,res) => {
+router.get('/rewards&offersQNA', (req, res) => {
     res.render("qnaPages/rewards&offersQNA.handlebars")
 })
 
-router.get('/multistep', (req,res) => {
+router.get('/multistep', (req, res) => {
     res.render("multistep-form.handlebars")
 })
 
 
-router.get('/messages',ensureAuthenticated, async function (req,res){
-    message = (await Message.findAll({where: {ownerID:req.user.id}}))
+router.get('/messages', ensureAuthenticated, async function (req, res) {
+    message = (await Message.findAll({ where: { ownerID: req.user.id } }))
 
-    res.render("messages.handlebars",{message})
+    res.render("messages.handlebars", { message })
 })
 
-router.get('/deletemessages',ensureAuthenticated, async function (req,res){
-    message = (await Message.findAll({where: {ownerID:req.user.id}}))
-    
-    res.render("deleteMessages.handlebars",{message})
+router.get('/deletemessages', ensureAuthenticated, async function (req, res) {
+    message = (await Message.findAll({ where: { ownerID: req.user.id } }))
+
+    res.render("deleteMessages.handlebars", { message })
 })
 
-router.post('/deletemessages',ensureAuthenticated, async function (req,res){
+router.post('/deletemessages', ensureAuthenticated, async function (req, res) {
     let { messageID } = req.body;
-    if (messageID!=null){
+    if (messageID != null) {
         deletedMessage = req.body.messageID
-        Message.destroy({where: {id:messageID}})
+        Message.destroy({ where: { id: messageID } })
         flashMessage(res, 'success', "Message Deleted");
-        User.update({MessagesCount:req.user.MessagesCount-1}, {where:{id:req.user.id}})
-    }else{
+        User.update({ MessagesCount: req.user.MessagesCount - 1 }, { where: { id: req.user.id } })
+    } else {
         flashMessage(res, 'danger', "Please Select a Message to Delete");
     }
-    
+
     res.redirect("/deletemessages")
-    
+
 })
-router.get('/feedback',ensureAuthenticated, (req,res) => {
+router.get('/feedback', ensureAuthenticated, (req, res) => {
     res.render("feedback.handlebars")
 })
-router.get('/tickets',ensureAuthenticated, (req,res) => {
+router.get('/tickets', ensureAuthenticated, (req, res) => {
     res.render("ticket.handlebars")
 })
 
-router.post('/tickets',ensureAuthenticated, async function (req,res) {
+router.post('/tickets', ensureAuthenticated, async function (req, res) {
     let date_ob = new Date();
     // current date
     // adjust 0 before single digit date
@@ -360,8 +413,8 @@ router.post('/tickets',ensureAuthenticated, async function (req,res) {
     // current seconds
     let seconds = date_ob.getSeconds();
 
-    let { title, urgency, description, posterURL} = req.body;
-    try{
+    let { title, urgency, description, posterURL } = req.body;
+    try {
         await Ticket.create({
             title: req.body.title,
             urgency: req.body.urgency,
@@ -371,27 +424,27 @@ router.post('/tickets',ensureAuthenticated, async function (req,res) {
             posterURL: req.body.posterURL,
             owner: req.user.name,
             ownerID: req.user.id
-  
-          });
-          flashMessage(res,"success",'Ticket Sent Successfully');
-          res.redirect("/tickets")
-    }catch(e){
-         console.log(e)
-         res.redirect("/tickets")
+
+        });
+        flashMessage(res, "success", 'Ticket Sent Successfully');
+        res.redirect("/tickets")
+    } catch (e) {
+        console.log(e)
+        res.redirect("/tickets")
     }
 })
 
-router.get('/CommunityFAQPage', async (req,res) => {
-    comments = (await FAQ.findAll()).map((x)=> x.dataValues)
-    res.render("qnaPages/communityFAQpage.handlebars",{comments})
+router.get('/CommunityFAQPage', async (req, res) => {
+    comments = (await FAQ.findAll()).map((x) => x.dataValues)
+    res.render("qnaPages/communityFAQpage.handlebars", { comments })
 })
-router.get('/CommunityFAQPage/ViewComments',ensureAuthenticated ,async (req,res) => {
-    
-    comments = (await FAQ.findAll({where: {ownerID:req.user.id}}))
-    res.render("qnaPages/ViewComments.handlebars",{comments})
+router.get('/CommunityFAQPage/ViewComments', ensureAuthenticated, async (req, res) => {
+
+    comments = (await FAQ.findAll({ where: { ownerID: req.user.id } }))
+    res.render("qnaPages/ViewComments.handlebars", { comments })
 })
 
-router.post('/addComment',ensureAuthenticated, async function (req,res)  {
+router.post('/addComment', ensureAuthenticated, async function (req, res) {
     let date_ob = new Date();
     // current date
     // adjust 0 before single digit date
@@ -410,38 +463,38 @@ router.post('/addComment',ensureAuthenticated, async function (req,res)  {
 
     // current seconds
     let seconds = date_ob.getSeconds();
-    let{title,description} = req.body;
-    try{
+    let { title, description } = req.body;
+    try {
         await FAQ.create({
             title: req.body.title,
             description: req.body.description,
-            likes:0,
+            likes: 0,
             dateAdded: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
             owner: req.user.name,
             ownerID: req.user.id
-  
-          });
-          flashMessage(res,"success",'Comment Created Successfully');
-          res.redirect("/CommunityFAQPage")
-    }catch(e){
-         console.log(e)
-         res.redirect("/CommunityFAQPage")
-    }   
+
+        });
+        flashMessage(res, "success", 'Comment Created Successfully');
+        res.redirect("/CommunityFAQPage")
+    } catch (e) {
+        console.log(e)
+        res.redirect("/CommunityFAQPage")
+    }
 })
 
-router.post('/deleteComment', async (req,res) => { 
-    let{commentID} = req.body;
-    
+router.post('/deleteComment', async (req, res) => {
+    let { commentID } = req.body;
+
     deletedcomment = req.body.commentID
-    FAQ.destroy({where: {id:commentID}})
+    FAQ.destroy({ where: { id: commentID } })
     flashMessage(res, 'success', "Comment Deleted Successfully!");
     res.redirect("/CommunityFAQPage/ViewComments")
 })
-router.post('/editComment', async (req,res) => { 
-    let{title,description,commentID} = req.body;
-    
-    FAQ.update({title:title,description:description},{where: {id:commentID}})
-    
+router.post('/editComment', async (req, res) => {
+    let { title, description, commentID } = req.body;
+
+    FAQ.update({ title: title, description: description }, { where: { id: commentID } })
+
     flashMessage(res, 'success', "Comment Edited Successfully!");
     res.redirect("/CommunityFAQPage/ViewComments")
 })
@@ -450,7 +503,7 @@ router.post('/upload', ensureAuthenticated, (req, res) => {
     if (!fs.existsSync('./public/uploads/' + req.user.id)) {
         fs.mkdirSync('./public/uploads/' + req.user.id, { recursive: true });
     }
-  
+
     upload(req, res, (err) => {
         if (err) {
             // e.g. File too large
@@ -458,14 +511,14 @@ router.post('/upload', ensureAuthenticated, (req, res) => {
         }
         else if (req.file == undefined) {
             res.json({ file: '/images/defaultImage.png', err: 'No file selected' });
-        
-        }else{
+
+        } else {
             res.json({ file: `/uploads/${req.user.id}/${req.file.filename}` });
         }
     });
-  });
+});
 
-router.post('/feedback',ensureAuthenticated, async function (req,res) {
+router.post('/feedback', ensureAuthenticated, async function (req, res) {
     let date_ob = new Date();
     // current date
     // adjust 0 before single digit date
@@ -485,8 +538,8 @@ router.post('/feedback',ensureAuthenticated, async function (req,res) {
     // current seconds
     let seconds = date_ob.getSeconds();
 
-    let { title, favouriteThing,leastFavouriteThing,description,remarks,rating } = req.body;
-    try{
+    let { title, favouriteThing, leastFavouriteThing, description, remarks, rating } = req.body;
+    try {
         await Feedback.create({
             title: req.body.title,
             favouriteThing: req.body.favouriteThing,
@@ -497,36 +550,36 @@ router.post('/feedback',ensureAuthenticated, async function (req,res) {
             dateAdded: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
             owner: req.user.name,
             ownerID: req.user.id
-  
-          });
-          flashMessage(res,"success",'Feedback Sent Successfully');
-          res.redirect("/feedback")
-    }catch(e){
-         console.log(e)
-         res.redirect("/feedback")
+
+        });
+        flashMessage(res, "success", 'Feedback Sent Successfully');
+        res.redirect("/feedback")
+    } catch (e) {
+        console.log(e)
+        res.redirect("/feedback")
     }
 })
 
 
-router.get('/ticketHistory',ensureAuthenticated, async function (req,res){
-    tickets = (await Ticket.findAll({where: {ownerID:req.user.id}}))
-    res.render("TicketHistory",{tickets})
+router.get('/ticketHistory', ensureAuthenticated, async function (req, res) {
+    tickets = (await Ticket.findAll({ where: { ownerID: req.user.id } }))
+    res.render("TicketHistory", { tickets })
 })
 
-router.post('/ticketHistory/deleteTicket', async (req,res) => { 
-    let{ticketID} = req.body;
-    
+router.post('/ticketHistory/deleteTicket', async (req, res) => {
+    let { ticketID } = req.body;
+
     deletedTicket = req.body.ticketID
-    Ticket.destroy({where: {id:ticketID}})
+    Ticket.destroy({ where: { id: ticketID } })
     flashMessage(res, 'success', "Ticket Deleted Successfully! ID: " + ticketID);
     res.redirect("/ticketHistory")
 })
 
-router.post('/ticketHistory/editTicket', async (req,res) => { 
-    let{ticketID,title,description,urgency,posterURL} = req.body;
-    
-    
-    Ticket.update({title:title,description:description,urgency:urgency,posterURL:posterURL},{where: {id:ticketID}})
+router.post('/ticketHistory/editTicket', async (req, res) => {
+    let { ticketID, title, description, urgency, posterURL } = req.body;
+
+
+    Ticket.update({ title: title, description: description, urgency: urgency, posterURL: posterURL }, { where: { id: ticketID } })
     flashMessage(res, 'success', "Ticket Edited Successfully! ID: " + ticketID);
     res.redirect("/ticketHistory")
 })
@@ -537,22 +590,22 @@ router.get('/discover', async (req, res) => {
 });
 
 router.get('/newsLetter', async (req, res) => {
-    
-    res.render("newsLetter.handlebars" );
+
+    res.render("newsLetter.handlebars");
 });
 
-router.post('/newsLetter', ensureAuthenticated,async (req, res) => {
+router.post('/newsLetter', ensureAuthenticated, async (req, res) => {
     email = req.user.email
     console.log(email)
     link = "http://localhost:5000/newsLetter"
-    
+
     Mail.send(res, {
         to: email,
         subject: "Threads in Times Subcription to News Letter",
         text: "Thank you for subscribing to our news letter",
         template: `../views/MailTemplates/NewsLetter`,
         context: { link },
-        html:`<div class="page">
+        html: `<div class="page">
         <div class="container">
           <div class="email_header">
             
@@ -571,28 +624,28 @@ router.post('/newsLetter', ensureAuthenticated,async (req, res) => {
           <div class="email_footer">© Threads in Times 2020</div>
         </div>
       </div>`,
-        
-    
-    
-     });
-     console.log("Mail sent")
-    
+
+
+
+    });
+    console.log("Mail sent")
+
     flashMessage(res, 'success', "Thank you for subscribing to our newsletter! Check for an email from us soon!");
-    User.update({newsLetter:true},{where: {id:req.user.id}})
-    res.redirect("/newsLetter" );
+    User.update({ newsLetter: true }, { where: { id: req.user.id } })
+    res.redirect("/newsLetter");
 });
-router.post('/newsLetterUnSubscribe', ensureAuthenticated,async (req, res) => {
+router.post('/newsLetterUnSubscribe', ensureAuthenticated, async (req, res) => {
     email = req.user.email
     console.log(email)
     link = "http://localhost:5000/newsLetter"
-    
+
     Mail.send(res, {
         to: email,
         subject: "Threads in Times Unsubcription to News Letter",
         text: "Thank you for subscribing to our news letter",
         template: `../views/MailTemplates/NewsLetter`,
         context: { link },
-        html:`<div class="page">
+        html: `<div class="page">
         <div class="container">
           <div class="email_header">
             
@@ -611,15 +664,15 @@ router.post('/newsLetterUnSubscribe', ensureAuthenticated,async (req, res) => {
           <div class="email_footer">© Threads in Times 2020</div>
         </div>
       </div>`,
-        
-    
-    
-     });
-     console.log("Mail sent")
-    
+
+
+
+    });
+    console.log("Mail sent")
+
     flashMessage(res, 'success', "You have unsubscribed to our newsletter! Come checkback sometime soon!");
-    User.update({newsLetter:false},{where: {id:req.user.id}})
-    res.redirect("/newsLetter" );
+    User.update({ newsLetter: false }, { where: { id: req.user.id } })
+    res.redirect("/newsLetter");
 });
 
 
