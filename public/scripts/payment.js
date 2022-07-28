@@ -94,6 +94,11 @@ function checkoutcheck() {
     var address = document.getElementById('address').value
     var unit_number = document.getElementById('unit_number').value
     var postalcode = document.getElementById('postalcode').value
+    var cname = document.getElementById('name').value
+    var card_number = document.getElementById('cardnumber').value
+    var expiration_date = document.getElementById('expirationdate').value
+    var securitycode = document.getElementById('securitycode').value
+
 
     $.ajax({
         url: "/checkout",
@@ -105,8 +110,30 @@ function checkoutcheck() {
             phone : phone,
             address : address,
             unit_number : unit_number,
-            postal_code : postalcode
-        })
+            postal_code : postalcode,
+            cname: cname,
+            card_number: card_number,
+            expiration_date: expiration_date,
+            securitycode: securitycode
+        }),
+        success: function(res) {
+            if (res.status == "error") {
+                if(res) {
+                    Swal.fire({
+                        icon: res.icon,
+                        title: res.title,
+                        text: res.message
+                    })
+                }
+            } else{
+                Swal.fire({
+                    icon: res.icon,
+                    title: res.title
+                }).then(function(){
+                    location.replace("/")
+                })
+            }
+        }
 
     })
 }

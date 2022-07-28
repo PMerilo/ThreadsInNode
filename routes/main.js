@@ -14,6 +14,7 @@ const Wishlist = require('../models/Wishlist')
 const Message = require("../models/Messages")
 const CartProduct = require("../models/CartProduct")
 const FAQ = require("../models/FAQ")
+const Luhn = require("luhn-js")
 const { v4: uuidv4 } = require('uuid');
 //Ensures User is autenticated before accessing
 //page
@@ -213,45 +214,54 @@ router.post('/wishlist', ensureAuthenticated, async (req, res) => {
 })
 
 router.post('/checkout', ensureAuthenticated, async (req, res) => {
-     var order = await Order.create({
-        orderUUID: ("#" + uuidv4().slice(-12)).toUpperCase(),
-        orderOwnerID: req.user.id,
-        orderOwnerName : req.body.fname,
-        orderTotal: cart.cartTotal,
-        discountcodeused: cart.discountcodeused,
-        orderStatus: "Processing",
-        address: req.body.address,
-        unit_number: req.body.unit_number,
-        postal_code: req.body.postal_code,
-        email: req.body.email,
-        phone_number: req.body.phone,
-        userId: req.user.id
-    })
- 
-    var cartproducts = await Cart.findOne({ where: { id: req.user.id }, include: { model: Product } })
-    // console.log(JSON.stringify(cartproducts))
-    cartproducts.products.forEach(element => {
-        OrderItems.create({
-            orderId: order.id,
-            productSku: element.sku,
-            qtyPurchased: element.cartproduct.qtyPurchased,
-            product_name: element.name,
-            product_price: element.price,
-            seller_name: element.Owner,
+
+    isValid = true
+    if (!Luhn.isValid(req.body.card_number.replaceAll(" ", ""))) {
+        res.send({ status: "error",icon: "error",title: "Oops..", text: "Creditcard Number Is Invalid!!" })
+    } else {
+
+
+        var order = await Order.create({
+            orderUUID: ("#" + uuidv4().slice(-12)).toUpperCase(),
+            orderOwnerID: req.user.id,
+            orderOwnerName: req.body.fname,
+            orderTotal: cart.cartTotal,
+            discountcodeused: cart.discountcodeused,
+            address: req.body.address,
+            unit_number: req.body.unit_number,
+            postal_code: req.body.postal_code,
+            email: req.body.email,
+            phone_number: req.body.phone,
+            userId: req.user.id
         })
-        // var sold = element.sold + element.cartproduct.qtyPurchased
-        // var sales = element.sales + (element.cartproduct.qtyPurchased*element.price)
-        // var qty = element.quantity - element.cartproduct.qtyPurchased
-        Product.update({quantity: element.quantity - element.cartproduct.qtyPurchased, sold: element.sold + element.cartproduct.qtyPurchased,sales:element.sales + (element.cartproduct.qtyPurchased*element.price)}, {where: {sku: element.sku }})
-    });
-    var discountcode = await Reward.findOne({where: {voucher_code : cartproducts.discountcodeused}})
-    if (discountcode) {
-        User.update({spools: req.user.spools - discountcode.spools_needed}, {where: {id:req.user.id}})
-        Reward.update({quantity: discountcode.quantity - 1}, {where: {voucher_code : cartproducts.discountcodeused}})
+
+        var cartproducts = await Cart.findOne({ where: { id: req.user.id }, include: { model: Product } })
+        // console.log(JSON.stringify(cartproducts))
+        cartproducts.products.forEach(element => {
+            OrderItems.create({
+                orderId: order.id,
+                productSku: element.sku,
+                qtyPurchased: element.cartproduct.qtyPurchased,
+                product_name: element.name,
+                product_price: element.price,
+                seller_name: element.Owner,
+                orderStatus: "Processing",
+            })
+            // var sold = element.sold + element.cartproduct.qtyPurchased
+            // var sales = element.sales + (element.cartproduct.qtyPurchased*element.price)
+            // var qty = element.quantity - element.cartproduct.qtyPurchased
+            Product.update({ quantity: element.quantity - element.cartproduct.qtyPurchased, sold: element.sold + element.cartproduct.qtyPurchased, sales: element.sales + (element.cartproduct.qtyPurchased * element.price) }, { where: { sku: element.sku } })
+        });
+        var discountcode = await Reward.findOne({ where: { voucher_code: cartproducts.discountcodeused } })
+        User.update({ spools: req.user.spools + order.orderTotal }, { where: { id: req.user.id } })
+        if (discountcode) {
+            User.update({ spools: req.user.spools - discountcode.spools_needed }, { where: { id: req.user.id } })
+            Reward.update({ quantity: discountcode.quantity - 1 }, { where: { voucher_code: cartproducts.discountcodeused } })
+        }
+        await Cart.destroy({ where: { id: req.user.id } })
+        res.send({status: "success ",icon: "success",title: "Order Completed" })
+        console.log("Order created")
     }
-    await Cart.destroy({ where: { id: req.user.id } })  
-    console.log("Order created")
-    res.redirect("/")
 })
 
 router.post('/checkoutsave', ensureAuthenticated, async (req, res) => {
@@ -301,17 +311,17 @@ router.get('/changePassword', ensureAuthenticated, (req, res) => {
 })
 
 router.get('/myOrders', ensureAuthenticated, async (req, res) => {
-    orders = (await Order.findAll({where: { orderOwnerID: req.user.id }}))
+    orders = (await Order.findAll({ where: { orderOwnerID: req.user.id } }))
     // console.log(orders)
     // console.log(orders[0].orderUUID)
-    res.render("pastOrder.handlebars", {orders})
+    res.render("pastOrder.handlebars", { orders })
 })
 
 router.get('/orderdetails/:id', ensureAuthenticated, async (req, res) => {
     var id = req.params.id
-    orderitems = (await OrderItems.findAll({ where: { orderId: id }}))
-    order = (await Order.findOne({where: { id: id }}))
-    res.render("pastOrderDetails.handlebars", {orderitems, order})
+    orderitems = (await OrderItems.findAll({ where: { orderId: id } }))
+    order = (await Order.findOne({ where: { id: id } }))
+    res.render("pastOrderDetails.handlebars", { orderitems, order })
 })
 
 router.get('/cart', ensureAuthenticated, async (req, res) => {

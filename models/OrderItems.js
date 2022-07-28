@@ -10,7 +10,8 @@ OrderItems.init({
         qtyPurchased:{ type: sequelize.INTEGER },
         product_name:{ type: sequelize.STRING},
         product_price:{ type: sequelize.INTEGER},
-        seller_name: { type: sequelize.STRING}
+        seller_name: { type: sequelize.STRING},
+        orderStatus:{type: sequelize.STRING},
 },
     {
         freezeTableName: true,

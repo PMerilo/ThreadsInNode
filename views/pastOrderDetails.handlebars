@@ -14,6 +14,7 @@
           <span class="cart-item cart-header cart-column">ITEM</span>
           <span class="cart-price cart-header cart-column">PRICE</span>
           <span class="cart-quantity cart-header cart-column">QUANTITY</span>
+          <span class="c-t cart-header cart-column">Order Status</span>
         </div>
         <div class="cart-items">
           {{#each orderitems}}
@@ -25,6 +26,9 @@
             <span class="cart-price cart-column">S${{ this.product_price }}</span>
             <div class="cart-quantity cart-column">
               <span class="cart-quantityy">{{this.qtyPurchased}}</span>
+            </div>
+            <div class="c-t cart-column d-flex">
+              <p class="cart-total cart-column">{{this.orderStatus}}</p>
             </div>
           </div>
           <input type="hidden" value="{{ order.orderTotal}}" class="total-p">
@@ -43,10 +47,10 @@
         <p>Order Total:</p>
         <p class="cart-gt-after ms-auto">S${{ order.orderTotal}}</p>
       </div>
-      <div class="grandtotal-after d-flex">
+      {{!-- <div class="grandtotal-after d-flex">
         <p>Order Status:</p>
         <p class="cart-gt-after ms-auto">{{ order.orderStatus}}</p>
-      </div>
+      </div> --}}
       {{!-- {{#if order.discountcodeused}}
       <div class="grandtotal-after d-flex">
         <p>Discount Code Used:</p>
@@ -160,4 +164,13 @@
   .grandtotal-after {
     padding: 10px;
   }
+  .c-t {
+  width: 25%;
+}
+
+.cart-total {
+  font-size: 1.2em;
+  color: #333;
+  border:none;
+}
 </style>

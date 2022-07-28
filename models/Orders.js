@@ -14,7 +14,6 @@ Order.init({
         orderOwnerName:{type: sequelize.STRING},
         orderTotal:{ type: sequelize.FLOAT },
         discountcodeused:{type: sequelize.STRING},
-        orderStatus:{type: sequelize.STRING},
         address:{type: sequelize.STRING},
         unit_number:{type: sequelize.STRING},
         postal_code:{type: sequelize.INTEGER},
