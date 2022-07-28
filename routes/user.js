@@ -319,7 +319,7 @@ router.post('/forgetpasswordchange', async (req, res) => {
   return res.redirect('/login')
 })
 router.get("/backupcodes", async (req, res) => {
-  temp = (await TempUser.findAll()).map((x) => x.dataValues)
+  temp = (await TempUser.findAll({where: { email: req.user.email }})).map((x) => x.dataValues)
   res.render('backupcodes', { temp })
 })
 
