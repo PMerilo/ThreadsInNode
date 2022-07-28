@@ -39,6 +39,7 @@
                                 class="bi bi-box-arrow-left" title="Profile"></i></a>
                         <p>These are your TIT backup codes for account <span
                                 style="color:blue">{{user.email}}</span>.<br>Keep them safe.</p>
+
                         {{#each temp}}
                         {{#if (backupcodechecker this.backupcode1check)}}
                         <p>{{this.backupcode1}}</p>

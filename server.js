@@ -155,6 +155,13 @@ app.engine(
 					return true;
 				}
 				return false;
+			},
+			tempuserchecker(i, n){
+				console.log(i, n)
+				if (String(i) == String(n)){
+					return true;
+				}
+				return false;
 			}
 	  
 		},
