@@ -12,6 +12,23 @@ class TempUser extends sequelize.Model {
         allowNull: false,
         unique: true,
       },
+      backupcode1: {
+        type: sequelize.DataTypes.STRING,
+        allowNull: false,
+      },
+      backupcode2: {
+        type: sequelize.DataTypes.STRING,
+        allowNull: false,
+      },
+      backupcode1check: {
+        type: sequelize.DataTypes.STRING,
+        allowNull: false,
+      },
+      backupcode2check: {
+        type: sequelize.DataTypes.STRING,
+        allowNull: false,
+      },
+
     },
     {
       freezeTableName: true,

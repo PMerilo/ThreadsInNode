@@ -11,7 +11,7 @@ const moment = require('moment')
 const Request = require('../models/Request')
 const { Op } = require('sequelize');
 const Mail = require("../config/MailConfig");
-
+const TempUser = require("../models/TempUser");
 
 const userController = require('../controllers/userController');
 const Service = require('../models/Service');
@@ -91,6 +91,16 @@ router.post('/register', async function (req, res) {
       password: req.body.password,
       gender: req.body.gender,
       phoneNumber: req.body.phoneNumber
+
+    });
+    code1 = Math.random().toString(36).substring(2, 15)
+    code2 = Math.random().toString(36).substring(2, 15)
+    await TempUser.create({
+      email: req.body.email,
+      backupcode1: code1,
+      backupcode2: code2,
+      backupcode1check: 'not used',
+      backupcode2check: 'not used'
 
     });
 
@@ -240,12 +250,12 @@ router.post('/forgetpassword', async (req, res) => {
   if (await User.findOne({ where: { email: email } })) {
     otp = Math.floor(100000 + Math.random() * 900000)
     console.log(otp, 'HLEOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO HERE')
-    
+
 
 
     Mail.send(res, {
       to: email,
-      subject: "Your OTP is ready "+ otp,
+      subject: "Your OTP is ready " + otp,
       text: "Thank you for subscribing to our news letter",
       template: "../views/MailTemplates/NewsLetter",
       html: `<div class="page">
@@ -268,7 +278,7 @@ router.post('/forgetpassword', async (req, res) => {
       </div>
     </div>`
     })
-  
+
     // await TempUser.create({
     //   email: req.body.email,
     // })
@@ -280,7 +290,7 @@ router.post('/forgetpassword', async (req, res) => {
 })
 
 router.get('/forgetpassword_otp', (req, res) => {
-  if (otp == "placeholder"){
+  if (otp == "placeholder") {
     flashMessage(res, 'error', 'You do not have permission for that page');
     return res.redirect("/")
   }
@@ -330,6 +340,61 @@ router.post('/forgetpasswordchange', async (req, res) => {
   emailvariable = 'placeholder'
   flashMessage(res, 'success', 'Password updated successfully');
   return res.redirect('/login')
+})
+router.get("/backupcodes", async (req, res) => {
+  temp = (await TempUser.findAll()).map((x) => x.dataValues)
+  res.render('backupcodes', { temp })
+})
+
+router.post('/backupcodes', async (req, res) => {
+  console.log('hleloefe')
+  code1 = Math.random().toString(36).substring(2, 15);
+  code2 = Math.random().toString(36).substring(2, 15)
+  await TempUser.update({
+    backupcode1: code1, backupcode2: code2, backupcode1check: 'not used', backupcode2check: 'not used'
+  }, { where: { email: req.user.email } });
+  return res.redirect('/backupcodes')
+
+})
+
+router.get("/forgetpwbackupcodes", (req, res) => {
+  if (otp == "placeholder") {
+    flashMessage(res, 'error', 'You do not have permission for that page');
+    return res.redirect("/")
+  }
+  res.render('forgetpwbackupcodes')
+})
+router.post('/forgetpwbackupcodes', async (req, res) => {
+  let { backupcode } = req.body
+  tempuser = await TempUser.findOne({ where: { email: emailvariable } })
+  if (backupcode == tempuser.backupcode1) {
+    if (tempuser.backupcode1check == "not used") {
+      otp = "placeholder"
+      otp2 = 'allowpwchange'
+      await TempUser.update({ backupcode1check: 'used' }, { where: { email: tempuser.email } });
+      flashMessage(res, 'success', 'Valid backup code entered. Please change your password!');
+      return res.redirect('/forgetpasswordchange')
+    }
+
+  }
+  if (backupcode == tempuser.backupcode2) {
+    if (tempuser.backupcode2check == "not used") {
+      otp = "placeholder"
+      otp2 = 'allowpwchange'
+      await TempUser.update({ backupcode2check: 'used' }, { where: { email: tempuser.email } });
+      flashMessage(res, 'success', 'Valid backup code entered. Please change your password!');
+      return res.redirect('/forgetpasswordchange')
+    }
+
+  }
+  console.log(backupcode)
+  flashMessage(res, 'error', 'Incorrect backup code!');
+  return res.redirect('/forgetpwbackupcodes')
+
+  // if(backupcode){
+
+  // }
+
 })
 
 module.exports = router;

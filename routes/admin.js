@@ -17,6 +17,7 @@ const Appointment = require('../models/Appointment');
 const ensureAuthenticated = require("../views/helpers/auth");
 const serviceController = require("../controllers/serviceController")
 const ensureAdminAuthenticated = require("../views/helpers/adminAuth");
+const TempUser = require("../models/TempUser");
 
 router.all('/*', ensureAdminAuthenticated, function (req, res, next) {
     req.app.locals.layout = 'admin'; // set your layout here
@@ -284,6 +285,7 @@ router.post('/editUser/:id', async (req, res) => {
     let gender = req.body.gender;
     let isban = req.body.isban;
     await User.update({ name, email, phoneNumber, gender, isban }, { where: { id: req.params.id } })
+    await TempUser.update({ email }, { where: { email: userr.email } })
     flashMessage(res, 'success', 'Account successfully edited');
     res.redirect('/admin/UserManagement')
 })
@@ -293,6 +295,7 @@ router.get('/deleteUser/:id', async function
     try {
         let user = await User.findByPk(req.params.id);
         User.destroy({ where: { id: user.id } });
+        TempUser.destroy({ where: { email: user.email } });
         flashMessage(res, 'success', 'Account successfully deleted.');
         res.redirect('/admin/UserManagement');
     }

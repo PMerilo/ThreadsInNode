@@ -150,6 +150,12 @@ app.engine(
 			radioCheck(value, radioValue) {
 				return (value == radioValue) ? 'checked' : '';
 			},
+			backupcodechecker(n){
+				if (n =="not used"){
+					return true;
+				}
+				return false;
+			}
 	  
 		},
 	})

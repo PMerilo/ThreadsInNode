@@ -1,0 +1,74 @@
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+
+    }
+
+    body {
+        background: rgb(219, 226, 226);
+    }
+
+
+    .hello {
+        color: white;
+    }
+
+    .btn:hover {
+        background: white;
+        border: 1px solid;
+        color: rgb(99, 189, 184);
+
+    }
+</style>
+
+<div>
+    <div class="card mx-auto my-5" style="max-width: 70%">
+        <div class="row g-0">
+            <div class="col-md-4 p-4 d-flex justify-content-center align-items-center">
+                <img src="/images/logo.png" class="img-fluid rounded-start" alt="">
+            </div>
+            <div class="col-md-8 d-flex justify-content-center align-items-center border-start border-info">
+                <div class="card-body">
+                    <div class="row mb-5">
+                        <h5 class="col-10 card-title mb-0 fs-3">Backup Codes</h5>
+
+
+                        <a class='col-1 btn btn-outline-dark p-1 border-0' href="/profile"><i
+                                class="bi bi-box-arrow-left" title="Profile"></i></a>
+                        <p>These are your TIT backup codes for account <span
+                                style="color:blue">{{user.email}}</span>.<br>Keep them safe.</p>
+                        {{#each temp}}
+                        {{#if (backupcodechecker this.backupcode1check)}}
+                        <p>{{this.backupcode1}}</p>
+                        {{else}}
+                        <p><strike>{{this.backupcode1}}</strike></p>
+                        {{/if}}
+
+                        {{#if (backupcodechecker this.backupcode2check)}}
+                        <p>{{this.backupcode2}}</p>
+                        {{else}}
+                        <p><strike>{{this.backupcode2}}</strike></p>
+                        {{/if}}
+                        {{/each}}
+                    </div>
+
+
+                    <form method="POST" action="">
+                        <button type="submit" class="hello btn btn-info">
+                            Refresh Backup Codes
+                        </button>
+
+                    </form>
+
+
+                    <!-- <input type="submit" value="Add Product" class="btn btn-primary col py-3"/>
+      <button onclick="location.href = '/admin/inventory/retrieve_product';" id="goBack" class="align-right submit-button" >Go Back</button> -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
