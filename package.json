@@ -23,6 +23,7 @@
     "flash-messenger": "^1.1.1",
     "handlebars": "^4.7.7",
     "hbs": "^4.2.0",
+    "http": "^0.0.1-security",
     "install": "^0.13.0",
     "moment": "^2.29.4",
     "multer": "^1.4.5-lts.1",
@@ -36,7 +37,8 @@
     "passport-local": "^1.0.0",
     "sequelize": "^6.19.0",
     "sessions": "^0.0.2-7",
-    "toast-me": "^1.4.8",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "socket.io": "^4.5.1",
+    "toast-me": "^1.4.8"
   }
 }

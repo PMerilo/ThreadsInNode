@@ -13,6 +13,7 @@ const Reward = require('../models/Reward')
 const Wishlist = require('../models/Wishlist')
 const Message = require("../models/Messages")
 const CartProduct = require("../models/CartProduct")
+const Appointment = require("../models/Appointment")
 const FAQ = require("../models/FAQ")
 //Ensures User is autenticated before accessing
 //page
@@ -33,12 +34,12 @@ otp = 'placeholder'
 otp2 = 'disallowpwchange'
 emailvariable = 'placeholder'
 
-router.use((req, res, next) => {
-    res.locals.path = req.baseUrl;
-    console.log(req.baseUrl);
+// router.use((req, res, next) => {
+//     res.locals.path = req.baseUrl;
+//     console.log(req.baseUrl);
     //Checks url for normal users and admin
-    next();
-});
+//     next();
+// });
 
 router.get('/', async (req,res) =>{
 

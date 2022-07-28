@@ -16,25 +16,29 @@ const bodypassword = require('body-parser')
 const GoogleAuth = require("./config/passportGoogleAuth")
 const DBConnection = require('./config/DBConnection');
 const Request = require('./models/Request')
+const Service = require('./models/Service')
+const User = require('./models/User')
+const moment = require("moment")
+const serviceController = require("./controllers/serviceController")
 
 app.use(bodypassword.json())
-app.use(bodypassword.urlencoded({extended: false}))
+app.use(bodypassword.urlencoded({ extended: false }))
 // To send forms and shit
 
 // Library to use MySQL to store session objects 
-const MySQLStore = require('express-mysql-session'); 
+const MySQLStore = require('express-mysql-session');
 
-var options = { 
-	host: process.env.DB_HOST, 
-	port: process.env.DB_PORT, 
-	user: process.env.DB_USER, 
-	password: process.env.DB_PWD, 
-	database: process.env.DB_NAME, 
+var options = {
+	host: process.env.DB_HOST,
+	port: process.env.DB_PORT,
+	user: process.env.DB_USER,
+	password: process.env.DB_PWD,
+	database: process.env.DB_NAME,
 	clearExpired: true, // The maximum age of a valid session; milliseconds: 
 	expiration: 3600000, // 1 hour = 60x60x1000 milliseconds
-		// How frequently expired sessions will be cleared; milliseconds: 
-		checkExpirationInterval: 1800000 // 30 min 
-	}
+	// How frequently expired sessions will be cleared; milliseconds: 
+	checkExpirationInterval: 1800000 // 30 min 
+}
 
 // To sstore: new MySQLStore(options),tore session information. By default it is stored as a cookie on browser
 app.use(session({
@@ -66,15 +70,22 @@ GoogleAuth()
 const flash = require('connect-flash');
 app.use(flash());
 const flashMessenger = require('flash-messenger');
+const Tailor = require("./models/Tailor");
 app.use(flashMessenger.middleware);
 
 // Place to define global variables
-app.use(function (req, res, next) {
+app.use(async function (req, res, next) {
 	res.locals.messages = req.flash('message');
 	res.locals.errors = req.flash('error');
 	res.locals.user = req.user;
 	res.locals.authenticated = req.isAuthenticated();
-	
+	res.locals.today = moment().format('YYYY-MM-DD')
+	res.locals.time = moment().format('HH:mm:ss')
+	res.locals.statuses = {"-1": "Appointment Denied. Request another appointment", "0": 'Awaiting next Appointment', "1": 'Pending Appointment Booking', "2": 'Pending Appointment Confirmation', "3": "Appointment Confirmed", "4": 'In Progress', "5": 'Completed' }
+	res.locals.tailors = await User.findAll({
+		include: { model: Tailor, required: true }
+	});
+	res.locals.services = await Service.findAll();
 	next();
 });
 
@@ -92,6 +103,16 @@ app.engine(
 				options.data.root[name] = value;
 			},
 
+			gt(a, b) {
+				var next = arguments[arguments.length - 1];
+				return (a > b) ? next.fn(this) : next.inverse(this);
+			},
+
+			ge( a, b ){
+				var next =  arguments[arguments.length-1];
+				return (a >= b) ? next.fn(this) : next.inverse(this);
+			},
+
 			async options() {
 				return res.json({
 					total: await Request.count(),
@@ -101,7 +122,7 @@ app.engine(
 								{ userId: req.user.id },
 								{ tailorID: req.user.id }
 							]
-			
+
 						},
 						include: ['service', "user"],
 					})
@@ -131,9 +152,8 @@ app.engine(
 			},
 	  
 		},
-		
-	  })
-  );
+	})
+);
 
 app.set('view engine', 'handlebars');
 
@@ -143,20 +163,22 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Creates static folder for publicly accessible HTML, CSS and Javascript files
 
-app.use("/*", (req, res, next) => {
+app.all("/*", (req, res, next) => {
 	req.app.locals.layout = 'main';
 	next()
 });
+
+app.all('/*', serviceController.checkAppointment)
 
 //Set layout for all routes
 
 app.use("/", main)
 app.use("/", user)
-app.use("/admin",admin)
-app.use("/services",services)
-app.use("/seller",seller)
-app.use("/datapipeline",datapipeline)
-app.use("/api",api)
+app.use("/admin", admin)
+app.use("/services", services)
+app.use("/seller", seller)
+app.use("/datapipeline", datapipeline)
+app.use("/api", api)
 
 
 

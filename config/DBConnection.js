@@ -25,21 +25,23 @@ const setUpDB = (drop) => {
             The primary key from user will be a foreign key in video.
             */
 
-            User.hasMany(Request)
-            User.hasMany(Appointment)
-            User.hasOne(Tailor, {foreignKey: {allowNull: false}})
+            User.hasMany(Request, {onDelete: 'CASCADE'})
+            User.hasMany(Appointment, {onDelete: 'CASCADE'})
+            User.hasOne(Tailor, {foreignKey: {allowNull: false}, onDelete: 'CASCADE'})
 
-            Request.belongsTo(User)
-            Request.hasMany(Appointment)
-            Request.belongsTo(Tailor)
+            Request.hasMany(Appointment, {onDelete: 'CASCADE'})
             Request.belongsTo(Service, { as: 'service' });
+            Request.belongsTo(User, {as: 'user', foreignKey: 'userId'})
+            Request.belongsTo(User, {as: 'tailor', foreignKey: 'tailorId'})
+            Request.belongsTo(User, {as: 'tailorChange', foreignKey: 'tailorChangeId'})
 
             Appointment.belongsTo(Request)
-            Appointment.belongsTo(User)
-
+            Appointment.belongsTo(User, {as: 'user', foreignKey: 'userId'})
+            Appointment.belongsTo(User, {as: 'tailor', foreignKey: 'tailorId'})
 
             Service.hasMany(Request, { as: 'requests'})
 
+            Tailor.hasMany(Appointment)
             Tailor.belongsTo(User)
             Tailor.hasMany(Request)
 
