@@ -18,6 +18,9 @@
     color: rgb(99, 189, 184);
 
   }
+  .btn:hover > a{
+    color: rgb(99, 189, 184) !important;
+  }
 </style>
 
 <div>
@@ -54,6 +57,9 @@
             {{/if}}
           </div>
           <div class="row">
+            <p class="col-5">Password: </p>
+            <a class="col-7" href="/changePassword">Change Password</a>
+          </div>
           {{#if user.newsLetter}}
           <div class="row">
             <p class="col-5">Subscribed to NewsLetter ☆</p>
@@ -61,11 +67,6 @@
           </div>
           {{else}}
           {{/if}}
-            <p class="col-5">Password: </p>
-
-            <a class="col-7" href="/changePassword">Change Password</a>
-
-          </div>
           <div class="row">
 
             <form action="" style="margin-top: 10px;" method="POST">
@@ -94,6 +95,11 @@
                   </div>
                 </div>
               </div>
+              <button type="button" class="btn btn-info" data-bs-toggle="modal">
+                <a href="/backupcodes" class="text-white">
+                Backup Codes
+                </a>
+              </button>
             </form>
 
 

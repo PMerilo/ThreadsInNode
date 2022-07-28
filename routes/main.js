@@ -14,6 +14,7 @@ const Wishlist = require('../models/Wishlist')
 const Message = require("../models/Messages")
 const CartProduct = require("../models/CartProduct")
 const FAQ = require("../models/FAQ")
+const TempUser = require("../models/TempUser");
 //Ensures User is autenticated before accessing
 //page
 const ensureAuthenticated = require("../views/helpers/auth");
@@ -263,6 +264,7 @@ router.get('/editProfile',ensureAuthenticated, (req,res) => {
 
 router.post('/profile', ensureAuthenticated, (req, res) => {
     User.destroy({ where: { id: req.user.id } })
+    TempUser.destroy({ where: { email: user.email } });
     req.logout();
     flashMessage(res, 'success', 'Account successfully deleted. Bye bye...');
     return res.redirect("/");
@@ -321,6 +323,7 @@ router.post('/profile', ensureAuthenticated, (req, res) => {
     let phoneNumber = req.body.phoneNumber;
     let gender = req.body.gender;
     User.update({ name, email, phoneNumber, gender }, { where: { id: req.user.id } })
+    TempUser.update({ email }, { where: { email: userr.email } })
     flashMessage(res, 'success', 'Account successfully edited');
     res.redirect("/profile");
   
