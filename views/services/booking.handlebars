@@ -59,7 +59,7 @@
                     <option selected>Select Tailor</option>
                     {{>options object=tailors}}
                 </select>
-                
+
             </div>
         </div>
         <div class="row timings">
@@ -84,7 +84,9 @@
             $('select[name="tailorID"]').attr('disabled', true)
             $('.tailor-select').append(`<input type="hidden" class="form-control" name="tailorID" value=${id}>`)
         }
+        if ($('input[name=date]').val() && $('input[name=tailorID]').val()) {
 
-        getTimings()
+            getTimings()
+        }
     })
 </script>

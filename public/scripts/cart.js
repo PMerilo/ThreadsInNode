@@ -266,6 +266,7 @@ function wishList(element) {
     // element.classList.toggle("bxs-bookmark-heart")
     element.classList.add("bx-tada")
     var sku = element.value
+    console.log(sku)
 
     // $.post('wishlist', {
     //     sku: sku

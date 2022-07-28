@@ -177,6 +177,7 @@ router.post('/discount', ensureAuthenticated, async (req, res) => {
 router.post('/wishlist', ensureAuthenticated, async (req, res) => {
     var sku = req.body.sku
     var status = req.body.status
+    console.log(sku,status)
     checkProductinWishlist = await Wishlist.findOne({ where: { id: req.user.id + sku } })
     product = await Product.findOne({ where: { sku: sku } })
 
