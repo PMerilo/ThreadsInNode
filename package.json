@@ -31,7 +31,7 @@
     "mysql2": "^2.3.3",
     "nodemailer": "^6.7.7",
     "nodemailer-express-handlebars": "^5.0.0",
-    "nodemon": "^2.0.16",
+    "nodemon": "^2.0.19",
     "npm": "^8.9.0",
     "passport": "^0.5.2",
     "passport-google-oauth20": "^2.0.0",

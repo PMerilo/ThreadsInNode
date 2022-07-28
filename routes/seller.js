@@ -57,7 +57,7 @@ router.get('/manageProducts', async (req, res) => {
 
 
 
-router.get('/addProduct',ensureAuthenticated, (req,res) => {
+router.get('/addProduct', (req,res) => {
     res.render("seller/addProduct")
 })
 
@@ -84,7 +84,7 @@ router.post("/changeOrderStatus",ensureAuthenticated, async (req, res) => {
 
 
 
-router.post('/addProduct',ensureAuthenticated, async function (req,res) {
+router.post('/addProduct', async function (req,res) {
     let { name,description,price,quantity,category,posterURL } = req.body;
     let Uuid = (Math.floor(Date.now() + Math.random())).toString()
     Uuid = parseInt(Uuid.slice(1,10))
@@ -122,7 +122,7 @@ router.post('/addProduct',ensureAuthenticated, async function (req,res) {
 
 
 
-router.get('/editProduct/:sku',ensureAuthenticated, async (req,res) => {
+router.get('/editProduct/:sku', async (req,res) => {
     
     product = await Product.findOne({where:{sku:req.params.sku}})
     res.render("seller/editProduct",{product})
