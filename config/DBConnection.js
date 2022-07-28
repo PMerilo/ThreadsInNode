@@ -1,5 +1,6 @@
 const mySQLDB = require('./DBConfig');
 const Appointment = require('../models/Appointment')
+const Cart = require('../models/Cart');
 const CartProduct = require('../models/CartProduct')
 const FAQ = require('../models/FAQ')
 const Feedback = require('../models/FAQ')
@@ -14,6 +15,9 @@ const Service = require('../models/Service')
 
 const JoinedUsersLogs = require('../models/Logs/JoinedUsersLogs');
 const Tailor = require('../models/Tailor');
+const Order = require('../models/Orders');
+const OrderItem = require('../models/OrderItems');
+const OrderItems = require('../models/OrderItems');
 
 // If drop is true, all existing tables are dropped and recreated
 const setUpDB = (drop) => {
@@ -44,6 +48,18 @@ const setUpDB = (drop) => {
             Tailor.hasMany(Appointment)
             Tailor.belongsTo(User)
             Tailor.hasMany(Request)
+
+            Product.belongsToMany(Cart, { through: CartProduct })
+            Cart.belongsToMany(Product, { through: CartProduct })
+
+            User.hasOne(Cart)
+            Cart.belongsTo(User)
+
+            Order.hasMany(OrderItems)
+            OrderItems.belongsTo(Order)
+
+            Order.belongsTo(User)
+            User.hasMany(Order)
 
             mySQLDB.sync({
                 alter: true,

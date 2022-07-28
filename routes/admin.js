@@ -328,10 +328,10 @@ router.post('/addVouchers', ensureAdminAuthenticated, async (req, res) => {
             expiry_date: req.body.expiry_date
         });
         flashMessage(res, "success", name + 'Voucher Added Successfully');
-        res.redirect("/admin")
+        res.redirect("/admin/manageVouchers")
     } catch (e) {
         console.log(e)
-        res.redirect("/admin")
+        res.redirect("/admin/manageVouchers")
     }
 })
 
@@ -356,7 +356,7 @@ router.post('/editVoucher/:id', ensureAuthenticated, async (req, res) => {
     }, { where: { id: req.params.id } })
 
     flashMessage(res, 'success', name + " Edited Successfully!");
-    res.redirect("/admin")
+    res.redirect("/admin/manageVouchers")
 
 })
 

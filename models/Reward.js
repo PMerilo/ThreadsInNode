@@ -15,7 +15,7 @@ Reward.init({
         spools_needed: { type: sequelize.INTEGER }, 
         discount_amount: { type: sequelize.INTEGER }, 
         quantity: {type: sequelize.INTEGER},
-        expiry_date:{type:sequelize.DATE}
+        expiry_date:{type:sequelize.DATEONLY}
 },
     {
         freezeTableName: true,

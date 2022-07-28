@@ -12,6 +12,8 @@ $(document).ready (function() {
     }
 
     updateCartTotal()
+    CheckoutTotalCalculation()
+    checkoutsave()
 
 })
 
@@ -74,8 +76,10 @@ function updateCartTotal() {
     document.getElementsByClassName('cart-total-price')[0].innerText = 'S$' + subtotal
     document.getElementsByClassName('cart-grandtotal-price')[0].innerText = 'S$' + subtotal
     var checkout = document.getElementById('checkout')
+    var discButton = document.getElementById('apply-discount-button')
     if(subtotal == 0) {
         checkout.disabled = true;
+        discButton.disabled = true;
         new SnackBar({
             message: "You need atleast one product in yout cart to checkout",
             status: "info",
@@ -98,6 +102,7 @@ $('.cart-quantity-input').change(function() {
         quantity : quantity,
       })
     disc()
+    checkoutsave()
 })
 
 $('.apply-discount-button').click(function() {
@@ -115,6 +120,7 @@ $('.apply-discount-button').click(function() {
     //         disc()
     //     })
     // }
+    checkoutsave()
     $.ajax({
         url: "/discount",
         method: 'POST',
@@ -129,6 +135,8 @@ $('.apply-discount-button').click(function() {
                 })
                 discount_card.style.display = "";
                 $('.cart-discount').text(res.discount_amount + "%")
+                console.log(discountcode)
+                $('#discount_code_entered').val(discountcode)
                 localStorage.setItem("discount_amount",res.discount_amount)
                 disc()
             } else if (res.status == "spools_shortage") {
@@ -139,6 +147,7 @@ $('.apply-discount-button').click(function() {
                 })
                 discount_card.style.cssText = "display:none !important;";
                 $('.cart-discount').text(0 + "%")
+                $('#discount_code_entered').val("")
                 localStorage.setItem("discount_amount", "")
                 disc()
             } else if (res.status == "voucher_expired") {
@@ -149,6 +158,7 @@ $('.apply-discount-button').click(function() {
                 })
                 discount_card.style.cssText = "display:none !important;";
                 $('.cart-discount').text(0 + "%")
+                $('#discount_code_entered').val("")
                 localStorage.setItem("discount_amount", "")
                 disc()
             } else if (res.status == "voucher_ran_out") {
@@ -159,6 +169,7 @@ $('.apply-discount-button').click(function() {
                 })
                 discount_card.style.cssText = "display:none !important;";
                 $('.cart-discount').text(0 + "%")
+                $('#discount_code_entered').val("")
                 localStorage.setItem("discount_amount", "")
                 disc()
             } else if (res.status == "no_such_voucher") {
@@ -169,6 +180,7 @@ $('.apply-discount-button').click(function() {
                 })
                 discount_card.style.cssText = "display:none !important;";
                 $('.cart-discount').text(0 + "%")
+                $('#discount_code_entered').val("")
                 localStorage.setItem("discount_amount", "")
                 disc()
             } else {
@@ -179,6 +191,7 @@ $('.apply-discount-button').click(function() {
                 })
                 discount_card.style.cssText = "display:none !important;";
                 $('.cart-discount').text(0 + "%")
+                $('#discount_code_entered').val("")
                 localStorage.setItem("discount_amount", "")
                 disc()
             }
@@ -187,14 +200,30 @@ $('.apply-discount-button').click(function() {
 })
 
 $('.checkout').click(function() {
-    var subtotal = $('.cart-grandtotal-price').text().replace('S$', '')
-    localStorage.setItem('total',subtotal)
-    console.log(subtotal)
+    checkoutsave()
+    // var subtotal = $('.cart-grandtotal-price').text().replace('S$', '')
+    // var discount_code = $('#discount_code_entered').val()
+    // // localStorage.setItem('total',subtotal)
+    // console.log(subtotal)
+    // console.log(discount_code)
 
-    $.getJSON('/transactions/update_total', {
-        subtotal : subtotal,
-    })
+    // $.post('/checkoutsave', {
+    //     subtotal : subtotal,
+    //     discount_code : discount_code
+    // })
 })
+function checkoutsave() {
+    var subtotal = $('.cart-grandtotal-price').text().replace('S$', '')
+    var discount_code = $('#discount_code_entered').val()
+    // localStorage.setItem('total',subtotal)
+    console.log(subtotal)
+    console.log(discount_code)
+
+    $.post('/checkoutsave', {
+        subtotal : subtotal,
+        discount_code : discount_code
+    })
+}
 
 $('.show-item').click(function() {
     var sku = this.value

@@ -31,77 +31,36 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 // Your Products Bar Chart
 var getInventoryData = $.get('/datapipeline/InventoryReport')
 var ctx6 = document.getElementById("InventoryReportBarchart");
-getInventoryData.done(function (data) {
-  var stock = []
-  var name = []
-  console.log(data.data)
-  data.data.forEach(element => {
-    stock.push(element["Stocks"])
-    name.push(element["ProductName"])
-    console.log(element["Stocks"])
-    console.log("hi")
-
-  });
-
-  var mybarChart = new Chart(ctx6, {
-    type: 'bar',
-    data: {
-      labels: name,
-      datasets: [{
-        label: "Current Stock",
-        lineTension: 0.3,
-        backgroundColor: "rgba(78, 115, 223, 0.05)",
-        borderColor: "rgba(78, 115, 223, 1)",
-        pointRadius: 3,
-        pointBackgroundColor: "rgba(78, 115, 223, 1)",
-        pointBorderColor: "rgba(78, 115, 223, 1)",
-        pointHoverRadius: 3,
-        pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-        pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-        pointHitRadius: 10,
-        pointBorderWidth: 2,
-        data: stock,
-      }],
-    },
-    options: {
-      maintainAspectRatio: false,
-      layout: {
-        padding: {
-          left: 10,
-          right: 25,
-          top: 25,
-          bottom: 0
-        }
-      },
-      scales: {
-        xAxes: [{
-          time: {
-            unit: 'name'
-          },
-          gridLines: {
-            display: false,
-            drawBorder: false
-          },
-          ticks: {
-            maxTicksLimit: 7
-          }
-        }],
-        yAxes: [{
-          ticks: {
-            maxTicksLimit: 5,
-            padding: 10,
-            // Include a dollar sign in the ticks
-            callback: function (value, index, values) {
-              return number_format(value);
-            }
-          },
-          gridLines: {
-            color: "rgb(234, 236, 244)",
-            zeroLineColor: "rgb(234, 236, 244)",
-            drawBorder: false,
-            borderDash: [2],
-            zeroLineBorderDash: [2]
-          }
+getInventoryData.done(function(data){
+    var stock = []
+    var name = []
+    console.log(data.data)
+    data.data.forEach(element => {
+      stock.push(element["Stocks"])
+      name.push(element["ProductName"])
+      console.log(element["Stocks"])
+      console.log("hi")
+      
+    });
+  
+      var mybarChart = new Chart(ctx6, {
+      type: 'bar',
+      data: {
+        labels: name,
+        datasets: [{
+          label: "Current Stock",
+          lineTension: 0.3,
+          backgroundColor: "rgba(78, 115, 223)",
+          borderColor: "rgba(78, 115, 223, 1)",
+          pointRadius: 3,
+          pointBackgroundColor: "rgba(78, 115, 223, 1)",
+          pointBorderColor: "rgba(78, 115, 223, 1)",
+          pointHoverRadius: 3,
+          pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+          pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+          pointHitRadius: 10,
+          pointBorderWidth: 2,
+          data: stock,
         }],
       },
       legend: {

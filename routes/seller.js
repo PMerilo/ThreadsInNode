@@ -13,10 +13,18 @@ const Message = require("../models/Messages")
 const CartProduct = require("../models/CartProduct")
 const FAQ = require("../models/FAQ")
 const ensureAuthenticated = require("../views/helpers/auth");
+const ensureSellerAuthenticated = require("../views/helpers/sellerAuth");
 const moment = require("moment");
+const Order = require('../models/Orders');
+const OrderItems = require('../models/OrderItems');
 // Required for file upload const 
 fs = require('fs'); 
 const upload = require('../views/helpers/imageUpload');
+
+router.all('/*', ensureSellerAuthenticated, function (req, res, next) {
+    req.app.locals.layout = 'seller'; // set your layout here
+    next(); // pass control to the next handler
+});
 
 router.use((req, res, next) => {
     res.locals.path = req.baseUrl;
@@ -33,6 +41,10 @@ router.get('/reports', (req, res) => {
     res.render('seller/reports');
 });
 
+router.get('/dashboard', (req, res) => {
+    res.render('seller/dashboard.handlebars');
+});
+
 router.get('/sellerProfile', (req, res) => {
     res.render('seller/sellerProfile');
 });
@@ -47,6 +59,27 @@ router.get('/manageProducts', async (req, res) => {
 
 router.get('/addProduct',ensureAuthenticated, (req,res) => {
     res.render("seller/addProduct")
+})
+
+router.get('/orders',ensureAuthenticated, async (req,res) => {
+    orders = (await OrderItems.findAll({where: { seller_name: req.user.name }, include: Order}))
+    console.log(orders[0].order.orderUUID)
+    res.render("seller/orders", {orders})
+})
+
+router.post("/changeOrderStatus",ensureAuthenticated, async (req, res) => {
+    OrderItem = await OrderItems.findOne({where: {id : req.body.id}})
+    console.log(req.body.status)
+    console.log(req.body.id)
+    if (OrderItem.orderStatus == "Delivered" && req.body.status != "Delivered") {
+        res.send({message: "Cannot change status of delivered product", status: "error"})
+    } else {
+        await OrderItems.update({orderStatus : req.body.status},{
+            where: {
+                id : req.body.id
+            }
+        })
+    }
 })
 
 
@@ -71,6 +104,8 @@ router.post('/addProduct',ensureAuthenticated, async function (req,res) {
             quantity: req.body.quantity,
             category: req.body.category,
             wishlistcount: 0,
+            sold: 0,
+            sales: 0,
             Owner:req.user.name,
             OwnerID:req.user.id,
             posterURL: posterURL

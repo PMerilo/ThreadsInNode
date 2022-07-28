@@ -18,7 +18,8 @@ const dfd = require("danfojs-node");
 const Product = require('../models/Product');
 const Request = require('../models/Request');
 const Tailor = require('../models/Tailor');
-
+const Order = require('../models/Orders');
+const OrderItems = require('../models/OrderItems');
 
 router.use((req, res, next) => {
   res.locals.path = req.baseUrl;
@@ -121,6 +122,42 @@ router.get('/requestsbytailor', ensureAuthenticated, async (req, res) => {
   // console.log(group_df)
   const df2 = dfd.toJSON(group_df,{format:"json"})
   res.status(200).json({ 'data': df2 })
+});
+
+router.get('/salesPerDay', async (req, res) => {
+  const sales = await OrderItems.findAll({where: {seller_name:"Classy Jack"}});
+
+  let data = [];
+  let cols = ["Dates","Sales"];
+
+  sales.forEach(element => {
+    let rawData  = [moment(element.createdAt).format("YYYY-MMM-DD"), (element.product_price * element.qtyPurchased)];
+    data.push(rawData)
+  });
+
+  df = new dfd.DataFrame(data,{columns:["Dates","Sales"]})
+  group_df = df.groupby(["Dates"]).sum()
+  console.log(group_df)
+  const df2 = dfd.toJSON(group_df,{format:"json"})
+  res.status(200).json({ 'data':df2 })
+});
+
+router.get('/totalSalesPerDay', async (req, res) => {
+  const sales = await Order.findAll();
+
+  let data = [];
+  let cols = ["Dates","Sales"];
+
+  sales.forEach(element => {
+    let rawData  = [moment(element.createdAt).format("YYYY-MMM-DD"), element.orderTotal];
+    data.push(rawData)
+  });
+
+  df = new dfd.DataFrame(data,{columns:["Dates","Sales"]})
+  group_df = df.groupby(["Dates"]).sum()
+  console.log(group_df)
+  const df2 = dfd.toJSON(group_df,{format:"json"})
+  res.status(200).json({ 'data':df2 })
 });
 
 module.exports = router;
