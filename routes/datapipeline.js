@@ -101,7 +101,7 @@ router.get('/InventoryReport', ensureAuthenticated, async (req, res) => {
 router.get('/requestsbytailor', ensureAuthenticated, async (req, res) => {
   const requests = await Request.findAll({
     include: [
-      { model: User, as: 'tailor' }
+      { model: User, as: 'tailor', required: true }
     ]
   })
 
