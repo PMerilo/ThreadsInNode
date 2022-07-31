@@ -15,6 +15,7 @@ const { sequelize, sum } = require('../models/User');
 const moment = require('moment')
 // For Editing Data
 const dfd = require("danfojs-node");
+
 const Product = require('../models/Product');
 
        
@@ -67,6 +68,22 @@ router.get('/NoOfUsersJoinedMonth', async (req, res) => {
   console.log(group_df)
   const df2 = dfd.toJSON(group_df,{format:"json"})
   res.status(200).json({ 'data':df2 })
+  // data = data.map(x => {
+  //   return({Dates: x[0], NoOfUsersJoined_sum:x[1]});
+  // });
+  
+  // let unique_dates = []
+  // let newData = []
+  // data.forEach(element => {
+  //   if(!unique_dates.includes(element.Dates)){
+  //     unique_dates.push(element.Dates)
+  //     newData.push(element)
+  //   }else{
+  //     newData[unique_dates.indexOf(element.Dates)].NoOfUsersJoined_sum += element.NoOfUsersJoined_sum
+      
+  //   }
+  // });
+  // res.status(200).json({ 'data':newData })
 });
 
 router.get('/NoOfUsersJoinedYear', async (req, res) => {
@@ -99,11 +116,37 @@ router.get('/NoOfUsersJoinedYear', async (req, res) => {
     
   });
 
-  df = new dfd.DataFrame(data,{columns:["Dates","NoOfUsersJoined"]})
-  group_df = df.groupby(["Dates"]).sum()
-  console.log(group_df)
-  const df2 = dfd.toJSON(group_df,{format:"json"})
-  res.status(200).json({ 'data':df2 })
+  // df = new dfd.DataFrame(data,{columns:["Dates","NoOfUsersJoined"]})
+  // group_df = df.groupby(["Dates"]).sum()
+  // console.log(group_df)
+  // const df2 = dfd.toJSON(group_df,{format:"json"})
+  // res.status(200).json({ 'data':df2 })
+  
+  
+  
+
+    data = data.map(x => {
+      return({Dates: x[0], NoOfUsersJoined_sum:x[1]});
+    });
+    
+    let unique_dates = []
+    let newData = []
+    data.forEach(element => {
+      if(!unique_dates.includes(element.Dates)){
+        unique_dates.push(element.Dates)
+        newData.push(element)
+      }else{
+        newData[unique_dates.indexOf(element.Dates)].NoOfUsersJoined_sum += element.NoOfUsersJoined_sum
+        
+      }
+    });
+    
+
+    
+   
+
+    
+  res.status(200).json({ 'data':newData })
 });
 
 router.get('/UserRoles', async (req, res) => {
