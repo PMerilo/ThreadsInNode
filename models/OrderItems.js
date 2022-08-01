@@ -11,6 +11,7 @@ OrderItems.init({
         product_name:{ type: sequelize.STRING},
         product_price:{ type: sequelize.INTEGER},
         seller_name: { type: sequelize.STRING},
+        seller_id: { type: sequelize.INTEGER},
         orderStatus:{type: sequelize.STRING},
 },
     {

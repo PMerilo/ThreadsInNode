@@ -1,6 +1,69 @@
+<link rel="stylesheet" href="../styles/dashboard.css">
+<div class="wrapper container">
+  <div class="row">
+    <div class="col-lg-12">
+      <h2 class="heading">Admin Dashboard Stat</h2>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+      <a class="dashboard-stat red" href="#">
+        <div class="visual">
+          <i class='bx bx-dollar'></i>
+        </div>
+        <div class="details">
+          <div class="number">
+            <span>312</span>
+          </div>
+          <div class="desc">Total Revenue</div>
+        </div>
+      </a>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+      <a class="dashboard-stat blue" href="#">
+        <div class="visual">
+          <i class='bx bx-package'></i>
+        </div>
+        <div class="details">
+          <div class="number">
+            <span>12.5</span>
+          </div>
+          <div class="desc">Total Order</div>
+        </div>
+      </a>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+      <a class="dashboard-stat hoki" href="#">
+        <div class="visual">
+          <i class="fa fa-credit-card"></i>
+        </div>
+        <div class="details">
+          <div class="number">
+            <span>+ 53%</span>
+          </div>
+          <div class="desc">Profit</div>
+        </div>
+      </a>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+      <a class="dashboard-stat purple" href="#">
+        <div class="visual">
+          <i class="fa fa-comments"></i>
+        </div>
+        <div class="details">
+          <div class="number">
+            <span>689</span>
+          </div>
+          <div class="desc">New Feedback</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Sales</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Revenue - {{user.name}}</h6>
     </div>
     <div class="card-body">
         <div class="chart-bar">
@@ -8,13 +71,44 @@
         </div>
         <hr>
         <div class="text-center">
-            <h5 class="small"><b>Daily Sales</b></h5>
-            <h4 class="small font-weight-bold text-primary">Daily sales figures expressed in a line chart</h4>
-
+            <h5 class="small"><b>Daily Revenue</b></h5>
+            <h4 class="small font-weight-bold text-primary actual-date-span">Daily Revenue figures expressed in a line chart</h4>
+        </div>
+        <div class="options d-flex text-left m-auto">
+            <i class='bx bx-chevron-left arrow-icon previous-week' id="prev-btn"></i>
+            <div class="date-span"></div>
+            <i class='bx bx-chevron-left bx-rotate-180 arrow-icon next-week' id="next-btn"></i>
+            <input type="hidden" id="weekcount" value="0">
+            <input type="hidden" id="prev" value="">
+            <input type="hidden" id="next" value="">
         </div>
     </div>
 </div>
+<style>
+    .arrow-icon {
+        font-size: 2rem;
+        cursor: pointer;
+    }
+</style>
+
+<script src="/js/sb-admin-2.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
 <script>
+    $(document).ready(function () {
+        setDate() 
+        setTimeout(() => filterData(), 30);
+    })
+    var seller_id = $("#seller_id").val()
+    var prev_btn = document.getElementById('prev-btn');
+    var next_btn = document.getElementById('next-btn');
+    var now = new Date();
+    var dd = String(now.getDate()).padStart(2, '0');
+    var mm = String(now.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = now.getFullYear();
+
+    const today = dd + '/' + mm + '/' + yyyy;
+    const lastweekdisplay = formatDate(getWeek(-1));
+
     function number_format(number, decimals, dec_point, thousands_sep) {
         // *     example: number_format(1234.56, 2, ',', ' ');
         // *     return: '1 234,56'
@@ -39,25 +133,29 @@
         }
         return s.join(dec);
     }
-
-    var getSalesPerDayData = $.get('/datapipeline/salesPerDay')
+    console.log('/datapipeline/salesPerDay/'+ seller_id)
+    {{!-- var getSalesPerDayData = $.get('/datapipeline/salesPerDay') --}}
+    var getSalesPerDayData = $.get('/datapipeline/salesPerDay/'+ seller_id)
     var ctxsales = document.getElementById("SalesReportLineChart").getContext('2d');
-    console.log("hello");
+    var Sales = []
+    var dates = []
+    const earliestDataset_Dates = dates[0]
+    const latestDataset_Dates = dates[-1]
     getSalesPerDayData.done(function (data) {
-        var Sales = []
-        var dates = []
         data.data.forEach(element => {
             Sales.push(element["Sales_sum"])
             dates.push(element["Dates"].slice(0, 10))
-
         });
+        console.log(dates)
+        console.log(Sales)
 
-        var myLineChart = new Chart(ctxsales, {
+        
+        window.mySalesChart = new Chart(ctxsales, {
             type: 'line',
             data: {
                 labels: dates,
                 datasets: [{
-                    label: "Sales Per Day",
+                    label: "Revenue Per Day",
                     lineTension: 0.3,
                     backgroundColor: "rgba(78, 115, 223, 0.05)",
                     borderColor: "rgba(78, 115, 223, 1)",
@@ -143,10 +241,87 @@
 
     })
 
-</script>
+    function getWeek(week) {
+        var noofdays = week * 6
+        const now = new Date();
+        return new Date(now.getFullYear(), now.getMonth(), now.getDate() + noofdays);
+    }
 
-<script src="/js/demo/chart-area-demo.js"></script>
-<script src="/js/demo/chart-bar-demo.js"></script>
-<script src="/js/demo/chart-pie-demo.js"></script>
-<script src="/js/sb-admin-2.js"></script>
-<script src="/js/chart.js/Chart.min.js"></script>
+    function formatDate(date) {
+        var dd = String(date.getDate()).padStart(2, '0');
+        var mm = String(date.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = date.getFullYear();
+        const formattedweek = dd + '/' + mm + '/' + yyyy;
+        return formattedweek;
+    }
+
+    $(".previous-week").click(function () {
+        var val = $("#weekcount").val()
+        var weekcount = val - 1
+        $("#weekcount").val(weekcount)
+        var week = $(".date-span").text().slice(0, 10)
+        var prevweek = formatDate(getWeek(weekcount))
+        if (prevweek == week) {
+            var prevweek = formatDate(getWeek(weekcount - 1))
+        }
+        $(".date-span").text(prevweek + " - " + week)
+        $("#prev").val(prevweek)
+        $("#next").val(week)
+        setTimeout(() => filterData(), 300);
+    })
+
+    $(".next-week").click(function () {
+        var val = $("#weekcount").val()
+        var weekcount = parseInt(val) + 1
+        $("#weekcount").val(weekcount)
+        var week = $(".date-span").text().slice(-10)
+        var nextweek = formatDate(getWeek(weekcount))
+        if (prevweek == week) {
+            var prevweek = formatDate(getWeek(weekcount + 1))
+        }
+        $(".date-span").text(week + " - " + nextweek)
+        $("#prev").val(week)
+        $("#next").val(nextweek)
+        setTimeout(() => filterData(), 300);
+    })
+
+    function setDate() {
+        $(".date-span").text(lastweekdisplay + " - " + today)
+        $("#prev").val(lastweekdisplay)
+        $("#next").val(today)
+    }
+
+    function filterData() {
+        var prevweek = $("#prev").val();
+        var nextweek = $("#next").val();
+        const updated_dates = [...dates];
+        const updated_sales = [...Sales];
+
+
+        var indexStart = updated_dates.indexOf(prevweek);
+        var indexEnd = updated_dates.indexOf(nextweek);
+
+        if (indexStart < 0) {
+            indexStart = 0
+            prev_btn.style.display = "none";
+        }else {
+            prev_btn.style.display = "";
+        }
+        if (!(indexEnd in updated_dates)) {
+            indexEnd = updated_dates.length - 1
+            next_btn.style.display = "none";
+        }else {
+            next_btn.style.display = "";
+        }
+
+        $(".actual-date-span").text("Daily Revenue figures expressed in a line chart from " + updated_dates[indexStart] + " - " + updated_dates[indexEnd])
+
+        const filterDate = updated_dates.slice(indexStart, indexEnd + 1);
+        const filterSales = updated_sales.slice(indexStart, indexEnd + 1);
+
+        mySalesChart.data.labels = filterDate;
+        mySalesChart.data.datasets[0].data = filterSales;
+        mySalesChart.update();
+    }
+
+</script>

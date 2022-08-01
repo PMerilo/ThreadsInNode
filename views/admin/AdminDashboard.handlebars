@@ -1,10 +1,9 @@
-
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Admin Dashboard</h1>
-    
+
 
     <!-- Content Row -->
     <div class="row">
@@ -55,7 +54,15 @@
                     <hr>
                     <div class="text-center">
                         <h5 class="text-gray-900 m-0">Threads In Time Sales</h5>
-                        {{!-- <span class="text-gray-600 small">Last 7 days</span> --}}
+                        <h4 class="small font-weight-bold text-primary actual-date-span"></h4>
+                    </div>
+                    <div class="options d-flex text-left m-auto">
+                        <i class='bx bx-chevron-left arrow-icon previous-week' id="prev-btn"></i>
+                        <div class="date-span"></div>
+                        <i class='bx bx-chevron-left bx-rotate-180 arrow-icon next-week' id="next-btn"></i>
+                        <input type="hidden" id="weekcount" value="0">
+                        <input type="hidden" id="prev" value="">
+                        <input type="hidden" id="next" value="">
                     </div>
                 </div>
             </div>
@@ -78,12 +85,12 @@
                     <div class="text-center">
                         <h5 class="text-gray-900 m-0">User Roles</h5>
                         <span class="text-gray-600 small">List Of Our Users</span>
+                    </div>
                 </div>
+
             </div>
-            
-        </div>
-        
-        <div class="card shadow mb-4">
+
+            <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">User Genders</h6>
@@ -97,17 +104,23 @@
                     <div class="text-center">
                         <h5 class="text-gray-900 m-0">User Genders</h5>
                         <span class="text-gray-600 small">List Of Our Users Genders</span>
+                    </div>
                 </div>
-            </div>
-        
-    </div>
 
+            </div>
+
+        </div>
+    </div>
 </div>
+<style>
+    .arrow-icon {
+        font-size: 2rem;
+        cursor: pointer;
+    }
+</style>
 <!-- /.container-fluid -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
 <script src="/js/demo/chart-area-demo.js"></script>
 <script src="/js/demo/chart-bar-demo.js"></script>
 <script src="/js/demo/chart-pie-demo.js"></script>
 <script src="/js/sb-admin-2.js"></script>
-<script src="/js/chart.js/Chart.min.js"></script>
-
-

@@ -62,7 +62,6 @@ router.get('/addProduct',ensureAuthenticated, (req,res) => {
 
 router.get('/orders',ensureAuthenticated, async (req,res) => {
     orders = (await OrderItems.findAll({where: { seller_name: req.user.name }, include: Order}))
-    console.log(orders[0].order.orderUUID)
     res.render("seller/orders", {orders})
 })
 
