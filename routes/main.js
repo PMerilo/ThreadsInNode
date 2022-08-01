@@ -254,6 +254,7 @@ router.post('/checkout', ensureAuthenticated, async (req, res) => {
                 product_name: element.name,
                 product_price: element.price,
                 seller_name: element.Owner,
+                seller_name: element.OwnerID,
                 orderStatus: "Processing",
             })
             // var sold = element.sold + element.cartproduct.qtyPurchased

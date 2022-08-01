@@ -124,14 +124,14 @@ router.get('/requestsbytailor', ensureAuthenticated, async (req, res) => {
   res.status(200).json({ 'data': df2 })
 });
 
-router.get('/salesPerDay', async (req, res) => {
-  const sales = await OrderItems.findAll({where: {seller_name:"Classy Jack"}});
+router.get('/salesPerDay/:id', async (req, res) => {
+  const sales = await OrderItems.findAll({where: {seller_id: req.params.id}});
 
   let data = [];
   let cols = ["Dates","Sales"];
 
   sales.forEach(element => {
-    let rawData  = [moment(element.createdAt).format("YYYY-MMM-DD"), (element.product_price * element.qtyPurchased)];
+    let rawData  = [moment(element.createdAt).format("DD/MM/YYYY"), (element.product_price * element.qtyPurchased)];
     data.push(rawData)
   });
 
@@ -149,7 +149,7 @@ router.get('/totalSalesPerDay', async (req, res) => {
   let cols = ["Dates","Sales"];
 
   sales.forEach(element => {
-    let rawData  = [moment(element.createdAt).format("YYYY-MMM-DD"), element.orderTotal];
+    let rawData  = [moment(element.createdAt).format("DD/MM/YYYY"), element.orderTotal];
     data.push(rawData)
   });
 
@@ -157,7 +157,7 @@ router.get('/totalSalesPerDay', async (req, res) => {
   group_df = df.groupby(["Dates"]).sum()
   console.log(group_df)
   const df2 = dfd.toJSON(group_df,{format:"json"})
-  res.status(200).json({ 'data':df2 })
+  res.status(200).json({ 'data':df2})
 });
 
 module.exports = router;

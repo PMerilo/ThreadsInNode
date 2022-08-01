@@ -2,6 +2,20 @@
 Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.global.defaultFontColor = '#858796';
 
+$(document).ready(function () {
+  setDate()
+  setTimeout(() => filterData(), 30);
+})
+var prev_btn = document.getElementById('prev-btn');
+var next_btn = document.getElementById('next-btn');
+var now = new Date();
+var dd = String(now.getDate()).padStart(2, '0');
+var mm = String(now.getMonth() + 1).padStart(2, '0'); //January is 0!
+var yyyy = now.getFullYear();
+
+const today = dd + '/' + mm + '/' + yyyy;
+const lastweekdisplay = formatDate(getWeek(-1));
+
 function number_format(number, decimals, dec_point, thousands_sep) {
   // *     example: number_format(1234.56, 2, ',', ' ');
   // *     return: '1 234,56'
@@ -134,16 +148,16 @@ getUsersJoinedData.done(function (data) {
 
 var getTITSalesData = $.get('/datapipeline/totalSalesPerDay')
 var ctxTITSales = document.getElementById("TITSales").getContext('2d');
+var Sales = []
+var dates = []
 getTITSalesData.done(function (data) {
-  var Sales = []
-  var dates = []
   data.data.forEach(element => {
     Sales.push(element["Sales_sum"])
     dates.push(element["Dates"].slice(0, 10))
 
   });
 
-  var myLineChart = new Chart(ctxTITSales, {
+  window.myTITSalesChart = new Chart(ctxTITSales, {
     type: 'line',
     data: {
       labels: dates,
@@ -231,8 +245,93 @@ getTITSalesData.done(function (data) {
       }
     }
   });
-
 })
+
+
+
+function getWeek(week) {
+  var noofdays = week * 6
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate() + noofdays);
+}
+
+function formatDate(date) {
+  var dd = String(date.getDate()).padStart(2, '0');
+  var mm = String(date.getMonth() + 1).padStart(2, '0'); //January is 0!
+  var yyyy = date.getFullYear();
+  const formattedweek = dd + '/' + mm + '/' + yyyy;
+  return formattedweek;
+}
+
+$(".previous-week").click(function () {
+  var val = $("#weekcount").val()
+  var weekcount = val - 1
+  $("#weekcount").val(weekcount)
+  var week = $(".date-span").text().slice(0, 10)
+  var prevweek = formatDate(getWeek(weekcount))
+  if (prevweek == week) {
+    var prevweek = formatDate(getWeek(weekcount - 1))
+  }
+  $(".date-span").text(prevweek + " - " + week)
+  $("#prev").val(prevweek)
+  $("#next").val(week)
+  setTimeout(() => filterData(), 300);
+})
+
+$(".next-week").click(function () {
+  var val = $("#weekcount").val()
+  var weekcount = parseInt(val) + 1
+  $("#weekcount").val(weekcount)
+  var week = $(".date-span").text().slice(-10)
+  var nextweek = formatDate(getWeek(weekcount))
+  if (prevweek == week) {
+    var prevweek = formatDate(getWeek(weekcount + 1))
+  }
+  $(".date-span").text(week + " - " + nextweek)
+  $("#prev").val(week)
+  $("#next").val(nextweek)
+  setTimeout(() => filterData(), 300);
+})
+
+function setDate() {
+  $(".date-span").text(lastweekdisplay + " - " + today)
+  $("#prev").val(lastweekdisplay)
+  $("#next").val(today)
+}
+
+function filterData() {
+  var prevweek = $("#prev").val();
+  var nextweek = $("#next").val();
+  const updated_dates = [...dates];
+  const updated_sales = [...Sales];
+
+  var indexStart = updated_dates.indexOf(prevweek);
+  var indexEnd = updated_dates.indexOf(nextweek);
+
+  if (indexStart < 0) {
+    indexStart = 0
+    prev_btn.style.display = "none";
+  } else {
+    prev_btn.style.display = "";
+  }
+  if (!(indexEnd in updated_dates)) {
+    indexEnd = updated_dates.length - 1
+    next_btn.style.display = "none";
+  } else {
+    next_btn.style.display = "";
+  }
+  console.log(indexStart)
+  console.log(indexEnd)
+
+  $(".actual-date-span").text("Daily Revenue figures expressed in a line chart from " + updated_dates[indexStart] + " - " + updated_dates[indexEnd])
+
+  const filterDate = updated_dates.slice(indexStart, indexEnd + 1);
+  const filterSales = updated_sales.slice(indexStart, indexEnd + 1);
+
+  myTITSalesChart.data.labels = filterDate;
+  myTITSalesChart.data.datasets[0].data = filterSales;
+  myTITSalesChart.update();
+}
 
 
 
