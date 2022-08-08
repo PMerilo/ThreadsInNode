@@ -13,6 +13,7 @@ const Ticket = require('../models/Ticket')
 const User = require('../models/User')
 const Service = require('../models/Service')
 const backupCodes = require("../models/backupCodes")
+const NewsLetterLog = require("../models/Logs/NewsLetterLogs")
 
 
 const JoinedUsersLogs = require('../models/Logs/JoinedUsersLogs');

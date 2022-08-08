@@ -1,0 +1,163 @@
+
+    <div class="container-fluid">
+        <div class="card" id="report-card">
+            <div class="card-header">
+                <ul id="reportTabs" class="nav nav-tabs card-header-tabs", role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link " data-bs-toggle="tab" data-bs-target="#inventory" type="button" role="tab" aria-controls="inventory" aria-selected="">Inventory</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link " data-bs-toggle="tab" data-bs-target="#sales" type="button" role="tab" aria-controls="sales" aria-selected="">Sales</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link " data-bs-toggle="tab" data-bs-target="#traffic" type="button" role="tab" aria-controls="traffic" aria-selected="">Traffic</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link " data-bs-toggle="tab" data-bs-target="#TrafficChart" type="button" role="tab" aria-controls="TrafficChart" aria-selected="">Traffic Chart</a>
+                    </li>
+                    {{!-- <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                    <a class="nav-link px-3 dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Charts
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu" aria-labelledby="navbarDarkDropdownMenuLink" role="presentation">
+                        <li class="nav-item" role="presentation"><a class="dropdown-item" data-bs-toggle="tab" data-bs-target="#inventoryChart" type="button" role="tab">Inventory</a></li>
+                        <li class="nav-item" role="presentation"><a class="dropdown-item" data-bs-toggle="tab" data-bs-target="#salesChart" type="button" role="tab">Sales</a></li>
+                        <li class="nav-item" role="presentation"><a class="dropdown-item" data-bs-toggle="tab" data-bs-target="#TrafficChart" type="button" role="tab">Traffic</a></li>
+                    </ul>
+                    </li>
+                </ul> --}}
+                    
+                {{!-- </ul> --}}
+            </div>
+            <div class="card-body ">
+                <div class="tab-content d-flex flex-column" id="reportTabContent">
+                    <p>Last Updated: </p>
+                    <div id="inventory" class="tab-pane fade" role="tabpanel" aria-labelledby="inventory-tab">
+                        
+                    </div>
+                    <div id="sales" class="tab-pane fade " role="tabpanel" aria-labelledby="sales-tab">
+                        
+                    </div>
+                    
+                    <div id="traffic" class="tab-pane fade" role="tabpanel" aria-labelledby="traffic-tab">
+                    <div class="card" style="padding:10px">
+                    <div>
+
+                    <h2>Current traffic logs</h2>  
+                    </div>
+                    
+                    <div>
+                    <table class="table table-striped">
+                    <thead>
+                    <tr>
+                    
+                    <th>Description</th>
+                    <th>Role</th>
+                    <th>Joined At</th>
+                    
+                    
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{#each traffic}}
+                        <tr>
+                        
+                        <td>{{this.description}}</td>
+                        <td>{{this.role}}</td>
+                        <td>{{this.createdAt}}</td>
+                        
+                        
+                        
+                        </tr>
+                    {{/each}}
+                
+                    </tbody>
+                    </table>
+                            </div>
+                        </div>
+
+                    <div class="card" style="padding:10px">
+                    <div>
+
+                    <h2>NewsLetter Subscription Traffic</h2>  
+                    </div>
+                    
+                    <div>
+                    <table class="table table-striped">
+                    <thead>
+                    <tr>
+                    
+                    <th>Description</th>
+                    
+                    <th>Registered On</th>
+                    
+                    
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{!-- {{#each traffic}} --}}
+                        <tr>
+                        
+                        <td></td>
+                        <td></td>
+                        
+                        
+                        
+                        
+                        </tr>
+                    {{!-- {{/each}} --}}
+                
+                    </tbody>
+                    </table>
+                            </div>
+                        </div>
+                        
+
+                    </div>
+
+                    <div id="TrafficChart" class="fade" role="tabpanel">
+                        <!-- Area Chart Users Joined By Day -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">User Activity</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="NoOfUsersJoinedChart"></canvas>
+                    </div>
+                    <hr>
+                    <div class="text-center">
+                        <h5 class="text-gray-900 m-0" id="usersJoinedSortedBy">No. of Users Joined By Day</h5>
+                        {{!-- <span class="text-gray-600 small">Last 7 days</span> --}}
+                    </div>
+                    <button class="btn btn-primary" id="day" onclick="setChartType(this)">Day</button>
+                    <button class="btn btn-secondary" id="month" onclick="setChartType(this)">Month</button>
+                    <button class="btn btn-secondary" id="year" onclick="setChartType(this)">Year</button>
+                    
+                </div>
+                
+            </div>
+
+            
+                    
+            </div>
+            </div>
+
+            
+                    
+                    
+
+                
+            
+            </div>
+            
+            </div>
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
+    
+    
+    
+
+

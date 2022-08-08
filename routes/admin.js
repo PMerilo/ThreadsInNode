@@ -8,6 +8,7 @@ const Ticket = require('../models/Ticket');
 const Feedback = require('../models/Feedback');
 const Message = require("../models/Messages")
 const Reward = require('../models/Reward')
+const trafficLogs = require("../models/Logs/JoinedUsersLogs")
 const ensureAuthenticated = require("../views/helpers/auth");
 const ensureAdminAuthenticated = require("../views/helpers/adminAuth");
 const Request = require('../models/Request');
@@ -92,6 +93,10 @@ router.post('/TicketMangement/deleteTicket', ensureAdminAuthenticated, async (re
 
     // current seconds
     let seconds = date_ob.getSeconds();
+    ticket = await Ticket.findOne({ where: { id: req.body.ticketID } })
+    if(ticket.pendingStatus == "Pending"){
+        
+    
     try {
         await Message.create({
             title: "Ticket Issue Unresolved Case: " + req.body.ticketTitle,
@@ -108,10 +113,14 @@ router.post('/TicketMangement/deleteTicket', ensureAdminAuthenticated, async (re
         flashMessage(res, 'danger', "Ticket Reply Could Not Be Sent Owner Account May be Disabled");
         res.redirect("/admin/TicketMangement")
     }
+    
     recepientuser = await User.findOne({ where: { id: req.body.ownerID } })
     newMessageCount = recepientuser.MessagesCount + 1
     User.update({ MessagesCount: newMessageCount }, { where: { id: req.body.ownerID } })
     Ticket.destroy({ where: { id: ticketID } })
+    }else{
+        Ticket.destroy({ where: { id: ticketID } })
+    }
     
 
 
@@ -192,8 +201,27 @@ router.get('/UserManagement', ensureAdminAuthenticated, async (req, res) => {
 })
 
 
+router.get("/ReportsManagement", ensureAdminAuthenticated, async (req, res) => {
+    totalUsers = await User.count()
+    totalSubs = await User.count( {where:{newsLetter:true}} )
+    traffic = await trafficLogs.findAll()
+    res.render("admin/ReportManagement", { totalUsers,totalSubs,traffic })
+})
+
 router.get("/Dashboard", ensureAdminAuthenticated, async (req, res) => {
-    res.render("admin/AdminDashboard")
+    totalUsers = await User.count()
+    totalSubs = await User.count( {where:{newsLetter:true}} )
+    trafficlog = await trafficLogs.findAll()
+    let traffic = []
+    
+    for(let i = 0; i < 5; i++){
+        if(trafficlog[i].ip != ""){
+            traffic.push(trafficlog[i])
+            
+        }
+    }
+    
+    res.render("admin/AdminDashboard", { totalUsers,totalSubs,traffic })
 })
 
 router.get('/manageVouchers', async (req, res) => {
@@ -266,6 +294,10 @@ router.post('/tailor/register', async (req, res) => {
     flashMessage(res,"success", 'Registered as Tailor Successfully');
     res.redirect("/admin")
 });
+
+
+
+
 
 module.exports = router;
 

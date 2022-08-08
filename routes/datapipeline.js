@@ -31,21 +31,48 @@ router.get('/NoOfUsersJoined', async (req, res) => {
 
 
   let data = [];
+  let dataMonth = []
+  let dataYear = []
   let cols = ["Dates","NoOfUsersJoined"];
 
 
   usersJoined.forEach(element => {
     let rawData = [element.date, element.noOfUsersJoined];
+    let rawDataMonth = [element.date, element.noOfUsersJoined];
+    rawDataMonth[0] = moment(rawData[0]).format("MMMM")
+
+    let rawDataYear = [element.date, element.noOfUsersJoined];
+    rawDataYear[0] = moment(rawData[0]).format("YYYY")
+    
     data.push(rawData)
+    dataMonth.push(rawDataMonth)
+    dataYear.push(rawDataYear)
+
     
     
   });
 
-  df = new dfd.DataFrame(data,{columns:cols})
-  group_df = df.groupby(["Dates"]).sum()
-  console.log(group_df)
-  const df2 = dfd.toJSON(group_df,{format:"json"})
-  res.status(200).json({ 'data':df2 })
+  // Set Day Data
+  dfDay = new dfd.DataFrame(data,{columns:cols})
+  group_dfDay = dfDay.groupby(["Dates"]).sum()
+  const df2 = dfd.toJSON(group_dfDay,{format:"json"})
+
+  // Set Month Data
+  dfMonth = new dfd.DataFrame(dataMonth,{columns:cols})
+  group_dfMonth = dfMonth.groupby(["Dates"]).sum()
+  const df3 = dfd.toJSON(group_dfMonth,{format:"json"})
+
+  // Set Year Data
+  dfYear = new dfd.DataFrame(dataYear,{columns:cols})
+  group_dfYear = dfYear.groupby(["Dates"]).sum()
+  const df4 = dfd.toJSON(group_dfYear,{format:"json"})
+  
+
+  
+  
+
+
+  res.status(200).json({ 'dataDay':df2, 'dataMonth':df3, 'dataYear':df4 });
 });
 
 router.get('/NoOfUsersJoinedMonth', async (req, res) => {

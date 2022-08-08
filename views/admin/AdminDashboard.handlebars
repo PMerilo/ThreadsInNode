@@ -16,7 +16,13 @@
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                 Our Registered Users (Total)</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{totalUsers}}</div>
+                            <br>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <a type="button" class="small text-black stretched-link" data-bs-toggle="modal" data-bs-target="#Visitors_Today">View Details</a>
+                                <div class="small text-white"><i class="bi bi-chevron-right"></i></div>
+                            </div>
+                            
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -33,8 +39,8 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Spending (Total)</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
+                                Subscribed to our newsLetter (Total)</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{totalSubs}}</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -105,45 +111,18 @@
                     </div>
                     <hr>
                     <div class="text-center">
-                        <h5 class="text-gray-900 m-0">No. of Users Joined By Day</h5>
+                        <h5 class="text-gray-900 m-0" id="usersJoinedSortedBy">No. of Users Joined By Day</h5>
                         {{!-- <span class="text-gray-600 small">Last 7 days</span> --}}
                     </div>
+                    <button class="btn btn-primary" id="day" onclick="setChartType(this)">Day</button>
+                <button class="btn btn-secondary" id="month" onclick="setChartType(this)">Month</button>
+                <button class="btn btn-secondary" id="year" onclick="setChartType(this)">Year</button>
                 </div>
+                
+                    
             </div>
 
-            <!-- Area Chart Users Joined By Month -->
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">User Activity</h6>
-                </div>
-                <div class="card-body">
-                    <div class="chart-area">
-                        <canvas id="NoOfUsersJoinedChartMonth"></canvas>
-                    </div>
-                    <hr>
-                    <div class="text-center">
-                        <h5 class="text-gray-900 m-0">No. of Users Joined by Month</h5>
-                        {{!-- <span class="text-gray-600 small">Last 7 days</span> --}}
-                    </div>
-                </div>
-            </div>
-
-            <!-- Area Chart Users Joined By Year -->
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">User Activity</h6>
-                </div>
-                <div class="card-body">
-                    <div class="chart-area">
-                        <canvas id="NoOfUsersJoinedChartYear"></canvas>
-                    </div>
-                    <hr>
-                    <div class="text-center">
-                        <h5 class="text-gray-900 m-0">No. of Users Joined By Year</h5>
-                        {{!-- <span class="text-gray-600 small">Last 7 days</span> --}}
-                    </div>
-                </div>
-            </div>
+            
 
             <!-- Bar Chart -->
             <div class="card shadow mb-4">
@@ -203,6 +182,62 @@
     </div>
 
 </div>
+
+
+
+<div class="modal" id="Visitors_Today">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+        <div class="row">
+            
+            
+            <div class="container col-12 modal-info">
+            <button type="button" class="btn-close x-button" data-bs-dismiss="modal"></button>
+            <div class="modal-header">
+                <h6 class="modal-title">Our Visitors</h6>
+                
+            </div>
+            
+            <div class="modal-body">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                    
+                    <th>Description</th>
+                    <th>Role</th>
+                    <th>Joined At</th>
+                    
+                    
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{#each traffic}}
+                        <tr>
+                        
+                        <td>{{this.description}}</td>
+                        <td>{{this.role}}</td>
+                        <td>{{this.createdAt}}</td>
+                        
+                        
+                        
+                        </tr>
+                    {{/each}}
+                
+                    </tbody>
+                    </table>
+            </div>
+
+            <div class="modal-footer">
+                <a href="/admin/ReportsManagement">View Full Details</a>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div>
+
+
+
 <!-- /.container-fluid -->
 <script src="/js/demo/chart-area-demo.js"></script>
 <script src="/js/demo/chart-bar-demo.js"></script>

@@ -14,6 +14,8 @@ const Wishlist = require('../models/Wishlist')
 const Message = require("../models/Messages")
 const CartProduct = require("../models/CartProduct")
 const FAQ = require("../models/FAQ")
+
+const NewsLetterLog = require("../models/Logs/NewsLetterLogs")
 //Ensures User is autenticated before accessing
 //page
 const ensureAuthenticated = require("../views/helpers/auth");
@@ -311,13 +313,17 @@ router.get('/multistep', (req,res) => {
 
 router.get('/messages',ensureAuthenticated, async function (req,res){
     message = (await Message.findAll({where: {ownerID:req.user.id}}))
-
+    currentMessageCount = await Message.count({where: {ownerID:req.user.id}})
+    User.update({MessagesCount:currentMessageCount}, {where:{id:req.user.id}})
+    console.log(currentMessageCount)
     res.render("messages.handlebars",{message})
 })
 
 router.get('/deletemessages',ensureAuthenticated, async function (req,res){
     message = (await Message.findAll({where: {ownerID:req.user.id}}))
-    
+    currentMessageCount = await Message.count({where: {ownerID:req.user.id}})
+    User.update({MessagesCount:currentMessageCount}, {where:{id:req.user.id}})
+    console.log(currentMessageCount)
     res.render("deleteMessages.handlebars",{message})
 })
 
@@ -327,7 +333,10 @@ router.post('/deletemessages',ensureAuthenticated, async function (req,res){
         deletedMessage = req.body.messageID
         Message.destroy({where: {id:messageID}})
         flashMessage(res, 'success', "Message Deleted");
-        User.update({MessagesCount:req.user.MessagesCount-1}, {where:{id:req.user.id}})
+        currentMessageCount = await Message.count({where: {ownerID:req.user.id}})
+        console.log(currentMessageCount)
+        console.log("Check deleted count here")
+        User.update({MessagesCount:currentMessageCount-1}, {where:{id:req.user.id}})
     }else{
         flashMessage(res, 'danger', "Please Select a Message to Delete");
     }
