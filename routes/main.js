@@ -587,6 +587,11 @@ router.post('/newsLetter', ensureAuthenticated,async (req, res) => {
     
      });
      console.log("Mail sent")
+     await NewsLetterLog.create({
+        date: moment().format('L'),
+        description: email + " subscribed to the newsletter",
+        noOfUsersJoined: 1
+    })
     
     flashMessage(res, 'success', "Thank you for subscribing to our newsletter! Check for an email from us soon!");
     User.update({newsLetter:true},{where: {id:req.user.id}})
@@ -629,6 +634,11 @@ router.post('/newsLetterUnSubscribe', ensureAuthenticated,async (req, res) => {
      console.log("Mail sent")
     
     flashMessage(res, 'success', "You have unsubscribed to our newsletter! Come checkback sometime soon!");
+    await NewsLetterLog.create({
+        date: moment().format('L'),
+        description: email + " unsubscribed to the newsletter",
+        noOfUsersJoined: -1
+    })
     User.update({newsLetter:false},{where: {id:req.user.id}})
     res.redirect("/newsLetter" );
 });

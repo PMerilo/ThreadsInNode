@@ -8,6 +8,7 @@ const passport = require('passport');
 const User = require("../models/User")
 
 const UsersJoinedLog = require("../models/Logs/JoinedUsersLogs")
+const NewsLetterLog = require("../models/Logs/NewsLetterLogs")
 const ensureAuthenticated = require("../views/helpers/auth");
 const ensureAdminAuthenticated = require("../views/helpers/adminAuth");
 const { sequelize, sum } = require('../models/User');
@@ -37,6 +38,55 @@ router.get('/NoOfUsersJoined', async (req, res) => {
 
 
   usersJoined.forEach(element => {
+    let rawData = [element.date, element.noOfUsersJoined];
+    let rawDataMonth = [element.date, element.noOfUsersJoined];
+    rawDataMonth[0] = moment(rawData[0]).format("MMMM")
+
+    let rawDataYear = [element.date, element.noOfUsersJoined];
+    rawDataYear[0] = moment(rawData[0]).format("YYYY")
+    
+    data.push(rawData)
+    dataMonth.push(rawDataMonth)
+    dataYear.push(rawDataYear)
+
+    
+    
+  });
+
+  // Set Day Data
+  dfDay = new dfd.DataFrame(data,{columns:cols})
+  group_dfDay = dfDay.groupby(["Dates"]).sum()
+  const df2 = dfd.toJSON(group_dfDay,{format:"json"})
+
+  // Set Month Data
+  dfMonth = new dfd.DataFrame(dataMonth,{columns:cols})
+  group_dfMonth = dfMonth.groupby(["Dates"]).sum()
+  const df3 = dfd.toJSON(group_dfMonth,{format:"json"})
+
+  // Set Year Data
+  dfYear = new dfd.DataFrame(dataYear,{columns:cols})
+  group_dfYear = dfYear.groupby(["Dates"]).sum()
+  const df4 = dfd.toJSON(group_dfYear,{format:"json"})
+  
+
+  
+  
+
+
+  res.status(200).json({ 'dataDay':df2, 'dataMonth':df3, 'dataYear':df4 });
+});
+
+router.get('/NoOfNewsLetterSubscriptions', async (req, res) => {
+  const NewsLetterLogs = (await NewsLetterLog.findAll()).map((x) => x.dataValues)
+
+
+  let data = [];
+  let dataMonth = []
+  let dataYear = []
+  let cols = ["Dates","NoOfNewsLetterSubscriptions"];
+
+
+  NewsLetterLogs.forEach(element => {
     let rawData = [element.date, element.noOfUsersJoined];
     let rawDataMonth = [element.date, element.noOfUsersJoined];
     rawDataMonth[0] = moment(rawData[0]).format("MMMM")

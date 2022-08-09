@@ -155,6 +155,7 @@ $.get("/datapipeline/NoOfUsersJoined")
 });
 
 
+
 function setChartType(element) {
   var type = element.id;
   var id_dates = "dates_" + type
@@ -174,6 +175,169 @@ function setChartType(element) {
     NoOfUsersJoinedChart.data.datasets[0].data = NoOfUsers_year
     document.getElementById("usersJoinedSortedBy").innerHTML = "No. of Users Joined By Year";
   }
+  // console.log(dates)
+  // console.log(dates_day)
+  // console.log(users)
+  
+  
+  
+  
+  // NoOfUsersJoinedChart.data.labels = dates;
+  // NoOfUsersJoinedChart.data.datasets[0].data = users;
+  NoOfUsersJoinedChart.update();
+  // var updated_NoOfUsers = [...NoOfUsers];
+  // var updated_dates = [...date];
+
+  
+}
+
+// No Of Users Subscribed Chart
+var ctxUsersSubscribed = document
+.getElementById("NoOfUsersSubscribedChart")
+.getContext("2d");
+var NoOfUsersSubscribed_day = [];
+var datesSubscribed_day = [];
+var NoOfUsersSubscribed_month = [];
+var datesSubscribed_month = [];
+var NoOfUsersSubscribed_year = [];
+var datesSubscribed_year = [];
+console.log(NoOfUsers_day);
+$.get("/datapipeline/NoOfNewsLetterSubscriptions")
+.done(function (data) {
+  console.log(NoOfUsers_day);
+  console.log("hi");
+  console.log(data);
+  data.dataDay.forEach((element) => {
+    NoOfUsersSubscribed_day.push(element["NoOfNewsLetterSubscriptions_sum"]);
+    datesSubscribed_day.push(element["Dates"].slice(0, 10));
+  });
+  data.dataMonth.forEach((element) => {
+    NoOfUsersSubscribed_month.push(element["NoOfNewsLetterSubscriptions_sum"]);
+    datesSubscribed_month.push(element["Dates"].slice(0, 10));
+  });
+  data.dataYear.forEach((element) => {
+    NoOfUsersSubscribed_year.push(element["NoOfNewsLetterSubscriptions_sum"]);
+    datesSubscribed_year.push(element["Dates"].slice(0, 10));
+  });
+  
+  console.log(NoOfUsers_day);
+  window.NoOfUsersSubscribedChart = new Chart(ctxUsersSubscribed, {
+    type: "line",
+    data: {
+      labels: datesSubscribed_day,
+      datasets: [
+        {
+          label: "Number of Users Subscribed to our newsletter",
+          lineTension: 0.3,
+          backgroundColor: "rgba(78, 115, 223, 0.05)",
+          borderColor: "rgba(78, 115, 223, 1)",
+          pointRadius: 3,
+          pointBackgroundColor: "rgba(78, 115, 223, 1)",
+          pointBorderColor: "rgba(78, 115, 223, 1)",
+          pointHoverRadius: 3,
+          pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+          pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+          pointHitRadius: 10,
+          pointBorderWidth: 2,
+          data: NoOfUsersSubscribed_day,
+        },
+      ],
+    },
+    options: {
+      maintainAspectRatio: false,
+      layout: {
+        padding: {
+          left: 10,
+          right: 25,
+          top: 25,
+          bottom: 0,
+        },
+      },
+      scales: {
+        xAxes: [
+          {
+            time: {
+              unit: "date",
+            },
+            gridLines: {
+              display: false,
+              drawBorder: false,
+            },
+            ticks: {
+              maxTicksLimit: 7,
+            },
+          },
+        ],
+        yAxes: [
+          {
+            ticks: {
+              maxTicksLimit: 5,
+              padding: 10,
+              // Include a dollar sign in the ticks
+              callback: function (value, index, values) {
+                return number_format(value);
+              },
+            },
+            gridLines: {
+              color: "rgb(234, 236, 244)",
+              zeroLineColor: "rgb(234, 236, 244)",
+              drawBorder: false,
+              borderDash: [2],
+              zeroLineBorderDash: [2],
+            },
+          },
+        ],
+      },
+      legend: {
+        display: false,
+      },
+      tooltips: {
+        backgroundColor: "rgb(255,255,255)",
+        bodyFontColor: "#858796",
+        titleMarginBottom: 10,
+        titleFontColor: "#6e707e",
+        titleFontSize: 14,
+        borderColor: "#dddfeb",
+        borderWidth: 1,
+        xPadding: 15,
+        yPadding: 15,
+        displayColors: false,
+        intersect: false,
+        mode: "index",
+        caretPadding: 10,
+        callbacks: {
+          label: function (tooltipItem, chart) {
+            var datasetLabel =
+              chart.datasets[tooltipItem.datasetIndex].label || "";
+            return datasetLabel + " " + number_format(tooltipItem.yLabel);
+          },
+        },
+      },
+    },
+  });
+});
+
+
+function setChartTypeNewsLetter(element) {
+  var type = element.id;
+  var id_dates = "dates_" + type
+  var id_joined = "NoOfUsers_" + type
+  var dates = []
+  var users = []
+  if (id_dates == "dates_daySubscribed") {
+    NoOfUsersSubscribedChart.data.labels = datesSubscribed_day
+    NoOfUsersSubscribedChart.data.datasets[0].data = NoOfUsersSubscribed_day
+    document.getElementById("usersSubscribedSortedBy").innerHTML = "No. of Users Subscribed By Day";
+  } else if(id_dates == "dates_monthSubscribed") {
+    NoOfUsersSubscribedChart.data.labels = [...datesSubscribed_month]
+    NoOfUsersSubscribedChart.data.datasets[0].data = [...NoOfUsersSubscribed_month]
+    document.getElementById("usersSubscribedSortedBy").innerHTML = "No. of Users Subscribed By Month";
+  } else if (id_dates == "dates_yearSubscribed") {
+    NoOfUsersSubscribedChart.data.labels = datesSubscribed_year
+    NoOfUsersSubscribedChart.data.datasets[0].data = NoOfUsersSubscribed_year
+    document.getElementById("usersSubscribedSortedBy").innerHTML = "No. of Users Subscribed By Year";
+  }
+  console.log("Chart Type Subscribed: " );
   console.log(dates)
   console.log(dates_day)
   console.log(users)
@@ -183,7 +347,7 @@ function setChartType(element) {
   
   // NoOfUsersJoinedChart.data.labels = dates;
   // NoOfUsersJoinedChart.data.datasets[0].data = users;
-  NoOfUsersJoinedChart.update();
+  NoOfUsersSubscribedChart.update();
   // var updated_NoOfUsers = [...NoOfUsers];
   // var updated_dates = [...date];
 

@@ -9,10 +9,17 @@ const Feedback = require('../models/Feedback');
 const Message = require("../models/Messages")
 const Reward = require('../models/Reward')
 const trafficLogs = require("../models/Logs/JoinedUsersLogs")
+const newsLetterTrafficLogs = require("../models/Logs/NewsLetterLogs")
 const ensureAuthenticated = require("../views/helpers/auth");
 const ensureAdminAuthenticated = require("../views/helpers/adminAuth");
 const Request = require('../models/Request');
 const Tailor = require('../models/Tailor');
+const PDFDocument = require('pdfkit');
+const fs = require('fs');
+const path = require('path');
+const moment = require('moment');
+
+
 
 router.all('/*', ensureAdminAuthenticated, function (req, res, next) {
     req.app.locals.layout = 'admin'; // set your layout here
@@ -205,7 +212,78 @@ router.get("/ReportsManagement", ensureAdminAuthenticated, async (req, res) => {
     totalUsers = await User.count()
     totalSubs = await User.count( {where:{newsLetter:true}} )
     traffic = await trafficLogs.findAll()
-    res.render("admin/ReportManagement", { totalUsers,totalSubs,traffic })
+    newsLetterTraffic = await newsLetterTrafficLogs.findAll()
+    res.render("admin/ReportManagement", { totalUsers,totalSubs,traffic,newsLetterTraffic })
+})
+
+router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
+    
+    let { reportName,reportType,additionalTags,userTraffic} = req.body;
+    var pdfDoc = new PDFDocument ({ bufferPages: true, font: 'Courier' });
+    let Path = path.join(__dirname, '../public/images/logo.png')
+    // let Canvas;
+    // function canvasURL(id) {
+    //     let canvas = document.getElementById(id);
+    //     return canvas.toDataURL(1.0);
+    // }
+    // if(userTraffic!=""){
+    // Canvas = canvasURL(userTraffic)
+    // }
+   if(additionalTags == ""){
+    additionalTags = "None"
+   }
+    let date = moment().format('L'); 
+    const stream = res.writeHead(200, {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment;filename=${reportName}.pdf`,
+      });
+    pdfDoc.on('data', (chunk) => stream.write(chunk));
+    pdfDoc.on('end', () => stream.end());
+    // pdfDoc.pipe(fs.createWriteStream('SampleDocument.pdf'));
+    // pdfDoc.pipe(res);
+
+    // Fit the image in the dimensions, and center it both horizontally and vertically
+    // Logo
+    pdfDoc.image(Path, 430, 15, {fit: [70, 70], align: 'right'})
+    // Title
+    pdfDoc
+    .fillColor('#444444')
+    .font('Courier-Bold')
+    .fontSize(25)
+    .text('Threads In Times', { align: 'center' })
+
+    // Date
+    pdfDoc
+    .font('Courier-Bold')
+    .fontSize(10)
+    .text(`Date ${date}`, { align: 'right' })
+    // Report Type
+    pdfDoc
+    .fontSize(15)
+    .text(`${reportType} Report`, 150, 150);
+    // Additional Tags
+    pdfDoc
+        .fillColor('red')
+        .fontSize(13)
+        .text(`Additional Tags: ${additionalTags}`, 150, 200);
+
+    
+    // // Chart Image
+    // let userTrafficChart = NoOfUsersJoinedChart.toBase64Image()
+    // pdfDoc.image(Canvas, 430, 15, {fit: [70, 70]})
+
+    
+
+    pdfDoc.end();
+    
+    
+    // flashMessage(res, 'success', "Reports Downloaded Successfully!");
+    // res.redirect("/admin/ReportsManagement")
+})
+
+router.get("/Reports", ensureAdminAuthenticated, async (req, res) => {
+    
+    res.render("admin/Reports")
 })
 
 router.get("/Dashboard", ensureAdminAuthenticated, async (req, res) => {
