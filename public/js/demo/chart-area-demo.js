@@ -248,7 +248,6 @@ getTITSalesData.done(function (data) {
 })
 
 
-
 function getWeek(week) {
   var noofdays = week * 6
   const now = new Date();
@@ -320,10 +319,8 @@ function filterData() {
   } else {
     next_btn.style.display = "";
   }
-  console.log(indexStart)
-  console.log(indexEnd)
 
-  $(".actual-date-span").text("Daily Revenue figures expressed in a line chart from " + updated_dates[indexStart] + " - " + updated_dates[indexEnd])
+  $(".actual-date-span").text("Daily Revenue figures from " + updated_dates[indexStart] + " - " + updated_dates[indexEnd])
 
   const filterDate = updated_dates.slice(indexStart, indexEnd + 1);
   const filterSales = updated_sales.slice(indexStart, indexEnd + 1);

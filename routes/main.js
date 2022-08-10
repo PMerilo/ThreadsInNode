@@ -326,7 +326,7 @@ router.get('/editProfile', ensureAuthenticated, (req, res) => {
 
 router.post('/profile', ensureAuthenticated, (req, res) => {
     User.destroy({ where: { id: req.user.id } })
-    TempUser.destroy({ where: { email: user.email } });
+    TempUser.destroy({ where: { email: req.user.email } });
     req.logout();
     flashMessage(res, 'success', 'Account successfully deleted. Bye bye...');
     return res.redirect("/");
