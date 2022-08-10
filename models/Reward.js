@@ -8,7 +8,7 @@ class Reward extends sequelize.Model{
 
 }
 Reward.init({
-        id:{type: sequelize.INTEGER, autoIncrement: true, primaryKey: true},
+        id:{type: sequelize.BIGINT, autoIncrement: true, primaryKey: true},
         name: { type: sequelize.STRING }, 
         voucher_code: { type: sequelize.STRING }, 
         description: { type: sequelize.STRING(2000) }, 
