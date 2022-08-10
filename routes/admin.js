@@ -9,16 +9,26 @@ const Feedback = require('../models/Feedback');
 const Message = require("../models/Messages")
 const Reward = require('../models/Reward')
 const trafficLogs = require("../models/Logs/JoinedUsersLogs")
+const Report = require("../models/Reports")
 const newsLetterTrafficLogs = require("../models/Logs/NewsLetterLogs")
 const ensureAuthenticated = require("../views/helpers/auth");
 const ensureAdminAuthenticated = require("../views/helpers/adminAuth");
 const Request = require('../models/Request');
 const Tailor = require('../models/Tailor');
 const PDFDocument = require('pdfkit');
+
+// const blobStream  = require('blob-stream');
+// const PDFDocument = require("pdfkit-table");
 const fs = require('fs');
 const path = require('path');
 const moment = require('moment');
+const { NONE } = require('sequelize');
 
+
+// For mail
+const nodemailer = require("nodemailer");
+// const { where } = require('sequelize/types');
+const Mail = require("../config/MailConfig");
 
 
 router.all('/*', ensureAdminAuthenticated, function (req, res, next) {
@@ -207,6 +217,69 @@ router.get('/UserManagement', ensureAdminAuthenticated, async (req, res) => {
     res.render("admin/userManagement", { Users })
 })
 
+router.get("/NewsLetterSendMail", ensureAdminAuthenticated, async (req, res) => {
+    
+    res.render("admin/NewsLetterSendMail")
+})
+
+router.post("/NewsLetterSendMail", ensureAdminAuthenticated, async (req, res) => {
+    let { subject, message,posterURL } = req.body;
+    let users = await User.findAll({where: {newsLetter: true}});
+    console.log(message)
+    console.log(posterURL)
+    let Path = path.join(__dirname,  posterURL)
+    console.log(Path)
+    users.forEach(element => {
+        let email = element.email;
+        console.log(email)
+        Mail.send(res, {
+            to: email,
+            subject: subject,
+            
+            template: `../views/MailTemplates/NewsLetter`,
+            attachments: [
+                {
+                    filename: 'image.png',
+                    path: Path,
+                    cid: 'unique@nodemailer.com' //same cid value as in the html img src
+                }
+            ],
+            html:`
+            
+            
+            <div class="page">
+            <div class="container">
+              <div class="email_header">
+                
+                <img class="logo" src="https://raw.githubusercontent.com/PMerilo/ThreadsInNode/master/public/images/logo.png" alt="Threads In Times" />
+                <h1>Email Confirmation</h1>
+              </div>
+
+              <img class="logo" src="unique@nodemailer.com" alt="Threads In Times" />
+              <div class="email_body">
+                <p><b>Hi , ${element.name}</b></p>
+                <p>${message}</p>
+                
+                </a>
+                <p>Thanks for supporting,<br/>
+                  <b>The Threads in Times Team</b>
+                </p>
+              </div>
+              <div class="email_footer">© Threads in Times 2020</div>
+              <b>You Received this email because you subscribed to the threads in times newsletter</b>
+            </div>
+          </div>`,
+            
+        
+        
+         });
+    });
+    
+    flashMessage(res, 'success', "News Letter Sent Successfully!");
+
+    res.redirect("/admin/NewsLetterSendMail")
+})
+
 
 router.get("/ReportsManagement", ensureAdminAuthenticated, async (req, res) => {
     totalUsers = await User.count()
@@ -218,17 +291,27 @@ router.get("/ReportsManagement", ensureAdminAuthenticated, async (req, res) => {
 
 router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
     
-    let { reportName,reportType,additionalTags,userTraffic} = req.body;
+    let { reportName,reportType,additionalTags,userTraffic,subscriptionTraffic,TrafficLogs,userRoles,userGenders} = req.body;
     var pdfDoc = new PDFDocument ({ bufferPages: true, font: 'Courier' });
     let Path = path.join(__dirname, '../public/images/logo.png')
+    let WavePath = path.join(__dirname, '../public/images/Letterhead.png')
+    let PathUsersJoinedChart;
+    let PathUsersSubscribedChart;
+    let UserRolesPieChartPath;
+    let UserGendersPieChartPath;
     // let Canvas;
     // function canvasURL(id) {
     //     let canvas = document.getElementById(id);
     //     return canvas.toDataURL(1.0);
     // }
-    // if(userTraffic!=""){
-    // Canvas = canvasURL(userTraffic)
-    // }
+    if(userTraffic!=undefined){
+        PathUsersJoinedChart = path.join(__dirname, '../public/images/ChartImages/UsersJoinedChart.png')
+    }
+    if(subscriptionTraffic!=undefined){
+        PathUsersSubscribedChart = path.join(__dirname, '../public/images/ChartImages/UsersSubscriptionChart.png')
+    }
+
+
    if(additionalTags == ""){
     additionalTags = "None"
    }
@@ -238,29 +321,33 @@ router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
         'Content-Disposition': `attachment;filename=${reportName}.pdf`,
       });
     pdfDoc.on('data', (chunk) => stream.write(chunk));
+    
     pdfDoc.on('end', () => stream.end());
-    // pdfDoc.pipe(fs.createWriteStream('SampleDocument.pdf'));
-    // pdfDoc.pipe(res);
-
+    
     // Fit the image in the dimensions, and center it both horizontally and vertically
+    
     // Logo
-    pdfDoc.image(Path, 430, 15, {fit: [70, 70], align: 'right'})
+    pdfDoc.image(WavePath, 0, 0, { align: 'center', valign: 'center', width:600})
+    // pdfDoc.image(Path, 430, 15, {fit: [70, 70], align: 'right'})
+    
     // Title
     pdfDoc
     .fillColor('#444444')
     .font('Courier-Bold')
-    .fontSize(25)
-    .text('Threads In Times', { align: 'center' })
+    .fontSize(35)
+    .text('Threads In Times', { align: 'left' })
+
+    
+    // Report Type
+    pdfDoc
+    .fontSize(15)
+    .text(`${reportType} Report`, 150, 150);
 
     // Date
     pdfDoc
     .font('Courier-Bold')
     .fontSize(10)
     .text(`Date ${date}`, { align: 'right' })
-    // Report Type
-    pdfDoc
-    .fontSize(15)
-    .text(`${reportType} Report`, 150, 150);
     // Additional Tags
     pdfDoc
         .fillColor('red')
@@ -268,13 +355,149 @@ router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
         .text(`Additional Tags: ${additionalTags}`, 150, 200);
 
     
-    // // Chart Image
-    // let userTrafficChart = NoOfUsersJoinedChart.toBase64Image()
-    // pdfDoc.image(Canvas, 430, 15, {fit: [70, 70]})
+    // Chart Image
+    if(userTraffic!=undefined){
+        
+        pdfDoc
+        .moveDown()
+        .image(PathUsersJoinedChart, { align: 'center', width: 300, height: 200})
+
+    }
+    if(subscriptionTraffic!=undefined){
+        
+        pdfDoc
+        .moveDown()
+        .image(PathUsersSubscribedChart, { align: 'center', width: 300, height: 200})
+
+    }
+    console.log(userTraffic)
+    
+    if(userRoles!=undefined){
+        UserRolesPieChartPath = path.join(__dirname, '../public/images/ChartImages/UsersRolesPieChart.png')
+    }
+    
+    if(userGenders!=undefined){
+        UserGendersPieChartPath = path.join(__dirname, '../public/images/ChartImages/UsersGendersPieChart.png')
+    }
+
+    if(userGenders!=undefined || userRoles!=undefined){
+        
+        //Pie Charts
+        pdfDoc.addPage()
+        
+        pdfDoc.image(WavePath, 0, 0, { align: 'center', valign: 'center', width:600})
+        // Create the table - https://www.andronio.me/2017/09/02/pdfkit-tables/
+        pdfDoc
+        .fontSize(20)
+        .font('Courier-Bold')
+        .text('User Statistics',150,150, { align: 'left' })
+        .moveDown()
+
+        if(userRoles!=undefined){
+        pdfDoc
+        
+        
+
+        pdfDoc
+        .moveDown()
+        .fontSize(10)
+        .text('Users Roles', { align: 'center' , width: 300, height: 200})
+        .image(UserRolesPieChartPath, { align: 'center', width: 300, height: 200})
+        .moveDown()
+        }
+        if(userGenders!=undefined){
+       
+
+        pdfDoc
+        .moveDown()
+        .fontSize(10)
+        .text('Users Roles', { align: 'center' , width: 300, height: 200})
+        .image(UserGendersPieChartPath, { align: 'center', width: 300, height: 200})
+        .moveDown()
+        }
+    }
 
     
+    // Traffic Logs New Page
+    if(TrafficLogs!=undefined){
+    
+   
+    trafficlog = await trafficLogs.findAll()
+    let traffic = []
+
+    SubscribersLog = await newsLetterTrafficLogs.findAll()
+    let Subscribers = []
+    
+    for(let i = 0; i < await trafficLogs.count(); i++){
+        
+        
+        traffic.push(trafficlog[i])
+            
+        
+    }
+    for(let i = 0; i < await newsLetterTrafficLogs.count(); i++){
+        
+        Subscribers.push(SubscribersLog[i])
+
+        
+    }
+    pdfDoc.addPage()
+    
+    pdfDoc.image(WavePath, 0, 0, { align: 'center', valign: 'center', width:600})
+    
+    pdfDoc
+    .fontSize(10)
+    .text('Traffic Logs',150,150, { align: 'left' })
+    .moveDown()
+    .text("#        Description                         Joined At")
+
+    for(let i = 0; i < traffic.length; i++){
+        
+        if(i+1>=10){
+                pdfDoc
+            .fontSize(10)
+            .text(`${i+1}       ${traffic[i].description}                  `.slice(0,45)+`${traffic[i].createdAt.toString().slice(0,10)}`, { align: 'left' })
+        }else{
+            pdfDoc
+            .fontSize(10)
+            .text(`${i+1}        ${traffic[i].description}                  `.slice(0,45)+`${traffic[i].createdAt.toString().slice(0,10)}`, { align: 'left' })
+        }
+    }
+
+    // pdfDoc
+    // .moveDown()
+    // .fontSize(10)
+    // .text('News Letter Subscription Logs', { align: 'left' })
+    // .moveDown()
+    // .text("#        Description")
+
+    // for(let i = 0; i < Subscribers.length; i++){
+        
+    //     if(i+1>=10){
+    //         pdfDoc
+    //         .fontSize(10)
+    //         .text(`${i+1}       ${Subscribers[i].description}                           on`+`${Subscribers[i].createdAt.toString().slice(0,10)}`, { align: 'left' })
+    //     }else{
+    //         pdfDoc
+    //         .fontSize(10)
+    //         .text(`${i+1}        ${Subscribers[i].description}                             on `+`${Subscribers[i].createdAt.toString().slice(0,10)}`, { align: 'left' })
+    //     }
+    // }
+
+    
+}
 
     pdfDoc.end();
+    
+
+    await Report.create({
+        reportName: reportName,
+        reportType: reportType,
+        url: "None",
+        tags: additionalTags,
+        date: moment().format('L'),
+        
+    });
     
     
     // flashMessage(res, 'success', "Reports Downloaded Successfully!");
@@ -282,8 +505,8 @@ router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
 })
 
 router.get("/Reports", ensureAdminAuthenticated, async (req, res) => {
-    
-    res.render("admin/Reports")
+    let reports = await Report.findAll()
+    res.render("admin/Reports",{reports})
 })
 
 router.get("/Dashboard", ensureAdminAuthenticated, async (req, res) => {
@@ -291,6 +514,13 @@ router.get("/Dashboard", ensureAdminAuthenticated, async (req, res) => {
     totalSubs = await User.count( {where:{newsLetter:true}} )
     trafficlog = await trafficLogs.findAll()
     let traffic = []
+
+    SubscribersLog = await newsLetterTrafficLogs.findAll()
+    let Subscribers = []
+    
+    totalReports = await Report.count()
+    reportLogs = await Report.findAll()
+    let reports = []
     
     for(let i = 0; i < 5; i++){
         if(trafficlog[i].ip != ""){
@@ -298,8 +528,20 @@ router.get("/Dashboard", ensureAdminAuthenticated, async (req, res) => {
             
         }
     }
+    for(let i = 0; i < 5; i++){
+        if(SubscribersLog[i].ip != ""){
+            Subscribers.push(SubscribersLog[i])
+
+        }
+    }
+
+    for(let i = 0; i < 5; i++){
+        
+        reports.push(reportLogs[i])
+        
+    }
     
-    res.render("admin/AdminDashboard", { totalUsers,totalSubs,traffic })
+    res.render("admin/AdminDashboard", { totalUsers,totalSubs,traffic,Subscribers,reports,totalReports })
 })
 
 router.get('/manageVouchers', async (req, res) => {

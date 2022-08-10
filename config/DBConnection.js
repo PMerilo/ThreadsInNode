@@ -15,7 +15,7 @@ const Service = require('../models/Service')
 const backupCodes = require("../models/backupCodes")
 const NewsLetterLog = require("../models/Logs/NewsLetterLogs")
 
-
+const Report = require('../models/Reports')
 
 const JoinedUsersLogs = require('../models/Logs/JoinedUsersLogs');
 const Tailor = require('../models/Tailor');

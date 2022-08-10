@@ -19,7 +19,7 @@ const dfd = require("danfojs-node");
 
 const Product = require('../models/Product');
 
-       
+const ChartJsImage = require('chartjs-to-image');      
 router.use((req, res, next) => {
   res.locals.path = req.baseUrl;
   console.log(req.baseUrl);
@@ -68,12 +68,28 @@ router.get('/NoOfUsersJoined', async (req, res) => {
   group_dfYear = dfYear.groupby(["Dates"]).sum()
   const df4 = dfd.toJSON(group_dfYear,{format:"json"})
   
+  var NoOfUsers_day = [];
+  var dates_day = [];
+  console.log(df2)
+  df2.forEach((element) => {
+    NoOfUsers_day.push(element["NoOfUsersJoined_sum"]);
+    dates_day.push(element["Dates"].toString().slice(0,10));
+  });
+  
+  const myChart = new ChartJsImage();
+  myChart.setConfig({
+    type: 'line',
+    data: { labels: dates_day, datasets: [{ label: 'Numbers of Users Joined', data: NoOfUsers_day }] },
+  });
+
+  myChart.toFile('./public/images/ChartImages/UsersJoinedChart.png');
+
 
   
   
+  
 
-
-  res.status(200).json({ 'dataDay':df2, 'dataMonth':df3, 'dataYear':df4 });
+  res.status(200).json({ 'dataDay':df2, 'dataMonth':df3, 'dataYear':df4});
 });
 
 router.get('/NoOfNewsLetterSubscriptions', async (req, res) => {
@@ -118,7 +134,21 @@ router.get('/NoOfNewsLetterSubscriptions', async (req, res) => {
   const df4 = dfd.toJSON(group_dfYear,{format:"json"})
   
 
+  var NoOfUsers_day = [];
+  var dates_day = [];
+  console.log(df2)
+  df2.forEach((element) => {
+    NoOfUsers_day.push(element["NoOfNewsLetterSubscriptions_sum"]);
+    dates_day.push(element["Dates"].toString().slice(0,10));
+  });
   
+  const myChart = new ChartJsImage();
+  myChart.setConfig({
+    type: 'line',
+    data: { labels: dates_day, datasets: [{ label: 'Numbers of NewsLetter Subscriptions', data: NoOfUsers_day }] },
+  });
+
+  myChart.toFile('./public/images/ChartImages/UsersSubscriptionChart.png');
   
 
 
@@ -235,6 +265,14 @@ router.get('/UserRoles', async (req, res) => {
   json_data = [{ Customers:totalCustomers , Admins: totalAdmins, Sellers:totalSellers }]
 
   df = new dfd.DataFrame(json_data)
+
+  const myPieChart = new ChartJsImage();
+  myPieChart.setConfig({
+    type: 'doughnut',
+    data: { labels: ["Customer","Admins","Sellers"], datasets: [{ label: 'User Roles Types', data: [totalCustomers,totalAdmins,totalSellers]}] },
+  });
+  
+  myPieChart.toFile('./public/images/ChartImages/UsersRolesPieChart.png');
   
   res.status(200).json({ df })
 });
@@ -244,7 +282,13 @@ router.get('/UserGenders', async (req, res) => {
   const Males = await User.count({where: {gender:"Male"}});
   const Females = await User.count({where: {gender:"Female"}});
 
-
+  const myPieChart = new ChartJsImage();
+  myPieChart.setConfig({
+    type: 'doughnut',
+    data: { labels: ["Males","Females"], datasets: [{ label: 'User Roles Types', data: [Males,Females]}] },
+  });
+  
+  myPieChart.toFile('./public/images/ChartImages/UsersGendersPieChart.png');
   json_data = [{ Male:Males , Female: Females }]
 
   df = new dfd.DataFrame(json_data)

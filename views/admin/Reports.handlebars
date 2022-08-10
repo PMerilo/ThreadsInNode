@@ -37,14 +37,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        
+                        {{#each reports}}
                         <tr>
-                            <th scope="row"></th>
-                            <td><a href=""> </a></td>
-                            <td></td>
-                            <td></td>
+                            <th scope="row">{{this.id}}</th>
+                            <td><a href="{{this.url}}"> {{this.reportName}}</a></td>
+                            <td>{{this.reportType}}</td>
+                            <td>{{this.date}}</td>
                             
-                            <td></td>
+                            <td>{{this.tags}}</td>
                             <td class="d-flex justify-content-end">
                                 <a class="btn btn-primary mx-2" href=""><i class="bi bi-download"></i></a>
                                 <form action="" method="POST">
@@ -126,6 +126,7 @@
                                 </form>
                             </td>
                         </tr>
+                        {{/each}}
                         {{!-- EndFor --}}
                     </tbody>
                 </table>

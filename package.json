@@ -12,6 +12,8 @@
     "@handlebars/allow-prototype-access": "^1.0.5",
     "bcrypt": "^5.0.1",
     "bcryptjs": "^2.4.3",
+    "blob-stream": "^0.1.3",
+    "chartjs-to-image": "^1.0.5",
     "connect-flash": "^0.1.1",
     "danfojs-node": "^1.1.1",
     "dotenv": "^16.0.0",
@@ -36,6 +38,7 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
     "pdfkit": "^0.13.0",
+    "pdfkit-table": "^0.1.99",
     "sequelize": "^6.19.0",
     "sessions": "^0.0.2-7",
     "toast-me": "^1.4.8"

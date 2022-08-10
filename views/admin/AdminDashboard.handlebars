@@ -3,8 +3,12 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Admin Dashboard</h1>
     
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-2 text-gray-800">Admin Dashboard</h1>
+        <a href="/admin/ReportsManagement" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                class="bx bxs-download fa-sm text-white-50"></i> View Reports</a>
+    </div>
 
     <!-- Content Row -->
     <div class="row">
@@ -32,7 +36,7 @@
             </div>
         </div>
 
-        <!-- Spending Card -->
+        <!-- Subscribers Card -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
@@ -41,27 +45,43 @@
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                 Subscribed to our newsLetter (Total)</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{totalSubs}}</div>
+                            <br>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <a type="button" class="small text-black stretched-link" data-bs-toggle="modal" data-bs-target="#Subscribers_Today">View Details</a>
+                                <div class="small text-white"><i class="bi bi-chevron-right"></i></div>
+                            </div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
                         </div>
+                        
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Orders Card  -->
+        <!-- Number of Reports Card  -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Orders
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Reports(Total)
                             </div>
                             <div class="row no-gutters align-items-center">
                                 <div class="col-auto">
+                                    
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{totalReports}}</div>
+                                    <br>
                                     <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"></div>
                                 </div>
+                                <br>
+                                <div class="card-footer d-flex align-items-center justify-content-between">
+                                    <a type="button" class="small text-black stretched-link" data-bs-toggle="modal" data-bs-target="#Reports_Today">View Details</a>
+                                    <div class="small text-white"><i class="bi bi-chevron-right"></i></div>
+                                </div>
+                                
+                            
 <!--                                <div class="col">-->
 <!--                                    <div class="progress progress-sm mr-2">-->
 <!--                                        <div class="progress-bar bg-info" role="progressbar"-->
@@ -79,7 +99,7 @@
             </div>
         </div>
 
-        <!-- Number of Messages Card -->
+        <!-- Number of Message Card -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-warning shadow h-100 py-2">
                 <div class="card-body">
@@ -88,6 +108,12 @@
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                 Messages</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{totalSubs}}</div>
+                            <br>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <a type="button" class="small text-black stretched-link" data-bs-toggle="modal" data-bs-target="#Subscribers_Today">View Details</a>
+                                <div class="small text-white"><i class="bi bi-chevron-right"></i></div>
+                            </div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-comments fa-2x text-gray-300"></i>
@@ -124,24 +150,31 @@
 
             
 
-            <!-- Bar Chart -->
+            <!-- Area Chart Users Subscribed Start -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Bar Chart</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">User Subscription Activity(NewsLetter)</h6>
                 </div>
                 <div class="card-body">
-                    <div class="chart-bar">
-                        <canvas id="myBarChart"></canvas>
+                    <div class="chart-area">
+                        <canvas id="NoOfUsersSubscribedChart"></canvas>
                     </div>
                     <hr>
-                    Styling for the bar chart can be found in the
-                    <code>/js/demo/chart-bar-demo.js</code> file.
+                    <div class="text-center">
+                        <h5 class="text-gray-900 m-0" id="usersSubscribedSortedBy">No. of Users Subscribed By Day</h5>
+                        {{!-- <span class="text-gray-600 small">Last 7 days</span> --}}
+                    </div>
+                    <button class="btn btn-primary" id="daySubscribed" onclick="setChartTypeNewsLetter(this)">Day</button>
+                    <button class="btn btn-secondary" id="monthSubscribed" onclick="setChartTypeNewsLetter(this)">Month</button>
+                    <button class="btn btn-warning" id="yearSubscribed" onclick="setChartTypeNewsLetter(this)">Year</button>
+                    
                 </div>
+                
             </div>
 
         </div>
 
-        <!-- Donut Chart -->
+        <!-- User Roles Pie Chart -->
         <div class="col-xl-4 col-lg-5">
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
@@ -177,14 +210,14 @@
                         <h5 class="text-gray-900 m-0">User Genders</h5>
                         <span class="text-gray-600 small">List Of Our Users Genders</span>
                 </div>
-            </div>
+        </div>
         
     </div>
 
 </div>
 
 
-
+{{!-- Visitors Today Log --}}
 <div class="modal" id="Visitors_Today">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
@@ -194,7 +227,7 @@
             <div class="container col-12 modal-info">
             <button type="button" class="btn-close x-button" data-bs-dismiss="modal"></button>
             <div class="modal-header">
-                <h6 class="modal-title">Our Visitors</h6>
+                <h6 class="modal-title">Our Registered Users</h6>
                 
             </div>
             
@@ -236,6 +269,112 @@
     </div>
     </div>
 
+{{!-- Newsletter Subscribers Log --}}
+<div class="modal" id="Subscribers_Today">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+        <div class="row">
+            
+            
+            <div class="container col-12 modal-info">
+            <button type="button" class="btn-close x-button" data-bs-dismiss="modal"></button>
+            <div class="modal-header">
+                <h6 class="modal-title">Our Recent Subscribers</h6>
+                
+            </div>
+            
+            <div class="modal-body">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                    
+                    <th>Description</th>
+                    <th>Registered On</th>
+                    
+                    
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{#each Subscribers}}
+                        <tr>
+                        
+                        <td>{{this.description}}</td>
+                        <td>{{this.createdAt}}</td>
+                        
+                        
+                        
+                        </tr>
+                    {{/each}}
+                
+                    </tbody>
+                    </table>
+            </div>
+
+            <div class="modal-footer">
+                <a href="/admin/ReportsManagement">View Full Details</a>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div>
+
+
+{{!-- Reports Log --}}
+<div class="modal" id="Reports_Today">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+        <div class="row">
+            
+            
+            <div class="container col-12 modal-info">
+            <button type="button" class="btn-close x-button" data-bs-dismiss="modal"></button>
+            <div class="modal-header">
+                <h6 class="modal-title">Our Report </h6>
+                
+            </div>
+            
+            <div class="modal-body">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                    
+                    <th>Report Name</th>
+                    <th>Report Type</th>
+                    
+                    <th>Tags</th>
+                    <th>Date</th>
+                    
+                    
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{#each reports}}
+                        <tr>
+                        
+                        <td><a href="">{{this.reportName}}</a> </td>
+                        <td>{{this.reportType}}</td>
+                        
+                        <td>{{this.tags}}</td>
+                        <td>{{this.date}}</td>D
+                        
+                        
+                        
+                        </tr>
+                    {{/each}}
+                
+                    </tbody>
+                    </table>
+            </div>
+
+            <div class="modal-footer">
+                <a href="/admin/ReportsManagement">View Full Details</a>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div>
 
 
 <!-- /.container-fluid -->
