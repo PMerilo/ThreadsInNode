@@ -2,45 +2,60 @@
 
 <div>
     <div>
-        <h1 class="text-center">Our Services</h1>
+        <h1 class="text-center">Our Services <button id="sendNotif">CLick to send notification</button></h1>
     </div>
 </div>
 <div class="d-flex justify-content-evenly mt-5">
     <div class="card w-25 text-center">
-        <img src="https://media.istockphoto.com/vectors/tailor-made-icon-vector-id979039220?k=20&m=979039220&s=170667a&w=0&h=ZyScYcHpLbR6JAkEB3LWU-AxD25vSfPerndOcPcKxCw=" class="card-img-top" alt="...">
+        <img src="https://media.istockphoto.com/vectors/tailor-made-icon-vector-id979039220?k=20&m=979039220&s=170667a&w=0&h=ZyScYcHpLbR6JAkEB3LWU-AxD25vSfPerndOcPcKxCw="
+            class="card-img-top" alt="...">
         <div class="card-body">
             <h5 class="card-title">Tailoring</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
+                content.</p>
             <a href="#" class="btn btn-secondary">Learn more</a>
             <a href="/services/request" class="btn btn-primary">Request Now</a>
         </div>
     </div>
     <div class="card w-25 text-center">
-        <img src="https://static.vecteezy.com/system/resources/previews/002/164/859/large_2x/wedding-and-prom-gown-alterations-black-linear-icon-vector.jpg" class="card-img-top" alt="...">
+        <img src="https://static.vecteezy.com/system/resources/previews/002/164/859/large_2x/wedding-and-prom-gown-alterations-black-linear-icon-vector.jpg"
+            class="card-img-top" alt="...">
         <div class="card-body">
             <h5 class="card-title">Alteration</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
+                content.</p>
             <a href="#" class="btn btn-secondary">Learn more</a>
             <a href="/services/request" class="btn btn-primary">Request Now</a>
         </div>
     </div>
 </div>
 <hr>
+
+
 {{!-- <div class="d-flex justify-content-evenly">
     <div class="card w-25">
-        <img src="https://bestlifeonline.com/wp-content/uploads/sites/3/2018/01/shutterstock_655460896.jpg?fit=1024%2C682&ssl=1" class="card-img-top" alt="...">
+        <img src="https://bestlifeonline.com/wp-content/uploads/sites/3/2018/01/shutterstock_655460896.jpg?fit=1024%2C682&ssl=1"
+            class="card-img-top" alt="...">
         <div class="card-body">
             <h5 class="card-title">Pants Alteration</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
+                content.</p>
             <a href="#" class="btn btn-primary">Go somewhere</a>
         </div>
     </div>
     <div class="card w-25">
-        <img src="https://bestlifeonline.com/wp-content/uploads/sites/3/2018/01/shutterstock_655460896.jpg?fit=1024%2C682&ssl=1" class="card-img-top" alt="...">
+        <img src="https://bestlifeonline.com/wp-content/uploads/sites/3/2018/01/shutterstock_655460896.jpg?fit=1024%2C682&ssl=1"
+            class="card-img-top" alt="...">
         <div class="card-body">
             <h5 class="card-title">Women's dress</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
+                content.</p>
             <a href="#" class="btn btn-primary">Go somewhere</a>
         </div>
     </div>
 </div> --}}
+<script>
+    $('#sendNotif').click(() => {
+        sendNotif('default', 'hi', 'i love nicole so sosososo much', '', '{{user.id}}', '1')
+    })
+</script>

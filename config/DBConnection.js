@@ -18,6 +18,8 @@ const Tailor = require('../models/Tailor');
 const Order = require('../models/Orders');
 const OrderItem = require('../models/OrderItems');
 const OrderItems = require('../models/OrderItems');
+const Notification = require('../models/Notification');
+const UserNotification = require('../models/UserNotifications');
 
 // If drop is true, all existing tables are dropped and recreated
 const setUpDB = (drop) => {
@@ -32,6 +34,9 @@ const setUpDB = (drop) => {
             User.hasMany(Request, {onDelete: 'CASCADE'})
             User.hasMany(Appointment, {onDelete: 'CASCADE'})
             User.hasOne(Tailor, {foreignKey: {allowNull: false}, onDelete: 'CASCADE'})
+
+            User.belongsToMany(Notification, {through: UserNotification})
+            Notification.belongsToMany(User, {through: UserNotification})
 
             Request.hasMany(Appointment, {onDelete: 'CASCADE'})
             Request.belongsTo(Service, { as: 'service' });

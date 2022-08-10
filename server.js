@@ -20,10 +20,32 @@ const Service = require('./models/Service')
 const User = require('./models/User')
 const moment = require("moment")
 const serviceController = require("./controllers/serviceController")
+const { createServer } = require("http");
+const { Server } = require("socket.io");
 
 app.use(bodypassword.json())
 app.use(bodypassword.urlencoded({ extended: false }))
 // To send forms and shit
+
+// socket implementation
+const httpServer = createServer(app);
+const io = new Server(httpServer, { cors: { origin: "*" } });
+
+const testHandler = require("./sockets/test")
+const bookingHandler = require("./sockets/booking")
+
+const onConnection = (socket) => {
+	socket.userid = socket.handshake.auth.id
+	socket.join(socket.userid)
+	console.log(`User ${socket.handshake.auth.id} has connected with socket id of ${socket.id}`)
+	bookingHandler(io, socket)
+	testHandler(io, socket)
+	// console.log(socket.rooms)
+}
+
+io.on("connection", onConnection);
+app.set('io', io)
+
 
 // Library to use MySQL to store session objects 
 const MySQLStore = require('express-mysql-session');
@@ -81,7 +103,7 @@ app.use(async function (req, res, next) {
 	res.locals.authenticated = req.isAuthenticated();
 	res.locals.today = moment().format('YYYY-MM-DD')
 	res.locals.time = moment().format('HH:mm:ss')
-	res.locals.statuses = {"-1": "Appointment Denied. Request another appointment", "0": 'Awaiting next Appointment', "1": 'Pending Appointment Booking', "2": 'Pending Appointment Confirmation', "3": "Appointment Confirmed", "4": 'In Progress', "5": 'Completed' }
+	res.locals.statuses = { "-1": "Appointment Denied. Request another appointment", "0": 'Awaiting next Appointment', "1": 'Pending Appointment Booking', "2": 'Pending Appointment Confirmation', "3": "Appointment Confirmed", "4": 'In Progress', "5": 'Completed' }
 	res.locals.tailors = await User.findAll({
 		include: { model: Tailor, required: true }
 	});
@@ -108,8 +130,8 @@ app.engine(
 				return (a > b) ? next.fn(this) : next.inverse(this);
 			},
 
-			ge( a, b ){
-				var next =  arguments[arguments.length-1];
+			ge(a, b) {
+				var next = arguments[arguments.length - 1];
 				return (a >= b) ? next.fn(this) : next.inverse(this);
 			},
 
@@ -131,7 +153,7 @@ app.engine(
 			identifygender(v1, v2) {
 				if (String(v1) == v2) {
 					return true;
-					
+
 				}
 				return false;
 			},
@@ -142,7 +164,7 @@ app.engine(
 				return false;
 			},
 			isbanTrue(boo) {
-				if (boo == "T"){
+				if (boo == "T") {
 					return true;
 				}
 				return false;
@@ -150,20 +172,20 @@ app.engine(
 			radioCheck(value, radioValue) {
 				return (value == radioValue) ? 'checked' : '';
 			},
-			backupcodechecker(n){
-				if (n =="not used"){
+			backupcodechecker(n) {
+				if (n == "not used") {
 					return true;
 				}
 				return false;
 			},
-			tempuserchecker(i, n){
+			tempuserchecker(i, n) {
 				console.log(i, n)
-				if (String(i) == String(n)){
+				if (String(i) == String(n)) {
 					return true;
 				}
 				return false;
 			}
-	  
+
 		},
 	})
 );
@@ -200,6 +222,6 @@ const port = 5000;
 
 
 // Starts the server and listen to port
-app.listen(port, () => {
+httpServer.listen(port, () => {
 	console.log(`Server started on port ${port}`);
 });
