@@ -37,6 +37,9 @@ const Mail = require("../config/MailConfig");
 const Cart = require('../models/Cart');
 const Order = require('../models/Orders');
 const OrderItems = require('../models/OrderItems');
+const Notification = require('../models/Notification');
+const UserNotification = require('../models/UserNotifications');
+const Tailor = require('../models/Tailor');
 
 // for forgetpassword
 otp = 'placeholder'
@@ -46,13 +49,17 @@ emailvariable = 'placeholder'
 // router.use((req, res, next) => {
 //     res.locals.path = req.baseUrl;
 //     console.log(req.baseUrl);
-    //Checks url for normal users and admin
+//Checks url for normal users and admin
 //     next();
 // });
 
 router.get('/', async (req, res) => {
 
     products = (await Product.findAll()).map((x) => x.dataValues)
+
+
+    const io = req.app.get('io')
+    io.emit('test', 'from main')
 
     res.render("index", { products })
 })
@@ -177,7 +184,7 @@ router.post('/discount', ensureAuthenticated, async (req, res) => {
 router.post('/wishlist', ensureAuthenticated, async (req, res) => {
     var sku = req.body.sku
     var status = req.body.status
-    console.log(sku,status)
+    console.log(sku, status)
     checkProductinWishlist = await Wishlist.findOne({ where: { id: req.user.id + sku } })
     product = await Product.findOne({ where: { sku: sku } })
 
@@ -226,7 +233,7 @@ router.post('/checkout', ensureAuthenticated, async (req, res) => {
 
     isValid = true
     if (!Luhn.isValid(req.body.card_number.replaceAll(" ", ""))) {
-        res.send({ status: "error",icon: "error",title: "Oops..", text: "Creditcard Number Is Invalid!!" })
+        res.send({ status: "error", icon: "error", title: "Oops..", text: "Creditcard Number Is Invalid!!" })
     } else {
 
 
@@ -269,7 +276,7 @@ router.post('/checkout', ensureAuthenticated, async (req, res) => {
             Reward.update({ quantity: discountcode.quantity - 1 }, { where: { voucher_code: cartproducts.discountcodeused } })
         }
         await Cart.destroy({ where: { id: req.user.id } })
-        res.send({status: "success ",icon: "success",title: "Order Completed" })
+        res.send({ status: "success ", icon: "success", title: "Order Completed" })
         console.log("Order created")
     }
 })
@@ -291,8 +298,8 @@ router.get('/CustomerService', (req, res) => {
 })
 
 
-router.get('/profile',ensureAuthenticated, async (req,res) => {
-    
+router.get('/profile', ensureAuthenticated, async (req, res) => {
+
     res.render("profile")
 })
 
@@ -323,56 +330,56 @@ router.post('/profile', ensureAuthenticated, (req, res) => {
     req.logout();
     flashMessage(res, 'success', 'Account successfully deleted. Bye bye...');
     return res.redirect("/");
-  
-  })
-  router.post('/changePassword', ensureAuthenticated, async (req, res) => {
+
+})
+router.post('/changePassword', ensureAuthenticated, async (req, res) => {
     userr1 = await User.findOne({ where: { id: req.user.id } })
     const validPassword = await bcrypt.compare(req.body.oldpassword, userr1.password);
     if (!validPassword) {
-      flashMessage(res, 'error', 'Incorrect password');
-      return res.redirect('/changePassword')
+        flashMessage(res, 'error', 'Incorrect password');
+        return res.redirect('/changePassword')
     }
     let { oldpassword, newpassword, newpassword2 } = req.body;
     if (newpassword.length < 6) {
-      flashMessage(res, 'error', 'Password must be at least 6 characters');
-      return res.redirect('/changePassword')
+        flashMessage(res, 'error', 'Password must be at least 6 characters');
+        return res.redirect('/changePassword')
     }
     if (newpassword2 != newpassword) {
-      flashMessage(res, 'error', 'New passwords do not match');
-      return res.redirect('/changePassword')
+        flashMessage(res, 'error', 'New passwords do not match');
+        return res.redirect('/changePassword')
     }
     if (oldpassword == newpassword) {
-      flashMessage(res, 'error', 'New and old passwords are the same');
-      return res.redirect('/changePassword')
+        flashMessage(res, 'error', 'New and old passwords are the same');
+        return res.redirect('/changePassword')
     }
     User.update({ password: newpassword }, { where: { id: req.user.id } })
     flashMessage(res, 'success', 'Password updated successfully');
     return res.redirect('/profile')
-  })
-  
-  router.post('/editProfile', ensureAuthenticated, async (req, res) => {
+})
+
+router.post('/editProfile', ensureAuthenticated, async (req, res) => {
     x = 0;
     y = 0
     userr = await User.findOne({ where: { id: req.user.id } })
     if ((await User.findOne({ where: { email: req.body.email } })) && userr.email != req.body.email) {
-      x = 1
+        x = 1
     }
     if ((await User.findOne({ where: { name: req.body.name } })) && userr.name != req.body.name) {
-      y = 1
+        y = 1
     }
     if (x == 1 && y != 1) {
-      flashMessage(res, 'error', 'This email has already been registered');
-      return res.redirect("/editProfile");
+        flashMessage(res, 'error', 'This email has already been registered');
+        return res.redirect("/editProfile");
     }
     else if (x != 1 && y == 1) {
-      flashMessage(res, 'error', 'This name has already been registered');
-      return res.redirect("/editProfile");
+        flashMessage(res, 'error', 'This name has already been registered');
+        return res.redirect("/editProfile");
     }
     else if (x == 1 && y == 1) {
-      flashMessage(res, 'error', 'Both name and email has already been registered');
-      return res.redirect("/editProfile");
+        flashMessage(res, 'error', 'Both name and email has already been registered');
+        return res.redirect("/editProfile");
     }
-  
+
     let name = req.body.name;
     let email = req.body.email;
     let phoneNumber = req.body.phoneNumber;
@@ -381,26 +388,26 @@ router.post('/profile', ensureAuthenticated, (req, res) => {
     TempUser.update({ email }, { where: { email: userr.email } })
     flashMessage(res, 'success', 'Account successfully edited');
     res.redirect("/profile");
-  
-  })
-  
-  function checkAuthenticated(req, res, next) {
+
+})
+
+function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
-  
-      return next()
+
+        return next()
     }
-  
+
     res.redirect("/profile")
-  }
-  
-  router.get('/logout', ensureAuthenticated, (req, res) => {
+}
+
+router.get('/logout', ensureAuthenticated, (req, res) => {
     const message = 'You Have Logged out';
     flashMessage(res, 'success', message);
     req.logout();
     res.redirect('/');
-  });
+});
 
-router.get('/changePassword',ensureAuthenticated, (req,res) => {
+router.get('/changePassword', ensureAuthenticated, (req, res) => {
     res.render("userEditPassword.handlebars")
 })
 
@@ -779,6 +786,28 @@ router.post('/newsLetterUnSubscribe', ensureAuthenticated, async (req, res) => {
     res.redirect("/newsLetter");
 });
 
+router.post("/createnotification", async (req, res) => {
+    let { title, body, url, sender, recipient } = req.body;
+    let notification = await Notification.create({
+        title: title,
+        body: body,
+        url: url,
+        senderId: sender
+    })
+    console.log(recipient)
+    if (!isNaN(recipient)) {
+        let user = await User.findByPk(recipient)
+        notification.addUser(user)
+    } else if (recipient == "tailors") {
+        let users = await User.findAll({include: {model: Tailor, required: true}})
+        users.forEach(async user => {
+            await notification.addUser(user)
+        });
+        console.log(JSON.stringify(notification))
+    }
+
+    // return res.json(notification)
+})
 
 module.exports = router;
 

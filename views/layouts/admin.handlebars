@@ -12,23 +12,23 @@
     <link rel="stylesheet" href="/styles/admin_navbar.css">
 
     <title>Threads In Time</title>
-    
+
 </head>
+
 <body>
-    
-    
+
+
     {{>breadcrumb}}
     {{>_adminNavBar}}
-    <div class="container-fluid mt-2 home">    
+    <div class="container-fluid mt-2 home">
         {{>flashmsg}}
         {{{body}}}
         <br>
     </div>
-     
+
+    
     {{>_scripts}}
-    {{#if scriptsPath}}
-    {{>(lookup . "scriptsPath") admin="/admin"}}
-    {{/if}}
 
 </body>
+
 </html>

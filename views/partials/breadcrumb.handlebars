@@ -1,39 +1,41 @@
 <div class="container-fluid home shadow-sm d-flex align-items-center">
   <nav class="nav navbar-light d-flex align-items-center flex-fill">
-    
+
     <a id='back-link' class="fs-2 ms-3" href=""><i class="bi bi-arrow-left-short"></i></a>
-    
+
     <ol class="ms-4 breadcrumb m-0 fs-5">
-      
+
       <li class="my-auto breadcrumb-item active" aria-current="page">
-        
-        
+
+
       </li>
-      
+
     </ol>
     <div class="dropdown ms-auto">
-      <button class="btn btn-white" type="button" id="notificationdropdown" data-bs-toggle="dropdown" aria-expanded="false">
+      <button class="btn btn-white" type="button" id="notificationdropdown" data-bs-toggle="dropdown"
+        aria-expanded="false">
         <i class="fs-5 position-relative bi bi-bell">
         </i>
       </button>
-      <ul class="dropdown-menu p-0 overflow-auto" aria-labelledby="notificationdropdown">
-        
+      <ul class="dropdown-menu p-0 overflow-auto" aria-labelledby="notificationdropdown" id="notifications">
+        {{#if false}}
         <li>
           <a class="position-relative py-2 dropdown-item notification-link" href="">
-            <p class="m-0 text-wrap"></span></p>
-            <p class="m-0 text-wrap notification-body"></p>
-            
-              <span class="position-absolute end-0 top-50 translate-middle p-1 bg-danger border border-light rounded-circle">
-            
+            <p class="m-0 text-wrap">we</p>
+            <p class="m-0 text-wrap notification-body">ew</p>
+
+            <span
+              class="position-absolute end-0 top-50 translate-middle p-1 bg-danger border border-light rounded-circle">
+            </span>
           </a>
         </li>
-        
+
         <hr class="m-0">
-        
+        {{else}}
         No Notifications to show
-       
+        {{/if}}
       </ul>
-      
+
     </div>
   </nav>
 </div>

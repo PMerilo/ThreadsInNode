@@ -4,7 +4,7 @@ const router = express.Router();
 const flashMessage = require('../views/helpers/messenger');
 const sequelizeUser = require("../config/DBConfig");
 const { serializeUser } = require('passport');
-const { Op } = require('sequelize');
+const { Op, where } = require('sequelize');
 const User = require("../models/User");
 const Ticket = require('../models/Ticket');
 const Feedback = require('../models/Feedback');
@@ -18,9 +18,12 @@ const ensureAuthenticated = require("../views/helpers/auth");
 const serviceController = require("../controllers/serviceController")
 const ensureAdminAuthenticated = require("../views/helpers/adminAuth");
 const TempUser = require("../models/TempUser");
+const Notification = require("../models/Notification")
 
-router.all('/*', ensureAdminAuthenticated, function (req, res, next) {
-    req.app.locals.layout = 'admin'; // set your layout here
+router.all('/*', ensureAdminAuthenticated, async function (req, res, next) {
+    req.app.locals.layout = 'admin'; // set your layout here'
+    // let notifications = await Notification.findAll();
+    // console.log(notifications)
     next(); // pass control to the next handler
 });
 

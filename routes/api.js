@@ -10,6 +10,8 @@ const Request = require('../models/Request');
 const Service = require('../models/Service');
 const Appointment = require('../models/Appointment');
 const { Op } = require('sequelize');
+const Tailor = require('../models/Tailor');
+const Notification = require('../models/Notification');
 
 router.get('/requests', async (req, res) => {
     // console.log(
@@ -73,4 +75,23 @@ router.get('/appointment/:id', async (req, res) => {
     })
 });
 
+router.get("/getroles/:id", async (req, res) => {
+    let x = [];
+    let user = await User.findByPk(req.params.id)
+    if (user.getTailor()) {
+        x.push("tailors")
+    }
+    return res.json(x)
+})
+
+router.get("/getnotifications", async (req, res) => {
+    // console.log(req.query)
+    let user = await User.findByPk(req.query.id)
+    let notifications;
+    if (user) {
+        notifications = await user.getNotifications()
+    }
+    // console.log(notifications)
+    return res.json(notifications)
+})
 module.exports = router;
