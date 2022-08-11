@@ -21,7 +21,8 @@ const User = require('./models/User')
 const moment = require("moment")
 const serviceController = require("./controllers/serviceController")
 
-app.use(bodypassword.json())
+app.use('/webhook', express.raw({type: "*/*"}));
+app.use(express.json());
 app.use(bodypassword.urlencoded({ extended: false }))
 // To send forms and shit
 

@@ -94,46 +94,132 @@ function checkoutcheck() {
     var address = document.getElementById('address').value
     var unit_number = document.getElementById('unit_number').value
     var postalcode = document.getElementById('postalcode').value
-    var cname = document.getElementById('name').value
-    var card_number = document.getElementById('cardnumber').value
-    var expiration_date = document.getElementById('expirationdate').value
-    var securitycode = document.getElementById('securitycode').value
-
-
-    $.ajax({
-        url: "/checkout",
-        method: 'POST',
-        contentType: "application/json",
-        data: JSON.stringify({
-            fname : fname,
-            email : email,
-            phone : phone,
-            address : address,
-            unit_number : unit_number,
-            postal_code : postalcode,
-            cname: cname,
-            card_number: card_number,
-            expiration_date: expiration_date,
-            securitycode: securitycode
+    fetch("http://localhost:5000/checkout", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            fname: fname,
+            email: email,
+            phone: phone,
+            address: address,
+            unit_number: unit_number,
+            postal_code: postalcode
         }),
-        success: function(res) {
-            if (res.status == "error") {
-                if(res) {
-                    Swal.fire({
-                        icon: res.icon,
-                        title: res.title,
-                        text: res.message
-                    })
-                }
-            } else{
-                Swal.fire({
-                    icon: res.icon,
-                    title: res.title
-                }).then(function(){
-                    location.replace("/")
-                })
-            }
-        }
-
     })
+        .then(res => {
+            if (res.ok) return res.json()
+            return res.json().then(json => Promise.reject(json))
+        })
+        .then(({ url }) => {
+            window.location = url
+        })
+        .catch(e => {
+            console.error(e.error)
+        })
 }
+
+
+// function checkoutcheck() {
+//     var fname = document.getElementById('fname').value
+//     var email = document.getElementById('email').value
+//     var phone = document.getElementById('phone').value
+//     var address = document.getElementById('address').value
+//     var unit_number = document.getElementById('unit_number').value
+//     var postalcode = document.getElementById('postalcode').value
+//     var cname = document.getElementById('name').value
+//     var card_number = document.getElementById('cardnumber').value
+//     var expiration_date = document.getElementById('expirationdate').value
+//     var securitycode = document.getElementById('securitycode').value
+
+
+//     $.ajax({
+//         url: "/checkout",
+//         method: 'POST',
+//         contentType: "application/json",
+//         data: JSON.stringify({
+//             fname: fname,
+//             email: email,
+//             phone: phone,
+//             address: address,
+//             unit_number: unit_number,
+//             postal_code: postalcode,
+//             cname: cname,
+//             card_number: card_number,
+//             expiration_date: expiration_date,
+//             securitycode: securitycode
+//         }),
+//         success: function (res) {
+//             if (res.status == "error") {
+//                 if (res) {
+//                     Swal.fire({
+//                         icon: res.icon,
+//                         title: res.title,
+//                         text: res.message
+//                     })
+//                 }
+//             }
+//         }
+//     })
+//     .then(res => {
+//         if (res.ok) return res.json()
+//         return res.json().then(json => Promise.reject(json))
+//     })
+//     .then(({ url }) => {
+//         window.location = url
+//     })
+//     .catch(e => {
+//         console.error(e.error)
+//     })
+// }
+// function checkoutcheck() {
+//     var fname = document.getElementById('fname').value
+//     var email = document.getElementById('email').value
+//     var phone = document.getElementById('phone').value
+//     var address = document.getElementById('address').value
+//     var unit_number = document.getElementById('unit_number').value
+//     var postalcode = document.getElementById('postalcode').value
+//     var cname = document.getElementById('name').value
+//     var card_number = document.getElementById('cardnumber').value
+//     var expiration_date = document.getElementById('expirationdate').value
+//     var securitycode = document.getElementById('securitycode').value
+
+
+//     $.ajax({
+//         url: "/checkout",
+//         method: 'POST',
+//         contentType: "application/json",
+//         data: JSON.stringify({
+//             fname : fname,
+//             email : email,
+//             phone : phone,
+//             address : address,
+//             unit_number : unit_number,
+//             postal_code : postalcode,
+//             cname: cname,
+//             card_number: card_number,
+//             expiration_date: expiration_date,
+//             securitycode: securitycode
+//         }),
+//         success: function(res) {
+//             if (res.status == "error") {
+//                 if(res) {
+//                     Swal.fire({
+//                         icon: res.icon,
+//                         title: res.title,
+//                         text: res.message
+//                     })
+//                 }
+//             } else{
+//                 Swal.fire({
+//                     icon: res.icon,
+//                     title: res.title
+//                 }).then(function(){
+//                     location.replace("/")
+//                 })
+//             }
+//         }
+
+//     })
+// }

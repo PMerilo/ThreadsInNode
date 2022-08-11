@@ -12,7 +12,7 @@ $(document).ready (function() {
     }
 
     updateCartTotal()
-    CheckoutTotalCalculation()
+    // CheckoutTotalCalculation()
     checkoutsave()
 
 })
@@ -57,31 +57,34 @@ function quantityChanged(event) {
 
 
 function updateCartTotal() {
-    var cartItemContainer = document.getElementsByClassName('cart-items')[0]
-    var cartRows = cartItemContainer.getElementsByClassName('cart-row')
-    var subtotal = 0
-    for (var i = 0; i < cartRows.length; i++) {
-        var cartRow = cartRows[i]
-        var priceElement = cartRow.getElementsByClassName('cart-price')[0]
-        var quantityElement = cartRow.getElementsByClassName('cart-quantity-input')[0]
-        var price = parseFloat(priceElement.innerText.replace('S$', ''))
-        var quantity = quantityElement.value
-        total = price * quantity
-        subtotal = subtotal + (price * quantity)
-        var points = document.getElementsByClassName('vouchers-points').innerText
-
-        cartRow.getElementsByClassName('cart-total')[0].innerText = 'S$' + total
-    }
-    subtotal = Math.round(subtotal * 100) / 100
-    document.getElementsByClassName('cart-total-price')[0].innerText = 'S$' + subtotal
-    document.getElementsByClassName('cart-grandtotal-price')[0].innerText = 'S$' + subtotal
-    var checkout = document.getElementById('checkout')
-    var discButton = document.getElementById('apply-discount-button')
-    if(subtotal == 0) {
+    var cartDisplay = $(".cart-display").val()
+    console.log(cartDisplay)
+    if (cartDisplay == 1) {
+        var cartItemContainer = document.getElementsByClassName('cart-items')[0]
+        var cartRows = cartItemContainer.getElementsByClassName('cart-row')
+        var subtotal = 0
+        for (var i = 0; i < cartRows.length; i++) {
+            var cartRow = cartRows[i]
+            var priceElement = cartRow.getElementsByClassName('cart-price')[0]
+            var quantityElement = cartRow.getElementsByClassName('cart-quantity-input')[0]
+            var price = parseFloat(priceElement.innerText.replace('S$', ''))
+            var quantity = quantityElement.value
+            total = price * quantity
+            subtotal = subtotal + (price * quantity)
+            var points = document.getElementsByClassName('vouchers-points').innerText
+    
+            cartRow.getElementsByClassName('cart-total')[0].innerText = 'S$' + total
+        }
+        subtotal = Math.round(subtotal * 100) / 100
+        document.getElementsByClassName('cart-total-price')[0].innerText = 'S$' + subtotal
+        document.getElementsByClassName('cart-grandtotal-price')[0].innerText = 'S$' + subtotal
+    } else if (cartDisplay == 0) {
+        var checkout = document.getElementById('checkout')
+        var discButton = document.getElementById('apply-discount-button')
         checkout.disabled = true;
         discButton.disabled = true;
         new SnackBar({
-            message: "You need atleast one product in yout cart to checkout",
+            message: "You need atleast one product in your cart to checkout",
             status: "info",
             fixed: true,
             dismissible: false,
@@ -120,7 +123,7 @@ $('.apply-discount-button').click(function() {
     //         disc()
     //     })
     // }
-    checkoutsave()
+    // checkoutsave()
     $.ajax({
         url: "/discount",
         method: 'POST',
@@ -246,7 +249,7 @@ $('.show-item').click(function() {
     })
 })
 
-$(".delete-item-button").mouseenter(function() {
+$(".delete-item-button").one("mouseenter",function() {
     new SnackBar({
         message: "Clicking this will delete this item",
         status: "info",
@@ -254,7 +257,7 @@ $(".delete-item-button").mouseenter(function() {
     })
 })
 
-$(".delete-cart").mouseenter(function() {
+$(".delete-cart").one("mouseenter",function() {
     new SnackBar({
         message: "Clicking this will delete the cart",
         status: "error",

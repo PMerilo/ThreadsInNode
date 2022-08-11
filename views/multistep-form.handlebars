@@ -185,15 +185,11 @@
             <div class="cart-body">
                 <div class="total  d-flex">
                     <p>Grand Total</p>
-                    <p class="cart-gtotal ms-auto">S${{carttotal}}</p>
+                    <p class="cart-gtotal ms-auto">S${{cart.cartTotal}}</p>
                 </div>
                 <div class="shipping d-flex">
                     <p>Shipping</p>
-                    <p class="shipping-fee ms-auto">S$0</p>
-                </div>
-                <div class="grandtotal d-flex">
-                    <p>Grand Total after Shipping</p>
-                    <p class="cart-grandtotal ms-auto">S$0</p>
+                    <p class="shipping-fee ms-auto">Calculated at Payment</p>
                 </div>
             </div>
             <div class="card-footer">
@@ -209,15 +205,15 @@
     $(document).ready(function () {
         CheckoutTotalCalculation()
     })
-        function CheckoutTotalCalculation() {
-            var shippingfee = 5
+        {{!-- function CheckoutTotalCalculation() {
+            var shippingfee = 0
             var subtotal = $('.cart-gtotal').text().replace('S$', '')
 
             $(".shipping-fee").text("S$" + shippingfee)
             var grandtotal = shippingfee + parseFloat(subtotal)
             console.log(grandtotal)
             $('.cart-grandtotal').text("S$" + grandtotal)
-        }
+        } --}}
 </script>
 
 <!-- /.MultiStep Form -->
