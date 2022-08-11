@@ -16,12 +16,12 @@ const Message = require("../models/Messages")
 const CartProduct = require("../models/CartProduct")
 const Appointment = require("../models/Appointment")
 const FAQ = require("../models/FAQ")
-const Luhn = require("luhn-js")
 const { v4: uuidv4 } = require('uuid');
 const TempUser = require("../models/TempUser");
 //Ensures User is autenticated before accessing
 //page
 const ensureAuthenticated = require("../views/helpers/auth");
+const bodyParser = require('body-parser');
 const moment = require("moment");
 // Required for file upload const 
 fs = require('fs');
@@ -29,7 +29,9 @@ const upload = require('../views/helpers/imageUpload');
 const console = require('console');
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY
 const stripePublicKey = process.env.STRIPE_PUBLIC_KEY
-
+const endpointSecret = process.env.WEBHOOK_SECRET;
+const SERVER_URL = process.env.SERVER_URL
+const stripe = require("stripe")(stripeSecretKey)
 // For mail
 const nodemailer = require("nodemailer");
 // const { where } = require('sequelize/types');
@@ -145,7 +147,9 @@ router.post('/discount', ensureAuthenticated, async (req, res) => {
     var discountcodeused = req.body.code
     var status = req.body.status
     console.log(discountcodeused)
-    var discountcodeinDB = await Reward.findOne({ where: { voucher_code: discountcodeused } })
+    if (discountcodeused != "") {
+        var discountcodeinDB = await Reward.findOne({ where: { voucher_code: discountcodeused } })
+    }
 
     // res.send({discount_amount:discount_amount, status:"success"})
     // res.send({discount_amount:discount_amount, status:"spools_shortage"})
@@ -228,64 +232,218 @@ router.post('/wishlist', ensureAuthenticated, async (req, res) => {
         }
     }
 })
+const fulfillOrder = async (session) => {
+    var id = session.metadata.userId
+    var orderid = session.metadata.orderId
+
+    var cartproducts = await Cart.findOne({ where: { id: id }, include: { model: Product } })
+
+    // console.log(JSON.stringify(cartproducts))
+    cartproducts.products.forEach(element => {
+        OrderItems.create({
+            orderId: orderid,
+            productSku: element.sku,
+            qtyPurchased: element.cartproduct.qtyPurchased,
+            product_name: element.name,
+            product_price: element.price,
+            seller_name: element.Owner,
+            seller_name: element.OwnerID,
+            orderStatus: "Processing",
+        })
+        // var sold = element.sold + element.cartproduct.qtyPurchased
+        // var sales = element.sales + (element.cartproduct.qtyPurchased*element.price)
+        // var qty = element.quantity - element.cartproduct.qtyPurchased
+        Product.update({ quantity: element.quantity - element.cartproduct.qtyPurchased, sold: element.sold + element.cartproduct.qtyPurchased, sales: element.sales + (element.cartproduct.qtyPurchased * element.price) }, { where: { sku: element.sku } })
+    });
+    var discountcode = await Reward.findOne({ where: { voucher_code: cartproducts.discountcodeused } })
+    var user = await User.findByPk(id)
+    var order = await Order.findByPk(orderid)
+    User.update({ spools: user.spools + order.orderTotal }, { where: { id: id } })
+    if (discountcode) {
+        User.update({ spools: user.spools - discountcode.spools_needed }, { where: { id: id } })
+        Reward.update({ quantity: discountcode.quantity - 1 }, { where: { voucher_code: cartproducts.discountcodeused } })
+    }
+    await Cart.destroy({ where: { id: id } })
+    console.log("Order created")
+    console.log("Fulfilling order", session);
+};
+const checkoutFailed = async (session) => {
+    var orderid = session.metadata.orderId
+
+    Order.destroy({where: {id : orderid}})
+};
+
+
+
+
+router.post('/webhook', bodyParser.raw({ type: 'application/json' }),async (req, res) => {
+    const payload = req.body;
+    const sig = req.headers['stripe-signature'];
+    let event;
+    try {
+        event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    } catch (err) {
+        return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+    // Handle the checkout.session.completed event
+
+    if (event.type === 'checkout.session.completed') {
+        const session = event.data.object;
+        fulfillOrder(session)
+    } else{
+        const session = event.data.object;
+        checkoutFailed(session)
+    }
+
+    res.status(200);
+});
 
 router.post('/checkout', ensureAuthenticated, async (req, res) => {
+    var cartproducts = await Cart.findOne({ where: { id: req.user.id }, include: { model: Product } })
+    var couponused = await Reward.findOne({ where: { voucher_code: cartproducts.discountcodeused } })
+    var delimiter = 100
+    if (couponused) {
+        delimiter = 100 - couponused.discount_amount
+    }
+    var cart = await Cart.findOne({where: {id: req.user.id}})
 
-    isValid = true
-    if (!Luhn.isValid(req.body.card_number.replaceAll(" ", ""))) {
-        res.send({ status: "error", icon: "error", title: "Oops..", text: "Creditcard Number Is Invalid!!" })
-    } else {
+    var order = await Order.create({
+        orderUUID: ("#" + uuidv4().slice(-12)).toUpperCase(),
+        orderOwnerID: req.user.id,
+        orderOwnerName: req.body.fname,
+        orderTotal: cart.cartTotal,
+        discountcodeused: cart.discountcodeused,
+        address: req.body.address,
+        unit_number: req.body.unit_number,
+        postal_code: req.body.postal_code,
+        email: req.body.email,
+        phone_number: req.body.phone,
+        userId: req.user.id
+    })
 
-
-        var order = await Order.create({
-            orderUUID: ("#" + uuidv4().slice(-12)).toUpperCase(),
-            orderOwnerID: req.user.id,
-            orderOwnerName: req.body.fname,
-            orderTotal: cart.cartTotal,
-            discountcodeused: cart.discountcodeused,
-            address: req.body.address,
-            unit_number: req.body.unit_number,
-            postal_code: req.body.postal_code,
-            email: req.body.email,
-            phone_number: req.body.phone,
-            userId: req.user.id
+    try {
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ["card"],
+            mode: "payment",
+            shipping_options: [
+                {
+                    shipping_rate_data: {
+                        type: 'fixed_amount',
+                        fixed_amount: {
+                            amount: 0,
+                            currency: 'sgd',
+                        },
+                        display_name: 'Free shipping',
+                        delivery_estimate: {
+                            minimum: {
+                                unit: 'business_day',
+                                value: 7,
+                            },
+                            maximum: {
+                                unit: 'business_day',
+                                value: 9,
+                            },
+                        }
+                    }
+                },
+                {
+                    shipping_rate_data: {
+                        type: 'fixed_amount',
+                        fixed_amount: {
+                            amount: 1000,
+                            currency: 'sgd',
+                        },
+                        display_name: 'Express Shipping',
+                        delivery_estimate: {
+                            minimum: {
+                                unit: 'business_day',
+                                value: 2,
+                            },
+                            maximum: {
+                                unit: 'business_day',
+                                value: 3,
+                            },
+                        }
+                    }
+                },
+            ],
+            line_items: cartproducts.products.map(item => {
+                return {
+                    price_data: {
+                        currency: "sgd",
+                        product_data: {
+                            name: item.name,
+                        },
+                        unit_amount: item.price * delimiter,
+                    },
+                    quantity: item.cartproduct.qtyPurchased,
+                }
+            }),
+            metadata: {userId : `${req.user.id}`, orderId : `${order.id}`},
+            success_url: `http://localhost:5000/`,
+            cancel_url: `http://localhost:5000/checkout`,
         })
-
-        var cartproducts = await Cart.findOne({ where: { id: req.user.id }, include: { model: Product } })
-        // console.log(JSON.stringify(cartproducts))
-        cartproducts.products.forEach(element => {
-            OrderItems.create({
-                orderId: order.id,
-                productSku: element.sku,
-                qtyPurchased: element.cartproduct.qtyPurchased,
-                product_name: element.name,
-                product_price: element.price,
-                seller_name: element.Owner,
-                seller_name: element.OwnerID,
-                orderStatus: "Processing",
-            })
-            // var sold = element.sold + element.cartproduct.qtyPurchased
-            // var sales = element.sales + (element.cartproduct.qtyPurchased*element.price)
-            // var qty = element.quantity - element.cartproduct.qtyPurchased
-            Product.update({ quantity: element.quantity - element.cartproduct.qtyPurchased, sold: element.sold + element.cartproduct.qtyPurchased, sales: element.sales + (element.cartproduct.qtyPurchased * element.price) }, { where: { sku: element.sku } })
-        });
-        var discountcode = await Reward.findOne({ where: { voucher_code: cartproducts.discountcodeused } })
-        User.update({ spools: req.user.spools + order.orderTotal }, { where: { id: req.user.id } })
-        if (discountcode) {
-            User.update({ spools: req.user.spools - discountcode.spools_needed }, { where: { id: req.user.id } })
-            Reward.update({ quantity: discountcode.quantity - 1 }, { where: { voucher_code: cartproducts.discountcodeused } })
-        }
-        await Cart.destroy({ where: { id: req.user.id } })
-        res.send({ status: "success ", icon: "success", title: "Order Completed" })
-        console.log("Order created")
+        res.json({ url: session.url })
+    } catch (e) {
+        console.log(e.message)
+        res.status(500).json({ error: e.message })
     }
 })
+// router.post('/checkout', ensureAuthenticated, async (req, res) => {
+
+//     isValid = true
+//     if (!Luhn.isValid(req.body.card_number.replaceAll(" ", ""))) {
+//         res.send({ status: "error",icon: "error",title: "Oops..", text: "Creditcard Number Is Invalid!!" })
+//     } else {
+
+
+//         var order = await Order.create({
+//             orderUUID: ("#" + uuidv4().slice(-12)).toUpperCase(),
+//             orderOwnerID: req.user.id,
+//             orderOwnerName: req.body.fname,
+//             orderTotal: cart.cartTotal,
+//             discountcodeused: cart.discountcodeused,
+//             address: req.body.address,
+//             unit_number: req.body.unit_number,
+//             postal_code: req.body.postal_code,
+//             email: req.body.email,
+//             phone_number: req.body.phone,
+//             userId: req.user.id
+//         })
+
+//         var cartproducts = await Cart.findOne({ where: { id: req.user.id }, include: { model: Product } })
+//         // console.log(JSON.stringify(cartproducts))
+//         cartproducts.products.forEach(element => {
+//             OrderItems.create({
+//                 orderId: order.id,
+//                 productSku: element.sku,
+//                 qtyPurchased: element.cartproduct.qtyPurchased,
+//                 product_name: element.name,
+//                 product_price: element.price,
+//                 seller_name: element.Owner,
+//                 seller_name: element.OwnerID,
+//                 orderStatus: "Processing",
+//             })
+//             // var sold = element.sold + element.cartproduct.qtyPurchased
+//             // var sales = element.sales + (element.cartproduct.qtyPurchased*element.price)
+//             // var qty = element.quantity - element.cartproduct.qtyPurchased
+//             Product.update({ quantity: element.quantity - element.cartproduct.qtyPurchased, sold: element.sold + element.cartproduct.qtyPurchased, sales: element.sales + (element.cartproduct.qtyPurchased * element.price) }, { where: { sku: element.sku } })
+//         });
+//         var discountcode = await Reward.findOne({ where: { voucher_code: cartproducts.discountcodeused } })
+//         User.update({ spools: req.user.spools + order.orderTotal }, { where: { id: req.user.id } })
+//         if (discountcode) {
+//             User.update({ spools: req.user.spools - discountcode.spools_needed }, { where: { id: req.user.id } })
+//             Reward.update({ quantity: discountcode.quantity - 1 }, { where: { voucher_code: cartproducts.discountcodeused } })
+//         }
+//         await Cart.destroy({ where: { id: req.user.id } })
+//         res.send({status: "success ",icon: "success",title: "Order Completed" })
+//         console.log("Order created")
+//     }
+// })
 
 router.post('/checkoutsave', ensureAuthenticated, async (req, res) => {
     var subtotal = req.body.subtotal
     var discountcode = req.body.discount_code
-    console.log(subtotal)
-    console.log(discountcode)
     Cart.update({ cartTotal: subtotal, discountcodeused: discountcode }, { where: { id: req.user.id } })
 })
 
@@ -439,8 +597,7 @@ router.get('/wishlist', ensureAuthenticated, async (req, res) => {
 router.get('/checkout', ensureAuthenticated, async (req, res) => {
     // cartproducts = (await Cart.findOne({where: {id:req.user.id}, include: Product, nested: true}))
     cart = (await Cart.findOne({ where: { id: req.user.id } }))
-    var carttotal = cart.cartTotal
-    res.render("multistep-form.handlebars", { carttotal })
+    res.render("checkout.handlebars", { cart })
 })
 
 router.get('/otherSupport', (req, res) => {

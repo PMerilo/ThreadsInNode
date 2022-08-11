@@ -23,7 +23,8 @@ const serviceController = require("./controllers/serviceController")
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 
-app.use(bodypassword.json())
+app.use('/webhook', express.raw({type: "*/*"}));
+app.use(express.json());
 app.use(bodypassword.urlencoded({ extended: false }))
 // To send forms and shit
 
