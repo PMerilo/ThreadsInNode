@@ -45,6 +45,33 @@ router.get('/', async (req,res) =>{
     res.render("index",{products})
 })
 
+router.get('/searchedItem=:string', async (req,res) =>{
+
+    Allproducts = (await Product.findAll())
+    products = []
+    for(let i = 0; i < Allproducts.length; i++){
+        if(Allproducts[i].dataValues.name.includes(req.params.string)){
+            products.push(Allproducts[i].dataValues)
+        }
+    }   
+    
+    res.render("index",{products})
+})
+
+router.get('/category=:string', async (req,res) =>{
+    let products = (await Product.findAll({where:{category:req.params.string}})).map((x)=> x.dataValues)
+    
+    
+    res.render("index",{products})
+})
+
+router.post('/search', async (req,res) =>{
+    
+    
+    let search = req.body.search;
+    res.redirect("/searchedItem="+search)
+})
+
 router.post('/addtoCart',ensureAuthenticated, async (req,res) =>{
     var sku = req.body.sku;
     console.log(sku)
