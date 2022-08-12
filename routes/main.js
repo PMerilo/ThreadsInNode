@@ -30,6 +30,7 @@ const console = require('console');
 const nodemailer = require("nodemailer");
 // const { where } = require('sequelize/types');
 const Mail = require("../config/MailConfig");
+const mail = require("../config/NewMailConfig");
 
 router.use((req, res, next) => {
     res.locals.path = req.baseUrl;
@@ -39,14 +40,16 @@ router.use((req, res, next) => {
 });
 
 router.get('/', async (req,res) =>{
-
+    let noProduct;
     products = (await Product.findAll()).map((x)=> x.dataValues)
-    
-    res.render("index",{products})
+    if(await Product.count() == 0){
+        noProduct = true;
+    }
+    res.render("index",{products, noProduct})
 })
 
 router.get('/searchedItem=:string', async (req,res) =>{
-
+    let noProduct;
     Allproducts = (await Product.findAll())
     products = []
     for(let i = 0; i < Allproducts.length; i++){
@@ -55,7 +58,11 @@ router.get('/searchedItem=:string', async (req,res) =>{
         }
     }   
     
-    res.render("index",{products})
+    if(await Product.count() == 0){
+        noProduct = true;
+    }
+    
+    res.render("index",{products,noProduct})
 })
 
 router.get('/category=:string', async (req,res) =>{
@@ -584,35 +591,41 @@ router.post('/newsLetter', ensureAuthenticated,async (req, res) => {
     console.log(email)
     link = "http://localhost:5000/newsLetter"
     
-    Mail.send(res, {
-        to: email,
-        subject: "Threads in Times Subcription to News Letter",
-        text: "Thank you for subscribing to our news letter",
-        template: `../views/MailTemplates/NewsLetter`,
-        context: { link },
-        html:`<div class="page">
-        <div class="container">
-          <div class="email_header">
+    // Mail.send(res, {
+    //     to: email,
+    //     subject: "Threads in Times Subcription to News Letter",
+    //     text: "Thank you for subscribing to our news letter",
+    //     template: `../views/MailTemplates/NewsLetter`,
+    //     context: { link },
+    //     html:`<div class="page">
+    //     <div class="container">
+    //       <div class="email_header">
             
-            <img class="logo" src="https://raw.githubusercontent.com/PMerilo/ThreadsInNode/master/public/images/logo.png" alt="Threads In Times" />
-            <h1>Email Confirmation</h1>
-          </div>
-          <div class="email_body">
-            <p><b>Hi ,</b></p>
-            <p>Thanks for subscribing to the <b>Threads In Times Newsletter!</b></p>
+    //         <img class="logo" src="https://raw.githubusercontent.com/PMerilo/ThreadsInNode/master/public/images/logo.png" alt="Threads In Times" />
+    //         <h1>Email Confirmation</h1>
+    //       </div>
+    //       <div class="email_body">
+    //         <p><b>Hi ,</b></p>
+    //         <p>Thanks for subscribing to the <b>Threads In Times Newsletter!</b></p>
             
-            </a>
-            <p>Thanks for supporting,<br/>
-              <b>The Threads in Times Team</b>
-            </p>
-          </div>
-          <div class="email_footer">© Threads in Times 2020</div>
-        </div>
-      </div>`,
+    //         </a>
+    //         <p>Thanks for supporting,<br/>
+    //           <b>The Threads in Times Team</b>
+    //         </p>
+    //       </div>
+    //       <div class="email_footer">© Threads in Times 2020</div>
+    //     </div>
+    //   </div>`,
         
     
     
-     });
+    //  });
+    mail.Send({
+        email_recipient: email,
+        subject: "Threads in Times Subcription to News Letter",
+        template_path: "../views/MailTemplates/NewsLetter.html",
+        context: {name: req.user.name },
+    });
      console.log("Mail sent")
      await NewsLetterLog.create({
         date: moment().format('L'),
@@ -629,35 +642,43 @@ router.post('/newsLetterUnSubscribe', ensureAuthenticated,async (req, res) => {
     console.log(email)
     link = "http://localhost:5000/newsLetter"
     
-    Mail.send(res, {
-        to: email,
-        subject: "Threads in Times Unsubcription to News Letter",
-        text: "Thank you for subscribing to our news letter",
-        template: `../views/MailTemplates/NewsLetter`,
-        context: { link },
-        html:`<div class="page">
-        <div class="container">
-          <div class="email_header">
+    // Mail.send(res, {
+    //     to: email,
+    //     subject: "Threads in Times Unsubcription to News Letter",
+    //     text: "Thank you for subscribing to our news letter",
+    //     template: `../views/MailTemplates/NewsLetter`,
+    //     context: { link },
+    //     html:`<div class="page">
+    //     <div class="container">
+    //       <div class="email_header">
             
-            <img class="logo" src="https://raw.githubusercontent.com/PMerilo/ThreadsInNode/master/public/images/logo.png" alt="Threads In Times" />
-            <h1>Email Confirmation</h1>
-          </div>
-          <div class="email_body">
-            <p><b>Hi ,</b></p>
-            <p>You have unsubscribed from the <b>Threads In Times Newsletter</b></p>
+    //         <img class="logo" src="https://raw.githubusercontent.com/PMerilo/ThreadsInNode/master/public/images/logo.png" alt="Threads In Times" />
+    //         <h1>Email Confirmation</h1>
+    //       </div>
+    //       <div class="email_body">
+    //         <p><b>Hi ,</b></p>
+    //         <p>You have unsubscribed from the <b>Threads In Times Newsletter</b></p>
             
-            </a>
-            <p>Be sure to check us out again sometime soon to get the latest threads out there, goodbye for now.<br/>
-              <b>The Threads in Times Team</b>
-            </p>
-          </div>
-          <div class="email_footer">© Threads in Times 2020</div>
-        </div>
-      </div>`,
+    //         </a>
+    //         <p>Be sure to check us out again sometime soon to get the latest threads out there, goodbye for now.<br/>
+    //           <b>The Threads in Times Team</b>
+    //         </p>
+    //       </div>
+    //       <div class="email_footer">© Threads in Times 2020</div>
+    //     </div>
+    //   </div>`,
         
     
     
-     });
+    //  });
+    mail.Send({
+        email_recipient: email,
+        subject: "Threads in Times UnSubcription to News Letter",
+        template_path: "../views/MailTemplates/NewsLetterUnSub.html",
+        context: {name: req.user.name },
+    });
+     
+     
      console.log("Mail sent")
     
     flashMessage(res, 'success', "You have unsubscribed to our newsletter! Come checkback sometime soon!");

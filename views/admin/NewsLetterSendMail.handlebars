@@ -148,28 +148,50 @@ textarea:focus {
 
 </style>
 
+<!-- include libraries(jQuery, bootstrap) -->
+    <script type="text/javascript" src="//code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" />
+    <script type="text/javascript" src="cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- include summernote css/js -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+
+
 <div class="container card message" style="padding:100px">
   <h1 class="message-title" >Send A Message</h1>
 
   <form action="/admin/NewsLetterSendMail" method="post">
-
+  
     <label for="subject" class="subject">Subject</label>
     <input type="text" id = "subject" name="subject" maxlength="45">
 
+    <br>
     <label for="message" class="message">Message</label>
-    <textarea name="message" id = "message" cols="30" rows="7" required maxlength="500"></textarea>
+    <textarea name="message" id = "summernote" cols="30" rows="7" required maxlength="500"></textarea>
+    {{!-- <script>
+      $(document).ready(function() {
+  $('#summernote').summernote();
+});
+    </script> --}}
 
-    <div class="custom-file mb-2">
+    
+    
+    
+
+    <div id=""></div>
+    <br>
+    <div class="custom-file mb-2" >
             
           <input type="file" class="custom-file-input" id="posterUpload" name="posterUpload"
           accept="image/png,image/jpeg,image/jpg,image/gif">
           <label class="custom-file-label" for="customFile">Choose File</label>
 					
-					<div class="text-danger small mb-2" id="posterErr" style="display:none"></div>
+					<div class="text-danger small mb-2" id="posterErr" style="display:none; " ></div>
           
-					<img id="poster" src="/images/no-image.jpg" alt="Poster" class="border img-thumbnail img-fluid">
+					<img id="poster" src="/images/no-image.jpg" alt="Poster" class="border img-thumbnail img-fluid" style="margin:auto">
 					{{!—- Hidden field to submit URL of poster to the server --}}
-					<input id="posterURL" type="hidden" name="posterURL">
+					<input id="posterURL" type="hidden" name="posterURL" >
           
       </div>
 

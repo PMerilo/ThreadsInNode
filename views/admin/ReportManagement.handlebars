@@ -6,9 +6,9 @@
                     <li class="nav-item" role="presentation">
                         <a class="nav-link " data-bs-toggle="tab" data-bs-target="#inventory" type="button" role="tab" aria-controls="inventory" aria-selected="">Cards</a>
                     </li>
-                    <li class="nav-item" role="presentation">
+                    {{!-- <li class="nav-item" role="presentation">
                         <a class="nav-link " data-bs-toggle="tab" data-bs-target="#sales" type="button" role="tab" aria-controls="sales" aria-selected="">Sales</a>
-                    </li>
+                    </li> --}}
                     <li class="nav-item" role="presentation">
                         <a class="nav-link " data-bs-toggle="tab" data-bs-target="#traffic" type="button" role="tab" aria-controls="traffic" aria-selected="">Traffic</a>
                     </li>
@@ -43,7 +43,7 @@
                                   <div class="form-group">
                                       <label for="reportType">Report Type</label>
                                       <select class="form-control" id="reportType" name="reportType">
-                                          <option value="Inventory">Inventory</option>
+                                          {{!-- <option value="Inventory">Inventory</option> --}}
                                           <option value="Sales">Sales</option>
                                           <option value="Traffic">Traffic</option>
                                       </select>
@@ -107,12 +107,12 @@
                                               
                                               
                                           </ul>
-                                          <label for="logs">Logs</label>
+                                          {{!-- <label for="logs">Logs</label>
                                           <ul>
                                               <li>
                                                   <input type="checkbox" id="TrafficLogs" name="TrafficLogs" value="TrafficLogs">
                                                   <label for="TrafficLogs">Traffic Logs</label>
-                                              </li>
+                                              </li> --}}
                                               {{!-- <li>
                                                   <input type="checkbox" id="subscriptionTrafficLogs" name="subscriptionTrafficLogs" value="subscriptionTrafficLogs">
                                                   <label for="charts">Newsletter Subscription Traffic Logs</label>
@@ -120,7 +120,7 @@
                                               
                                               
                                               
-                                          </ul>
+                                          {{!-- </ul> --}}
                                           </div>    
                                       </div>
                                      
@@ -201,9 +201,9 @@
                         </div>
                         
                     </div>
-                    <div id="sales" class="tab-pane fade " role="tabpanel" aria-labelledby="sales-tab">
+                    {{!-- <div id="sales" class="tab-pane fade " role="tabpanel" aria-labelledby="sales-tab">
                         
-                    </div>
+                    </div> --}}
                     
                     <div id="traffic" class="tab-pane fade" role="tabpanel" aria-labelledby="traffic-tab">
                     <div class="card" style="padding:10px">

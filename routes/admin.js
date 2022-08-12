@@ -29,7 +29,7 @@ const { NONE } = require('sequelize');
 const nodemailer = require("nodemailer");
 // const { where } = require('sequelize/types');
 const Mail = require("../config/MailConfig");
-
+const mail = require("../config/NewMailConfig");
 
 router.all('/*', ensureAdminAuthenticated, function (req, res, next) {
     req.app.locals.layout = 'admin'; // set your layout here
@@ -209,6 +209,7 @@ router.post('/FeedbackMangement/deleteFeedback', ensureAdminAuthenticated, async
     Feedback.destroy({ where: { id: feedbackID } })
     flashMessage(res, 'success', "Feedback Deleted Successfully! ID: " + feedbackID);
     res.redirect("/admin/FeedbackMangement")
+
 })
 
 router.get('/UserManagement', ensureAdminAuthenticated, async (req, res) => {
@@ -227,52 +228,65 @@ router.post("/NewsLetterSendMail", ensureAdminAuthenticated, async (req, res) =>
     let users = await User.findAll({where: {newsLetter: true}});
     console.log(message)
     console.log(posterURL)
-    let Path = path.join(__dirname,  posterURL)
-    console.log(Path)
+    // let Path = path.join(__dirname,  posterURL)
+    
     users.forEach(element => {
         let email = element.email;
         console.log(email)
-        Mail.send(res, {
-            to: email,
-            subject: subject,
-            
-            template: `../views/MailTemplates/NewsLetter`,
-            attachments: [
-                {
-                    filename: 'image.png',
-                    path: Path,
-                    cid: 'unique@nodemailer.com' //same cid value as in the html img src
-                }
-            ],
-            html:`
+        
+        // Mail.send(res, {
+        //     to: email,
+        //     subject: subject,
             
             
-            <div class="page">
-            <div class="container">
-              <div class="email_header">
+        //     html:`
+            
+            
+        //     <div class="page">
+        //     <div class="container">
+        //       <div class="email_header">
                 
-                <img class="logo" src="https://raw.githubusercontent.com/PMerilo/ThreadsInNode/master/public/images/logo.png" alt="Threads In Times" />
-                <h1>Email Confirmation</h1>
-              </div>
+        //         <img class="logo" src="https://raw.githubusercontent.com/PMerilo/ThreadsInNode/master/public/images/logo.png" alt="Threads In Times" />
+                
+        //       </div>
 
-              <img class="logo" src="unique@nodemailer.com" alt="Threads In Times" />
-              <div class="email_body">
-                <p><b>Hi , ${element.name}</b></p>
-                <p>${message}</p>
+              
+        //       <div class="email_body">
+        //         <p><b>Hi , ${element.name}</b></p>
+        //         ${message}
                 
-                </a>
-                <p>Thanks for supporting,<br/>
-                  <b>The Threads in Times Team</b>
-                </p>
-              </div>
-              <div class="email_footer">© Threads in Times 2020</div>
-              <b>You Received this email because you subscribed to the threads in times newsletter</b>
-            </div>
-          </div>`,
+        //         </a>
+        //         <p>Thanks for supporting,<br/>
+        //           <b>The Threads in Times Team</b>
+        //         </p>
+        //       </div>
+        //       <div class="email_footer">© Threads in Times 2020</div>
+        //       <b>You Received this email because you subscribed to the threads in times newsletter</b>
+        //     </div>
+        //   </div>`,
             
+        console.log("Test")
         
         
-         });
+        let Path = path.join(process.cwd() ,"/public",posterURL)
+        // let Path = path.join("../public",posterURL)
+        console.log(posterURL)
+        console.log(Path)
+        console.log("end of test")
+        console.log(posterURL.slice(posterURL.lastIndexOf("/") + 1))
+        //  });
+        mail.Send({
+            email_recipient: email,
+            subject: subject,
+            template_path: "../views/MailTemplates/NewsLetterMail.html",
+            context: {name: element.name, message: message,subject: subject},
+            filename: posterURL.slice(posterURL.lastIndexOf("/") + 1),
+            path: Path
+            
+        });
+         
+         
+         console.log("Mail sent")
     });
     
     flashMessage(res, 'success', "News Letter Sent Successfully!");
@@ -394,7 +408,7 @@ router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
         .moveDown()
 
         if(userRoles!=undefined){
-        pdfDoc
+        
         
         
 
@@ -411,7 +425,7 @@ router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
         pdfDoc
         .moveDown()
         .fontSize(10)
-        .text('Users Roles', { align: 'center' , width: 300, height: 200})
+        .text('Users Genders', { align: 'center' , width: 300, height: 200})
         .image(UserGendersPieChartPath, { align: 'center', width: 300, height: 200})
         .moveDown()
         }
@@ -419,50 +433,50 @@ router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
 
     
     // Traffic Logs New Page
-    if(TrafficLogs!=undefined){
+    // if(TrafficLogs!=undefined){
     
    
-    trafficlog = await trafficLogs.findAll()
-    let traffic = []
+    // trafficlog = await trafficLogs.findAll()
+    // let traffic = []
 
-    SubscribersLog = await newsLetterTrafficLogs.findAll()
-    let Subscribers = []
+    // SubscribersLog = await newsLetterTrafficLogs.findAll()
+    // let Subscribers = []
     
-    for(let i = 0; i < await trafficLogs.count(); i++){
+    // for(let i = 0; i < await trafficLogs.count(); i++){
         
         
-        traffic.push(trafficlog[i])
+    //     traffic.push(trafficlog[i])
             
         
-    }
-    for(let i = 0; i < await newsLetterTrafficLogs.count(); i++){
+    // }
+    // for(let i = 0; i < await newsLetterTrafficLogs.count(); i++){
         
-        Subscribers.push(SubscribersLog[i])
+    //     Subscribers.push(SubscribersLog[i])
 
         
-    }
-    pdfDoc.addPage()
+    // }
+    // pdfDoc.addPage()
     
-    pdfDoc.image(WavePath, 0, 0, { align: 'center', valign: 'center', width:600})
+    // pdfDoc.image(WavePath, 0, 0, { align: 'center', valign: 'center', width:600})
     
-    pdfDoc
-    .fontSize(10)
-    .text('Traffic Logs',150,150, { align: 'left' })
-    .moveDown()
-    .text("#        Description                         Joined At")
+    // pdfDoc
+    // .fontSize(10)
+    // .text('Traffic Logs',150,150, { align: 'left' })
+    // .moveDown()
+    // .text("#        Description                         Joined At")
 
-    for(let i = 0; i < traffic.length; i++){
+    // for(let i = 0; i < traffic.length; i++){
         
-        if(i+1>=10){
-                pdfDoc
-            .fontSize(10)
-            .text(`${i+1}       ${traffic[i].description}                  `.slice(0,45)+`${traffic[i].createdAt.toString().slice(0,10)}`, { align: 'left' })
-        }else{
-            pdfDoc
-            .fontSize(10)
-            .text(`${i+1}        ${traffic[i].description}                  `.slice(0,45)+`${traffic[i].createdAt.toString().slice(0,10)}`, { align: 'left' })
-        }
-    }
+    //     if(i+1>=10){
+    //             pdfDoc
+    //         .fontSize(10)
+    //         .text(`${i+1}       ${traffic[i].description}                  `.slice(0,45)+`${traffic[i].createdAt.toString().slice(0,10)}`, { align: 'left' })
+    //     }else{
+    //         pdfDoc
+    //         .fontSize(10)
+    //         .text(`${i+1}        ${traffic[i].description}                  `.slice(0,45)+`${traffic[i].createdAt.toString().slice(0,10)}`, { align: 'left' })
+    //     }
+    // }
 
     // pdfDoc
     // .moveDown()
@@ -485,7 +499,7 @@ router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
     // }
 
     
-}
+// }
 
     pdfDoc.end();
     

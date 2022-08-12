@@ -285,7 +285,12 @@ router.get('/UserGenders', async (req, res) => {
   const myPieChart = new ChartJsImage();
   myPieChart.setConfig({
     type: 'doughnut',
-    data: { labels: ["Males","Females"], datasets: [{ label: 'User Roles Types', data: [Males,Females]}] },
+    
+    data: { 
+      labels: ["Males","Females"], datasets: [{ label: 'User Roles Types', data: [Males,Females],backgroundColor: ['#4e73df', '#1cc88a' ],color:["yellow","black"]}] 
+    },
+    
+    
   });
   
   myPieChart.toFile('./public/images/ChartImages/UsersGendersPieChart.png');
