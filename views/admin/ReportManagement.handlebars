@@ -40,19 +40,25 @@
                                       <label for="reportName">Report Name</label>
                                       <input type="text" class="form-control" id="reportName" name="reportName" placeholder="Report Name" required>
                                   </div>
-                                  <div class="form-group">
-                                      <label for="reportType">Report Type</label>
-                                      <select class="form-control" id="reportType" name="reportType">
-                                          {{!-- <option value="Inventory">Inventory</option> --}}
-                                          <option value="Sales">Sales</option>
-                                          <option value="Traffic">Traffic</option>
-                                      </select>
-                                  </div>
+                                  
                                   <div class="form-group">
                                       <label for="additionalTags">Additional Tags</label>
                                       <input type="text" class="form-control" id="additionalTags" name="additionalTags" placeholder="Additional Tags (e.g Management, Revenue)">
                                   </div>
-                                  
+                                    <div class="form-group">
+                                        <label for="reportDescription">Report Description</label>
+                                        <textarea class="form-control" id="reportDescription" name="reportDescription" rows="3" placeholder="Report Description" required></textarea>
+                                  </div>
+                                  <div class="form-group">
+                                    {{!-- start date --}}
+                                    <label for="startDate">Start Date</label>
+                                    <input type="date" class="form-control" id="startDate" name="startDate" placeholder="Start Date" required>
+                                  </div>
+                                    <div class="form-group">
+                                        {{!-- end date --}}
+                                        <label for="endDate">End Date</label>
+                                        <input type="date" class="form-control" id="endDate" name="endDate" placeholder="End Date" required>
+                                    </div>
                                   
                               <div class="modal-body">
                                   <div class="row">

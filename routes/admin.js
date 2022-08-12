@@ -33,8 +33,19 @@ const mail = require("../config/NewMailConfig");
 
 router.all('/*', ensureAdminAuthenticated, function (req, res, next) {
     req.app.locals.layout = 'admin'; // set your layout here
+    // check for 404 error
+
+
     next(); // pass control to the next handler
+
 });
+
+// router.get('*', (req, res) => {
+//     // check for 404 error
+//     if
+//     res.sendFile(__dirname + '../views/404errorpage.handlebars');
+// });
+
 
 router.get('/', (req, res) => {
     res.render("admin/adminBase")
@@ -305,7 +316,7 @@ router.get("/ReportsManagement", ensureAdminAuthenticated, async (req, res) => {
 
 router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
     
-    let { reportName,reportType,additionalTags,userTraffic,subscriptionTraffic,TrafficLogs,userRoles,userGenders} = req.body;
+    let { reportName,reportDescription,additionalTags,userTraffic,subscriptionTraffic,TrafficLogs,userRoles,userGenders,startDate,endDate} = req.body;
     var pdfDoc = new PDFDocument ({ bufferPages: true, font: 'Courier' });
     let Path = path.join(__dirname, '../public/images/logo.png')
     let WavePath = path.join(__dirname, '../public/images/Letterhead.png')
@@ -352,10 +363,10 @@ router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
     .text('Threads In Times', { align: 'left' })
 
     
-    // Report Type
+    // Report Description
     pdfDoc
     .fontSize(15)
-    .text(`${reportType} Report`, 150, 150);
+    .text(`${reportDescription}`, 150, 150);
 
     // Date
     pdfDoc
@@ -366,7 +377,8 @@ router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
     pdfDoc
         .fillColor('red')
         .fontSize(13)
-        .text(`Additional Tags: ${additionalTags}`, 150, 200);
+        .text(`Additional Tags: ${additionalTags}`, 150, 200)
+        .text(`Time Span from ${startDate} to ${endDate}`, 150, 220);
 
     
     // Chart Image
@@ -506,9 +518,11 @@ router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
 
     await Report.create({
         reportName: reportName,
-        reportType: reportType,
+        description: reportDescription,
         url: "None",
         tags: additionalTags,
+        startDate: startDate,
+        endDate: endDate,
         date: moment().format('L'),
         
     });

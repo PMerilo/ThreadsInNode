@@ -29,9 +29,10 @@
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Report Name</th>
-                            <th scope="col">Report Type</th>
-                            <th scope="col">Date</th>
-                            
+                            <th scope="col">Report Description</th>
+                            <th scope="col">Date Created</th>
+                            <th scope="col">Start Date</th>
+                            <th scope="col">End Date</th>
                             <th scope="col">Tags</th>
                             <th width="100px"></th>
                         </tr>
@@ -41,9 +42,10 @@
                         <tr>
                             <th scope="row">{{this.id}}</th>
                             <td><a href="{{this.url}}"> {{this.reportName}}</a></td>
-                            <td>{{this.reportType}}</td>
+                            <td>{{this.description}}</td>
                             <td>{{this.date}}</td>
-                            
+                            <td>{{this.startDate}}</td>
+                            <td>{{this.endDate}}</td>
                             <td>{{this.tags}}</td>
                             <td class="d-flex justify-content-end">
                                 <a class="btn btn-primary mx-2" href=""><i class="bi bi-download"></i></a>
