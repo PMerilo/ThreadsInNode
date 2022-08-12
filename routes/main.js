@@ -545,6 +545,14 @@ router.post('/tickets', ensureAuthenticated, async function (req, res) {
     }
 })
 
+router.get('/livechat', async (req, res) => {
+    res.redirect(`/livechat/${req.user.id}`)
+})
+
+router.get('/livechat/:id', async (req, res) => {
+    res.render("support/livechat")
+})
+
 router.get('/CommunityFAQPage', async (req, res) => {
     comments = (await FAQ.findAll()).map((x) => x.dataValues)
     res.render("qnaPages/communityFAQpage.handlebars", { comments })

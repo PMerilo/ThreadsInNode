@@ -38,7 +38,7 @@ const messagingHandler = require("./sockets/messaging")
 
 const onConnection = (socket) => {
 	socket.userid = socket.handshake.auth.id
-	socket.join(socket.userid)
+	socket.join(`User ${socket.userid}`)
 	console.log(`User ${socket.handshake.auth.id} has connected with socket id of ${socket.id}`)
 	// io.of("/").adapter.on("join-room", (room, id) => {
 	// 	console.log(`socket ${id} has joined room ${room}`);

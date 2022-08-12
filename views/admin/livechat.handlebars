@@ -1,0 +1,93 @@
+<div class="d-flex justify-content-center" style="height: calc(100vh - 102px); ">
+    <div class="shadow-sm d-flex flex-column rounded border col-10" style="height:100%;">
+        <div class="border-bottom">
+            <h2 class="cust-name text-center p-2 m-0"></h2>
+        </div>
+        <div class="p-3 overflow-auto" style="height:100%;">
+            <div class="flex-grow-1 overflow-auto" id="chat-panel">
+
+            </div>
+        </div>
+        <div class="border-top">
+            <div class="message-box">
+                <div id="chat-box">
+                    <form id="chat-form" class="d-flex" data-bs-name="{{user.name}}">
+                        <input id="msg" class="flex-grow-1 form-control" type="text" placeholder="Enter Message"
+                            required autocomplete="off" />
+                        <button type="submit" class="btn">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script defer>
+    $(document).ready(function () {
+
+        var d = $('#chat-panel');
+        var name = $('#chat-form').attr('data-bs-name');
+        var targetId = window.location.href[window.location.href.length - 1]
+
+        socket.emit('livechat:enter', { target: targetId, name: name, id: id })
+
+        socket.on('livechat:acknowledgement', ({ x, username }) => {
+            if (!x) {
+                window.location.replace('/admin')
+            } else {
+                socket.emit('rooms', [`User ${targetId}`])
+                $('.cust-name').text(username)
+            }
+        })
+
+
+        function msgFormater(owner, content) {
+            var options = new Array()
+            if (owner) {
+                options.push('right')
+                options.push('justify-content-end')
+            } else {
+                options.push('left')
+                options.push('')
+            }
+            const msgFormat = [
+                `<div class="d-flex ${options.pop()}">`,
+                `<div class="chat-bubble chat-bubble--${options.pop()} text-break" style="max-width: 50%;">`,
+                `${content}`,
+                `</div>`,
+                `</div>`,
+            ]
+
+            return msgFormat.join('')
+        }
+
+        socket.on('livechat:receive', (data) => {
+            console.log("msg recieved", data.id, id)
+            var owner = data.owner == id
+            $('#chat-panel').append(msgFormater(owner, data.msg))
+            d.scrollTop(d.prop("scrollHeight"));
+        })
+
+
+        $('#chat-form').on('submit', function (e) {
+            e.preventDefault();
+            // Get message text
+            let msg = e.target.elements.msg.value;
+
+            msg = msg.trim();
+
+            if (!msg) {
+                return false;
+            }
+
+
+            // Emit message to server
+            socket.emit('livechat:sent', { id: targetId, msg, owner: id });
+
+
+            // Clear input
+            e.target.elements.msg.value = '';
+            e.target.elements.msg.focus();
+
+        });
+    })
+</script>

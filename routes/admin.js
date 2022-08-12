@@ -449,5 +449,9 @@ router.post('/tailor/register', async (req, res) => {
 
 });
 
+router.get('/livechat/:id', async (req, res) => {
+    res.render("admin/livechat")
+});
+
 module.exports = router;
 
