@@ -365,7 +365,7 @@ router.post('/forgetpwbackupcodes', async (req, res) => {
 
   }
   console.log(backupcode)
-  flashMessage(res, 'error', 'Incorrect backup code!');
+  flashMessage(res, 'error', 'Invalid backup code!');
   return res.redirect('/forgetpwbackupcodes')
 
   // if(backupcode){
