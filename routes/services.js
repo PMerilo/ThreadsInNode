@@ -10,14 +10,14 @@ const flashMessage = require('../views/helpers/messenger');
 const moment = require('moment');
 const Tailor = require('../models/Tailor');
 const { Op } = require('sequelize');
+const Chat = require('../models/Chat');
+const ChatUser = require('../models/ChatUser');
 
 router.get('/', (req, res) => {
     res.render('services/index')
 });
 
-router.use(ensureAuthenticated, (req, res, next) => {
-    next()
-});
+router.use(ensureAuthenticated);
 
 
 router.get('/request', async (req, res) => {
@@ -45,6 +45,8 @@ router.post('/request', async (req, res) => {
             flashMessage(res, 'error', 'Failed to Add to Create Request')
             res.redirect('/services/request')
         });
+
+
 });
 
 router.post('/request/edit', async (req, res) => {
@@ -111,13 +113,38 @@ router.post('/book/:reqId', async (req, res, next) => {
                             confirmed: false
                         }
                     })
-                    await Request.update({ tailorId: tailorID }, { where: { id: reqId, tailorID: null } })
+                    let tailor = await User.findByPk(tailorID)
+                    let chatId;
+                    await Chat.findAll({ include: ChatUser })
+                        .then(async (chats) => {
+                            let found = false
+                            console.log(chats)
+                            if (chats) {
+                                chats.forEach(chat => {
+                                    // console.log((chat.chatusers[0].userId == tailor.id || chat.chatusers[0].userId == user.id) && (chat.chatusers[1].userId == tailor.id || chat.chatusers[1].userId == user.id))
+                                    if ((chat.chatusers[0].userId == tailor.id || chat.chatusers[0].userId == req.user.id) && (chat.chatusers[1].userId == tailor.id || chat.chatusers[1].userId == req.user.id)) {
+                                        found = true
+                                        chatId = chat.id
+                                    }
+                                });
+                            }
+                            if (!found) {
+                                await Chat.create({})
+                                    .then((async (chat) => {
+                                        await ChatUser.create({userId: tailor.id, chatId: chat.id, type: "Request"})
+                                        await ChatUser.create({userId: req.user.id, chatId: chat.id, type: "Request"})
+                                        chatId = chat.id
+                                    }))
+                            }
+                        })
+                    await Request.update({ tailorId: tailorID, chatId: chatId }, { where: { id: reqId, tailorID: null } })
                     flashMessage(res, 'success', 'Appointment booking sucessful!')
                     res.redirect('/user/requests');
                 } else {
                     flashMessage(res, 'error', 'Appointment time is booked')
                     res.redirect(`/services/book/${reqId}`)
                 }
+
             })
             .catch(err => {
                 console.log(err);
@@ -185,6 +212,8 @@ router.post('/request/tailorChange', async (req, res) => {
 router.delete('/appointment/cancel', serviceController.appointmentDelete);
 router.delete('/tailorChange/cancel', serviceController.tailorChangeDelete);
 router.delete('/request/cancel', serviceController.requestDelete);
+
+
 
 
 

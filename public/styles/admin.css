@@ -203,6 +203,7 @@ body.dark .sidebars li a:hover .text{
     flex-direction: column;
     justify-content: space-between;
     overflow-y: scroll;
+    overflow-x: hidden;
 }
 .menu-bar::-webkit-scrollbar{
     display: none;
@@ -284,7 +285,7 @@ body.dark .switch::before{
     top: 70px;
     padding-left: 30px;
     left: 250px;
-    height: 100vh;
+    height: calc(100vh - 78px);
     width: calc(100% - 250px);
     background-color: var(--body-color);
     transition: var(--tran-05);
@@ -327,7 +328,7 @@ body.dark .switch::before{
 
 .sidebars.close ~ .mt-2.home{
     left: 78px;
-    height: 100vh;
+    height: calc(100vh - 78px);
     width: calc(100% - 78px);
 }
 .sidebars.close ~ .home.shadow-sm{

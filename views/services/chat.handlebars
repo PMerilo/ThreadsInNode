@@ -1,0 +1,212 @@
+<div class="shadow-sm container-fluid rounded border col-10 d-flex flex-column" style="height: calc(100vh - 102px); ">
+    {{!-- <div class="row gx-5 border-bottom">
+        <div class="col-4 border-end d-flex align-items-center justify-content-center">
+            <div class="fs-4">
+                Search
+            </div>
+        </div>
+        <div class="col-8">
+            <div class="d-flex px-4 py-2 align-items-center">
+                <div class="p-2">
+                    <img class="rounded-circle img-fluid" width="40" src="/images/avatars/avatar1.jpg" alt="">
+                </div>
+                <div class="px-5 fs-4">
+                    Name
+                </div>
+                <div class="ms-auto">
+                    <button class="btn">
+                        <i class="fs-4 bi bi-info-circle"></i>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row gx-5">
+        <div class="col-4 border-end py-3">
+            <div class="hstack gap-4">
+                <img class="rounded-circle img-fluid" width="60" src="/images/avatars/avatar1.jpg" alt="">
+                <div class="d-flex flex-column justify-content-center">
+                    <span>Name</span>
+                    <span>Last MEssage</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-8 px-5">
+
+        </div>
+    </div> --}}
+    <div class="row">
+        <div class="col-xxl-3 col-sm-4 p-0 align-self-stretch">
+            <div class="border-bottom border-end h-100">
+                <div class="d-flex px-4 py-2 justify-content-center align-items-center h-100">
+                    <div class="px-5 fs-5">
+                        Messages
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xxl-9 col-sm-8 p-0">
+            <div class="border-bottom">
+                <div class="d-flex px-4 py-2 align-items-center">
+                    <div class="p-2">
+                        <img class="rounded-circle img-fluid" width="40" src="/images/avatars/avatar1.jpg" alt="">
+                    </div>
+                    <div class="px-5 fs-4 chat-name">
+                        {{currentchat.users.[0].name}}
+                    </div>
+                    <div class="ms-auto">
+                        <button class="btn" id="info">
+                            <i class="fs-4 bi bi-info-circle"></i>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row flex-grow-1 overflow-auto">
+        <div class="col-xxl-3 col-sm-4 p-0 border-end vstack overflow-auto" style="height:100%;">
+            {{#each chats}}
+            <a class="chat text-black" href='/admin/requests/chat/{{id}}'>
+                <div class="hstack gap-4 p-3 position-relative">
+                    <img class="rounded-circle img-fluid" width="60" src="/images/avatars/avatar1.jpg" alt="">
+                    <div class="d-flex flex-column justify-content-center flex-grow-1">
+                        <span>{{users.[0].name}}</span>
+                        <span class="text-truncate" style="max-width: 50%;">{{#if msgs.[0].content}}{{msgs.[0].content}}{{else}}&nbsp;{{/if}}</span>
+                    </div>
+                </div>
+            </a>
+            {{/each}}
+        </div>
+        <div class="col-xxl-9 col-sm-8 p-0 vstack" style="height:100%;">
+            <div class="flex-grow-1 overflow-auto" id="chat-panel">
+                {{#each currentchat.msgs}}
+                {{#equals userId ../user.id}}
+                <div class="d-flex justify-content-end">
+                    <div class="chat-bubble chat-bubble--right text-break" style="max-width: 50%;">
+                        {{content}}
+                    </div>
+                </div>
+                {{else}}
+                <div class="d-flex">
+                    <div class="chat-bubble chat-bubble--left text-break" style="max-width: 50%;">
+                        {{content}}
+                    </div>
+                </div>
+                {{/equals}}
+                {{/each}}
+
+            </div>
+            <div class="message-box border-top">
+                <div id="chat-box" style="display: none;">
+                    <form id="chat-form" class="d-flex" >
+                        <input id="msg" class="flex-grow-1 form-control" type="text" placeholder="Enter Message" required
+                            autocomplete="off" />
+                        <button type="submit" class="btn">Send</button>
+                    </form>
+                </div>
+                <div id="chat-closed" class="" style="display: none;">
+                    <p class="p-3 m-0 text-center">This chat has closed</p>
+                </div>
+            
+            </div>
+        </div>
+    </div>
+</div>
+<script defer>
+    $(document).ready(function () {
+        let prevHref = [];
+        let chatId;
+
+        window.onpopstate = function (e) {
+            console.log(e)
+        }
+
+        
+
+        $('.chat').click(function (e) {
+            e.preventDefault()
+            window.history.pushState('page2', '', this.href);
+            var id = this.href.split('/').pop()
+            chatId = id
+            console.log(id)
+            $('#chat-panel').empty()
+            $.get(`/msg?id=${id}`, (data) => {
+                data.msgs.forEach(msg => {
+                    var owner = msg.userId == {{user.id}}
+                    $('#chat-panel').append( msgFormater(owner, msg.content))
+
+                })
+                $('.chat-name').text(data.users[0].name)
+                if (data.open) {
+                    $('#chat-box').show()
+                    $('#chat-closed').hide()
+
+                } else {
+                    $('#chat-box').hide()
+                    $('#chat-closed').show()
+                    
+                }
+                var d = $('#chat-panel');
+                d.scrollTop(d.prop("scrollHeight"));
+            })            
+        })
+
+        var $chatForm = $('#chat-form')
+            $chatForm.on('submit', function (e) {
+                e.preventDefault();
+
+                // Get message text
+                let msg = e.target.elements.msg.value;
+
+                msg = msg.trim();
+
+                if (!msg) {
+                    return false;
+                }
+
+                msg = { content: msg, chatId: chatId , userId: id }
+                // Emit message to server
+                socket.emit('message:sent', {msg});
+
+                // Clear input
+                e.target.elements.msg.value = '';
+                e.target.elements.msg.focus();
+                $.post("/msg", msg)
+            });
+
+        
+
+        function msgFormater(owner, content) {
+            var options = new Array()
+            if (owner) {
+                options.push('right')
+                options.push('justify-content-end')
+            } else {
+                options.push('left')
+                options.push('')
+            }
+            const msgFormat = [
+                `<div class="d-flex ${options.pop()}">`,
+                `<div class="chat-bubble chat-bubble--${options.pop()} text-break" style="max-width: 50%;">`,
+                `${content}`,
+                `</div>`,
+                `</div>`,
+            ]
+
+            return msgFormat.join('')
+        }
+
+        socket.on('message:receive', (data) => {
+            console.log("msg recieved", data)
+            var owner = data.userId == id
+            $('#chat-panel').append( msgFormater(owner, data.content))
+            var d = $('#chat-panel');
+            d.scrollTop(d.prop("scrollHeight"));
+        })
+
+        
+        $(`[href="/admin/requests/chat/${window.location.href.split('/').pop()}"`).click()
+    })
+</script>

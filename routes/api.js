@@ -9,9 +9,11 @@ const Reward = require('../models/Reward')
 const Request = require('../models/Request');
 const Service = require('../models/Service');
 const Appointment = require('../models/Appointment');
-const { Op } = require('sequelize');
+const { Op, where } = require('sequelize');
 const Tailor = require('../models/Tailor');
 const Notification = require('../models/Notification');
+const Chat = require('../models/Chat');
+const ChatUser = require('../models/ChatUser');
 
 router.get('/requests', async (req, res) => {
     // console.log(
@@ -81,6 +83,12 @@ router.get("/getroles/:id", async (req, res) => {
     if (user.getTailor()) {
         x.push("tailors")
     }
+    let chats = await ChatUser.findAll({where: {userId: req.user.id}})
+    if (chats) {
+        chats.forEach(chat => {
+            x.push(`Chat ${chat.chatId}`)
+        })
+    }
     return res.json(x)
 })
 
@@ -93,5 +101,24 @@ router.get("/getnotifications", async (req, res) => {
     }
     // console.log(notifications)
     return res.json(notifications)
+})
+
+router.get("/create", async (req, res) => {
+    // let chat = await Chat.create({})
+    let tailor = await User.findByPk(1)
+    let user = await User.findByPk(2)
+
+    // chat.setUsers([tailor, user])
+
+    chats = await Chat.findAll({ include: ChatUser })
+    let chat1 = {};
+    chats.forEach(chat => {
+        console.log((chat.chatusers[0].userId == tailor.id || chat.chatusers[0].userId ==  user.id) && (chat.chatusers[1].userId == tailor.id || chat.chatusers[1].userId ==  user.id))
+        if ((chat.chatusers[0].userId == tailor.id || chat.chatusers[0].userId ==  user.id) && (chat.chatusers[1].userId == tailor.id || chat.chatusers[1].userId ==  user.id)) {
+            chat1 = {chat}
+        }
+    });
+    
+    return res.json({ chat1 })
 })
 module.exports = router;

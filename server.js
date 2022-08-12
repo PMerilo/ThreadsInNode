@@ -12,6 +12,7 @@ const seller = require("./routes/seller")
 const services = require("./routes/services")
 const datapipeline = require("./routes/datapipeline")
 const api = require("./routes/api")
+const msg = require("./routes/messaging")
 const bodypassword = require('body-parser')
 const GoogleAuth = require("./config/passportGoogleAuth")
 const DBConnection = require('./config/DBConnection');
@@ -33,12 +34,18 @@ const io = new Server(httpServer, { cors: { origin: "*" } });
 
 const testHandler = require("./sockets/test")
 const bookingHandler = require("./sockets/booking")
+const messagingHandler = require("./sockets/messaging")
 
 const onConnection = (socket) => {
 	socket.userid = socket.handshake.auth.id
 	socket.join(socket.userid)
 	console.log(`User ${socket.handshake.auth.id} has connected with socket id of ${socket.id}`)
+	// io.of("/").adapter.on("join-room", (room, id) => {
+	// 	console.log(`socket ${id} has joined room ${room}`);
+	// 	console.log(socket.rooms)
+	// });
 	bookingHandler(io, socket)
+	messagingHandler(io, socket)
 	testHandler(io, socket)
 	// console.log(socket.rooms)
 }
@@ -213,6 +220,7 @@ app.use("/admin", admin)
 app.use("/services", services)
 app.use("/seller", seller)
 app.use("/datapipeline", datapipeline)
+app.use("/msg", msg)
 app.use("/api", api)
 
 

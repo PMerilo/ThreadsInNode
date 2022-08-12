@@ -103,6 +103,10 @@ You have no requests
       {{#with (lookup ../statuses [statusCode])~}}{{this}}{{/with}}
     </div>
     <div class="my-auto">
+      <button class="btn btn-success chat" style="width: 80px;" data-bs-toggle="modal" data-bs-target="#chatModal"
+        data-bs-chatId="{{chatId}}">
+        <i class="bi bi-envelope"></i>
+      </button>
       <button class="btn btn-primary edit mx-2" style="width: 80px;" data-bs-toggle="modal" data-bs-target="#editModal"
         data-bs-id="{{id}}">
         <i class="bi bi-pencil-square"></i>
@@ -286,8 +290,106 @@ You have no requests
     </div>
   </div>
 </div>
+<div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModal" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title chat-name" id="chatModalLabel">Name</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body container overflow-hidden">
+        <div class="flex-grow-1 overflow-auto" id="chat-panel" style="height: 50vh ;">
+
+        </div>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <form id="chat-form" class="d-flex flex-grow-1">
+          <input id="msg" class="flex-grow-1 form-control" type="text" placeholder="Enter Message" required
+            autocomplete="off" />
+          <button type="submit" class="btn">Send</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 {{!--
 <script src="/scripts/services/datapicker.js"></script> --}}
+<script defer>
+  $(document).ready(function() {
+    var d = $('#chat-panel');
+    function msgFormater(owner, content) {
+        var options = new Array()
+        if (owner) {
+            options.push('right')
+            options.push('justify-content-end')
+        } else {
+            options.push('left')
+            options.push('')
+        }
+        const msgFormat = [
+            `<div class="d-flex ${options.pop()}">`,
+            `<div class="chat-bubble chat-bubble--${options.pop()} text-break" style="max-width: 50%;">`,
+            `${content}`,
+            `</div>`,
+            `</div>`,
+        ]
+
+        return msgFormat.join('')
+    }
+    $('.chat').click(function (e) {
+      
+      // chatId = id
+      // console.log(id)
+      var chatId = $(this).attr('data-bs-chatId')
+      $('#msg').next().attr('data-bs-chatId', chatId)
+      
+      console.log(chatId)
+      $('#chat-panel').empty()
+      $.get(`/msg?id=${chatId}`, (data) => {
+        data.msgs.forEach(msg => {
+          var owner = msg.userId == {{user.id}}
+          $('#chat-panel').append(msgFormater(owner, msg.content))
+
+        })
+        $('.chat-name').text(data.users[0].name)        
+        d.scrollTop(d.prop("scrollHeight"));
+      })
+      
+    })
+
+    socket.on('message:receive', (data) => {
+        console.log("msg recieved")
+        var owner = data.userId == id
+        $('#chat-panel').append( msgFormater(owner, data.content))
+        d.scrollTop(d.prop("scrollHeight"));
+    })
+
+    $('#chat-form').on('submit', function (e) {
+      e.preventDefault();
+      var chatId = $('#msg').next().attr('data-bs-chatId')
+      // Get message text
+      let msg = e.target.elements.msg.value;
+
+      msg = msg.trim();
+
+      if (!msg) {
+          return false;
+      }
+
+      msg = { content: msg, chatId: chatId , userId: id }
+      // Emit message to server
+      socket.emit('message:sent', {msg});
+
+      // Clear input
+      e.target.elements.msg.value = '';
+      e.target.elements.msg.focus();
+      console.log(chatId)
+      $.post("/msg", msg)
+      
+    });
+    console.log(d)
+  })
+</script>
 <script src="/scripts/services/tableFormatters.js"></script>
 <script src="/scripts/services/tableEvents.js"></script>
 <script src="/scripts/services/main.js"></script>

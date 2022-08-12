@@ -20,6 +20,9 @@ const OrderItem = require('../models/OrderItems');
 const OrderItems = require('../models/OrderItems');
 const Notification = require('../models/Notification');
 const UserNotification = require('../models/UserNotifications');
+const Chat = require('../models/Chat');
+const Msg = require('../models/Msg');
+const ChatUser = require('../models/ChatUser');
 
 // If drop is true, all existing tables are dropped and recreated
 const setUpDB = (drop) => {
@@ -65,6 +68,21 @@ const setUpDB = (drop) => {
 
             Order.belongsTo(User)
             User.hasMany(Order)
+
+            Chat.hasMany(Request, {onDelete: "CASCADE"})
+            Request.belongsTo(Chat, {onDelete: "CASCADE"})
+
+            Chat.belongsToMany(User, {through: ChatUser})
+            User.belongsToMany(Chat, {through: ChatUser})
+
+            Chat.hasMany(ChatUser)
+            ChatUser.belongsTo(Chat)
+            User.hasMany(ChatUser)
+            ChatUser.belongsTo(User)
+
+            Chat.hasMany(Msg, {onDelete: "CASCADE"})
+            Msg.belongsTo(Chat, {onDelete: "CASCADE"})
+            Msg.belongsTo(User, {onDelete: "CASCADE"})
 
             mySQLDB.sync({
                 alter: true,
