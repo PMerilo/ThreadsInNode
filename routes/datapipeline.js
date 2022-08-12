@@ -75,7 +75,8 @@ router.get('/NoOfUsersJoined', async (req, res) => {
     NoOfUsers_day.push(element["NoOfUsersJoined_sum"]);
     dates_day.push(element["Dates"].toString().slice(0,10));
   });
-  
+  console.log(dates_day)
+  console.log(NoOfUsers_day)
   const myChart = new ChartJsImage();
   myChart.setConfig({
     type: 'line',
@@ -287,7 +288,7 @@ router.get('/UserGenders', async (req, res) => {
     type: 'doughnut',
     
     data: { 
-      labels: ["Males","Females"], datasets: [{ label: 'User Roles Types', data: [Males,Females],backgroundColor: ['#4e73df', '#1cc88a' ],color:["yellow","black"]}] 
+      labels: ["Males","Females"], datasets: [{ label: 'User Gender Types', data: [Males,Females],backgroundColor: ["rgb(128, 128, 255)", "rgb(255, 26, 26)" ],color:["yellow","black"]}] 
     },
     
     

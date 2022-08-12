@@ -16,7 +16,7 @@ const ensureAdminAuthenticated = require("../views/helpers/adminAuth");
 const Request = require('../models/Request');
 const Tailor = require('../models/Tailor');
 const PDFDocument = require('pdfkit');
-
+const UsersJoinedLog = require("../models/Logs/JoinedUsersLogs")
 // const blobStream  = require('blob-stream');
 // const PDFDocument = require("pdfkit-table");
 const fs = require('fs');
@@ -24,6 +24,8 @@ const path = require('path');
 const moment = require('moment');
 const { NONE } = require('sequelize');
 
+const dfd = require("danfojs-node");
+const ChartJsImage = require('chartjs-to-image');  
 
 // For mail
 const nodemailer = require("nodemailer");
@@ -314,6 +316,8 @@ router.get("/ReportsManagement", ensureAdminAuthenticated, async (req, res) => {
     res.render("admin/ReportManagement", { totalUsers,totalSubs,traffic,newsLetterTraffic })
 })
 
+
+
 router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
     
     let { reportName,reportDescription,additionalTags,userTraffic,subscriptionTraffic,TrafficLogs,userRoles,userGenders,startDate,endDate} = req.body;
@@ -329,6 +333,47 @@ router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
     //     let canvas = document.getElementById(id);
     //     return canvas.toDataURL(1.0);
     // }
+    if(startDate!=undefined && endDate!=undefined){
+        let cols = ["Dates","NoOfUsersJoined"];
+        let data = [];
+        const usersJoined = await UsersJoinedLog.findAll({where: {role:"C"}});
+        usersJoined.forEach(element => {
+            let rawData = [element.date, element.noOfUsersJoined];
+            data.push(rawData)
+        
+          });
+
+        // Set Day Data
+        dfDay = new dfd.DataFrame(data,{columns:cols})
+        group_dfDay = dfDay.groupby(["Dates"]).sum()
+        const df2 = dfd.toJSON(group_dfDay,{format:"json"})
+
+        var NoOfUsers_day = [];
+        var dates_day = [];
+        console.log(df2)
+        df2.forEach((element) => {
+            
+            var strToStartDate = new Date(startDate).toISOString();
+            var strToEndDate = new Date(endDate).toISOString();
+            console.log(strToStartDate)
+            console.log(strToEndDate)
+            console.log(element["Dates"])
+            if(element["Dates"].toISOString()>=strToStartDate && element["Dates"].toISOString()<=strToEndDate){
+            NoOfUsers_day.push(element["NoOfUsersJoined_sum"]);
+            dates_day.push(element["Dates"].toString().slice(0,10));
+            console.log("success")
+            }
+        });
+        const myChart = new ChartJsImage();
+        myChart.setConfig({
+        type: 'line',
+        data: { labels: dates_day, datasets: [{ label: 'Numbers of Users Joined', data: NoOfUsers_day }] },
+        
+        });
+
+        myChart.toFile(path.join(__dirname, '../public/images/ChartImages/UsersJoinedChart.png'));
+    }
+
     if(userTraffic!=undefined){
         PathUsersJoinedChart = path.join(__dirname, '../public/images/ChartImages/UsersJoinedChart.png')
     }
@@ -336,6 +381,9 @@ router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
         PathUsersSubscribedChart = path.join(__dirname, '../public/images/ChartImages/UsersSubscriptionChart.png')
     }
 
+    
+
+  
 
    if(additionalTags == ""){
     additionalTags = "None"

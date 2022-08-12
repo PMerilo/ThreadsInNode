@@ -34,8 +34,7 @@
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
  <!-- Topbar Search -->
           <li class="nav-item" style="padding-right:30px">
-          <form
-                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" action="/search" method="post">
+          <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" action="/search" method="post">
                         <div class="input-group">
                             <input type="text" id="search" name="search" class="form-control bg-light border-0 small" placeholder="Search for..."
                                 aria-label="Search" aria-describedby="basic-addon2" required>
@@ -45,8 +44,31 @@
                                 </button>
                             </div>
                         </div>
-                    </form>
+                    
           </li>
+          <li class="nav-item" style="padding-right:30px">
+            
+                <div class="wrapper">
+        <div class="values">
+          <span id="range1">
+            0
+          </span>
+          <span> &dash; </span>
+          <span id="range2">
+            100
+          </span>
+        </div>
+        <div class="container">
+          <div class="slider-track"></div>
+          <label for="min">Min</label>
+          <input type="range" min="0" max="9999" value="30" id="slider-1" name="min" oninput="slideOne()">
+          <label for="max">Max</label>
+          <input type="range" min="0" max="9999" value="70" id="slider-2" name="max" oninput="slideTwo()">
+        </div>
+      </div>
+                        
+          </li>
+</form>
                  
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -240,3 +262,39 @@
   }
   
 </style>
+
+<script>
+  window.onload = function () {
+  slideOne();
+  slideTwo();
+};
+
+let sliderOne = document.getElementById("slider-1");
+let sliderTwo = document.getElementById("slider-2");
+let displayValOne = document.getElementById("range1");
+let displayValTwo = document.getElementById("range2");
+let minGap = 0;
+let sliderTrack = document.querySelector(".slider-track");
+let sliderMaxValue = document.getElementById("slider-1").max;
+
+function slideOne() {
+  if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
+    sliderOne.value = parseInt(sliderTwo.value) - minGap;
+  }
+  displayValOne.textContent = sliderOne.value;
+  fillColor();
+}
+function slideTwo() {
+  if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
+    sliderTwo.value = parseInt(sliderOne.value) + minGap;
+  }
+  displayValTwo.textContent = sliderTwo.value;
+  fillColor();
+}
+function fillColor() {
+  percent1 = (sliderOne.value / sliderMaxValue) * 100;
+  percent2 = (sliderTwo.value / sliderMaxValue) * 100;
+  sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${percent1}% , #3264fe ${percent1}% , #3264fe ${percent2}%, #dadae5 ${percent2}%)`;
+}
+
+</script>
