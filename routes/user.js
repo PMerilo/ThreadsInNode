@@ -216,7 +216,6 @@ router.get('/user/requests', ensureAuthenticated, async (req, res) => {
         model: User,
         as: 'tailor',
       },
-      { model: Service, as: 'service' },
       {
         model: User,
         as: 'tailorChange',
@@ -227,11 +226,14 @@ router.get('/user/requests', ensureAuthenticated, async (req, res) => {
         { userId: req.user.id },
         { "$tailor.id$": req.user.id }
       ],
-    }
+    },
+    order: [
+      ["createdAt", 'DESC']
+    ]
   })
-  requests.forEach(element => {
-    console.log(element.toJSON())
-  });
+  // requests.forEach(element => {
+  //   console.log(element.toJSON())
+  // });
   res.render('services/requests', { requests, min, max })
 })
 

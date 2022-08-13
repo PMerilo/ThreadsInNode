@@ -7,23 +7,16 @@ var $tailorModal = $('#tailorModal')
 
 
 $(document).ready(function () {
-    $('.card').hover(function () {
-        if ($(this).find('.edit-tailor, .cancel-tailor').css("display") == 'none') {
-            $(this).find('.edit-tailor, .cancel-tailor').show()
-        } else if ($(this).find('.edit-tailor, .cancel-tailor').css("display") == 'block') {
-            $(this).find('.edit-tailor, .cancel-tailor').hide()
-        }
-
-    })
-
     $("#tailorModal .confirm").click(function () {
         console.log($(this).attr("data-bs-reqid"))
         let data = {
             id: $(this).attr("data-bs-reqid"),
             tailorId: $tailorModal.find('select').val()
         };
-        console.log(data)
         $.post("/services/request/tailorChange", data, function (result) {
+            if (result.send) {
+                sendNotif('request:notif', "Tailor Change", `Customer ${result.by} wants to change their tailor from you to ${result.to}`, '/admin/requests', '', result.from)
+            }
             $tailorModal.modal('hide');
             $table.bootstrapTable('refresh');
             location.reload()
@@ -37,11 +30,14 @@ $(document).ready(function () {
             description: $('textarea', $editModal).val(),
             service: $('[name=service]', $editModal).val()
         };
-        // console.log(data)
         $.post("/services/request/edit", data, function (result) {
+            if (result.send) {
+                sendNotif('request:notif', "Request Changes", `Customer ${result.by} changed their request details of ID ${result.id}. Click here to see them.`, '/admin/requests', '', result.to)
+            }
             $editModal.modal('hide');
             $table.bootstrapTable('refresh');
             location.reload()
+            
         });
     });
 
@@ -53,6 +49,9 @@ $(document).ready(function () {
             description: $('textarea', $editApptModal).val(),
         };
         $.post("/services/appointment/edit", data, function (result) {
+            if (result.send) {
+                sendNotif('request:notif', "Appointment Changes", `Customer ${result.by} changed their appointment details. Click here to see them.`, '/admin/requests', '', result.to)
+            }
             $editApptModal.modal('hide');
             $table.bootstrapTable('refresh');
             location.reload()
@@ -69,9 +68,13 @@ $(document).ready(function () {
             success: (result) => {
                 $(this).closest('.modal').modal('hide');
                 $table.bootstrapTable('refresh')
+                if (result.send) {
+                    sendNotif('request:notif', result.title, result.body, result.url, '', result.to)
+                }
                 location.reload()
             }
         });
+        
     });
 
     $('.delete').click(function () {

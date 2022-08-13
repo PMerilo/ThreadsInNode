@@ -10,6 +10,10 @@ socket.onAny((event, ...args) => {
   console.log(event, args);
 });
 
+socket.on('test', (data) => {
+  console.log(data)
+})
+
 socket.on('connect', () => {
   if (false) {
     let event = "server:ping"
@@ -30,6 +34,7 @@ socket.on('connect', () => {
 
 socket.on('notification', (data) => {
   if (data) {
+    console.log(data)
     if ($('#notifications').find('li').length == 0) {
       $('#notifications').text('')
     }
@@ -42,7 +47,7 @@ socket.on('notification', (data) => {
       `</li>`,
       `<hr class="m-0">`
     ]
-    $('#notifications').append(x.join(''))
+    $('#notifications').prepend(x.join(''))
   }
 })
 

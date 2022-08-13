@@ -45,14 +45,22 @@ router.get('/requests', async (req, res) => {
 
 });
 
+router.get('/request/count', async (req, res) => {
+    return res.json({
+        total: await Request.count({where: {userId: req.user.id}})
+    })
+
+});
+
 router.get('/appointments', async (req, res) => {
     if (req.query.date && req.query.id) {
         let date = moment(`${req.query.date}`)
         let date2 = moment(`${req.query.date}`).add(1, 'd')
         return res.json({
             total: await Appointment.count(),
-            rows: await Appointment.findAll({ where: { datetime: { [Op.gte]: date, [Op.lt]: date2 }, tailorId: req.query.id, confirmed: { [Op.ne]: false } } })
+            rows: await Appointment.findAll({ where: { datetime: { [Op.gte]: date, [Op.lt]: date2 }, tailorId: req.query.id, confirmed: { [Op.or]: [true, null] } } })
         })
+        // console.log(await Appointment.findAll({ where: { datetime: { [Op.gte]: date, [Op.lt]: date2 }, tailorId: req.query.id, confirmed: { [Op.ne]: false } } }))
     }
     else {
         return res.status(400).send("Invalid Query Params")

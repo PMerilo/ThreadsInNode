@@ -804,7 +804,6 @@ router.post("/createnotification", async (req, res) => {
         url: url,
         senderId: sender
     })
-    console.log(recipient)
     if (!isNaN(recipient)) {
         let user = await User.findByPk(recipient)
         notification.addUser(user)
@@ -813,7 +812,6 @@ router.post("/createnotification", async (req, res) => {
         users.forEach(async user => {
             await notification.addUser(user)
         });
-        console.log(JSON.stringify(notification))
     }
 
     // return res.json(notification)

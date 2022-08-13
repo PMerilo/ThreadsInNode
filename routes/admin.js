@@ -74,7 +74,6 @@ router.get('/requests', async (req, res) => {
                     model: User,
                     as: 'tailor',
                 },
-                { model: Service, as: 'service' },
                 {
                     model: User,
                     as: 'tailorChange',

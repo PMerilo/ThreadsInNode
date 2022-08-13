@@ -130,7 +130,6 @@
             window.history.pushState('page2', '', this.href);
             var id = this.href.split('/').pop()
             chatId = id
-            console.log(id)
             $('#chat-panel').empty()
             $.get(`/msg?id=${id}`, (data) => {
                 data.msgs.forEach(msg => {

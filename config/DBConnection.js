@@ -42,7 +42,6 @@ const setUpDB = (drop) => {
             Notification.belongsToMany(User, {through: UserNotification})
 
             Request.hasMany(Appointment, {onDelete: 'CASCADE'})
-            Request.belongsTo(Service, { as: 'service' });
             Request.belongsTo(User, {as: 'user', foreignKey: 'userId'})
             Request.belongsTo(User, {as: 'tailor', foreignKey: 'tailorId'})
             Request.belongsTo(User, {as: 'tailorChange', foreignKey: 'tailorChangeId'})
@@ -50,8 +49,6 @@ const setUpDB = (drop) => {
             Appointment.belongsTo(Request)
             Appointment.belongsTo(User, {as: 'user', foreignKey: 'userId'})
             Appointment.belongsTo(User, {as: 'tailor', foreignKey: 'tailorId'})
-
-            Service.hasMany(Request, { as: 'requests'})
 
             Tailor.hasMany(Appointment)
             Tailor.belongsTo(User)

@@ -8,3 +8,14 @@ function operateFormatter(value, row) {
     `</div>`,
   ].join('')
 }
+
+function rowStyle(row, index) {
+  if (row.confirmed){
+    return {
+      classes: 'table-success'
+    }
+  }
+  return {classes: 'table-primary'}
+
+
+}

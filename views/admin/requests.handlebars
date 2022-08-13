@@ -47,7 +47,7 @@ You have no requests
 <div class="card">
   <ul class="list-group list-group-flush">
     <li class="list-group-item d-flex justify-content-between align-items-center">
-      <h3 class="req-title m-0 flex-grow-1">{{service.name}} - {{title}}</h3>
+      <h3 class="req-title m-0 flex-grow-1">ID. {{id}} - {{title}}</h3>
       <div class="d-flex align-items-center">
         {{user.name}}
       </div>
@@ -111,7 +111,7 @@ You have no requests
 
   <div class="card-footer d-flex justify-content-between align-items-center border-0">
     <div class="my-auto">
-      {{#with (lookup ../statuses [statusCode])~}}{{this}}{{/with}}
+      {{#with (lookup ../statuses [statusCode])~}}{{text}}{{/with}}
     </div>
     <div class="my-auto">
       {{#unless tailorChange}}
@@ -142,15 +142,15 @@ You have no requests
         <div class="row gx-3">
           <div class="col-3 d-grid">
             <button type="button" class="btn btn-primary statusbtn" value="4">{{#with (lookup statuses
-              "4")~}}{{this}}{{/with}}</button>
+              "4")~}}{{text}}{{/with}}</button>
           </div>
           <div class="col-3 d-grid">
             <button type="button" class="btn btn-primary statusbtn" value="0">{{#with (lookup statuses
-              "0")~}}{{this}}{{/with}}</button>
+              "0")~}}{{text}}{{/with}}</button>
           </div>
           <div class="col-6 d-grid">
             <button type="button" class="btn btn-primary statusbtn" value="5">{{#with (lookup statuses
-              "5")~}}{{this}}{{/with}}</button>
+              "5")~}}{{text}}{{/with}}</button>
           </div>
 
         </div>

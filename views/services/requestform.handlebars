@@ -1,54 +1,70 @@
 <link rel="stylesheet" href="css/services.css">
 
+<div class="row max-req flex-column text-center justify-content-center"
+    style="display: none; height: calc(100vh - 102px);">
+    <h1> Max Requests of 3 Reached! </h1>
+    <p>Don't tie up our tailors! Finish your existing requests before requesting another one.</p>
+    <a href="/services" class="btn btn-lg btn-primary col-4 mx-auto">Go Back</a>
+</div>
+
 <div>
-    <h2>Create a Request</h2>
+    <h2>Create a tailoring request</h2>
 </div>
 <hr>
-<form method="post">
-    {{!-- <div class="row">
-        <div class="mb-3 col-3">
-            <label for="fName" class="form-label">First Name</label>
-            <input type="text" class="form-control" name="fName">
-        </div>
-        <div class="mb-3 col-3">
-            <label for="lName" class="form-label">Last Name</label>
-            <input type="text" class="form-control" name="lName">
-        </div>
-        <div class="mb-3 col-6">
-            <label for="email" class="form-label">Email address</label>
-            <input type="email" class="form-control" name="email" placeholder="name@example.com">
-        </div>
-    </div> --}}
-    <label for="basic-url" class="form-label fs-3">Request details</label>
-    <div class="row">
-        <div class="mb-3 col-6">
-            <label for="title" class="form-label">Request Title</label>
-            <input type="text" class="form-control" name="title">
-        </div>
-        <div class="mb-3 col-6">
-            <label for="service" class="form-label">Service</label>
-            <select class="form-select" aria-label="Default select example" name="service">
-                <option selected>Select Service</option>
-                {{>options object=services}}
-            </select>
-        </div>
-        {{!-- <div class="mb-3 col-3">
-            <label for="select1" class="form-label">Type</label>
-            <select class="form-select" aria-label="Default select example" id="select1">
-                <option selected>Select Type</option>
-                <option value="1"></option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-            </select>
+<div>
+    <form method="post" class="col-10 mx-auto border rounded p-5" id="req-form">
+        <label for="basic-url" class="form-label fs-3">Fill in request details</label>
+        {{!-- <div class="row">
+            <div class="mb-3 col-3">
+                <label for="fName" class="form-label">First Name</label>
+                <input type="text" class="form-control" name="fName">
+            </div>
+            <div class="mb-3 col-3">
+                <label for="lName" class="form-label">Last Name</label>
+                <input type="text" class="form-control" name="lName">
+            </div>
+            <div class="mb-3 col-6">
+                <label for="email" class="form-label">Email address</label>
+                <input type="email" class="form-control" name="email" placeholder="name@example.com">
+            </div>
         </div> --}}
-    </div>
-    <div class="row">
-        <div class="mb-3 col-12">
-            <span class="">Please write a brief description of your request</span>
-            <textarea name="description" class="form-control" aria-label="With textarea"></textarea>
+        <div class="row">
+            <div class="mb-3 col-12">
+                <label for="title" class="form-label">Request Title</label>
+                <input type="text" class="form-control" name="title" placeholder="Eg. Wedding gown">
+            </div>
+            {{!-- <div class="mb-3 col-3">
+                <label for="select1" class="form-label">Type</label>
+                <select class="form-select" aria-label="Default select example" id="select1">
+                    <option selected>Select Type</option>
+                    <option value="1"></option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                </select>
+            </div> --}}
         </div>
-    </div>
-    <div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </div>
-</form>
+        <div class="row">
+            <div class="mb-3 col-12">
+                <span class="">Please write a brief description of your request</span>
+                <textarea name="description" class="form-control" aria-label="With textarea"
+                    placeholder="Eg. It should have a flowery design, White"></textarea>
+            </div>
+        </div>
+        <div class="d-flex">
+            <button type="submit" class="btn btn-primary col-12">Submit</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var userID = {{user.id}}
+        $.get('/api/request/count', (data) => {
+            if (data.total > 2) {
+                $('.max-req').show().addClass('d-flex')
+                $('.max-req').siblings().hide()
+            }
+        })
+
+    })
+</script>
