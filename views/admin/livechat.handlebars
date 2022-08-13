@@ -3,14 +3,12 @@
         <div class="border-bottom">
             <h2 class="cust-name text-center p-2 m-0"></h2>
         </div>
-        <div class="p-3 overflow-auto" style="height:100%;">
-            <div class="flex-grow-1 overflow-auto" id="chat-panel">
+        <div class="flex-grow-1 overflow-auto" id="chat-panel">
 
-            </div>
         </div>
         <div class="border-top">
             <div class="message-box">
-                <div id="chat-box">
+                <div id="chat-box" style="display: none;">
                     <form id="chat-form" class="d-flex" data-bs-name="{{user.name}}">
                         <input id="msg" class="flex-grow-1 form-control" type="text" placeholder="Enter Message"
                             required autocomplete="off" />
@@ -37,9 +35,13 @@
             } else {
                 socket.emit('rooms', [`User ${targetId}`])
                 $('.cust-name').text("Connected")
+                $('#chat-box').show()
             }
         })
 
+        socket.on('livechat:disconnect', () => {
+            $('.cust-name').text("User has disconnected")
+        })
 
         function msgFormater(owner, content) {
             var options = new Array()
@@ -65,6 +67,7 @@
             console.log("msg recieved", data.id, id)
             var owner = data.owner == id
             $('#chat-panel').append(msgFormater(owner, data.msg))
+            var d = $('#chat-panel');
             d.scrollTop(d.prop("scrollHeight"));
         })
 

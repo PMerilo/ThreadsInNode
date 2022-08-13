@@ -547,12 +547,12 @@ router.post('/tickets', ensureAuthenticated, async function (req, res) {
 })
 
 router.get('/livechat', async (req, res) => {
-    let id = Nanoid.nanoid()
-    res.redirect(`/livechat/${id}`)
+    res.render(`support/livechat`)
 })
 
-router.get('/livechat/:id', async (req, res) => {
-    res.render("support/livechat")
+router.get('/livechat/generate', async (req, res) => {
+    let chatId = Nanoid.nanoid()
+    res.json({chatId})
 })
 
 router.get('/CommunityFAQPage', async (req, res) => {

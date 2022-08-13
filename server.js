@@ -38,7 +38,7 @@ const messagingHandler = require("./sockets/messaging")
 
 const onConnection = (socket) => {
 	socket.onAny((eventName, ...args) => {
-		console.log(eventName,"was just fired", args)
+		console.log(eventName, "was just fired", args)
 	});
 	socket.userid = socket.handshake.auth.id
 	socket.join(`User ${socket.userid}`)
@@ -51,6 +51,13 @@ const onConnection = (socket) => {
 	messagingHandler(io, socket)
 	testHandler(io, socket)
 	// console.log(socket.rooms)
+
+	socket.on('disconnecting', (reason) => {
+		socket.rooms.forEach(room => {
+			console.log(room)
+			io.to(room).emit('livechat:disconnect')
+		});
+	})
 }
 
 io.on("connection", onConnection);
