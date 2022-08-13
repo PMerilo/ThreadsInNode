@@ -28,25 +28,84 @@
 
 
     {{>_scripts}}
-    <script>
-        socket.on('request:notif', (data) => {
-            if (data) {
-                if ($('#notifications').find('li').length == 0) {
-                    $('#notifications').text('')
-                }
-                const x = ['<li>',
-                    `<a class="position-relative py-2 dropdown-item notification-link" href="${data.url}">`,
-                    `<p class="m-0 text-wrap">${data.title}</p>`,
-                    `<p class="m-0 text-wrap notification-body">${data.body}</p>`,
-                    `<span class="position-absolute end-0 top-50 translate-middle p-1 bg-danger border border-light rounded-circle"></span>`,
+    <script defer>
+        $(document).ready(() => {
+            $.get(`/api/checktailor`, (data) => {
+                const x = [
+                    `<a id="chat-btn" class="btn btn-white ms-auto position-relative px-4" href="/admin/requests/chat">`,
+                    `<i class="bi bi-envelope fs-5"></i>`,
                     `</a>`,
-                    `</li>`,
-                    `<hr class="m-0">`
+                    `<div class="vr"></div>`
                 ]
-                $('#notifications').prepend(x.join(''))
-            }
-        })
+                if (data) {
+                    $('#breadcrumb').find('ol').after(x.join(''))
+                } else {
+                    $('#notificationdropdown').parent().addClass("ms-auto")
+                }
 
+            })
+            socket.on('request:notif', (data) => {
+                if (data) {
+                    if ($('#notifications').find('li').length == 0) {
+                        $('#notifications').text('')
+                    }
+                    const x = ['<li>',
+                        `<a class="position-relative py-2 dropdown-item notification-link" href="${data.url}">`,
+                        `<p class="m-0 text-wrap">${data.title}</p>`,
+                        `<p class="m-0 text-wrap notification-body">${data.body}</p>`,
+                        `<span class="position-absolute end-0 top-50 translate-middle p-1 bg-danger border border-light rounded-circle"></span>`,
+                        `</a>`,
+                        `</li>`,
+                        `<hr class="m-0">`
+                    ]
+                    $('#notifications').prepend(x.join(''))
+                }
+            })
+            function getNotificationCount() {
+                $.get(`/api/getnotificationcount?type=msg`, ({ count }) => {
+                    if (count > 0) {
+                        const x = [
+                            `<span class="position-absolute translate-middle badge rounded-pill bg-danger" style="font-size: 9px; top:25%;">`,
+                            `${count} `,
+                            `<span class="visually-hidden">unread messages</span>`,
+                            `</span>`
+                        ]
+                        $('#chat-btn').append(x.join(''))
+                    } else {
+                        $('#chat-btn').find('.badge').remove()
+                    }
+                })
+            }
+            getNotificationCount()
+
+            function updateNotificationCount() {
+                var operation = 'increment';
+                var type = 'msg';
+                $.post('/api/updatenotificationcount', { id, operation, type }, (data) => {
+                    if ($('#chat-btn').find('span').length == 0) {
+                        const x = [
+                            `<span class="position-absolute translate-middle badge rounded-pill bg-danger" style="font-size: 9px; top:25%;">`,
+                            `1 `,
+                            `<span class="visually-hidden">unread messages</span>`,
+                            `</span>`
+                        ]
+                        $('#chat-btn').append(x.join(''))
+                    } else {
+                        var t = $('#chat-btn').find(".badge").text()
+                        var num = parseInt(t)
+                        num++
+                        $('#chat-btn').find(".badge").text(num)
+                    }
+                })
+            }
+
+            socket.on('request:message', (data) => {
+                console.log(window.location.pathname.split('/').pop(), data.chatId)
+                if (window.location.pathname.split('/').pop() != data.chatId) {
+                    updateNotificationCount()
+                }
+            })
+        })
     </script>
 </body>
 

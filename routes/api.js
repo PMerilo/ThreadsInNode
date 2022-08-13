@@ -15,6 +15,8 @@ const Notification = require('../models/Notification');
 const Chat = require('../models/Chat');
 const ChatUser = require('../models/ChatUser');
 const ensureAuthenticated = require('../views/helpers/auth');
+const NotificationCount = require('../models/NotificationCount');
+const Msg = require('../models/Msg');
 
 router.get('/requests', async (req, res) => {
     // console.log(
@@ -47,7 +49,7 @@ router.get('/requests', async (req, res) => {
 
 router.get('/request/count', async (req, res) => {
     return res.json({
-        total: await Request.count({where: {userId: req.user.id}})
+        total: await Request.count({ where: { userId: req.user.id } })
     })
 
 });
@@ -132,5 +134,50 @@ router.get("/create", async (req, res) => {
     });
 
     return res.json({ chat1 })
+})
+
+router.get("/checktailor", async (req, res) => {
+    let x = await Tailor.findByPk(req.user.id)
+    if (x) {
+        x = true
+    } else {
+        x = false
+    }
+    return res.json(x)
+})
+
+router.get("/getnotificationcount", async (req, res) => {
+    let [notificationcount] = await NotificationCount.findOrCreate({ where: { userId: req.user.id }, defaults: { userId: req.user.id } })
+    let counter;
+    if (req.query.type == 'msg') {
+        counter = { count } = await Msg.findAndCountAll({ where: { seen: false, userId: { [Op.ne]: req.user.id } }, include: { model: Chat, include: { model: User, where: {id: req.user.id}, required: true} , required: true}, raw:true })
+        notificationcount = notificationcount.msgCount
+    } else if (req.query.type == 'notification') {
+        // counter = { count } = await Notification.findAndCountAll({ where: { senderId: req.user.id, seen: false } })
+        notificationcount = notificationcount.notificationCount
+
+    }
+    return res.json(counter)
+})
+
+router.post("/updatenotificationcount", async (req, res) => {
+    let { id, operation, type } = req.body
+    let [notificationcount] = await NotificationCount.findOrCreate({ where: { userId: req.user.id }, defaults: { userId: req.user.id } })
+    if (operation == "increment") {
+        if (type == "msg") {
+            notificationcount = await notificationcount.increment('msgCount')
+        } else if (type == "notification") {
+            notificationcount = await notificationcount.increment('notificationCount')
+        }
+        return res.json({ notificationcount })
+    } else if (operation == "clear") {
+        if (type == "msg") {
+            notificationcount = await NotificationCount.update({ msgCount: 0 })
+        } else if (type == "notification") {
+            notificationcount = await NotificationCount.update({ notificationcount: 0 })
+        }
+        console.log(notificationcount)
+        return res.json({ notificationcount })
+    }
 })
 module.exports = router;

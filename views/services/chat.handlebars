@@ -73,7 +73,7 @@
                     <img class="rounded-circle img-fluid" width="60" src="/images/avatars/avatar1.jpg" alt="">
                     <div class="d-flex flex-column justify-content-center flex-grow-1">
                         <span>{{users.[0].name}}</span>
-                        <span class="text-truncate" style="max-width: 50%;">{{#if msgs.[0].content}}{{msgs.[0].content}}{{else}}&nbsp;{{/if}}</span>
+                        <span class="text-truncate" style="max-width: 50%;">{{#if msgs.[0].content}}{{#equals msgs.[0].userId ../user.id}}<i class="bi bi-check"></i>{{/equals}}{{msgs.[0].content}}{{else}}&nbsp;{{/if}}</span>
                     </div>
                 </div>
             </a>
@@ -116,6 +116,7 @@
 </div>
 <script defer>
     $(document).ready(function () {
+        socket.re
         let prevHref = [];
         let chatId;
 
@@ -123,6 +124,7 @@
             console.log(e)
         }
 
+        
         
 
         $('.chat').click(function (e) {
@@ -149,6 +151,21 @@
                 }
                 var d = $('#chat-panel');
                 d.scrollTop(d.prop("scrollHeight"));
+                $.post('/msg/markasseen', {chatId}, ()=>{
+                    $.get(`/api/getnotificationcount?type=msg`, ({ count }) => {
+                        if (count > 0) {
+                            const x = [
+                                `<span class="position-absolute translate-middle badge rounded-pill bg-danger" style="font-size: 9px; top:25%;">`,
+                                `${count} `,
+                                `<span class="visually-hidden">unread messages</span>`,
+                                `</span>`
+                            ]
+                            $('#chat-btn').append(x.join(''))
+                        } else {
+                            $('#chat-btn').find('.badge').remove()
+                        }
+                    })
+                })
             })            
         })
 
@@ -200,9 +217,18 @@
         socket.on('message:receive', (data) => {
             console.log("msg recieved", data)
             var owner = data.userId == id
-            $('#chat-panel').append( msgFormater(owner, data.content))
+            if (owner) {
+                $(`[href="/admin/requests/chat/${data.chatId}"]`).find('span.text-truncate').html(`<i class="bi bi-check"></i>${data.content}`)
+            } else {
+                $(`[href="/admin/requests/chat/${data.chatId}"]`).find('span.text-truncate').text(data.content)
+            }
+            if (window.location.pathname.split('/').pop() == data.chatId) {
+                $.post('/msg/markasseen', {chatId})
+                $('#chat-panel').append( msgFormater(owner, data.content))
+            }
             var d = $('#chat-panel');
             d.scrollTop(d.prop("scrollHeight"));
+
         })
 
         

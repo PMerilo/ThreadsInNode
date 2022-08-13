@@ -9,7 +9,7 @@ const Reward = require('../models/Reward')
 const Request = require('../models/Request');
 const Service = require('../models/Service');
 const Appointment = require('../models/Appointment');
-const { Op } = require('sequelize');
+const { Op, where } = require('sequelize');
 const Tailor = require('../models/Tailor');
 const Notification = require('../models/Notification');
 const ensureAuthenticated = require('../views/helpers/auth');
@@ -51,5 +51,11 @@ router.get("/", async (req, res) => {
         })
     // console.log(messages.msgs)
     return res.json(messages)
+})
+
+router.post('/markasseen', async (req, res) => {
+    let {chatId} = req.body
+    let chat = await Msg.update({seen: true},{ where: { seen: false, userId: { [Op.ne]: req.user.id }, chatId: chatId }, include: { model: Chat, include: { model: User, where: {id: req.user.id}, required: true} , required: true}, raw:true })
+    res.json({})
 })
 module.exports = router;

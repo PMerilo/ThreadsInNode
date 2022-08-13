@@ -23,6 +23,7 @@ const UserNotification = require('../models/UserNotifications');
 const Chat = require('../models/Chat');
 const Msg = require('../models/Msg');
 const ChatUser = require('../models/ChatUser');
+const NotificationCount = require('../models/NotificationCount');
 
 // If drop is true, all existing tables are dropped and recreated
 const setUpDB = (drop) => {
@@ -37,6 +38,9 @@ const setUpDB = (drop) => {
             User.hasMany(Request, {onDelete: 'CASCADE'})
             User.hasMany(Appointment, {onDelete: 'CASCADE'})
             User.hasOne(Tailor, {foreignKey: {allowNull: false}, onDelete: 'CASCADE'})
+
+            User.hasOne(NotificationCount)
+            NotificationCount.belongsTo(User)
 
             User.belongsToMany(Notification, {through: UserNotification})
             Notification.belongsToMany(User, {through: UserNotification})
@@ -80,7 +84,7 @@ const setUpDB = (drop) => {
             Chat.hasMany(Msg, {onDelete: "CASCADE"})
             Msg.belongsTo(Chat, {onDelete: "CASCADE"})
             Msg.belongsTo(User, {onDelete: "CASCADE"})
-
+            
             mySQLDB.sync({
                 alter: true,
                 force: drop

@@ -2,6 +2,7 @@ module.exports = (io, socket) => {
     const messageSent = ({ msg }) => {
         console.log("msg sent.. sending to users in ", msg)
         io.in(`Chat ${msg.chatId}`).emit('message:receive', msg)
+        io.in(`Chat ${msg.chatId}`).emit('request:message', msg)
     }
 
     const livechat = ({ msg, id, owner }) => {
