@@ -14,9 +14,9 @@ module.exports = (io, socket) => {
         io.in(`User ${target}`).emit('livechat:inside', {name, id});
     };
     
-    const acknowledgement = ({id, x, username}) => {
-        console.log(username)
-        io.in(`User ${id}`).emit('livechat:acknowledgement', {x, username});
+    const acknowledgement = ({id, x}) => {
+        console.log(id)
+        io.in(`User ${id}`).emit('livechat:acknowledgement', {x});
     };
 
     socket.on("message:sent", messageSent);

@@ -19,10 +19,12 @@ socket.on('connect', () => {
     })
   }
   console.log(`User ${socket.auth.id} has connected to server with socket id of ${socket.id}`)
-  $.get(`/api/getroles/${socket.auth.id}`, (data) => {
-    // console.log(data)
-    socket.emit('rooms', data)
-  })
+  if (socket.auth.id) {
+    $.get(`/api/getroles/${socket.auth.id}`, (data) => {
+      // console.log(data)
+      socket.emit('rooms', data)
+    })
+  }
   getNotifs()
 })
 

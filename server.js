@@ -37,6 +37,9 @@ const bookingHandler = require("./sockets/booking")
 const messagingHandler = require("./sockets/messaging")
 
 const onConnection = (socket) => {
+	socket.onAny((eventName, ...args) => {
+		console.log(eventName,"was just fired", args)
+	});
 	socket.userid = socket.handshake.auth.id
 	socket.join(`User ${socket.userid}`)
 	console.log(`User ${socket.handshake.auth.id} has connected with socket id of ${socket.id}`)

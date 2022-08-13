@@ -4,7 +4,8 @@ const flashMessage = require('../views/helpers/messenger');
 const sequelizeUser = require("../config/DBConfig");
 const { serializeUser } = require('passport');
 const bcrypt = require('bcryptjs');
-const sequelize = require('sequelize')
+const sequelize = require('sequelize');
+const Nanoid = require('nanoid');
 //Our Models
 const User = require("../models/User")
 const Ticket = require("../models/Ticket")
@@ -546,7 +547,8 @@ router.post('/tickets', ensureAuthenticated, async function (req, res) {
 })
 
 router.get('/livechat', async (req, res) => {
-    res.redirect(`/livechat/${req.user.id}`)
+    let id = Nanoid.nanoid()
+    res.redirect(`/livechat/${id}`)
 })
 
 router.get('/livechat/:id', async (req, res) => {

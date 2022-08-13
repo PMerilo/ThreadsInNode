@@ -14,6 +14,7 @@ const Tailor = require('../models/Tailor');
 const Notification = require('../models/Notification');
 const Chat = require('../models/Chat');
 const ChatUser = require('../models/ChatUser');
+const ensureAuthenticated = require('../views/helpers/auth');
 
 router.get('/requests', async (req, res) => {
     // console.log(
@@ -80,10 +81,13 @@ router.get('/appointment/:id', async (req, res) => {
 router.get("/getroles/:id", async (req, res) => {
     let x = [];
     let user = await User.findByPk(req.params.id)
+    if (!user) {
+        return res.json([])
+    }
     if (user.getTailor()) {
         x.push("tailors")
     }
-    let chats = await ChatUser.findAll({where: {userId: req.user.id}})
+    let chats = await ChatUser.findAll({ where: { userId: req.params.id } })
     if (chats) {
         chats.forEach(chat => {
             x.push(`Chat ${chat.chatId}`)
@@ -113,12 +117,12 @@ router.get("/create", async (req, res) => {
     chats = await Chat.findAll({ include: ChatUser })
     let chat1 = {};
     chats.forEach(chat => {
-        console.log((chat.chatusers[0].userId == tailor.id || chat.chatusers[0].userId ==  user.id) && (chat.chatusers[1].userId == tailor.id || chat.chatusers[1].userId ==  user.id))
-        if ((chat.chatusers[0].userId == tailor.id || chat.chatusers[0].userId ==  user.id) && (chat.chatusers[1].userId == tailor.id || chat.chatusers[1].userId ==  user.id)) {
-            chat1 = {chat}
+        console.log((chat.chatusers[0].userId == tailor.id || chat.chatusers[0].userId == user.id) && (chat.chatusers[1].userId == tailor.id || chat.chatusers[1].userId == user.id))
+        if ((chat.chatusers[0].userId == tailor.id || chat.chatusers[0].userId == user.id) && (chat.chatusers[1].userId == tailor.id || chat.chatusers[1].userId == user.id)) {
+            chat1 = { chat }
         }
     });
-    
+
     return res.json({ chat1 })
 })
 module.exports = router;

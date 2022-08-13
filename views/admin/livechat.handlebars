@@ -1,4 +1,4 @@
-<div class="d-flex justify-content-center" style="height: calc(100vh - 102px); ">
+<div class="d-flex justify-content-center bg-body" style="height: calc(100vh - 102px); ">
     <div class="shadow-sm d-flex flex-column rounded border col-10" style="height:100%;">
         <div class="border-bottom">
             <h2 class="cust-name text-center p-2 m-0"></h2>
@@ -26,16 +26,17 @@
 
         var d = $('#chat-panel');
         var name = $('#chat-form').attr('data-bs-name');
-        var targetId = window.location.href[window.location.href.length - 1]
+        var targetId = window.location.href.split('/')
+        targetId = targetId[targetId.length - 1]
 
         socket.emit('livechat:enter', { target: targetId, name: name, id: id })
 
-        socket.on('livechat:acknowledgement', ({ x, username }) => {
+        socket.on('livechat:acknowledgement', ({ x }) => {
             if (!x) {
                 window.location.replace('/admin')
             } else {
                 socket.emit('rooms', [`User ${targetId}`])
-                $('.cust-name').text(username)
+                $('.cust-name').text("Connected")
             }
         })
 
