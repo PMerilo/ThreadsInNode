@@ -66,6 +66,9 @@ const setUpDB = (drop) => {
             Order.belongsTo(User)
             User.hasMany(Order)
 
+            Wishlist.belongsTo(Product)
+            Product.hasMany(Wishlist)
+
             Review.belongsTo(User)
             User.hasMany(Review)
 

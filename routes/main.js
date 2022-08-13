@@ -212,13 +212,9 @@ router.post('/wishlist', ensureAuthenticated, async (req, res) => {
 
                 await Wishlist.create({
                     id: req.user.id + sku,
-                    sku: sku,
-                    name: product.name,
-                    description: product.description,
-                    price: product.price,
-                    category: product.category,
                     Owner: req.user.name,
-                    OwnerID: req.user.id
+                    OwnerID: req.user.id,
+                    productSku: sku
                 });
                 var newwishlistcount = product.wishlistcount + 1
                 Product.update({ wishlistcount: newwishlistcount }, { where: { sku: sku } })
@@ -672,7 +668,7 @@ router.get('/cart', ensureAuthenticated, async (req, res) => {
 })
 
 router.get('/wishlist', ensureAuthenticated, async (req, res) => {
-    wishlistproducts = (await Wishlist.findAll({ where: { OwnerID: req.user.id } }))
+    wishlistproducts = (await Wishlist.findAll({ where: { OwnerID: req.user.id }, include: Product}))
     // products = (await Product.findAll({where: {sku:wishlistproducts.sku}}))
     res.render("wishlist.handlebars", { wishlistproducts })
 })
