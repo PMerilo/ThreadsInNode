@@ -1,6 +1,5 @@
 <div class="admin-padding">
-  <div class="col py-3"
-    style="width: 60%; margin:0 auto; background:white;box-shadow: 12px 12px 22px grey; border-radius:30px; padding: 40px;">
+  <div class="col py-3" style="width: 60%; margin:0 auto; background:white;box-shadow: 12px 12px 22px grey; border-radius:30px; padding: 40px;">
     <h1 class="display-4">Add Product</h1><span id="datetime"></span>
 
     <form method="POST" action="/seller/addProduct">
@@ -20,11 +19,7 @@
         </select>
 
       </div>
-      {{!-- <div class="form-group col py-3">
-        <label for="sku">SKU</label>
-        <input type="number" name="sku" id="sku" class="form-control" required>
-
-      </div> --}}
+      
       <div class="form-group col py-3" id="">
         <label for="price">Price</label>
         <input type="number" name="price" id="price" class="form-control" required>
@@ -51,11 +46,7 @@
       </div>
     <input type="submit" value="Add Product" class="btn btn-primary col py-3" style="border-radius: 30px;" />
     </form>
-    {{!-- <button onclick="location.href = '/admin/inventory/retrieve_product';" id="goBack"
-      class="align-right submit-button">Go Back</button> --}}
   </div>
-
-
 </div>
 
 <style type="text/css">
