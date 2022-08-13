@@ -73,10 +73,10 @@ router.get('/orders', ensureAuthenticated, async (req, res) => {
 })
 
 router.post("/changeOrderStatus", ensureAuthenticated, async (req, res) => {
-    OrderItem = await OrderItems.findOne({ where: { id: req.body.id } })
+    var OrderItem = await OrderItems.findOne({ where: { id: req.body.id } })
     console.log(req.body.status)
     console.log(req.body.id)
-    if (OrderItem.orderStatus == "Delivered" && req.body.status != "Delivered") {
+    if (OrderItem.orderStatus == "Delivered" && req.body.status != "Delivered" || OrderItem.orderStatus == "Delivery Confirmed") {
         res.send({ message: "Cannot change status of delivered product", status: "error" })
     } else {
         await OrderItems.update({ orderStatus: req.body.status }, {

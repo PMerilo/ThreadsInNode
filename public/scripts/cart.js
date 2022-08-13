@@ -12,7 +12,6 @@ $(document).ready(function () {
     }
 
     updateCartTotal()
-    // CheckoutTotalCalculation()
 })
 
 function addtocartClicked(element) {
@@ -23,19 +22,6 @@ function addtocartClicked(element) {
             sku: item
         })
 }
-
-// function addtocartClicked(element) {
-//     var item = element.value;
-//     console.log(item)
-
-//     $.ajax({
-//         url: '/addtoCart',
-//         method: 'POST',
-//         contentType: 'application/json',
-//         data: JSON.stringify({sku: item})
-//     })
-// }
-
 function disc() {
     var discountamount = $('.cart-discount').text().replace('%', '')
     var subtotal = $('.cart-total-price').text().replace('S$', '')
@@ -103,25 +89,13 @@ $('.cart-quantity-input').change(function () {
         quantity: quantity,
     })
     disc()
-    checkoutsave()
+    setTimeout(() => checkoutsave(), 50);
 })
 
 $('.apply-discount-button').click(function () {
     var discountcode = document.getElementsByClassName('discount-input')[0].value
     var discount_card = document.getElementById('discount-card')
     console.log(discountcode)
-    // if (discountcode != localStorage.getItem('discountcode')) {
-    //     console.log(discountcode)
-    //     $.getJSON('/transactions/discount', {
-    //         discount_code: discountcode
-    //     }, function(data) {
-    //         console.log(data)
-    //         $('.cart-discount').text(data.discountcode + "%")
-    //         $('.flash').text(data.flash)
-    //         disc()
-    //     })
-    // }
-    // checkoutsave()
     $.ajax({
         url: "/discount",
         method: 'POST',
@@ -196,6 +170,7 @@ $('.apply-discount-button').click(function () {
                 localStorage.setItem("discount_amount", "")
                 disc()
             }
+            setTimeout(() => checkoutsave(), 50);
         }
     })
 })
@@ -216,7 +191,7 @@ $('.checkout').click(function () {
 function checkoutsave() {
     var subtotal = $('.cart-grandtotal-price').text().replace('S$', '')
     var discount_code = $('#discount_code_entered').val()
-    // localStorage.setItem('total',subtotal)
+    localStorage.setItem('total',subtotal)
     console.log(subtotal)
     console.log(discount_code)
 
@@ -271,19 +246,6 @@ $('.modal-opener').click(function () {
             }
         }
     })
-    // $.ajax({
-    //     url: "/reviewUpdate",
-    //     method: 'POST',
-    //     contentType: "application/json",
-    //     data: JSON.stringify({sku : sku }),
-    //     success: function(res){
-    //         if (res.starAvg == '5') {
-    //             console.log(5)
-    //         } else if (res.starAvg == '4' ) {
-    //             console.log(4)
-    //         }
-    //     }
-    // })
 })
 
 $(".delete-item-button").one("mouseenter", function () {
