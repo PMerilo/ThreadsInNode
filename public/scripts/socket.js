@@ -82,7 +82,6 @@ function sendNotif(event, title, body, url, sender, recipient) {
     sender: sender,
     recipient: recipient
   }
-  console.log(data.recipient)
   $.post('/createNotification', data, function (notif) {
     // console.log(notif)
   })

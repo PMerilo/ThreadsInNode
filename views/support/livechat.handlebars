@@ -1,5 +1,5 @@
 <h1 class="text-center">Live Chat</h1>
-<p class="text-center">Do not reload your page! Doing so will reset your room.</p>
+<p class="text-center help-text">Do not reload your page! Doing so will reset your room.</p>
 <hr>
 
 <div class="d-flex justify-content-center" style="height: calc(70vh); ">
@@ -29,9 +29,11 @@
         $.get('/livechat/generate', ({ chatId }) => {
             let targetId = chatId
 
-            if (targetId) {
+            if (targetId && !socket.connected) {
                 socket.auth = { id: targetId }
                 socket.connect()
+            } else {
+                socket.emit('rooms', [`User ${targetId}`])
             }
 
             function msgFormater(owner, content) {
@@ -63,7 +65,7 @@
 
             })
 
-            socket.on('livechat:inside', ({ name, id }) => {
+            socket.once('livechat:inside', ({ name, id }) => {
                 $('#chat-panel').append(msgFormater(false, `${name} has joined the chat`))
                 let x = true
                 $('#chat-closed').hide()
@@ -71,9 +73,11 @@
                 socket.emit('livechat:acknowledgement', { id, x })
             })
 
-            socket.on('livechat:disconnect', () => {
-                $('#chat-panel').append(msgFormater(false, `Admin has left the chat`))
-                console.log("user disconnect")
+            socket.on('livechat:disconnect', (room) => {
+                if (`User ${targetId}` == room) {
+                    $('#chat-panel').append(msgFormater(false, `Admin has left the chat`))
+                    $('.help-text').html('Did our customer service representive help you? Let us know <a href="/feedback">here</a>!')
+                }
             })
 
             $('#chat-form').on('submit', function (e) {
@@ -95,6 +99,9 @@
                 e.target.elements.msg.focus();
 
             })
+
+            sendNotif('livechat:request', 'LIVE CHAT SUPPORT', "Click here to attend to live chat", `/admin/livechat/${targetId}`, '', '')
+
         });
     })
 </script>

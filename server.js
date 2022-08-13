@@ -50,12 +50,12 @@ const onConnection = (socket) => {
 	bookingHandler(io, socket)
 	messagingHandler(io, socket)
 	testHandler(io, socket)
-	// console.log(socket.rooms)
+	console.log(socket.rooms)
 
 	socket.on('disconnecting', (reason) => {
 		socket.rooms.forEach(room => {
 			console.log(room)
-			io.to(room).emit('livechat:disconnect')
+			io.to(room).emit('livechat:disconnect', room)
 		});
 	})
 }

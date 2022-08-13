@@ -96,6 +96,10 @@ router.get("/getroles/:id", async (req, res) => {
     }
     if (user.getTailor()) {
         x.push("tailors")
+        x.push("admins")
+    }
+    if (user.role == 'A') {
+        x.includes('admins') ? null : x.push('admins')
     }
     let chats = await ChatUser.findAll({ where: { userId: req.params.id } })
     if (chats) {
