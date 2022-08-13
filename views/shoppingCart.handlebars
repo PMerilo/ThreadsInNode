@@ -22,13 +22,9 @@
           <div class="cart-row">
             <div class="cart-item cart-column">
               {{#if this.posterURL}}
-              <div class="cart-item-image">
-                <img src="{{this.posterURL}}" width="100" height="100">
-              </div>
+              <img class="cart-item-image" src="{{this.posterURL}}" height="100" width="100">
               {{else}}
-              <div class="cart-item-image">
-                <img src="/images/no-image.jpg" width="80" height="100">
-              </div>
+              <img class="cart-item-image" src="/images/no-image.jpg" width="100" height="100">
               {{/if}}
               {{!-- <img class="cart-item-image" src="{{this.posterURL}}" width="100" height="100"> --}}
               <span class="cart-item-title">{{ this.name }}</span>

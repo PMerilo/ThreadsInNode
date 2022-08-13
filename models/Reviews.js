@@ -11,6 +11,7 @@ Review.init({
         title: { type: sequelize.STRING }, 
         description: { type: sequelize.STRING(2000) }, 
         stars: { type: sequelize.INTEGER},
+        sellerId: { type: sequelize.INTEGER},
 },
     {
         freezeTableName: true,

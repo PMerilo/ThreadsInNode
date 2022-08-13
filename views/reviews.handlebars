@@ -1,0 +1,230 @@
+<link rel="stylesheet" href="../styles/reviews.css">
+<link rel="stylesheet" href="../styles/product.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
+    integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+<div class="wrapper">
+    <div class="product-scard">
+        <div class="product-left">
+            <div class="header">
+                <h1>{{product.name}}</h1>
+            </div>
+            <div class="product-main">
+                <div class="focus">
+                    <span>Description</span>
+                </div>
+                <p>{{product.description}}</p>
+            </div>
+            <div class="product-details">
+                <div class="product-total">
+                    <h3>Total Price</h3>
+                    <p>${{product.price}}</p>
+                </div>
+            </div>
+            <div class="product-btns">
+                <button class="button shop-item-button" value="{{ product.sku }}" value="1"
+                    onclick="addtocartClicked(this)">
+                    <span>Add to cart</span>
+                    <div class="cart">
+                        <svg viewBox="0 0 36 26">
+                            <polyline points="1 2.5 6 2.5 10 18.5 25.5 18.5 28.5 7.5 7.5 7.5"></polyline>
+                            <polyline points="15 13.5 17 15.5 22 10.5"></polyline>
+                        </svg>
+                    </div>
+                </button>
+                <button type="button" value="{{ product.sku }}" class="wishlist btn bx bx-bookmark-heart"
+                    style="font-size: 1.75em;" onclick="wishList(this)"></button>
+            </div>
+        </div>
+        <div class="product-right">
+            {{#if product.posterURL}}
+            <img src="{{product.posterURL}}">
+            {{else}}
+            <img src="/images/no-image.jpg">
+            {{/if}}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 col-lg-8">
+        {{#each reviews}}
+        <div class="testimonial-box">
+            <div class="box-top">
+                <div class="profile">
+                    <div class="profile-img">
+                        <img src="/images/user_img.png" />
+                    </div>
+                    <div class="name-user">
+                        <strong>{{this.title}}</strong>
+                        <span>@{{this.user.name}}</span>
+                    </div>
+                </div>
+                <div class="reviews" id="stars_{{this.id}}">
+                    <input type="hidden" class="stars" value="{{this.stars}}">
+                    <span class="review-star bx bx-star"></span>
+                    <span class="review-star bx bx-star"></span>
+                    <span class="review-star bx bx-star"></span>
+                    <span class="review-star bx bx-star"></span>
+                    <span class="review-star bx bx-star"></span>
+                </div>
+            </div>
+            <div class="client-comment">
+                <p>{{this.description}}</p>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+    <div class="col-12 col-lg-4 review-card">
+        <div class="card">
+            <h1 class="title">Customer Reviews</h1>
+            <div class="out-of">
+                <div class="stars" id="stars">
+                    <span class="review-star bx bx-star"></span>
+                    <span class="review-star bx bx-star"></span>
+                    <span class="review-star bx bx-star"></span>
+                    <span class="review-star bx bx-star"></span>
+                    <span class="review-star bx bx-star"></span>
+                </div>
+                <span>{{starsAvg}} out of 5</span>
+            </div>
+            <p class="total-reviews">{{product.reviews_given}} customer ratings</p>
+            <div class="ratings">
+                <div class="rating rate5" id="rate5">
+                    <span class="star-number">5 star</span>
+                    <div class="rating-bar">
+                        <div class="bar" data-perc="84"></div>
+                    </div>
+                    <span class="percent">84%</span>
+                </div>
+                <div class="rating rate4" id="rate4">
+                    <span class="star-number">4 star</span>
+                    <div class="rating-bar">
+                        <div class="bar" data-perc="9"></div>
+                    </div>
+                    <span class="percent">9%</span>
+                </div>
+                <div class="rating rate3" id="rate3">
+                    <span class="star-number">3 star</span>
+                    <div class="rating-bar">
+                        <div class="bar" data-perc="4"></div>
+                    </div>
+                    <span class="percent">4%</span>
+                </div>
+                <div class="rating rate2" id="rate2">
+                    <span class="star-number">2 star</span>
+                    <div class="rating-bar">
+                        <div class="bar" data-perc="2"></div>
+                    </div>
+                    <span class="percent">2%</span>
+                </div>
+                <div class="rating rate1" id="rate1">
+                    <span class="star-number">1 star</span>
+                    <div class="rating-bar">
+                        <div class="bar" data-perc="1"></div>
+                    </div>
+                    <span class="percent">1%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" value="{{product.sku}}" id="productSku">
+    <input type="hidden" value="{{product.reviews_given}}" id="total_reviews">
+</div>
+
+<script>
+    $(document).ready(function () {
+        var sku = $("#productSku").val()
+        var ele = $(".wishlist")
+        var total_reviews = $("#total_reviews").val()
+        $.ajax({
+            url: "/wishlist",
+            method: 'POST',
+            contentType: "application/json",
+            data: JSON.stringify({ sku: sku, status: "check" }),
+            success: function (res) {
+                if (res.response == 'add' && res.status == "check") {
+                    ele.addClass("bxs-bookmark-heart")
+                } else if (res.response == 'remove' && res.status == "check") {
+                    ele.removeClass("bxs-bookmark-heart")
+                }
+            }
+        })
+
+        $.ajax({
+            url: "/reviewUpdate",
+            method: 'POST',
+            contentType: "application/json",
+            data: JSON.stringify({ sku: sku, status: "details" }),
+            success: function (res) {
+                var avgrating = res.starAvg
+                var roundedrating = res.roundedAvg
+                var reviewContainer = document.getElementById('stars')
+                var one = res.one
+                var two = res.two
+                var three = res.three
+                var four = res.four
+                var five = res.five
+                var int = Math.floor(roundedrating)
+                var stars = reviewContainer.getElementsByClassName('review-star')
+                var n = 0
+                for (var i = 0; i < int; i++) {
+                    var star = stars[i]
+                    star.classList.add('bxs-star')
+                    n++
+                }
+                if (roundedrating > int && int <= 5) {
+                    var star = stars[n]
+                    star.classList.add("bxs-star-half")
+                }
+                for (var y = 5; y >= 1; y--) {
+                    var rate = "rate" + y
+                    var barContainer = document.getElementById(rate)
+                    var bar = barContainer.getElementsByClassName('bar')
+                    if (y == 5) {
+                        var percent = (five / total_reviews) * 100
+                    } else if (y == 4) {
+                        var percent = (four / total_reviews) * 100
+                    } else if (y == 3) {
+                        var percent = (three / total_reviews) * 100
+                    } else if (y == 2) {
+                        var percent = (two / total_reviews) * 100
+                    } else if (y == 1) {
+                        var percent = (one / total_reviews) * 100
+                    }
+                    if (isNaN(percent)) percent = 0
+                    bar[0].dataset.perc = percent
+                    bar[0].style.width = `${bar[0].dataset.perc}%`
+                    barContainer.getElementsByClassName("percent")[0].innerHTML = percent + "%"
+                }
+            }
+        })
+        var starContainer = document.getElementsByClassName("reviews")
+        console.log(starContainer[0])
+        for (i = 0; i < starContainer.length; i++) {
+            var rstars = starContainer[i].getElementsByClassName('review-star')
+            var stars_given = starContainer[i].getElementsByClassName('stars')[0].value
+            for (n = 0; n < stars_given; n++) {
+                var star = rstars[n]
+                star.classList.add('bxs-star')
+            }
+        }
+    })
+
+    document.querySelectorAll('.button').forEach(button => button.addEventListener('click', e => {
+        if (!button.classList.contains('loading')) {
+
+            button.classList.add('loading');
+
+            setTimeout(() => button.classList.remove('loading'), 3700);
+        }
+        e.preventDefault();
+    }));
+    function convert(num) {
+        var ones = ['', 'one', 'two', 'three', 'four', 'five'];
+        var numString = num.toString();
+        if (num < 20) {
+            return ones[num];
+        }
+    }
+</script>

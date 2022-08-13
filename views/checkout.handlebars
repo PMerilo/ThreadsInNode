@@ -14,17 +14,17 @@
             <fieldset>
                 <h2 class="fs-title">Personal Details</h2>
                 <h3 class="fs-subtitle">Fill in your personal details</h3>
-                <input type="text" id="fname" name="fname" placeholder="Full Name" value="{{user.name}}"/>
-                <input type="text" id="email" name="email" placeholder="Email" value="{{user.email}}"/>
-                <input type="text" id="phone" name="phone" placeholder="Phone" value="{{user.phoneNumber}}"/>
+                <input type="text" id="fname" name="fname" placeholder="Full Name" value="{{user.name}}" required/>
+                <input type="text" id="email" name="email" placeholder="Email" value="{{user.email}}"required/>
+                <input type="text" id="phone" name="phone" placeholder="Phone" value="{{user.phoneNumber}}"required/>
                 <input type="button" name="next" class="next action-button" value="Next" />
             </fieldset>
             <fieldset>
                 <h2 class="fs-title">Shipping Address</h2>
                 <h3 class="fs-subtitle">Fill in your shipping details</h3>
-                <input type="text" id="address" name="address" placeholder="Address" />
-                <input type="text" id="unit_number" name="unit-number" placeholder="Unit Number" />
-                <input type="text" id="postalcode" name="postal-code" placeholder="Postal Code" />
+                <input type="text" id="address" name="address" placeholder="Address" required/>
+                <input type="text" id="unit_number" name="unit-number" placeholder="Unit Number" required/>
+                <input type="text" id="postalcode" name="postal-code" placeholder="Postal Code" required/>
                 <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
                 <input type="button" name="next" class="next action-button" value="Pay" onclick="checkoutcheck()"/>
             </fieldset>

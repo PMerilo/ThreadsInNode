@@ -1,4 +1,4 @@
-$(document).ready (function() {
+$(document).ready(function () {
     var quantityInputs = document.getElementsByClassName('cart-quantity-input')
     for (var i = 0; i < quantityInputs.length; i++) {
         var input = quantityInputs[i]
@@ -13,17 +13,15 @@ $(document).ready (function() {
 
     updateCartTotal()
     // CheckoutTotalCalculation()
-    checkoutsave()
-
 })
 
 function addtocartClicked(element) {
     var item = element.value;
     console.log(item)
     $.post("/addtoCart",
-    {
-        sku: item
-    })
+        {
+            sku: item
+        })
 }
 
 // function addtocartClicked(element) {
@@ -38,10 +36,10 @@ function addtocartClicked(element) {
 //     })
 // }
 
-function disc(){
+function disc() {
     var discountamount = $('.cart-discount').text().replace('%', '')
     var subtotal = $('.cart-total-price').text().replace('S$', '')
-    subtotal = ((subtotal/100) * (100- discountamount)).toFixed(2)
+    subtotal = ((subtotal / 100) * (100 - discountamount)).toFixed(2)
     document.getElementsByClassName('cart-grandtotal-price')[0].innerText = 'S$' + subtotal
 }
 
@@ -72,7 +70,7 @@ function updateCartTotal() {
             total = price * quantity
             subtotal = subtotal + (price * quantity)
             var points = document.getElementsByClassName('vouchers-points').innerText
-    
+
             cartRow.getElementsByClassName('cart-total')[0].innerText = 'S$' + total
         }
         subtotal = Math.round(subtotal * 100) / 100
@@ -91,10 +89,10 @@ function updateCartTotal() {
             timeout: false
         })
     }
-    
+
 }
 
-$('.cart-quantity-input').change(function() {
+$('.cart-quantity-input').change(function () {
     var sku = $(this).next().val()
     var quantity = $(this).val()
     console.log(quantity)
@@ -102,13 +100,13 @@ $('.cart-quantity-input').change(function() {
     // var subtotal = $(this).parent('div').parent('div').parent('div').parent('div').parent('div').next().children().next().children().next().children().find('cart-total-price').text()
     $.post('updateCart', {
         sku: sku,
-        quantity : quantity,
-      })
+        quantity: quantity,
+    })
     disc()
     checkoutsave()
 })
 
-$('.apply-discount-button').click(function() {
+$('.apply-discount-button').click(function () {
     var discountcode = document.getElementsByClassName('discount-input')[0].value
     var discount_card = document.getElementById('discount-card')
     console.log(discountcode)
@@ -128,8 +126,8 @@ $('.apply-discount-button').click(function() {
         url: "/discount",
         method: 'POST',
         contentType: "application/json",
-        data: JSON.stringify({code : discountcode, status : "check"}),
-        success: function(res){
+        data: JSON.stringify({ code: discountcode, status: "check" }),
+        success: function (res) {
             if (res.status == "success") {
                 new SnackBar({
                     message: "Discount has been applied!",
@@ -140,7 +138,7 @@ $('.apply-discount-button').click(function() {
                 $('.cart-discount').text(res.discount_amount + "%")
                 console.log(discountcode)
                 $('#discount_code_entered').val(discountcode)
-                localStorage.setItem("discount_amount",res.discount_amount)
+                localStorage.setItem("discount_amount", res.discount_amount)
                 disc()
             } else if (res.status == "spools_shortage") {
                 new SnackBar({
@@ -202,7 +200,7 @@ $('.apply-discount-button').click(function() {
     })
 })
 
-$('.checkout').click(function() {
+$('.checkout').click(function () {
     checkoutsave()
     // var subtotal = $('.cart-grandtotal-price').text().replace('S$', '')
     // var discount_code = $('#discount_code_entered').val()
@@ -223,12 +221,12 @@ function checkoutsave() {
     console.log(discount_code)
 
     $.post('/checkoutsave', {
-        subtotal : subtotal,
-        discount_code : discount_code
+        subtotal: subtotal,
+        discount_code: discount_code
     })
 }
 
-$('.show-item').click(function() {
+$('.modal-opener').click(function () {
     var sku = this.value
     var ele = $(this).parent("div").next().find(".wishlist")
     console.log(sku)
@@ -236,8 +234,8 @@ $('.show-item').click(function() {
         url: "/wishlist",
         method: 'POST',
         contentType: "application/json",
-        data: JSON.stringify({sku : sku, status : "check"}),
-        success: function(res){
+        data: JSON.stringify({ sku: sku, status: "check" }),
+        success: function (res) {
             if (res.response == 'add' && res.status == "check") {
                 ele.addClass("bxs-bookmark-heart")
                 // console.log("added")
@@ -247,9 +245,48 @@ $('.show-item').click(function() {
             }
         }
     })
+
+    $.ajax({
+        url: "/reviewUpdate",
+        method: 'POST',
+        contentType: "application/json",
+        data: JSON.stringify({ sku: sku , status:"modal"}),
+        success: function (res) {
+            var avgrating = res.starAvg
+            var roundedrating = res.roundedAvg
+            var reviewContainer = document.getElementById('review_'+sku)
+            var int = Math.floor(roundedrating)
+            console.log(roundedrating)
+            console.log(avgrating)
+            var stars = reviewContainer.getElementsByClassName('review-star')
+            var n = 0
+            for (var i = 0; i < int; i++) {
+                var star = stars[i]
+                star.classList.add('bxs-star')
+                n++
+            }
+            if (roundedrating > int && int <= 5) {
+                var star = stars[n]
+                star.classList.add("bxs-star-half")
+            }
+        }
+    })
+    // $.ajax({
+    //     url: "/reviewUpdate",
+    //     method: 'POST',
+    //     contentType: "application/json",
+    //     data: JSON.stringify({sku : sku }),
+    //     success: function(res){
+    //         if (res.starAvg == '5') {
+    //             console.log(5)
+    //         } else if (res.starAvg == '4' ) {
+    //             console.log(4)
+    //         }
+    //     }
+    // })
 })
 
-$(".delete-item-button").one("mouseenter",function() {
+$(".delete-item-button").one("mouseenter", function () {
     new SnackBar({
         message: "Clicking this will delete this item",
         status: "info",
@@ -257,7 +294,7 @@ $(".delete-item-button").one("mouseenter",function() {
     })
 })
 
-$(".delete-cart").one("mouseenter",function() {
+$(".delete-cart").one("mouseenter", function () {
     new SnackBar({
         message: "Clicking this will delete the cart",
         status: "error",
@@ -278,26 +315,26 @@ function wishList(element) {
         url: "/wishlist",
         method: 'POST',
         contentType: "application/json",
-        data: JSON.stringify({sku : sku, status : "add/remove"}),
-        success: function(res){
+        data: JSON.stringify({ sku: sku, status: "add/remove" }),
+        success: function (res) {
             if (res.response == 'add' && res.status == "add/remove") {
                 element.classList.add("bxs-bookmark-heart")
                 new SnackBar({
-                    message:"Item has been added to your wishlist!",
+                    message: "Item has been added to your wishlist!",
                     status: "info",
-                    fixed : true
+                    fixed: true
                 })
-            } else if (res.response == 'remove' && res.status == "add/remove"){
+            } else if (res.response == 'remove' && res.status == "add/remove") {
                 element.classList.remove("bxs-bookmark-heart")
                 new SnackBar({
-                    message:"Item has been removed from your wishlist!",
+                    message: "Item has been removed from your wishlist!",
                     status: "info",
-                    fixed : true
+                    fixed: true
                 })
             }
         }
     })
-    
+
     if (element.classList.contains("bx-tada")) {
         setTimeout(() => element.classList.remove('bx-tada'), 1100);
     }

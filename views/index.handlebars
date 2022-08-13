@@ -4,7 +4,7 @@
 <div class="container">
   <div class="row mt-3">
     {{#each products}}
-    <div class="col-12 col-xs-12 col-md-6 col-lg-4 col-xl-3" id="product_card">
+    <div class="col col-12 col-xs-12 col-md-6 col-lg-4 col-xl-3" id="product_card">
       <div class="card">
         {{#if this.posterURL}}
         <img class="card-img-top product-image" src="{{this.posterURL}}" alt="Card image cap" width="153px"
@@ -14,7 +14,7 @@
           height="372px">
         {{/if}}
         <div class="card-button">
-          <button type="button" class="btn show-item" value="{{this.sku}}" data-bs-toggle="modal"
+          <button type="button" class="btn show-item modal-opener" value="{{this.sku}}" data-bs-toggle="modal"
             data-bs-target="#myModal_{{this.sku}}">
             Shop This Product
           </button>
@@ -38,12 +38,13 @@
                   <button type="button" class="btn-close x-button" data-bs-dismiss="modal"></button>
                   <div class="modal-header">
                     <h6 class="modal-title">{{ this.name }}</h6>
-                    <div class="review">
-                      <span class="bx bxs-star"></span>
-                      <span class="bx bxs-star"></span>
-                      <span class="bx bxs-star"></span>
-                      <span class="bx bxs-star"></span>
-                      <span class="bx bx-star"></span>
+                    <div class="review" id="review_{{this.sku}}">
+                      <span class="review-star bx bx-star"></span>
+                      <span class="review-star bx bx-star"></span>
+                      <span class="review-star bx bx-star"></span>
+                      <span class="review-star bx bx-star"></span>
+                      <span class="review-star bx bx-star"></span>
+                      <p class="totalreviews">{{this.reviews_given}} Review/s</p>
                     </div>
                   </div>
 
@@ -63,22 +64,9 @@
                         </svg>
                       </div>
                     </button>
-                    {{!-- <form action="/addtoCart" method="POST">
-                      <input type="hidden" value="{{ this.sku }}" name="sku" id="sku">
-                      <input type="hidden" value="{{this.name}}" name="name" id="name">
-                      <input type="hidden" value="{{this.description}}" name="description" id="description">
-                      <input type="hidden" value="{{this.price}}" name="price" id="price">
-                      <input type="hidden" value="{{this.category}}" name="category" id="category">
-
-                      <input type="hidden" value="1" name="qtyPurchased" id="qtyPurchased">
-
-
-                      <button value="" class="btn btn-primary shop-item-button" value="1"
-                        onclick="addtocartClicked(this)" data-bs-dismiss="modal">Add to Cart</button>
-                    </form> --}}
-
                     <button type="button" value="{{ this.sku }}" class="wishlist btn bx bx-bookmark-heart"
                       style="font-size: 1.75em;" onclick="wishList(this)"></button>
+                    <div class="to-reviews" onclick="location.href='http://localhost:5000/reviews/{{this.sku}}';">See Full Details</div>
                   </div>
 
                 </div>
@@ -87,6 +75,8 @@
 
           </div>
         </div>
+        {{!-- <input type="hidden" id="stars" value="{{this.stars_given}}">
+        <input type="hidden" id="reviews" value="{{this.reviews_given}}"> --}}
       </div>
     </div>
     {{/each}}
