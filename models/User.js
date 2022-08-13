@@ -16,6 +16,10 @@ class User extends sequelize.Model {
         primaryKey: true,
   
       },
+      profilepic: {
+        type: sequelize.DataTypes.STRING,
+        allowNull: true,
+      },
       name: {
         type: sequelize.DataTypes.STRING,
         allowNull: false,
