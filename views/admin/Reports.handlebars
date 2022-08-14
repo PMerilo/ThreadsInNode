@@ -28,12 +28,15 @@
                     <thead>
                         <tr>
                             <th scope="col">#</th>
+                            
                             <th scope="col">Report Name</th>
                             <th scope="col">Report Description</th>
                             <th scope="col">Date Created</th>
                             <th scope="col">Start Date</th>
                             <th scope="col">End Date</th>
                             <th scope="col">Tags</th>
+
+
                             <th width="100px"></th>
                         </tr>
                     </thead>
@@ -41,6 +44,7 @@
                         {{#each reports}}
                         <tr>
                             <th scope="row">{{this.id}}</th>
+                            
                             {{!-- <td><embed src="{{this.url}}" width="500" height="375" type="application/pdf">{{this.reportName}}</td> --}}
                             <td><a href="{{this.url}}" target="_blank">{{this.reportName}} </a></td>
                             <td>{{this.description}}</td>
@@ -48,6 +52,7 @@
                             <td>{{this.startDate}}</td>
                             <td>{{this.endDate}}</td>
                             <td>{{this.tags}}</td>
+
                             <td class="d-flex justify-content-end">
                                 <a class="btn btn-primary mx-2" href="{{this.url}}" download><i class="bi bi-download"></i></a>
                                 <form action="" method="POST">
@@ -137,6 +142,7 @@
                                     </div>
                                 </form>
                             </td>
+                            <td></td>
                         </tr>
                         {{/each}}
                         {{!-- EndFor --}}
@@ -145,5 +151,5 @@
             </div>
         </div>
     </div>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="/scripts/archives.js"></script>

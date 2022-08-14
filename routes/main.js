@@ -209,7 +209,7 @@ router.post('/discount',ensureAuthenticated, async (req,res) =>{
         } else {
             res.send({discount_amount:discount_amount, status:"no_such_voucher"})
         }
-
+        
     }catch(e){
         console.log(e)
         res.redirect("/")

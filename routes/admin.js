@@ -310,6 +310,13 @@ router.post("/NewsLetterSendMail", ensureAdminAuthenticated, async (req, res) =>
     res.redirect("/admin/NewsLetterSendMail")
 })
 
+router.get('/ChatRoom', ensureAdminAuthenticated, async (req, res) => {
+
+    res.render("admin/ChatRoom")
+
+})
+
+
 
 router.get("/ReportsManagement", ensureAdminAuthenticated, async (req, res) => {
     totalUsers = await User.count()
@@ -590,7 +597,6 @@ router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
     .font('Courier-Bold')
     .fontSize(10)
     .text(`Date ${date}`, { align: 'right' })
-
     
     // Report Description
     pdfDoc
@@ -787,8 +793,7 @@ router.get("/Reports", ensureAdminAuthenticated, async (req, res) => {
 
 router.post("/DeleteReports", ensureAdminAuthenticated, async (req, res) => {
     let {reportId} = req.body
-    console.log("Yo mama")
-    console.log(reportId)
+   
     Report.destroy({where:{id:reportId}})
     
     flashMessage(res, 'success', "Report Deleted Successfully!");
