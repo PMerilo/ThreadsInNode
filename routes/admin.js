@@ -524,6 +524,7 @@ router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
             if(element["Dates"].toISOString()>=strToStartDate && element["Dates"].toISOString()<=strToEndDate){
             
             dates_day2.push(element["Dates"].toString().slice(0,10));
+            NoOfUsers_day2.push(element["NoOfNewsLetterSubscriptions_sum"]);
            
             }
         }
@@ -560,7 +561,7 @@ router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
     
     // pdfDoc.on('end', () => stream.end());
     
-    let stream = fs.createWriteStream(`./pdfs/${reportName}.pdf`);
+    let stream = fs.createWriteStream(`./public/pdfs/${reportName}.pdf`);
     pdfDoc.pipe(stream);
     pdfDoc.pipe(res.setHeader('Content-disposition', `attachment; filename=${reportName}.pdf`));
     
@@ -577,23 +578,33 @@ router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
     .fontSize(35)
     .text('Threads In Times', { align: 'left' })
 
-    
-    // Report Description
+    // Report Name
     pdfDoc
-    .fontSize(15)
-    .text(`${reportDescription}`, 150, 150);
+    .moveDown()
+    .fontSize(25)
+    .text(reportName, { align: 'center' })
+    .moveDown()
 
     // Date
     pdfDoc
     .font('Courier-Bold')
     .fontSize(10)
     .text(`Date ${date}`, { align: 'right' })
+
+    
+    // Report Description
+    pdfDoc
+    .moveDown()
+    .fontSize(15)
+    .text(`${reportDescription}`);
+
+    
     // Additional Tags
     pdfDoc
         .fillColor('red')
         .fontSize(13)
-        .text(`Additional Tags: ${additionalTags}`, 150, 200)
-        .text(`Time Span from ${startDate} to ${endDate}`, 150, 220);
+        .text(`Additional Tags: ${additionalTags}`)
+        .text(`Time Span from ${startDate} to ${endDate}`);
 
     
     // Chart Image
@@ -756,7 +767,7 @@ router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
     await Report.create({
         reportName: reportName,
         description: reportDescription,
-        url: "None",
+        url: '/pdfs/'+reportName+'.pdf',
         tags: additionalTags,
         startDate: startDate,
         endDate: endDate,
@@ -772,6 +783,17 @@ router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
 router.get("/Reports", ensureAdminAuthenticated, async (req, res) => {
     let reports = await Report.findAll()
     res.render("admin/Reports",{reports})
+})
+
+router.post("/DeleteReports", ensureAdminAuthenticated, async (req, res) => {
+    let {reportId} = req.body
+    console.log("Yo mama")
+    console.log(reportId)
+    Report.destroy({where:{id:reportId}})
+    
+    flashMessage(res, 'success', "Report Deleted Successfully!");
+    res.redirect("/admin/Reports")
+    
 })
 
 router.get("/Dashboard", ensureAdminAuthenticated, async (req, res) => {

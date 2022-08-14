@@ -41,19 +41,20 @@
                         {{#each reports}}
                         <tr>
                             <th scope="row">{{this.id}}</th>
-                            <td><a href="{{this.url}}"> {{this.reportName}}</a></td>
+                            {{!-- <td><embed src="{{this.url}}" width="500" height="375" type="application/pdf">{{this.reportName}}</td> --}}
+                            <td><a href="{{this.url}}" target="_blank">{{this.reportName}} </a></td>
                             <td>{{this.description}}</td>
                             <td>{{this.date}}</td>
                             <td>{{this.startDate}}</td>
                             <td>{{this.endDate}}</td>
                             <td>{{this.tags}}</td>
                             <td class="d-flex justify-content-end">
-                                <a class="btn btn-primary mx-2" href=""><i class="bi bi-download"></i></a>
+                                <a class="btn btn-primary mx-2" href="{{this.url}}" download><i class="bi bi-download"></i></a>
                                 <form action="" method="POST">
                                     <!-- Button to Open the Modal -->
-                                    <button type="button" class="update btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#update{{id}}" role="button"><i class="bi bi-arrow-clockwise"></i></button>
+                                    {{!-- <button type="button" class="update btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#update{{id}}" role="button"><i class="bi bi-arrow-clockwise"></i></button> --}}
                                     <!-- The Modal -->
-                                    <div class="modal fade" id="update{{id}}">
+                                    <div class="modal fade" id="update{{this.id}}">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                       
@@ -97,27 +98,36 @@
                                         </div>
                                     </div>
                                 </form>
-                                <form action="" method="POST">
+                                <form action="/admin/DeleteReports" method="POST">
                                     <!-- Button to Open the Modal -->
-                                    <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#delete{{id}}" role="button"><i class="bi bi-trash-fill"></i></button>
+                                    <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#delete{{this.id}}" role="button"><i class="bi bi-trash-fill"></i></button>
                                     <!-- The Modal -->
-                                    <div class="modal fade" id="delete{{id}}">
+                                    <div class="modal fade" id="delete{{this.id}}">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                       
                                                 <!-- Modal Header -->
                                                 <div class="modal-header">
                                                 <h4 class="modal-title">Delete Confirmation</h4>
+                                                
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                 </div>
                             
                                                 <!-- Modal body -->
                                                 <div class="modal-body">
-                                                Are you sure you want to delete ?
+                                                    <p>Are you sure you want to delete this report?</p>
+                                                    <p style=""> <b>Report Name:</b>  {{this.reportName}}</p>
+                                                    <p style=""> <b>Report Description:</b>  {{this.description}}</p>
+                                                    <p style=""> <b>Date Created:</b>  {{this.date}}</p>
+                                                    <p style=""> <b>Start Date:</b>  {{this.startDate}}</p>
+                                                    <p style=""> <b>End Date:</b>  {{this.endDate}}</p>
+                                                    <p style=""> <b>Tags:</b>  {{this.tags}}</p>
+                                               
                                                 </div>
                             
                                                 <!-- Modal footer -->
                                                 <div class="modal-footer">
+                                                <input type="hidden" name="reportId" id="reportId" value="{{this.id}}">
                                                 <input type="submit" value="Delete" class="btn btn-danger">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                                                 </div>
