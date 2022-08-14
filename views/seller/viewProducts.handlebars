@@ -43,16 +43,16 @@
                             <td>${{this.price}}</td>
                             <td>{{this.quantity}}</td>
                             <td>
-                                <button style="margin-top: 15px;" class="btn btn-outline btn-info" data-bs-toggle="modal" data-bs-target="#Modal-MoreInfo-{{this.sku}}">More Info</button>
+                                <button style="margin-top: 15px;" class="blue-btn-full" data-bs-toggle="modal" data-bs-target="#Modal-MoreInfo-{{this.sku}}">More Info</button>
                             </td>
                             <td>
-                                <button style="margin-top: 15px;" class="btn btn-outline btn-secondary" data-bs-toggle="modal" data-bs-target="#Modal-Restock-{{this.sku}}">Restock Item</button>
+                                <button style="margin-top: 15px;" class="blue-btn-full" data-bs-toggle="modal" data-bs-target="#Modal-Restock-{{this.sku}}">Restock Item</button>
                             </td>
                             <td>
-                                <a href="/seller/editProduct/{{this.sku}}"><button style="margin-top: 15px;" class="btn btn-outline btn-warning" onclick="/seller/editProduct">Edit Item</button></a>
+                                <button style="margin-top: 15px;" class="warning-btn" onclick="location.href = '/seller/editProduct/{{this.sku}}'">Edit Item</button>
                             </td>
                             <td>       
-                                <button class="btn btn-outline btn-danger" style="margin-top: 15px;" type="submit" data-bs-toggle="modal" data-bs-target="#Modal-Delete-{{this.sku}}">Delete Item</button>
+                                <button class="danger-btn" style="margin-top: 15px;" type="submit" data-bs-toggle="modal" data-bs-target="#Modal-Delete-{{this.sku}}">Delete Item</button>
                             </td>
                         </tr>
                         {{/each}}
@@ -91,7 +91,7 @@
 
                   </div>
                    <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                    <button class="light-btn" type="button" data-bs-dismiss="modal">Cancel</button>
 
                     </div>
                 </div>
@@ -117,7 +117,7 @@
                   </div>
 
                    <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                    <button class="light-btn" type="button" data-bs-dismiss="modal">Cancel</button>
                     <input id="uuid" name="uuid" type="hidden" value="{{this.sku}}">
                     <button class="btn btn-success" type="submit">Restock</button>
 
@@ -156,8 +156,8 @@
                    <div class="modal-footer">
                     <input type="hidden" name="sku" id="sku" value="{{this.sku}}">
                     <input type="hidden" name="name" id="name" value="{{this.name}}">
-                    <button class="btn btn-danger" type="submit">Delete</button>
-                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                    <button class="danger-btn-fixed" type="submit">Delete</button>
+                    <button class="light-btn" type="button" data-bs-dismiss="modal">Cancel</button>
 
                     </div>
                 </div>

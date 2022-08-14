@@ -1,21 +1,29 @@
-<link rel="stylesheet" href="static/styles/myorder.css">
-<h1>Past Orders</h1>
+<link rel="stylesheet" href="../styles/myorder.css">
+<div class="card">
+    <div class="card-header">
+        <h1>Past Orders</h1>
 
-<div class="container">
-    <div class="row mt-3">
-        {{!-- {% for order in orders_list %} --}}
-        {{#each orders}}
-        <div class="col-12 col-xs-12 col-md-6 ">
-            <div class="card mt-3">
-                <div class="card-body text-center">
-                    <p>OrderID: {{this.orderUUID}}</p>
-                    <p>Order Total: ${{this.orderTotal}}</p>
-                    {{!-- <p>Order Status: {{this.orderStatus}}</p> --}}
-                    <td><a href="/orderdetails/{{this.id}}" class="btn btn-secondary">View Order</a></td>
+    </div>
+    <div class="card-body">
+
+        <div class="container">
+            <div class="row mt-3">
+                {{!-- {% for order in orders_list %} --}}
+                {{#each orders}}
+                <div class="col-12 col-xs-12 col-md-6 ">
+                    <div class="card mt-3">
+                        <div class="card-body text-center">
+                            <p class="bg">OrderID: {{this.orderUUID}}</p>
+                            <p class="bg">Order Total: ${{this.orderTotal}}</p>
+                            {{!-- <p>Order Status: {{this.orderStatus}}</p> --}}
+                            <td><button onclick="location.href = '/orderdetails/{{this.id}}'"
+                                    class="action-button-fixed">View Order</button></td>
+                        </div>
+                    </div>
                 </div>
+                {{/each}}
+                {{!-- {% endfor %} --}}
             </div>
         </div>
-        {{/each}}
-        {{!-- {% endfor %} --}}
     </div>
 </div>

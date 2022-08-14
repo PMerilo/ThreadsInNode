@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="../styles/btn.css">
 <div class="card" style="padding:10px">
   <div class="card-header">
     <h2>Order Management</h2>
@@ -11,6 +12,7 @@
           <th>Product Name</th>
           <th>Price</th>
           <th>Quantity</th>
+          <th>Shipping Type</th>
           <th>Order Status</th>
         </tr>
       </thead>
@@ -25,28 +27,20 @@
               data-bs-target="#myModal_{{order.orderOwnerID}}">
               {{order.orderOwnerName}}
             </button>
-
-            <!-- The Modal -->
             <div class="modal" id="myModal_{{order.orderOwnerID}}">
               <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-
-                  <!-- Modal Header -->
                   <div class="modal-header">
-                    <h4 class="modal-title">Product Details</h4>
+                    <h4 class="modal-title">Customer Details</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                   </div>
-
-                  <!-- Modal body -->
                   <div class="modal-body">
                     <p>Customer Name : {{order.orderOwnerName}}</p>
                     <p>Phone Number : {{order.phone_number}}</p>
                     <p>Address : {{order.address}} {{order.unit_number}} S{{order.postal_code}}</p>
                   </div>
-
-                  <!-- Modal footer -->
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
+                    <button type="button"S class="light-btn" data-bs-dismiss="modal">Back</button>
                   </div>
 
                 </div>
@@ -89,40 +83,31 @@
           </td>
           <td>{{this.product_price}}</td>
           <td>{{this.qtyPurchased}}</td>
+          <td>{{this.shipping_type}}</td>
           <td>
-            <button type="button" class="btn btn-primary w-100" data-bs-toggle="modal"
+            <button type="button" class="blue-btn-full order-stat-btn" data-bs-toggle="modal"
               data-bs-target="#myModal_{{this.id}}">
               {{this.orderStatus}}
             </button>
-
-            <!-- The Modal -->
             <div class="modal " id="myModal_{{this.id}}">
               <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content">
 
-                  <!-- Modal Header -->
                   <div class="modal-header">
                     <h4 class="modal-title">Order Status</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                   </div>
 
-                  <!-- Modal body -->
                   <div class="modal-body d-flex justify-content-between">
-                    <button type="button" data-bs-id="{{this.id}}"
-                      class="btn btn-primary statusbtn flex-fill m-2">Processing</button>
-                    <button type="button" data-bs-id="{{this.id}}"
-                      class="btn btn-primary statusbtn flex-fill m-2">Packed</button>
-                    <button type="button" data-bs-id="{{this.id}}" class="btn btn-primary statusbtn flex-fill m-2">Sent
-                      For
-                      Delivery</button>
-                    <button type="button" data-bs-id="{{this.id}}"
-                      class="btn btn-primary statusbtn flex-fill m-2">Delivered</button>
+                    <button type="button" data-bs-id="{{this.id}}" class="light-btn-25 statusbtn flex-fill m-2">Processing</button>
+                    <button type="button" data-bs-id="{{this.id}}" class="light-btn-25 statusbtn flex-fill m-2">Packed</button>
+                    <button type="button" data-bs-id="{{this.id}}" class="light-btn-25 statusbtn flex-fill m-2">Sent For Delivery</button>
+                    <button type="button" data-bs-id="{{this.id}}" class="light-btn-25 statusbtn flex-fill m-2">Delivered</button>
                   </div>
 
-                  <!-- Modal footer -->
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
-                    <button type="button" class="btn btn-primary confirm">Save Changes</button>
+                    <button type="button" class="light-btn" data-bs-dismiss="modal">Back</button>
+                    <button type="button" class="green-btn-25 confirm">Save Changes</button>
                   </div>
 
                 </div>
@@ -172,14 +157,11 @@
     </table>
   </div>
 </div>
-
 <script>
   $(document).ready(function () {
 
     const ordersTable = document.getElementById('orders-table');
-    if (ordersTable) {
-      new simpleDatatables.DataTable(ordersTable);
-    }
+    let ordertable = new simpleDatatables.DataTable(ordersTable);
     let data = {};
 
     $('.statusbtn').click(function () {
@@ -188,13 +170,13 @@
         status: $(this).text()
       }
 
-      $('.statusbtn').removeClass("btn-success btn-primary")
-      $('.statusbtn').not($(this)).addClass("btn-primary")
-      $(this).addClass("btn-success")
+      $('.statusbtn').removeClass("light-btn-25 blue-btn-25")
+      $('.statusbtn').not($(this)).addClass("light-btn-25")
+      $(this).addClass("blue-btn-25")
     })
+    var bool = 1
 
     $(".confirm").click(function () {
-      // console.log($(this).attr('data-bs-id'))
       $.ajax({
         url: "/seller/changeOrderStatus",
         method: "POST",
@@ -202,19 +184,51 @@
         data: JSON.stringify({ id: data["id"], status: data["status"] }),
         success: function (res) {
           console.log(res.message)
-          if (res) {
+          {{!-- if (res) {
             Swal.fire({
               icon: res.status,
               title: 'Oops...',
               text: res.message,
             })
-          } else {
-            location.reload()
-          }
+          } --}}
         }
-      });
+      })
       var modal_var = "#myModal_" + data["id"]
       $(modal_var).modal('hide')
+      setTimeout(() => reload(), 40);
     });
+
+    recursive()
   });
+
+  function reload() {
+    document.location.reload()
+  }
+
+  function changeColor() {
+    document.querySelectorAll('.order-stat-btn').forEach(button => {
+      if (button.innerText == "Delivered") {
+        button.classList.remove("blue-btn-full")
+        button.classList.add("green-btn-full")
+      } else if (button.innerText == "Delivery Confirmed") {
+        button.classList.remove("blue-btn-full")
+        button.classList.add("green-btn-full-confirmed")
+      }
+    })
+  }
+
+  function recursive() {
+    $('.statusbtn').click(function () {
+      data = {
+        id: $(this).attr('data-bs-id'),
+        status: $(this).text()
+      }
+
+      $('.statusbtn').removeClass("light-btn-25 blue-btn-25")
+      $('.statusbtn').not($(this)).addClass("light-btn-25")
+      $(this).addClass("blue-btn-25")
+    })
+    changeColor()
+    setTimeout(() => recursive(), 400);
+  }
 </script>

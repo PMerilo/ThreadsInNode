@@ -20,8 +20,8 @@ Product.init({
         Owner:{type:sequelize.STRING},
         OwnerID:{type: sequelize.INTEGER},
         posterURL: { type: sequelize.STRING }, 
-        
-        
+        stars_given: { type: sequelize.INTEGER},
+        reviews_given: { type: sequelize.INTEGER},
 },
     {
         freezeTableName: true,

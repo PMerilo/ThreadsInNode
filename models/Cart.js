@@ -12,7 +12,7 @@ Cart.init({
         // cartOwner:{type:sequelize.STRING},
         // cartOwnerID:{type: sequelize.INTEGER},
         cartTotal:{ type: sequelize.FLOAT },
-        discountcodeused:{type: sequelize.STRING},
+        discountcodeused:{type: sequelize.STRING, allowNull: true},
         
 },
     {

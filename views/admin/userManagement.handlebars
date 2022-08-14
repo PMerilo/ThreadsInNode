@@ -32,7 +32,7 @@
             <td>{{this.gender}}</td>
             <td>{{this.phoneNumber}}</td>
             <td>
-              <a href="/admin/editUser/{{this.id}}" class="btn btn-warning">
+              <a href="/admin/editUser/{{this.id}}" class="btn warning-btn">
                 <i class="fas fa-pencil-alt"></i>
                 Update User
               </a>
@@ -40,7 +40,7 @@
             <td>
               <form action="" method="POST">
 
-                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#myModal_{{this.id}}">
+                <button type="button" class="danger-btn" data-bs-toggle="modal" data-bs-target="#myModal_{{this.id}}">
                   Delete user
                 </button>
 
@@ -62,12 +62,12 @@
 
                       <!-- Modal footer -->
                       <div class="modal-footer">
-                        <a href="/admin/deleteUser/{{this.id}}" class="btn btn-danger" data-toggle="confirmation"
+                        <button onclick="location.href = '/admin/deleteUser/{{this.id}}'" class="danger-btn-fixed" data-toggle="confirmation"
                           data-title="Confirm delete?">
                           <i class="far fa-trash-alt"></i>
                           Delete
-                        </a>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </button>
+                        <button type="button" class="light-btn" data-bs-dismiss="modal">Cancel</button>
                       </div>
 
                     </div>

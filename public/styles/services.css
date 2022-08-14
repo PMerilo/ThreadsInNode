@@ -1,0 +1,67 @@
+.action-button {
+    min-width: 40%;
+    background: #2098ce;
+    font-weight: bold;
+    color: white;
+    border: 0 none;
+    border-radius: 25px;
+    cursor: pointer;
+    padding: 10px 5px;
+    margin: 10px 5px;
+}
+
+.action-button:hover,
+.action-button:focus {
+    box-shadow: 0 0 0 2px white, 0 0 0 3px #2098ce;
+}
+
+.action-button-secondary {
+    min-width: 40%;
+    background: #aCbEd0;
+    font-weight: bold;
+    color: white;
+    border: 0 none;
+    border-radius: 25px;
+    cursor: pointer;
+    padding: 10px 5px;
+    margin: 10px 5px;
+}
+
+.action-button-secondary:hover,
+.action-button-secondary:focus {
+    box-shadow: 0 0 0 2px white, 0 0 0 3px #aCbEd0;
+}
+
+.action-button-fixed {
+    width: 100px;
+    background: #2098ce;
+    font-weight: bold;
+    color: white;
+    border: 0 none;
+    border-radius: 25px;
+    cursor: pointer;
+    padding: 10px 5px;
+    margin: 10px 5px;
+}
+
+.action-button-fixed:hover,
+.action-button-fixed:focus {
+    box-shadow: 0 0 0 2px white, 0 0 0 3px #2098ce;
+}
+
+.action-button-fixed-secondary {
+    width: 100px;
+    background: #aCbEd0;
+    font-weight: bold;
+    color: white;
+    border: 0 none;
+    border-radius: 25px;
+    cursor: pointer;
+    padding: 10px 5px;
+    margin: 10px 5px;
+}
+
+.action-button-fixed-secondary:hover,
+.action-button-fixed-secondary:focus {
+    box-shadow: 0 0 0 2px white, 0 0 0 3px #aCbEd0;
+}
