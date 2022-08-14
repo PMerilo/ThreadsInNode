@@ -870,6 +870,8 @@ router.post('/upload', ensureAuthenticated, (req, res) => {
 
         } else {
             res.json({ file: `/uploads/${req.user.id}/${req.file.filename}` });
+            img = "/uploads/" + req.user.id + "/" + req.file.filename
+            User.update({profilepic: img},{where: {id:req.user.id}})
         }
     });
 });

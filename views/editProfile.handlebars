@@ -1,4 +1,3 @@
-
 <style>
   * {
     padding: 0;
@@ -38,6 +37,11 @@
 
           </div>
           <form method="POST" action="">
+            <div class="custom-file mb-2">
+              <label class="custom-file-label" for="customFile">Profile Picture</label><br>
+              <input type="file" class="custom-file-input" id="posterUpload" name="posterUpload" accept="image/png,image/jpeg,image/jpg,image/gif">
+            </div>
+            <div class="text-danger small mb-2" id="posterErr" style="display:none"></div>
             <div class="form-group">
               <div class="col-lg-6">
                 <label for="name">Name</label>

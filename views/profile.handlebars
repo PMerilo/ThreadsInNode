@@ -27,7 +27,11 @@
   <div class="card mx-auto my-5" style="max-width: 70%">
     <div class="row g-0">
       <div class="col-md-4 p-4 d-flex justify-content-center align-items-center">
+        {{#if user.profilepic}}
+        <img src={{user.profilepic}} class="img-fluid rounded-start" alt="">
+        {{else}}
         <img src="/images/logo.png" class="img-fluid rounded-start" alt="">
+        {{/if}}
       </div>
       <div class="col-md-8 d-flex justify-content-center align-items-center border-start border-info">
         <div class="card-body">

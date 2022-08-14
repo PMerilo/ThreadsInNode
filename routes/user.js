@@ -12,6 +12,7 @@ const Request = require('../models/Request')
 const { Op } = require('sequelize');
 const Mail = require("../config/MailConfig");
 const TempUser = require("../models/TempUser");
+const mail = require("../config/NewMailConfig");
 
 const userController = require('../controllers/userController');
 const Service = require('../models/Service');
@@ -252,34 +253,39 @@ router.post('/forgetpassword', async (req, res) => {
   if (await User.findOne({ where: { email: email } })) {
     otp = Math.floor(100000 + Math.random() * 900000)
     console.log(otp, 'HLEOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO HERE')
+    userr1 = await User.findOne({ where: { email: email } })
+    mail.Send({
+      email_recipient: email,
+      subject: `Your Threads in Times OTP is ready`,
+      template_path: "../views/MailTemplates/ForgetPassword.html",
+      context: {name: userr1.name, otp: otp },
+  });
 
-
-
-    Mail.send(res, {
-      to: email,
-      subject: "Your OTP is ready " + otp,
-      text: "Thank you for subscribing to our news letter",
-      template: "../views/MailTemplates/NewsLetter",
-      html: `<div class="page">
-      <div class="container">
-        <div class="email_header">
+    // Mail.send(res, {
+    //   to: email,
+    //   subject: "Your OTP is ready " + otp,
+    //   text: "Thank you for subscribing to our news letter",
+    //   template: "../views/MailTemplates/NewsLetter",
+    //   html: `<div class="page">
+    //   <div class="container">
+    //     <div class="email_header">
           
-          <img class="logo" src="https://raw.githubusercontent.com/PMerilo/ThreadsInNode/master/public/images/logo.png" alt="Threads In Times" />
-          <h1>Email Confirmation</h1>
-        </div>
-        <div class="email_body">
-          <p><b>Hi ,</b></p>
-          <p>Your OTP is example</b></p>
+    //       <img class="logo" src="https://raw.githubusercontent.com/PMerilo/ThreadsInNode/master/public/images/logo.png" alt="Threads In Times" />
+    //       <h1>Email Confirmation</h1>
+    //     </div>
+    //     <div class="email_body">
+    //       <p><b>Hi ,</b></p>
+    //       <p>Your OTP is example</b></p>
           
-          </a>
-          <p>Thanks for supporting,<br/>
-            <b>The Threads in Times Team</b>
-          </p>
-        </div>
-        <div class="email_footer">:copyright: Threads in Times 2020</div>
-      </div>
-    </div>`
-    })
+    //       </a>
+    //       <p>Thanks for supporting,<br/>
+    //         <b>The Threads in Times Team</b>
+    //       </p>
+    //     </div>
+    //     <div class="email_footer">:copyright: Threads in Times 2020</div>
+    //   </div>
+    // </div>`
+    // })
 
     // await TempUser.create({
     //   email: req.body.email,
@@ -390,7 +396,7 @@ router.post('/forgetpwbackupcodes', async (req, res) => {
 
   }
   console.log(backupcode)
-  flashMessage(res, 'error', 'Incorrect backup code!');
+  flashMessage(res, 'error', 'Invalid backup code!');
   return res.redirect('/forgetpwbackupcodes')
 
   // if(backupcode){
