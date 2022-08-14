@@ -60,8 +60,8 @@ emailvariable = 'placeholder'
 // });
 
 router.get('/', async (req, res) => {
-    var products = (await Product.findAll()).map((x) => x.dataValues)
-    var top10Products = await Product.findAll({ limit:10 , order : [['sold', 'DESC'], ['sales', 'DESC']]})
+    var products = await Product.findAll({where : { quantity: {[Op.gte] : 1}}})
+    var top10Products = await Product.findAll({ limit:10 , order : [['sold', 'DESC'], ['sales', 'DESC']],where : { quantity: {[Op.gte] : 1}}})
     const io = req.app.get('io')
     io.emit('test', 'from main')
     res.render("index", { products, top10Products })
@@ -223,6 +223,7 @@ router.post('/wishlist', ensureAuthenticated, async (req, res) => {
     }
 })
 const fulfillOrder = async (session) => {
+    // let io = req.app.get("io")
     var id = session.metadata.userId
     var shipping_rate = session.total_details.amount_shipping
     var shipping_type = "Free Shipping";
@@ -247,7 +248,7 @@ const fulfillOrder = async (session) => {
     })
 
     // console.log(JSON.stringify(cartproducts))
-    cartproducts.products.forEach(element => {
+    cartproducts.products.forEach(async element => {
         OrderItems.create({
             orderId: order.id,
             productSku: element.sku,
@@ -262,6 +263,16 @@ const fulfillOrder = async (session) => {
             posterURL: element.posterURL,
             review: 0
         })
+        // var payload = {title : "New Order Placed",body: "body",url: "",senderId: "",recipient: `${element.OwnerID}`}
+        // let user = await User.findByPk(element.OwnerID)
+        // let notification = await Notification.create({
+        //     title: payload.title,
+        //     body: payload.body,
+        //     url: payload.url,
+        //     senderId: payload.sender
+        // })
+        // await notification.addUser(user)
+        // io.to(`User ${element.OwnerID}`).emit("default", notification)
         // var sold = element.sold + element.cartproduct.qtyPurchased
         // var sales = element.sales + (element.cartproduct.qtyPurchased*element.price)
         // var qty = element.quantity - element.cartproduct.qtyPurchased
@@ -390,7 +401,7 @@ router.post('/checkout', ensureAuthenticated, async (req, res) => {
                 unit_number: `${req.body.unit_number}`,
                 postal_code: `${req.body.postal_code}`,
                 email: `${req.body.email}`,
-                phone_number: `${req.body.phone}`,
+                phone_number: `${req.body.phone}`
             },
             success_url: `http://localhost:5000/checkout/success`,
             cancel_url: `http://localhost:5000/checkout`,
@@ -663,7 +674,10 @@ router.get('/cart', ensureAuthenticated, async (req, res) => {
 })
 
 router.get('/wishlist', ensureAuthenticated, async (req, res) => {
-    wishlistproducts = (await Wishlist.findAll({ where: { OwnerID: req.user.id }, include: Product}))
+    wishlistproducts = (await Wishlist.findAll({ where: { OwnerID: req.user.id }, include: Product, order : [
+        ['createdAt', 'DESC'],
+        ['id','ASC']
+    ]}))
     res.render("wishlist.handlebars", { wishlistproducts })
 })
 
