@@ -157,7 +157,7 @@
   border: none;
 }
 
-.cancel {
+.continue-shopping {
   width: 100px;
   background: #2098ce;
   font-weight: bold;
@@ -169,7 +169,7 @@
   margin: 10px 5px;
 }
 
-/* .continue-shopping:hover,
+.continue-shopping:hover,
 .continue-shopping:focus {
   box-shadow: 0 0 0 2px white, 0 0 0 3px #2098ce;
-} */
+}

@@ -204,7 +204,7 @@ function checkoutsave() {
 $('.modal-opener').click(function () {
     var sku = this.value
     var ele = $(this).parent("div").next().find(".wishlist")
-    console.log(sku)
+    console.log(ele)
     $.ajax({
         url: "/wishlist",
         method: 'POST',

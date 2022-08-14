@@ -29,7 +29,9 @@ router.use((req, res, next) => {
 });
 
 router.get('/NoOfUsersJoined', async (req, res) => {
-  const usersJoined = await UsersJoinedLog.findAll({ where: { role: "C" } });
+  const usersJoined = await UsersJoinedLog.findAll({ where: { role: "C" } , order : [
+    ['date', 'ASC']
+  ]});
 
 
   let data = [];
@@ -120,44 +122,83 @@ router.get('/requestsbytailor', ensureAuthenticated, async (req, res) => {
   df = new dfd.DataFrame(data, { columns: ["Tailor", "Request"] })
   group_df = df.groupby(["Tailor"]).count()
   // console.log(group_df)
-  const df2 = dfd.toJSON(group_df,{format:"json"})
+  const df2 = dfd.toJSON(group_df, { format: "json" })
   res.status(200).json({ 'data': df2 })
 });
 
 router.get('/salesPerDay/:id', async (req, res) => {
-  const sales = await OrderItems.findAll({where: {seller_id: req.params.id}});
+  const sales = await OrderItems.findAll({ where: { seller_id: req.params.id } , order : [
+    ['createdAt', 'ASC'],
+    ['productSku', 'ASC']
+  ]});
 
   let data = [];
-  let cols = ["Dates","Sales"];
+  let cols = ["Dates", "Sales"];
 
   sales.forEach(element => {
-    let rawData  = [moment(element.createdAt).format("DD/MM/YYYY"), (element.product_price * element.qtyPurchased)];
+    let rawData = [moment(element.createdAt).format("DD/MM/YYYY"), (element.product_price * element.qtyPurchased)];
     data.push(rawData)
   });
 
-  df = new dfd.DataFrame(data,{columns:["Dates","Sales"]})
+  df = new dfd.DataFrame(data, { columns: ["Dates", "Sales"] })
   group_df = df.groupby(["Dates"]).sum()
   console.log(group_df)
-  const df2 = dfd.toJSON(group_df,{format:"json"})
-  res.status(200).json({ 'data':df2 })
+  const df2 = dfd.toJSON(group_df, { format: "json" })
+  res.status(200).json({ 'data': df2 })
 });
 
 router.get('/totalSalesPerDay', async (req, res) => {
-  const sales = await Order.findAll();
+  const sales = await Order.findAll({order : [
+    ['createdAt', 'ASC'],
+    ['orderTotal', 'ASC']]});
 
   let data = [];
-  let cols = ["Dates","Sales"];
+  let cols = ["Dates", "Sales"];
 
   sales.forEach(element => {
-    let rawData  = [moment(element.createdAt).format("DD/MM/YYYY"), element.orderTotal];
+    let rawData = [moment(element.createdAt).format("DD/MM/YYYY"), element.orderTotal];
     data.push(rawData)
   });
 
-  df = new dfd.DataFrame(data,{columns:["Dates","Sales"]})
+  df = new dfd.DataFrame(data, { columns: ["Dates", "Sales"] })
   group_df = df.groupby(["Dates"]).sum()
   console.log(group_df)
-  const df2 = dfd.toJSON(group_df,{format:"json"})
-  res.status(200).json({ 'data':df2})
+  const df2 = dfd.toJSON(group_df, { format: "json" })
+  res.status(200).json({ 'data': df2 })
+});
+
+router.get('/myProduct/:id', async (req, res) => {
+  const product = await Product.findAll({ where: { OwnerID: req.params.id } });
+
+  let data = [];
+  let cols = ["Name", "Sales", "Sold"];
+  
+  product.forEach(element => {
+    let rawData = [element.name, element.sales, element.sold];
+    data.push(rawData)
+  });
+  console.log(data)
+
+  df = new dfd.DataFrame(data, { columns: ["Name", "Sales", "Sold"] })
+  const df2 = dfd.toJSON(df, { format: "json" })
+  res.status(200).json({ 'data': df })
+});
+
+router.get('/myProductWishlist/:id', async (req, res) => {
+  const product = await Product.findAll({ where: { OwnerID: req.params.id } });
+
+  let data = [];
+  let cols = ["Name", "Wishlistcount"];
+  
+  product.forEach(element => {
+    let rawData = [element.name, element.wishlistcount];
+    data.push(rawData)
+  });
+  console.log(data)
+
+  df = new dfd.DataFrame(data, { columns: ["Name", "Wishlistcount"] })
+  const df2 = dfd.toJSON(df, { format: "json" })
+  res.status(200).json({ 'data': df })
 });
 
 module.exports = router;

@@ -30,11 +30,11 @@
           <td>
             <img src="{{this.posterURL}}" alt="Ticket Image" height="100px"> 
           </td>
-           <td><button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#myModalResponse_{{this.id}}">Reply</button></td>
+           <td><button type="button" class="btn warning-btn" data-bs-toggle="modal" data-bs-target="#myModalResponse_{{this.id}}">Reply</button></td>
           <td>
       <form action="/admin/TicketMangement/deleteTicket" method="POST">
                <!--<input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete {#user.get_first_name()#} {#user.get_last_name()#}?');">-->
-              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal_{{this.id}}">
+              <button type="button" class="danger-btn" data-bs-toggle="modal" data-bs-target="#myModal_{{this.id}}">
         Delete
       </button>
   
@@ -63,8 +63,8 @@
               <input type="hidden" name="ownerID" id="ownerID" value="{{this.ownerID}}">
               <input type="hidden" name="owner" id="owner" value="{{this.owner}}">
               <input type="hidden" name="ticketTitle" id="ticketTitle" value="{{this.title}}">
-              <input type="submit" value="Delete" class="btn btn-danger">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <input type="submit" value="Delete" class="danger-btn">
+              <button type="button" class="light-btn" data-bs-dismiss="modal">Cancel</button>
   
             </div>
   
@@ -137,8 +137,8 @@
               <input type="hidden" name="ownerID" id="ownerID" value="{{this.ownerID}}">
               <input type="hidden" name="owner" id="owner" value="{{this.owner}}">
               
-              <input type="submit" value="Send Reply" class="btn btn-primary">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <input type="submit" value="Send Reply" class="blue-btn">
+              <button type="button" class="light-btn" data-bs-dismiss="modal">Cancel</button>
   
             </div>
   

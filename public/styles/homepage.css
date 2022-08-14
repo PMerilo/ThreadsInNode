@@ -41,11 +41,29 @@
   transform: translateY(-120%);
 }
 
-.show-item {
+/* .show-item {
   text-align: center;
   background-color: #fff;
   border: 0.5px solid ;
   color: black;
+} */
+
+.show-item {
+  min-width: 50%;
+  text-align: center;
+  background: #aCbEd0;
+  font-weight: bold;
+  color: white;
+  border: 0 none;
+  border-radius: 15px;
+  cursor: pointer;
+  padding: 10px 5px;
+  margin: 10px 5px;
+}
+
+.show-item:hover,
+.show-item:focus {
+  box-shadow: 0 0 0 2px white, 0 0 0 3px #aCbEd0;
 }
 
 @media (min-width: 992px) {

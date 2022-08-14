@@ -58,14 +58,11 @@ emailvariable = 'placeholder'
 // });
 
 router.get('/', async (req, res) => {
-
-    products = (await Product.findAll()).map((x) => x.dataValues)
-
-
+    var products = (await Product.findAll()).map((x) => x.dataValues)
+    var top10Products = await Product.findAll({ limit:10 , order : [['sold', 'DESC'], ['sales', 'DESC']]})
     const io = req.app.get('io')
     io.emit('test', 'from main')
-
-    res.render("index", { products })
+    res.render("index", { products, top10Products })
 })
 
 router.post('/addtoCart', ensureAuthenticated, async (req, res) => {
@@ -182,15 +179,16 @@ router.post('/discount', ensureAuthenticated, async (req, res) => {
 router.post('/wishlist', ensureAuthenticated, async (req, res) => {
     var sku = req.body.sku
     var status = req.body.status
-    console.log(sku, status)
     checkProductinWishlist = await Wishlist.findOne({ where: { id: req.user.id + sku } })
     product = await Product.findOne({ where: { sku: sku } })
-
+    
     if (status == "check") {
         if (checkProductinWishlist) {
             res.send({ response: "add", status: "check" })
+            console.log(sku, status, "add")
         } else {
             res.send({ response: "remove", status: "check" })
+            console.log(sku, status, "remove")
         }
     } else if (status == "add/remove") {
 
@@ -226,7 +224,7 @@ const fulfillOrder = async (session) => {
     var id = session.metadata.userId
     var shipping_rate = session.total_details.amount_shipping
     var shipping_type = "Free Shipping";
-    if (shipping_rate = 1000) {
+    if (shipping_rate == 1000) {
         shipping_type = "Express Shipping"
     }
 

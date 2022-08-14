@@ -35,7 +35,7 @@ router.use((req, res, next) => {
 });
 
 router.get('/', (req, res) => {
-    res.render('seller/sellerHomePage');
+    res.render('seller/dashboard');
 });
 
 router.get('/reports', (req, res) => {
