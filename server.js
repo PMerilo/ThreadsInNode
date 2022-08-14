@@ -12,6 +12,7 @@ const seller = require("./routes/seller")
 const services = require("./routes/services")
 const datapipeline = require("./routes/datapipeline")
 const api = require("./routes/api")
+const msg = require("./routes/messaging")
 const bodypassword = require('body-parser')
 const GoogleAuth = require("./config/passportGoogleAuth")
 const DBConnection = require('./config/DBConnection');
@@ -34,14 +35,30 @@ const io = new Server(httpServer, { cors: { origin: "*" } });
 
 const testHandler = require("./sockets/test")
 const bookingHandler = require("./sockets/booking")
+const messagingHandler = require("./sockets/messaging")
 
 const onConnection = (socket) => {
+	socket.onAny((eventName, ...args) => {
+		console.log(eventName, "was just fired", args)
+	});
 	socket.userid = socket.handshake.auth.id
-	socket.join(socket.userid)
+	socket.join(`User ${socket.userid}`)
 	console.log(`User ${socket.handshake.auth.id} has connected with socket id of ${socket.id}`)
+	// io.of("/").adapter.on("join-room", (room, id) => {
+	// 	console.log(`socket ${id} has joined room ${room}`);
+	// 	console.log(socket.rooms)
+	// });
 	bookingHandler(io, socket)
+	messagingHandler(io, socket)
 	testHandler(io, socket)
-	// console.log(socket.rooms)
+	console.log(socket.rooms)
+
+	socket.on('disconnecting', (reason) => {
+		socket.rooms.forEach(room => {
+			console.log(room)
+			io.to(room).emit('livechat:disconnect', room)
+		});
+	})
 }
 
 io.on("connection", onConnection);
@@ -104,11 +121,10 @@ app.use(async function (req, res, next) {
 	res.locals.authenticated = req.isAuthenticated();
 	res.locals.today = moment().format('YYYY-MM-DD')
 	res.locals.time = moment().format('HH:mm:ss')
-	res.locals.statuses = { "-1": "Appointment Denied. Request another appointment", "0": 'Awaiting next Appointment', "1": 'Pending Appointment Booking', "2": 'Pending Appointment Confirmation', "3": "Appointment Confirmed", "4": 'In Progress', "5": 'Completed' }
+	res.locals.statuses = { "-1": {text:"Appointment Denied. Request another appointment", colour: 'red'}, "0": {text: 'Awaiting next Appointment', colour: 'yellow'}, "1": {text :'Pending Appointment Booking', colour: 'red'}, "2": {text: 'Pending Appointment Confirmation', colour: 'blue'}, "3": {text: "Appointment Confirmed", colour: 'green'}, "4": {text: 'In Progress', colour: 'blue'}, "5": {text: 'Completed', colour: 'green'} }
 	res.locals.tailors = await User.findAll({
 		include: { model: Tailor, required: true }
 	});
-	res.locals.services = await Service.findAll();
 	next();
 });
 
@@ -214,6 +230,7 @@ app.use("/admin", admin)
 app.use("/services", services)
 app.use("/seller", seller)
 app.use("/datapipeline", datapipeline)
+app.use("/msg", msg)
 app.use("/api", api)
 
 

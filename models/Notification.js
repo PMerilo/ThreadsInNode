@@ -8,7 +8,7 @@ Notification.init({
     title: { type: sequelize.STRING,allowNull: false }, 
     body: { type: sequelize.STRING(2000),allowNull: false }, 
     url: {type: sequelize.STRING(200)},
-    senderId:{type: sequelize.INTEGER, allowNull:false}
+    senderId:{type: sequelize.INTEGER}
 },
     {
         freezeTableName: true,

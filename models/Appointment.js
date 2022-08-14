@@ -46,13 +46,13 @@ Appointment.init({
 
 },
     {
-        defaultScope: {
-            where: {
-                datetime: {
-                    [Op.gte]: moment()
-                }
-            }
-        },
+        // defaultScope: {
+        //     where: {
+        //         datetime: {
+        //             [Op.gte]: moment()
+        //         }
+        //     }
+        // },
         indexes: [
             {
                 name: 'apptKey',

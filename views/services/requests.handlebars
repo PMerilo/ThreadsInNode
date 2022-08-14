@@ -23,30 +23,31 @@
 </div> --}}
 
 <div>
-  <h2>My Requests</h2>
+  <h2>My Tailoring Requests</h2>
 </div>
 <hr>
 {{#unless requests}}
 You have no requests
 {{/unless}}
 {{#each requests}}
-<div class="card">
+<div class="card" {{#with (lookup ../statuses
+  [statusCode])~}}style="border: 1px solid {{colour}}; border-left: 8px solid {{colour}};" {{/with}}>
   <ul class="list-group list-group-flush">
     <li class="list-group-item d-flex justify-content-between align-items-center">
-      <h3 class="req-title m-0 flex-grow-1">{{service.name}} - {{title}}</h3>
+      <h3 class="req-title m-0 flex-grow-1">Tailoring - {{title}}</h3>
       <div class="d-flex align-items-center">
         {{#if tailorChange}}
-        <button class="cancel-tailor btn p-0 m-0 me-1" style="display: none; height: 24px;" data-bs-toggle="modal"
+        <button class="cancel-tailor btn p-0 m-0 me-1" style="height: 24px;" data-bs-toggle="modal"
           data-bs-target="#cancelTailorModal" data-bs-id="{{id}}"><i class='bx bx-block'></i></button>
-        <p class="m-0"><span class="text-decoration-line-through">{{tailor.name}}</span> <i
-            class='bx bxs-chevrons-right align-middle fs-5'></i> {{tailorChange.name}}</p>
+        <p class="m-0"><span class="text-decoration-line-through"> {{tailor.name}}</span> <i
+            class='bx bxs-chevrons-right align-middle fs-5'></i>{{tailorChange.name}}</p>
         {{else}}
         {{#if tailor}}
-        <button class="edit-tailor btn p-0 m-0 me-1" style="display: none; height: 24px;" data-bs-toggle="modal"
+        <button class="edit-tailor btn p-0 m-0 me-1" style="height: 24px;" data-bs-toggle="modal"
           data-bs-target="#tailorModal" data-bs-id="{{tailor.id}}" data-bs-reqId="{{id}}"><i
-            class='bx bx-refresh'></i></button>
+            class="bi bi-arrow-left-right"></i></button>
         {{/if}}
-        <p class="m-0">{{#if tailor}}{{tailor.name}}{{else}}Book an appointment to select your tailor{{/if}}</p>
+        <p class="m-0">{{#if tailor}}Tailor: {{tailor.name}}{{else}}Book an appointment to select your tailor{{/if}}</p>
         {{/if}}
 
 
@@ -83,7 +84,7 @@ You have no requests
   </ul>
   <div class="collapse" id="appt_{{id}}">
     <div class="p-3">
-      <table id="apptTable" data-toggle="table" data-url="/api/appointment/{{id}}">
+      <table id="apptTable" data-toggle="table" data-url="/api/appointment/{{id}}" data-row-style="rowStyle">
         <thead>
           <tr>
             <th data-field="id" data-visible="false">Id</th>
@@ -100,9 +101,15 @@ You have no requests
 
   <div class="card-footer d-flex justify-content-between align-items-center border-0">
     <div class="my-auto">
-      {{#with (lookup ../statuses [statusCode])~}}{{this}}{{/with}}
+      {{#with (lookup ../statuses [statusCode])~}}{{text}}{{/with}}
     </div>
     <div class="my-auto">
+      {{#if chatId}}
+      <button class="btn btn-success chat" style="width: 80px;" data-bs-toggle="modal" data-bs-target="#chatModal"
+        data-bs-chatId="{{chatId}}">
+        <i class="bi bi-envelope"></i>
+      </button>
+      {{/if}}
       <button class="btn btn-primary edit mx-2" style="width: 80px;" data-bs-toggle="modal" data-bs-target="#editModal"
         data-bs-id="{{id}}">
         <i class="bi bi-pencil-square"></i>
@@ -125,16 +132,9 @@ You have no requests
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="mb-3 col-6">
+          <div class="mb-3 col-12">
             <label for="title" class="form-label">Title</label>
             <input type="text" class="form-control" name="title">
-          </div>
-          <div class="mb-3 col-6">
-            <label for="service" class="form-label">Service</label>
-            <select class="form-select" aria-label="Default select example" name="service">
-              <option>Select Service</option>
-              {{>options object=services}}
-            </select>
           </div>
           <div class="mb-3 col-12">
             <label for="description" class="form-label">Description</label>
@@ -286,8 +286,107 @@ You have no requests
     </div>
   </div>
 </div>
+<div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModal" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title chat-name" id="chatModalLabel">Name</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body container overflow-hidden">
+        <div class="flex-grow-1 overflow-auto" id="chat-panel" style="height: 50vh ;">
+
+        </div>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <form id="chat-form" class="d-flex flex-grow-1">
+          <input id="msg" class="flex-grow-1 form-control" type="text" placeholder="Enter Message" required
+            autocomplete="off" />
+          <button type="submit" class="btn">Send</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 {{!--
 <script src="/scripts/services/datapicker.js"></script> --}}
+<script defer>
+  $(document).ready(function () {
+    function msgFormater(owner, content) {
+      var options = new Array()
+      if (owner) {
+        options.push('right')
+        options.push('justify-content-end')
+      } else {
+        options.push('left')
+        options.push('')
+      }
+      const msgFormat = [
+        `<div class="d-flex ${options.pop()}">`,
+        `<div class="chat-bubble chat-bubble--${options.pop()} text-break" style="max-width: 50%;">`,
+        `${content}`,
+        `</div>`,
+        `</div>`,
+      ]
+
+      return msgFormat.join('')
+    }
+    $('.chat').click(function (e) {
+      var chatId = $(this).attr('data-bs-chatId')
+      $('#msg').next().attr('data-bs-chatId', chatId)
+
+      $('#chat-panel').empty()
+      $.get(`/msg?id=${chatId}`, (data) => {
+        data.msgs.forEach(msg => {
+          var owner = msg.userId == id
+          $('#chat-panel').append(msgFormater(owner, msg.content))
+        })
+        $('.chat-name').text(data.users[0].name)
+        var d = $('#chat-panel');
+        d.scrollTop(d.prop("scrollHeight"));
+      })
+
+    })
+
+    $('#chatModal').on('shown.bs.modal', () => {
+      var d = $('#chat-panel');
+      d.animate({ scrollTop: d.prop("scrollHeight") }, 500);
+    })
+
+    socket.on('message:receive', (data) => {
+      console.log("msg recieved")
+      var owner = data.userId == id
+      $('#chat-panel').append(msgFormater(owner, data.content))
+      var d = $('#chat-panel');
+      d.scrollTop(d.prop("scrollHeight"));
+    })
+
+    $('#chat-form').on('submit', function (e) {
+      e.preventDefault();
+      var chatId = $('#msg').next().attr('data-bs-chatId')
+      // Get message text
+      let msg = e.target.elements.msg.value;
+
+      msg = msg.trim();
+
+      if (!msg) {
+        return false;
+      }
+
+      msg = { content: msg, chatId: chatId, userId: id }
+      // Emit message to server
+      socket.emit('message:sent', { msg });
+
+      // Clear input
+      e.target.elements.msg.value = '';
+      e.target.elements.msg.focus();
+      console.log(chatId)
+      $.post("/msg", msg)
+
+    });
+    console.log(d)
+  })
+</script>
 <script src="/scripts/services/tableFormatters.js"></script>
 <script src="/scripts/services/tableEvents.js"></script>
 <script src="/scripts/services/main.js"></script>

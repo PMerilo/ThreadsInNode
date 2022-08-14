@@ -18,7 +18,10 @@ const ensureAuthenticated = require("../views/helpers/auth");
 const serviceController = require("../controllers/serviceController")
 const ensureAdminAuthenticated = require("../views/helpers/adminAuth");
 const TempUser = require("../models/TempUser");
-const Notification = require("../models/Notification")
+const Notification = require("../models/Notification");
+const Chat = require('../models/Chat');
+const ChatUser = require('../models/ChatUser');
+const Msg = require('../models/Msg');
 
 router.all('/*', ensureAdminAuthenticated, async function (req, res, next) {
     req.app.locals.layout = 'admin'; // set your layout here'
@@ -71,7 +74,6 @@ router.get('/requests', async (req, res) => {
                     model: User,
                     as: 'tailor',
                 },
-                { model: Service, as: 'service' },
                 {
                     model: User,
                     as: 'tailorChange',
@@ -126,6 +128,62 @@ router.delete('/requests/delete', async (req, res) => {
         }
     });
     return res.json({})
+});
+
+router.get('/requests/chat', async (req, res) => {
+    let chatids = await ChatUser.findAll({
+        where: { userId: req.user.id },
+        include: {
+            model: Chat,
+            include: {
+                model: User,
+                where: {
+                    id: { [Op.ne]: req.user.id }
+                }
+            }
+        }
+    })
+    let chats = new Array()
+
+    chatids.forEach(chatid => {
+        chats.push(chatid.chat)
+    });
+    // console.log(JSON.stringify(chats))
+
+    res.render('services/chat', { chats })
+});
+
+router.get('/requests/chat/:id', async (req, res) => {
+    let chatids = await ChatUser.findAll({
+        where: { userId: req.user.id },
+        include: {
+            model: Chat,
+            include: [
+                {
+                    model: User,
+                    where: {
+                        id: { [Op.ne]: req.user.id }
+                    }
+                },
+                {
+                    model: Msg,
+                    required: false
+
+                }
+            ]
+        },
+        order: [
+            [Chat, Msg, 'createdAt', 'DESC']
+        ]
+    })
+    let chats = new Array()
+
+    chatids.forEach(chatid => {
+        chats.push(chatid.chat)
+    });
+    // let currentchat = await Chat.findByPk(req.params.id, { include: [{ model: Msg, required: false }, { model: User, where: { id: { [Op.ne]: req.user.id } } }] })
+    // console.log(currentchat.users)
+    res.render('services/chat', { chats })
 });
 
 router.get('/TicketMangement', ensureAdminAuthenticated, async (req, res) => {
@@ -388,6 +446,10 @@ router.post('/tailor/register', async (req, res) => {
         })
     res.redirect("/admin/requests")
 
+});
+
+router.get('/livechat/:id', async (req, res) => {
+    res.render("admin/livechat")
 });
 
 module.exports = router;

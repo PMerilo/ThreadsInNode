@@ -10,6 +10,10 @@ socket.onAny((event, ...args) => {
   console.log(event, args);
 });
 
+socket.on('test', (data) => {
+  console.log(data)
+})
+
 socket.on('connect', () => {
   if (false) {
     let event = "server:ping"
@@ -19,11 +23,16 @@ socket.on('connect', () => {
     })
   }
   console.log(`User ${socket.auth.id} has connected to server with socket id of ${socket.id}`)
-  $.get(`/api/getroles/${socket.auth.id}`, (data) => {
-    // console.log(data)
-    socket.emit('rooms', data)
-  })
+  if (socket.auth.id) {
+    $.get(`/api/getroles/${socket.auth.id}`, (data) => {
+      // console.log(data)
+      socket.emit('rooms', data)
+    })
+  }
   getNotifs()
+  if (window.location.pathname.startsWith('/admin')) {
+    socket.emit('livechat:get', {adminId: socket.id})
+  }
 })
 
 socket.on('notification', (data) => {
@@ -40,7 +49,7 @@ socket.on('notification', (data) => {
       `</li>`,
       `<hr class="m-0">`
     ]
-    $('#notifications').append(x.join(''))
+    $('#notifications').prepend(x.join(''))
   }
 })
 
@@ -75,7 +84,6 @@ function sendNotif(event, title, body, url, sender, recipient) {
     sender: sender,
     recipient: recipient
   }
-  console.log(data.recipient)
   $.post('/createNotification', data, function (notif) {
     // console.log(notif)
   })

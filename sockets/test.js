@@ -13,6 +13,7 @@ module.exports = (io, socket) => {
         console.log(`User ${socket.userid} has joined the rooms [${data.join(', ')}]`)
     }
 
+
     socket.on("server:ping", ping);
     socket.on("rooms", rooms)
 }

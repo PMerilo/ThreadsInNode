@@ -1,0 +1,113 @@
+<h1 class="text-center">Live Chat</h1>
+<p class="text-center help-text">Do not reload your page! Doing so will reset your room.</p>
+<hr>
+
+<div class="d-flex justify-content-center" style="height: calc(70vh); ">
+    <div class="shadow-sm d-flex flex-column rounded border col-10" style="height:100%;">
+        <div class="flex-grow-1 overflow-auto" id="chat-panel">
+
+        </div>
+        <div class="border-top">
+            <div class="message-box p-3">
+                <div id="chat-closed" class="">
+                    <p class="p-3 m-0 text-center">Please wait while our admin attends to your live chat request</p>
+                </div>
+                <div id="chat-box" style="display: none;">
+                    <form id="chat-form" class="d-flex">
+                        <input id="msg" class="flex-grow-1 form-control" type="text" placeholder="Enter Message"
+                            required autocomplete="off" />
+                        <button type="submit" class="btn">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script defer>
+    $(document).ready(function () {
+
+        $.get('/livechat/generate', ({ chatId }) => {
+            let targetId = chatId
+
+            if (targetId && !socket.connected) {
+                socket.auth = { id: targetId }
+                socket.connect()
+            } else {
+                socket.emit('rooms', [`User ${targetId}`])
+            }
+            socket.emit('rooms', ['livechat'])
+
+            function msgFormater(owner, content) {
+                var options = new Array()
+                if (owner) {
+                    options.push('right')
+                    options.push('justify-content-end')
+                } else {
+                    options.push('left')
+                    options.push('')
+                }
+                const msgFormat = [
+                    `<div class="d-flex ${options.pop()}">`,
+                    `<div class="chat-bubble chat-bubble--${options.pop()} text-break" style="max-width: 50%;">`,
+                    `${content}`,
+                    `</div>`,
+                    `</div>`,
+                ]
+
+                return msgFormat.join('')
+            }
+
+            socket.on('livechat:receive', (data) => {
+                var owner = data.owner == targetId
+                $('#chat-panel').append(msgFormater(owner, data.msg))
+                var d = $('#chat-panel');
+                d.scrollTop(d.prop("scrollHeight"));
+
+            })
+
+            socket.once('livechat:inside', ({ name, id }) => {
+                $('#chat-panel').append(msgFormater(false, `${name} has joined the chat`))
+                let x = true
+                $('#chat-closed').hide()
+                $('#chat-box').show()
+                socket.emit('livechat:acknowledgement', { id, x })
+                socket.emit('livechat:remove', {href: `/admin/livechat/${targetId}`})
+                socket.removeAllListeners('livechat:get')
+            })
+
+            socket.on('livechat:disconnect', (room) => {
+                if (`User ${targetId}` == room) {
+                    $('#chat-panel').append(msgFormater(false, `Admin has left the chat`))
+                    $('.help-text').html('Did our customer service representive help you? Let us know <a href="/feedback">here</a>!')
+                    $.post('/msg/closeroom', {chatId: targetId})
+                }
+            })
+
+            $('#chat-form').on('submit', function (e) {
+                e.preventDefault();
+                // Get message text
+                let msg = e.target.elements.msg.value;
+
+                msg = msg.trim();
+
+                if (!msg) {
+                    return false;
+                }
+                // Emit message to server
+                socket.emit('livechat:sent', { id: targetId, msg, owner: targetId });
+                msg = { content: msg, liveId: chatId }
+                // Clear input
+                e.target.elements.msg.value = '';
+                e.target.elements.msg.focus();
+                $.post("/msg/live", msg)
+
+            })
+
+            sendNotif('livechat:request', 'LIVE CHAT SUPPORT', "Click here to attend to live chat", `/admin/livechat/${targetId}`, '', '')
+            socket.on('livechat:get', (adminId) => {
+                sendNotif('livechat:request', 'LIVE CHAT SUPPORT', "Click here to attend to live chat", `/admin/livechat/${targetId}`, '', adminId)
+            })
+
+        });
+    })
+</script>

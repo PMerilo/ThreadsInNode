@@ -4,7 +4,8 @@ const flashMessage = require('../views/helpers/messenger');
 const sequelizeUser = require("../config/DBConfig");
 const { serializeUser } = require('passport');
 const bcrypt = require('bcryptjs');
-const sequelize = require('sequelize')
+const sequelize = require('sequelize');
+const Nanoid = require('nanoid');
 //Our Models
 const User = require("../models/User")
 const Ticket = require("../models/Ticket")
@@ -42,6 +43,7 @@ const OrderItems = require('../models/OrderItems');
 const Notification = require('../models/Notification');
 const UserNotification = require('../models/UserNotifications');
 const Tailor = require('../models/Tailor');
+const Chat = require('../models/Chat');
 
 // for forgetpassword
 otp = 'placeholder'
@@ -702,6 +704,22 @@ router.post('/tickets', ensureAuthenticated, async function (req, res) {
     }
 })
 
+router.get('/livechat', async (req, res) => {
+    res.render(`support/livechat`)
+})
+
+router.get('/livechat/generate', async (req, res) => {
+    let chatId;
+    while (true) {
+        chatId = Nanoid.nanoid()
+        let chat = await Chat.findOne({ where: { liveId: chatId, livechat: true }})
+        if (chat === null){
+            break
+        }
+    }
+    res.json({ chatId })
+})
+
 router.get('/CommunityFAQPage', async (req, res) => {
     comments = (await FAQ.findAll()).map((x) => x.dataValues)
     res.render("qnaPages/communityFAQpage.handlebars", { comments })
@@ -951,16 +969,14 @@ router.post("/createnotification", async (req, res) => {
         url: url,
         senderId: sender
     })
-    console.log(recipient)
     if (!isNaN(recipient)) {
         let user = await User.findByPk(recipient)
         notification.addUser(user)
     } else if (recipient == "tailors") {
-        let users = await User.findAll({include: {model: Tailor, required: true}})
+        let users = await User.findAll({ include: { model: Tailor, required: true } })
         users.forEach(async user => {
             await notification.addUser(user)
         });
-        console.log(JSON.stringify(notification))
     }
 
     // return res.json(notification)

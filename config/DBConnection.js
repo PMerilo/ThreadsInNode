@@ -20,6 +20,10 @@ const OrderItems = require('../models/OrderItems');
 const Review = require('../models/Reviews');
 const Notification = require('../models/Notification');
 const UserNotification = require('../models/UserNotifications');
+const Chat = require('../models/Chat');
+const Msg = require('../models/Msg');
+const ChatUser = require('../models/ChatUser');
+const NotificationCount = require('../models/NotificationCount');
 
 // If drop is true, all existing tables are dropped and recreated
 const setUpDB = (drop) => {
@@ -35,11 +39,13 @@ const setUpDB = (drop) => {
             User.hasMany(Appointment, {onDelete: 'CASCADE'})
             User.hasOne(Tailor, {foreignKey: {allowNull: false}, onDelete: 'CASCADE'})
 
+            User.hasOne(NotificationCount)
+            NotificationCount.belongsTo(User)
+
             User.belongsToMany(Notification, {through: UserNotification})
             Notification.belongsToMany(User, {through: UserNotification})
 
             Request.hasMany(Appointment, {onDelete: 'CASCADE'})
-            Request.belongsTo(Service, { as: 'service' });
             Request.belongsTo(User, {as: 'user', foreignKey: 'userId'})
             Request.belongsTo(User, {as: 'tailor', foreignKey: 'tailorId'})
             Request.belongsTo(User, {as: 'tailorChange', foreignKey: 'tailorChangeId'})
@@ -47,8 +53,6 @@ const setUpDB = (drop) => {
             Appointment.belongsTo(Request)
             Appointment.belongsTo(User, {as: 'user', foreignKey: 'userId'})
             Appointment.belongsTo(User, {as: 'tailor', foreignKey: 'tailorId'})
-
-            Service.hasMany(Request, { as: 'requests'})
 
             Tailor.hasMany(Appointment)
             Tailor.belongsTo(User)
@@ -72,6 +76,21 @@ const setUpDB = (drop) => {
             Review.belongsTo(Product)
             Product.hasMany(Review)
 
+            Chat.hasMany(Request, {onDelete: "CASCADE"})
+            Request.belongsTo(Chat, {onDelete: "CASCADE"})
+
+            Chat.belongsToMany(User, {through: ChatUser})
+            User.belongsToMany(Chat, {through: ChatUser})
+
+            Chat.hasMany(ChatUser)
+            ChatUser.belongsTo(Chat)
+            User.hasMany(ChatUser)
+            ChatUser.belongsTo(User)
+
+            Chat.hasMany(Msg, {onDelete: "CASCADE"})
+            Msg.belongsTo(Chat, {onDelete: "CASCADE"})
+            Msg.belongsTo(User, {onDelete: "CASCADE"})
+            
             mySQLDB.sync({
                 alter: true,
                 force: drop
