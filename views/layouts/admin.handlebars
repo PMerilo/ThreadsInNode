@@ -32,15 +32,14 @@
         $(document).ready(() => {
             $.get(`/api/checktailor`, (data) => {
                 const x = [
-                    `<a id="chat-btn" class="btn btn-white ms-auto position-relative px-4" href="/admin/requests/chat">`,
-                    `<i class="bi bi-envelope fs-5"></i>`,
+                    `<li class="nav-item">`,
+                    `<a id="chat-btn" class="nav-link position-relative bi bi-envelope fs-5 mx-3" href="/admin/requests/chat">`,
                     `</a>`,
-                    `<div class="vr"></div>`
+                    `</li>`,
+                    `<div class="vr align-self-center" style="min-height: 1.8em;"></div>`,
                 ]
                 if (data) {
-                    $('#breadcrumb').find('ol').after(x.join(''))
-                } else {
-                    $('#notificationdropdown').parent().addClass("ms-auto")
+                    $('#breadcrumb-links').prepend(x.join(''))
                 }
 
             })
@@ -49,7 +48,8 @@
                     if ($('#notifications').find('li').length == 0) {
                         $('#notifications').text('')
                     }
-                    const x = ['<li>',
+                    const x = [
+                        '<li>',
                         `<a class="position-relative py-2 dropdown-item notification-link" href="${data.url}">`,
                         `<p class="m-0 text-wrap">${data.title}</p>`,
                         `<p class="m-0 text-wrap notification-body">${data.body}</p>`,
@@ -78,34 +78,77 @@
             }
             getNotificationCount()
 
-            function updateNotificationCount() {
-                var operation = 'increment';
-                var type = 'msg';
-                $.post('/api/updatenotificationcount', { id, operation, type }, (data) => {
-                    if ($('#chat-btn').find('span').length == 0) {
-                        const x = [
-                            `<span class="position-absolute translate-middle badge rounded-pill bg-danger" style="font-size: 9px; top:25%;">`,
-                            `1 `,
-                            `<span class="visually-hidden">unread messages</span>`,
-                            `</span>`
-                        ]
-                        $('#chat-btn').append(x.join(''))
-                    } else {
-                        var t = $('#chat-btn').find(".badge").text()
-                        var num = parseInt(t)
+            function updateNotificationCount(notificationtype, operation = '+') {
+                if ($(notificationtype).find('span').length == 0 && operation == '+') {
+                    const x = [
+                        `<span class="position-absolute translate-middle badge rounded-pill bg-danger" style="font-size: 9px; top:25%;">`,
+                        `1 `,
+                        `<span class="visually-hidden">unread messages</span>`,
+                        `</span>`
+                    ]
+                    $(notificationtype).append(x.join(''))
+                } else {
+                    var t = $(notificationtype).find(".badge").text()
+                    var num = parseInt(t)
+                    if (operation == "+") {
                         num++
-                        $('#chat-btn').find(".badge").text(num)
+                    } else if (operation == '-') {
+                        num--
                     }
-                })
+                    if (num == 0) {
+                        $(notificationtype).find(".badge").remove()
+                    } else {
+                        $(notificationtype).find(".badge").text(num)
+                    }
+                }
             }
 
-            socket.on('request:message', (data) => {
-                console.log(window.location.pathname.split('/').pop(), data.chatId)
+            socket.on('livechat:request', (data) => {
+                //console.log(window.location.pathname.split('/').pop(), data.chatId)
+                console.log("new livechat")
                 if (window.location.pathname.split('/').pop() != data.chatId) {
-                    updateNotificationCount()
+                    updateNotificationCount('#LiveChatnotificationdropdown')
                 }
             })
+
+            socket.on('request:message', (data) => {
+                //console.log(window.location.pathname.split('/').pop(), data.chatId)
+                if (window.location.pathname.split('/').pop() != data.chatId) {
+                    updateNotificationCount('#chat-btn')
+                }
+            })
+
+            socket.on('livechat:request', (data) => {
+                if (data) {
+                    if ($('#LiveChatnotifications').find('li').length == 0) {
+                        $('#LiveChatnotifications').text('')
+                    }
+                    const x = ['<li>',
+                        `<a class="position-relative py-2 dropdown-item notification-link" href="${data.url}">`,
+                        `<p class="m-0 text-wrap">${data.title}</p>`,
+                        `<p class="m-0 text-wrap notification-body">${data.body}</p>`,
+                        `<span class="position-absolute end-0 top-50 translate-middle p-1 bg-danger border border-light rounded-circle"></span>`,
+                        `</a>`,
+                        `</li>`,
+                        `<hr class="m-0">`
+                    ]
+                    $('#LiveChatnotifications').prepend(x.join(''))
+                }
+            })
+
+            socket.on('livechat:remove', ({ href }) => {
+                console.log($('#LiveChatnotifications').find(`a[href="${href}"]`))
+                let x = $('#LiveChatnotifications').find(`a[href="${href}"]`).parent()
+                x.next().remove()
+                x.remove()
+                if ($('#LiveChatnotifications').find('li').length == 0) {
+                    $('#LiveChatnotifications').text('No Live Chat Support to show')
+                }
+                updateNotificationCount('#LiveChatnotificationdropdown', '-')
+            })
+
         })
+
     </script>
 </body>
 

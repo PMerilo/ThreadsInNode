@@ -6,11 +6,13 @@ class Chat extends sequelize.Model {
 }
 Chat.init({
     open: { type: sequelize.BOOLEAN, allowNull: false, defaultValue: true },
+    livechat: { type: sequelize.BOOLEAN, allowNull: false, defaultValue: false },
+    liveId: { type: sequelize.STRING, allowNull: true }
 },
     {
         timestamps: true,
         sequelize: db,
-        modelName: "chat",        
+        modelName: "chat",
     }
 )
 

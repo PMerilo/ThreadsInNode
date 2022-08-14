@@ -7,11 +7,22 @@ module.exports = (io, socket) => {
         socket.to(`User ${payload.recipient}`).emit('request:notif', payload)
     }
 
-    const admin = (payload) => {
-        socket.to(`admins`).emit('notification', payload)
+    
+    const removeLivechat = (payload) => {
+        socket.to(`admins`).emit('livechat:remove', payload)
+    }
+
+    const sendLivechat = (payload) => {
+        socket.to(payload.recipient ? payload.recipient : `admins`).emit('livechat:request', payload)
+    }
+
+    const getLivechat = (payload) => {
+        socket.to(`livechat`).emit('livechat:get', payload.adminId)
     }
 
     socket.on("default", test);
     socket.on("request:notif", requests);
-    socket.on("livechat:request", admin);
+    socket.on("livechat:request", sendLivechat);
+    socket.on("livechat:get", getLivechat);
+    socket.on("livechat:remove", removeLivechat);
 }

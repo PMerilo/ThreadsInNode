@@ -39,8 +39,11 @@
             }
         })
 
-        socket.on('livechat:disconnect', () => {
-            $('.cust-name').text("User has disconnected")
+        socket.on('livechat:disconnect', (room) => {
+            if (`User ${targetId}` == room) {
+                $('.cust-name').text("User has disconnected")
+                $.post('/msg/closeroom', { chatId: targetId })
+            }
         })
 
         function msgFormater(owner, content) {
@@ -86,11 +89,15 @@
 
             // Emit message to server
             socket.emit('livechat:sent', { id: targetId, msg, owner: id });
+            msg = { content: msg, liveId: targetId, userId: id }
 
 
             // Clear input
             e.target.elements.msg.value = '';
             e.target.elements.msg.focus();
+
+            $.post("/msg/live", msg)
+
 
         });
     })

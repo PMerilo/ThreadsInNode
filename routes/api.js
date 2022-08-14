@@ -121,6 +121,11 @@ router.get("/getnotifications", async (req, res) => {
     return res.json(notifications)
 })
 
+router.get('/livechats', async (req, res) => {
+    let chats = await Chat.findAll({where: {livechat: true, open: true}})
+    res.json({chats})
+})
+
 router.get("/create", async (req, res) => {
     // let chat = await Chat.create({})
     let tailor = await User.findByPk(1)
@@ -180,7 +185,6 @@ router.post("/updatenotificationcount", async (req, res) => {
         } else if (type == "notification") {
             notificationcount = await NotificationCount.update({ notificationcount: 0 })
         }
-        console.log(notificationcount)
         return res.json({ notificationcount })
     }
 })

@@ -11,31 +11,44 @@
       </li>
 
     </ol>
-    <div class="dropdown">
-      <button class="btn btn-white px-4" type="button" id="notificationdropdown" data-bs-toggle="dropdown"
-        aria-expanded="false">
-        <i class="fs-5 position-relative bi bi-bell">
-        </i>
-      </button>
-      <ul class="dropdown-menu p-0 overflow-auto" aria-labelledby="notificationdropdown" id="notifications">
-        {{#if false}}
-        <li>
-          <a class="position-relative py-2 dropdown-item notification-link" href="">
-            <p class="m-0 text-wrap">we</p>
-            <p class="m-0 text-wrap notification-body">ew</p>
+    <ul class="navbar-nav d-flex flex-row align-items-center ms-auto" id="breadcrumb-links">
+      <li class="nav-item dropdown">
+        <a class="nav-link mx-3" role="button" id="LiveChatnotificationdropdown" data-bs-toggle="dropdown"
+          aria-expanded="false">
+          <i class="bi bi-headset fs-5 position-relative"></i>
+        </a>
+        <ul class="dropdown-menu p-0 overflow-auto" aria-labelledby="LiveChatnotificationdropdown" id="LiveChatnotifications" style="min-width: 250px;">
+          No Live Chat Support to show
+        </ul>
 
-            <span
-              class="position-absolute end-0 top-50 translate-middle p-1 bg-danger border border-light rounded-circle">
-            </span>
-          </a>
-        </li>
+      </li>
+      <div class="vr align-self-center" style="min-height: 1.8em;"></div>
+      <li class="nav-item dropdown">
+        <a class="nav-link mx-3" role="button" id="notificationdropdown" data-bs-toggle="dropdown"
+          aria-expanded="false">
+          <i class="fs-5 position-relative bi bi-bell">
+          </i>
+        </a>
+        <ul class="dropdown-menu p-0 overflow-auto" aria-labelledby="notificationdropdown" id="notifications">
+          {{#if false}}
+          <li>
+            <a class="position-relative py-2 dropdown-item notification-link" href="">
+              <p class="m-0 text-wrap">we</p>
+              <p class="m-0 text-wrap notification-body">ew</p>
 
-        <hr class="m-0">
-        {{else}}
-        No Notifications to show
-        {{/if}}
-      </ul>
+              <span
+                class="position-absolute end-0 top-50 translate-middle p-1 bg-danger border border-light rounded-circle">
+              </span>
+            </a>
+          </li>
 
-    </div>
+          <hr class="m-0">
+          {{else}}
+          No Notifications to show
+          {{/if}}
+        </ul>
+
+      </li>
+    </ul>
   </nav>
 </div>

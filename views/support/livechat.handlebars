@@ -35,6 +35,7 @@
             } else {
                 socket.emit('rooms', [`User ${targetId}`])
             }
+            socket.emit('rooms', ['livechat'])
 
             function msgFormater(owner, content) {
                 var options = new Array()
@@ -57,7 +58,6 @@
             }
 
             socket.on('livechat:receive', (data) => {
-                console.log("msg recieved")
                 var owner = data.owner == targetId
                 $('#chat-panel').append(msgFormater(owner, data.msg))
                 var d = $('#chat-panel');
@@ -71,12 +71,15 @@
                 $('#chat-closed').hide()
                 $('#chat-box').show()
                 socket.emit('livechat:acknowledgement', { id, x })
+                socket.emit('livechat:remove', {href: `/admin/livechat/${targetId}`})
+                socket.removeAllListeners('livechat:get')
             })
 
             socket.on('livechat:disconnect', (room) => {
                 if (`User ${targetId}` == room) {
                     $('#chat-panel').append(msgFormater(false, `Admin has left the chat`))
                     $('.help-text').html('Did our customer service representive help you? Let us know <a href="/feedback">here</a>!')
+                    $.post('/msg/closeroom', {chatId: targetId})
                 }
             })
 
@@ -90,17 +93,20 @@
                 if (!msg) {
                     return false;
                 }
-
                 // Emit message to server
                 socket.emit('livechat:sent', { id: targetId, msg, owner: targetId });
-
+                msg = { content: msg, liveId: chatId }
                 // Clear input
                 e.target.elements.msg.value = '';
                 e.target.elements.msg.focus();
+                $.post("/msg/live", msg)
 
             })
 
             sendNotif('livechat:request', 'LIVE CHAT SUPPORT', "Click here to attend to live chat", `/admin/livechat/${targetId}`, '', '')
+            socket.on('livechat:get', (adminId) => {
+                sendNotif('livechat:request', 'LIVE CHAT SUPPORT', "Click here to attend to live chat", `/admin/livechat/${targetId}`, '', adminId)
+            })
 
         });
     })

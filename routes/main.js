@@ -41,6 +41,7 @@ const OrderItems = require('../models/OrderItems');
 const Notification = require('../models/Notification');
 const UserNotification = require('../models/UserNotifications');
 const Tailor = require('../models/Tailor');
+const Chat = require('../models/Chat');
 
 // for forgetpassword
 otp = 'placeholder'
@@ -551,8 +552,15 @@ router.get('/livechat', async (req, res) => {
 })
 
 router.get('/livechat/generate', async (req, res) => {
-    let chatId = Nanoid.nanoid()
-    res.json({chatId})
+    let chatId;
+    while (true) {
+        chatId = Nanoid.nanoid()
+        let chat = await Chat.findOne({ where: { liveId: chatId, livechat: true }})
+        if (chat === null){
+            break
+        }
+    }
+    res.json({ chatId })
 })
 
 router.get('/CommunityFAQPage', async (req, res) => {
@@ -808,7 +816,7 @@ router.post("/createnotification", async (req, res) => {
         let user = await User.findByPk(recipient)
         notification.addUser(user)
     } else if (recipient == "tailors") {
-        let users = await User.findAll({include: {model: Tailor, required: true}})
+        let users = await User.findAll({ include: { model: Tailor, required: true } })
         users.forEach(async user => {
             await notification.addUser(user)
         });

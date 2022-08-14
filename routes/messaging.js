@@ -16,11 +16,27 @@ const ensureAuthenticated = require('../views/helpers/auth');
 const Msg = require('../models/Msg');
 const Chat = require('../models/Chat');
 
+router.post("/live", async (req, res) => {
+    const { content, liveId, userId } = req.body
+    let [chat, created] = await Chat.findOrCreate({ where: { liveId: liveId, livechat: true }, defaults: { liveId: liveId, livechat: true } })
+    chat.createMsg({
+        content: content,
+        userId: userId,
+        seen: true
+    })
+    return res.json({})
+})
+
+router.post("/closeroom", async (req, res) => {
+    const { chatId } = req.body
+    await Chat.update({ open: false }, { where: { liveId: chatId } })
+    return res.json({})
+})
+
 router.all("/*", ensureAuthenticated)
 
 router.post("/", async (req, res) => {
     const { content, userId, chatId } = req.body
-    console.log(req.body)
     let msg = await Msg.create({
         content: content,
         userId: userId,
@@ -54,8 +70,8 @@ router.get("/", async (req, res) => {
 })
 
 router.post('/markasseen', async (req, res) => {
-    let {chatId} = req.body
-    let chat = await Msg.update({seen: true},{ where: { seen: false, userId: { [Op.ne]: req.user.id }, chatId: chatId }, include: { model: Chat, include: { model: User, where: {id: req.user.id}, required: true} , required: true}, raw:true })
+    let { chatId } = req.body
+    let chat = await Msg.update({ seen: true }, { where: { seen: false, userId: { [Op.ne]: req.user.id }, chatId: chatId }, include: { model: Chat, include: { model: User, where: { id: req.user.id }, required: true }, required: true }, raw: true })
     res.json({})
 })
 module.exports = router;

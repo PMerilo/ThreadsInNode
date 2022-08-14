@@ -30,11 +30,13 @@ socket.on('connect', () => {
     })
   }
   getNotifs()
+  if (window.location.pathname.startsWith('/admin')) {
+    socket.emit('livechat:get', {adminId: socket.id})
+  }
 })
 
 socket.on('notification', (data) => {
   if (data) {
-    console.log(data)
     if ($('#notifications').find('li').length == 0) {
       $('#notifications').text('')
     }
