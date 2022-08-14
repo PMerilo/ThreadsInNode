@@ -99,19 +99,19 @@
             </div>
         </div>
 
-        <!-- Number of Message Card -->
+        <!-- Number of Ticket Card -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-warning shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Messages</div>
+                                Current Pending Tickets</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{totalSubs}}</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{totalTickets}}</div>
                             <br>
                             <div class="card-footer d-flex align-items-center justify-content-between">
-                                <a type="button" class="small text-black stretched-link" data-bs-toggle="modal" data-bs-target="#Subscribers_Today">View Details</a>
+                                <a type="button" class="small text-black stretched-link" data-bs-toggle="modal" data-bs-target="#Pending_Tickets">View Details</a>
                                 <div class="small text-white"><i class="bi bi-chevron-right"></i></div>
                             </div>
                         </div>
@@ -122,6 +122,8 @@
                 </div>
             </div>
         </div>
+
+        
     
 
         <div class="col-xl-8 col-lg-7">
@@ -172,6 +174,8 @@
                 
             </div>
 
+            
+
         </div>
 
         <!-- User Roles Pie Chart -->
@@ -195,7 +199,7 @@
             
         </div>
         
-        <div class="card shadow mb-4">
+            <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">User Genders</h6>
@@ -210,10 +214,28 @@
                         <h5 class="text-gray-900 m-0">User Genders</h5>
                         <span class="text-gray-600 small">List Of Our Users Genders</span>
                 </div>
+            </div>
+        
         </div>
         
-    </div>
 
+</div>
+<div class="col">
+        <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Customer Statisfaction</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-bar">
+                        <canvas id="CustomerSatisfactionBarchart"></canvas>
+                    </div>
+                    <hr>
+                    <div class="text-center">
+                        <h5 class="small"><b>Customer Satisfaction Entries</b></h5>
+                        <h4 class="small font-weight-bold text-primary">Customer Ratings (1-5)</h4>
+                    
+                </div>
+            </div>   
 </div>
 
 
@@ -356,7 +378,7 @@
                         <td>{{this.reportType}}</td>
                         
                         <td>{{this.tags}}</td>
-                        <td>{{this.date}}</td>D
+                        <td>{{this.date}}</td>
                         
                         
                         
@@ -375,6 +397,66 @@
         </div>
     </div>
     </div>
+
+{{!-- Pending Tickets Log --}}
+<div class="modal" id="Pending_Tickets">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+        <div class="row">
+            
+            
+            <div class="container col-12 modal-info">
+            <button type="button" class="btn-close x-button" data-bs-dismiss="modal"></button>
+            <div class="modal-header">
+                <h6 class="modal-title">Our Recent Ticket Requests</h6>
+                
+            </div>
+            
+            <div class="modal-body">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                    
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Pending Status</th>
+                    <th>Urgency</th>
+                    <th>Owner</th>
+                    <th>Image</th>
+                    
+                    
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{#each totalTicketsOpen}}
+                        <tr>
+                        
+                        <td>{{this.title}}</td>
+                        <td>{{this.description}}</td>
+                        <td>{{this.pendingStatus}}</td>
+                        <td>{{this.urgency}}</td>
+                        <td>{{this.owner}}</td>
+                        <td><img src="{{this.posterURL}}" alt="" height="100px"></td>
+                        
+                        
+                        
+                        </tr>
+                    {{/each}}
+                
+                    </tbody>
+                    </table>
+            </div>
+
+            <div class="modal-footer">
+                <a href="/admin/TicketMangement">View Full Details</a>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div>
+    
+
 
 
 <!-- /.container-fluid -->

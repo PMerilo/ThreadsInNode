@@ -47,9 +47,7 @@ var ctx2 = document.getElementById("UserGendersPieChart");
 getUserGendersData.done(function(data){
 var Males= data.df[0].Male
 var Females = data.df[0].Female
-console.log(data.df)
-console.log(Males)
-console.log(Females)
+
 var myPieChart = new Chart(ctx2, {
   type: 'doughnut',
   data: {
@@ -80,3 +78,44 @@ var myPieChart = new Chart(ctx2, {
   },
 });
 })
+
+// Survey Occupation Data
+var getOccupationData = $.get('/datapipeline/SurveyQuestionsOccupation')
+getOccupationData.done(function(data){
+
+var ctx3 = document.getElementById("UserOccupationPieChart");
+labels = ["Student","Full-Time-Job","FreeLancer","Other"]
+let values = [data.df[0].student,data.df[0].fulltime,data.df[0].freelancer,data.df[0].other]
+var myPieChart = new Chart(ctx3, {
+  type: 'doughnut',
+  data: {
+    labels: ["Student","Full-Time-Job","FreeLancer","Other"],
+    datasets: [{
+      data: values,
+      backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
+      hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+      hoverBorderColor: "rgba(234, 236, 244, 1)",
+    }],
+  },
+  options: {
+    maintainAspectRatio: false,
+    tooltips: {
+      backgroundColor: "rgb(255,255,255)",
+      bodyFontColor: "#858796",
+      borderColor: '#dddfeb',
+      borderWidth: 1,
+      xPadding: 15,
+      yPadding: 15,
+      displayColors: true,
+      caretPadding: 10,
+    },
+    legend: {
+      display: true
+    },
+    cutoutPercentage: 80,
+  },
+});
+
+
+})
+

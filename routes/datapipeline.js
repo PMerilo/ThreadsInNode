@@ -9,6 +9,7 @@ const User = require("../models/User")
 
 const UsersJoinedLog = require("../models/Logs/JoinedUsersLogs")
 const NewsLetterLog = require("../models/Logs/NewsLetterLogs")
+const CustomerSatisfactionLog = require("../models/Logs/CustomerSatisfactionLog")
 const ensureAuthenticated = require("../views/helpers/auth");
 const ensureAdminAuthenticated = require("../views/helpers/adminAuth");
 const { sequelize, sum } = require('../models/User');
@@ -18,11 +19,12 @@ const moment = require('moment')
 const dfd = require("danfojs-node");
 
 const Product = require('../models/Product');
+const Survey = require('../models/Survey');
 
 const ChartJsImage = require('chartjs-to-image');      
 router.use((req, res, next) => {
   res.locals.path = req.baseUrl;
-  console.log(req.baseUrl);
+  // console.log(req.baseUrl);
   //Checks url for normal users and admin
   next();
 });
@@ -70,7 +72,7 @@ router.get('/NoOfUsersJoined', async (req, res) => {
   
   var NoOfUsers_day = [];
   var dates_day = [];
-  console.log(df2)
+  // console.log(df2)
   df2.forEach((element) => {
     NoOfUsers_day.push(element["NoOfUsersJoined_sum"]);
     dates_day.push(element["Dates"].toString().slice(0,10));
@@ -137,7 +139,7 @@ router.get('/NoOfNewsLetterSubscriptions', async (req, res) => {
 
   var NoOfUsers_day = [];
   var dates_day = [];
-  console.log(df2)
+ 
   df2.forEach((element) => {
     NoOfUsers_day.push(element["NoOfNewsLetterSubscriptions_sum"]);
     dates_day.push(element["Dates"].toString().slice(0,10));
@@ -173,7 +175,7 @@ router.get('/NoOfUsersJoinedMonth', async (req, res) => {
 
   df = new dfd.DataFrame(data,{columns:["Dates","NoOfUsersJoined"]})
   group_df = df.groupby(["Dates"]).sum()
-  console.log(group_df)
+  
   const df2 = dfd.toJSON(group_df,{format:"json"})
   res.status(200).json({ 'data':df2 })
   // data = data.map(x => {
@@ -301,6 +303,124 @@ router.get('/UserGenders', async (req, res) => {
   
   res.status(200).json({ df })
 });
+
+router.get('/CustomerSatisfaction', ensureAuthenticated, async (req, res) => {
+  const customerSatisfactionLogs = await CustomerSatisfactionLog.findAll(); 
+  let rating1 = 0;
+  let rating2 = 0;
+  let rating3 = 0;
+  let rating4 = 0;
+  let rating5 = 0;
+
+  let data = [];
+  let cols = ["1 Star Rating","2 Star Rating","3 Star Rating","4 Star Rating","5 Star Rating"];
+
+
+  customerSatisfactionLogs.forEach(element => {
+    if(element.rating == 1){
+      rating1++
+    }else if(element.rating == 2){
+      rating2++
+    }else if(element.rating == 3){
+      rating3++
+    }else if(element.rating == 4){
+      rating4++
+    }else if(element.rating == 5){
+      rating5++
+    }
+    
+    
+    
+    
+  });
+  let rawData = [rating1,rating2,rating3,rating4,rating5];
+    data.push(rawData)
+
+  df = new dfd.DataFrame(data,{columns:cols})
+  myBarChart = new ChartJsImage();
+  myBarChart.setConfig({
+    type: 'bar',
+    data: {
+      labels: ["1 Star Rating","2 Star Rating","3 Star Rating","4 Star Rating","5 Star Rating"],
+      datasets: [{
+        label: "Number Of Users",
+        lineTension: 0.3,
+        backgroundColor: ["red", "orange", "yellow", "green", "blue"],
+        borderColor: "rgba(78, 115, 223, 1)",
+        data: [rating1,rating2,rating3,rating4,rating5],
+      }],
+    }
+  });
+
+  myBarChart.toFile('./public/images/ChartImages/CustomerSatisfactionBarChart.png');
+  res.status(200).json({ 'data':df })
+  
+});
+
+
+// Survey Questions
+
+router.get('/SurveyQuestionsAge', async (req, res) => {
+  const surveyQuestions = await Survey.findAll(); 
+  let data = [];
+  let cols = ["Above 60","40 to 60","20 to 40","Below 20"];
+  let ageabove60 = 0;
+  let age40to60 = 0;
+  let age20to40 = 0;
+  let agebelow20 = 0;
+
+  surveyQuestions.forEach(element => {
+    if(element.age == "Above 60"){
+      ageabove60++
+    }
+    else if(element.age == "40 to 60"){
+      age40to60++
+    }
+    else if(element.age == "20 to 40"){
+      age20to40++
+    }
+    else if(element.age == "Below 20"){
+      agebelow20++
+    }
+  });
+  let rawData = [ageabove60,age40to60,age20to40,agebelow20];
+  data.push(rawData)
+  df = new dfd.DataFrame(data,{columns:cols})
+  res.status(200).json({ 'data':df })
+})
+
+router.get('/SurveyQuestionsOccupation', async (req, res) => {
+  const surveyQuestions = await Survey.findAll(); 
+  let data = [];
+  let cols = ["student","fulltime","freelancer","other"];
+  let student = 0;
+  let fulltime = 0;
+  let freelancer = 0;
+  let other = 0;
+
+  surveyQuestions.forEach(element => {
+    if(element.occupation == "student"){
+      student++
+    }
+    else if(element.occupation == "full-time-job"){
+      fulltime++
+    }
+    else if(element.occupation == "freelancer"){
+      freelancer++
+    }
+    else if(element.occupation == "other"){
+      other++
+    }
+  });
+  let rawData = [student,fulltime,freelancer,other];
+  data.push(rawData)
+
+  
+  df = new dfd.DataFrame(data,{columns:["student","fulltime","freelancer","other"]})
+  res.status(200).json({ 'data':df })
+})
+
+
 
 router.get('/InventoryReport', ensureAuthenticated, async (req, res) => {
   const Inventory = await Product.findAll({where:{ownerID:req.user.id}})

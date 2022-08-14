@@ -158,8 +158,10 @@ textarea:focus {
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 
 
-<div class="container card message" style="padding:100px">
+<div class="container card message" style="padding:150px">
   <h1 class="message-title" >Send A Message</h1>
+  <h4>Send a message to our newsletter subscribers here!</h4>
+  <br>
 
   <form action="/admin/NewsLetterSendMail" method="post">
   
@@ -177,36 +179,8 @@ textarea:focus {
 
     
     
-    
 
-    <div id=""></div>
-    <br>
-    <div class="custom-file mb-2" >
-            
-          <input type="file" class="custom-file-input" id="posterUpload" name="posterUpload"
-          accept="image/png,image/jpeg,image/jpg,image/gif">
-          <label class="custom-file-label" for="customFile">Choose File</label>
-					
-					<div class="text-danger small mb-2" id="posterErr" style="display:none; " ></div>
-          
-					<img id="poster" src="/images/no-image.jpg" alt="Poster" class="border img-thumbnail img-fluid" style="margin:auto">
-					{{!—- Hidden field to submit URL of poster to the server --}}
-					<input id="posterURL" type="hidden" name="posterURL" >
-          
-      </div>
-
-    {{!-- <label for="name" class="name">Name
-      <!-- keep <p> on next line to keep a letter space for mobile version -->
-      <p id="break">(Optional)</p>
-    </label>
-    <input class="first-name" type="text" name="first-name" placeholder="First Name" maxlength="20">
-    <input class="last-name" type="text" name="last-name" placeholder="Last Name" maxlength="20">
-
-    <label for="email" class="email">Email
-      <!-- keep <b> on next line to keep a letter space for mobile version -->
-      <p id="break">(Optional)</p>
-    </label>
-    <input type="email" name="email" placeholder="example@email.com"> --}}
+   
 
     <p class="button-container">
       <input class="button" type="submit" value="Send">

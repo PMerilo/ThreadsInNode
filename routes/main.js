@@ -14,8 +14,11 @@ const Wishlist = require('../models/Wishlist')
 const Message = require("../models/Messages")
 const CartProduct = require("../models/CartProduct")
 const FAQ = require("../models/FAQ")
+const Survey = require("../models/Survey")
 
 const NewsLetterLog = require("../models/Logs/NewsLetterLogs")
+const JoinedUsersLogs = require("../models/Logs/JoinedUsersLogs")
+const CustomerSatisfactionLog = require("../models/Logs/CustomerSatisfactionLog")
 //Ensures User is autenticated before accessing
 //page
 const ensureAuthenticated = require("../views/helpers/auth");
@@ -34,7 +37,7 @@ const mail = require("../config/NewMailConfig");
 
 router.use((req, res, next) => {
     res.locals.path = req.baseUrl;
-    console.log(req.baseUrl);
+    // console.log(req.baseUrl);
     //Checks url for normal users and admin
     next();
 });
@@ -83,7 +86,7 @@ router.post('/search', async (req,res) =>{
 
 router.post('/addtoCart',ensureAuthenticated, async (req,res) =>{
     var sku = req.body.sku;
-    console.log(sku)
+    // console.log(sku)
     purchasedProduct = await Product.findOne({where:{sku:req.body.sku}})
     if(purchasedProduct.quantity>0){
         
@@ -96,7 +99,7 @@ router.post('/addtoCart',ensureAuthenticated, async (req,res) =>{
             if(checkProductinCart){
                 newCartProductQTY = parseInt(checkProductinCart.qtyPurchased) + parseInt(quantity)
                 newtotalCost = parseInt(newCartProductQTY) *  parseInt(purchasedProduct.price)
-                console.log(newtotalCost)
+                // console.log(newtotalCost)
                 CartProduct.update({qtyPurchased: newCartProductQTY, totalCost: newtotalCost},{where:{id:req.user.id+sku}} )
             }else{
                 
@@ -116,7 +119,7 @@ router.post('/addtoCart',ensureAuthenticated, async (req,res) =>{
             // flashMessage(res,"success", req.body.name + ' Purchased Successfully');
             // res.redirect("/")
         }catch(e){
-            console.log(e)
+            // console.log(e)
             res.redirect("/")
         }
         Product.update({quantity:newPurchasedProductQTY},{where:{sku:req.body.sku}})
@@ -129,15 +132,15 @@ router.post('/addtoCart',ensureAuthenticated, async (req,res) =>{
 router.post('/updateCart',ensureAuthenticated, async (req,res) =>{
     var quantity = req.body.quantity
     var sku = req.body.sku
-    console.log(quantity)
+    // console.log(quantity)
     cartProduct = await CartProduct.findOne({where:{id:req.user.id+sku}})
     product = await Product.findOne({where:{sku:sku}})
     productQuantity = cartProduct.qtyPurchased
     console.log(productQuantity)
     if (parseInt(quantity) <= 0) {
         quantity = 1
-        console.log(quantity)
-        // CartProduct.update({qtyPurchased: newqty},{where:{id:req.user.id+sku}} )
+        // console.log(quantity)
+        // // CartProduct.update({qtyPurchased: newqty},{where:{id:req.user.id+sku}} )
         // console.log(cartProduct.qtyPurchased + "hi")
     }
     if (parseInt(product.quantity) == 0) {
@@ -476,6 +479,42 @@ router.post('/addComment',ensureAuthenticated, async function (req,res)  {
     }   
 })
 
+router.get('/Survey',ensureAuthenticated ,async (req,res) => {
+
+    res.render("Survey")
+})
+
+router.post('/Survey',ensureAuthenticated ,async (req,res) => {
+    let {age,occupation,recommend,features,design,customerSupport,userCustomisation} = req.body;
+    if(features==undefined){
+        features = 0
+    }
+    if(design==undefined){
+        design = 0
+    }
+    if(customerSupport==undefined){
+        customerSupport = 0
+    }
+    if(userCustomisation==undefined){
+        userCustomisation = 0
+    }
+    
+
+    await Survey.create({
+        age: age,
+        occupation: occupation,
+        recommend: recommend,
+        Features: features,
+        design: design,
+        customerSupport: customerSupport,
+        userCustomisation: userCustomisation,
+    })
+    flashMessage(res,"success",'Survey Submitted Successfully. Thanks for your feedback.');
+
+
+    res.redirect("/Survey")
+})
+
 router.post('/deleteComment', async (req,res) => { 
     let{commentID} = req.body;
     
@@ -547,6 +586,13 @@ router.post('/feedback',ensureAuthenticated, async function (req,res) {
   
           });
           flashMessage(res,"success",'Feedback Sent Successfully');
+
+          await CustomerSatisfactionLog.create({
+            date: moment().format('L'),
+            rating: req.body.rating,
+            description: req.body.description,
+            remarks: req.body.remarks,
+          })
           res.redirect("/feedback")
     }catch(e){
          console.log(e)

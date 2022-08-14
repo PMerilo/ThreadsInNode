@@ -16,7 +16,9 @@ const ensureAdminAuthenticated = require("../views/helpers/adminAuth");
 const Request = require('../models/Request');
 const Tailor = require('../models/Tailor');
 const PDFDocument = require('pdfkit');
+const {jsPDF} = require('jspdf');
 const UsersJoinedLog = require("../models/Logs/JoinedUsersLogs")
+const NewsLetterLog = require("../models/Logs/NewsLetterLogs")
 // const blobStream  = require('blob-stream');
 // const PDFDocument = require("pdfkit-table");
 const fs = require('fs');
@@ -32,6 +34,7 @@ const nodemailer = require("nodemailer");
 // const { where } = require('sequelize/types');
 const Mail = require("../config/MailConfig");
 const mail = require("../config/NewMailConfig");
+const { cwd } = require('process');
 
 router.all('/*', ensureAdminAuthenticated, function (req, res, next) {
     req.app.locals.layout = 'admin'; // set your layout here
@@ -139,7 +142,7 @@ router.post('/TicketMangement/deleteTicket', ensureAdminAuthenticated, async (re
         });
 
     } catch (e) {
-        console.log(e)
+        // console.log(e)
         flashMessage(res, 'danger', "Ticket Reply Could Not Be Sent Owner Account May be Disabled");
         res.redirect("/admin/TicketMangement")
     }
@@ -196,7 +199,7 @@ router.post('/TicketMangement/reply', ensureAdminAuthenticated, async (req, res)
         });
 
     } catch (e) {
-        console.log(e)
+        // console.log(e)
         flashMessage(res, 'danger', "Ticket Reply Could Not Be Sent Owner Account May be Disabled");
         res.redirect("/admin/TicketMangement")
     }
@@ -278,15 +281,15 @@ router.post("/NewsLetterSendMail", ensureAdminAuthenticated, async (req, res) =>
         //     </div>
         //   </div>`,
             
-        console.log("Test")
+        
         
         
         let Path = path.join(process.cwd() ,"/public",posterURL)
         // let Path = path.join("../public",posterURL)
-        console.log(posterURL)
-        console.log(Path)
-        console.log("end of test")
-        console.log(posterURL.slice(posterURL.lastIndexOf("/") + 1))
+        // console.log(posterURL)
+        // console.log(Path)
+        // console.log("end of test")
+        // console.log(posterURL.slice(posterURL.lastIndexOf("/") + 1))
         //  });
         mail.Send({
             email_recipient: email,
@@ -316,11 +319,132 @@ router.get("/ReportsManagement", ensureAdminAuthenticated, async (req, res) => {
     res.render("admin/ReportManagement", { totalUsers,totalSubs,traffic,newsLetterTraffic })
 })
 
+router.post("/DownloadPDFReports", ensureAdminAuthenticated, async (req, res) => {
 
+    let { reportName,reportDescription,additionalTags,userTraffic,subscriptionTraffic,TrafficLogs,userRoles,userGenders,startDate,endDate,customerSatisfaction} = req.body;
+    const doc = new jsPDF();
+    let WavePath = path.join(__dirname, '../public/images/Letterhead.png')
+    let date = moment().format('L')
+    if(userTraffic!=undefined){
+        PathUsersJoinedChart = path.join(__dirname, '../public/images/ChartImages/UsersJoinedChart.png')
+    }
+    if(subscriptionTraffic!=undefined){
+        PathUsersSubscribedChart = path.join(__dirname, '../public/images/ChartImages/UsersSubscriptionChart.png')
+    }
+    doc.addImage(
+        'data:image/png;base64,' +
+            require('fs').readFileSync(`${WavePath}`, 'base64'),
+        'png',
+        0,
+        0,
+        210,
+        297
+        );
+
+    doc
+    .text("Threads In Times", 10, 10)
+    .setFont("BoldItalic")
+    .setFontSize(35);
+
+    doc.setFont("bold")
+    .setFontSize(20);
+    doc.text(`Title: ${reportName}`, 10, 40);
+
+    console.log(doc.getFontList())
+
+    // additional tags
+    doc.setFont("normal")
+    .setFontSize(10);
+    doc.text(`Additional Tags: ${additionalTags}`, 10, 60);
+
+    doc.setFont("Courier-Bold")
+    .setFontSize(10);
+    doc.text(`Date ${date}`, 10, 80);
+
+
+    if(startDate!=undefined && endDate!=undefined){
+        let cols = ["Dates","NoOfUsersJoined"];
+        let data = [];
+        const usersJoined = await UsersJoinedLog.findAll({where: {role:"C"}});
+        usersJoined.forEach(element => {
+            let rawData = [element.date, element.noOfUsersJoined];
+            data.push(rawData)
+        
+          });
+
+        // Set Day Data
+        dfDay = new dfd.DataFrame(data,{columns:cols})
+        group_dfDay = dfDay.groupby(["Dates"]).sum()
+        const df2 = dfd.toJSON(group_dfDay,{format:"json"})
+
+        var NoOfUsers_day = [];
+        var dates_day = [];
+        // console.log(df2)
+        df2.forEach((element) => {
+            
+            var strToStartDate = new Date(startDate).toISOString();
+            var strToEndDate = new Date(endDate).toISOString();
+            // console.log(strToStartDate)
+            // console.log(strToEndDate)
+            // console.log(element["Dates"])
+            if(element["Dates"].toISOString()>=strToStartDate && element["Dates"].toISOString()<=strToEndDate){
+            NoOfUsers_day.push(element["NoOfUsersJoined_sum"]);
+            dates_day.push(element["Dates"].toString().slice(0,10));
+           
+            }
+        });
+        const myChart = new ChartJsImage();
+        myChart.setConfig({
+        type: 'line',
+        data: { labels: dates_day, datasets: [{ label: 'Numbers of Users Joined', data: NoOfUsers_day }] },
+        
+        });
+
+        myChart.toFile(path.join(__dirname, '../public/images/ChartImages/UsersJoinedChart.png'));
+    }
+
+
+    // Chart Image
+    if(userTraffic!=undefined){
+        
+        pdfDoc
+        .moveDown()
+        .image(PathUsersJoinedChart, { align: 'center', width: 300, height: 200})
+
+    }
+    if(subscriptionTraffic!=undefined){
+        
+        pdfDoc
+        .moveDown()
+        .image(PathUsersSubscribedChart, { align: 'center', width: 300, height: 200})
+
+    }
+    console.log(userTraffic)
+    
+    if(userRoles!=undefined){
+        UserRolesPieChartPath = path.join(__dirname, '../public/images/ChartImages/UsersRolesPieChart.png')
+    }
+    
+    if(userGenders!=undefined){
+        UserGendersPieChartPath = path.join(__dirname, '../public/images/ChartImages/UsersGendersPieChart.png')
+    }
+
+    if(customerSatisfaction!=undefined){
+        CustomerSatisfactionPieChartPath = path.join(__dirname, '../public/images/ChartImages/CustomerSatisfactionBarChart.png')
+    }
+
+    
+    doc.save(`${reportName}.pdf`);
+    
+    res.download(`${reportName}.pdf`)
+
+
+
+})
 
 router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
     
-    let { reportName,reportDescription,additionalTags,userTraffic,subscriptionTraffic,TrafficLogs,userRoles,userGenders,startDate,endDate} = req.body;
+    let { reportName,reportDescription,additionalTags,userTraffic,subscriptionTraffic,TrafficLogs,userRoles,userGenders,startDate,endDate,customerSatisfaction} = req.body;
     var pdfDoc = new PDFDocument ({ bufferPages: true, font: 'Courier' });
     let Path = path.join(__dirname, '../public/images/logo.png')
     let WavePath = path.join(__dirname, '../public/images/Letterhead.png')
@@ -350,18 +474,18 @@ router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
 
         var NoOfUsers_day = [];
         var dates_day = [];
-        console.log(df2)
+        // console.log(df2)
         df2.forEach((element) => {
             
             var strToStartDate = new Date(startDate).toISOString();
             var strToEndDate = new Date(endDate).toISOString();
-            console.log(strToStartDate)
-            console.log(strToEndDate)
-            console.log(element["Dates"])
+            // console.log(strToStartDate)
+            // console.log(strToEndDate)
+            // console.log(element["Dates"])
             if(element["Dates"].toISOString()>=strToStartDate && element["Dates"].toISOString()<=strToEndDate){
             NoOfUsers_day.push(element["NoOfUsersJoined_sum"]);
             dates_day.push(element["Dates"].toString().slice(0,10));
-            console.log("success")
+           
             }
         });
         const myChart = new ChartJsImage();
@@ -371,7 +495,49 @@ router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
         
         });
 
-        myChart.toFile(path.join(__dirname, '../public/images/ChartImages/UsersJoinedChart.png'));
+        await myChart.toFile(path.join(__dirname, '../public/images/ChartImages/UsersJoinedChart.png'));
+
+        let cols2 = ["Dates","NoOfNewsLetterSubscriptions"];
+        let data2 = [];
+        const usersSubscribed = await NewsLetterLog.findAll();
+        usersSubscribed.forEach(element => {
+            let rawData = [element.date, element.noOfUsersJoined];
+            data2.push(rawData)
+        
+          }
+        );
+        // Set Day Data
+        dfDay2 = new dfd.DataFrame(data2,{columns:cols2})
+        group_dfDay2 = dfDay2.groupby(["Dates"]).sum()
+        const df3 = dfd.toJSON(group_dfDay2,{format:"json"})
+
+        var NoOfUsers_day2 = [];
+        var dates_day2 = [];
+        // console.log(df2)
+        console.log(df3)
+        console.log(data2)
+        df3.forEach((element) => {
+
+            var strToStartDate = new Date(startDate).toISOString();
+            var strToEndDate = new Date(endDate).toISOString();
+            
+            if(element["Dates"].toISOString()>=strToStartDate && element["Dates"].toISOString()<=strToEndDate){
+            
+            dates_day2.push(element["Dates"].toString().slice(0,10));
+           
+            }
+        }
+        );
+        const myChart2 = new ChartJsImage();
+        myChart2.setConfig({
+        type: 'line',
+        data: { labels: dates_day2, datasets: [{ label: 'Numbers of Users Subscribed', data: NoOfUsers_day2 }] },
+        
+        });
+
+        await myChart2.toFile(path.join(__dirname, '../public/images/ChartImages/UsersSubscriptionChart.png'))
+
+
     }
 
     if(userTraffic!=undefined){
@@ -381,21 +547,22 @@ router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
         PathUsersSubscribedChart = path.join(__dirname, '../public/images/ChartImages/UsersSubscriptionChart.png')
     }
 
-    
-
-  
 
    if(additionalTags == ""){
     additionalTags = "None"
    }
     let date = moment().format('L'); 
-    const stream = res.writeHead(200, {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment;filename=${reportName}.pdf`,
-      });
-    pdfDoc.on('data', (chunk) => stream.write(chunk));
+    // const stream = res.writeHead(200, {
+    //     'Content-Type': 'application/pdf',
+    //     'Content-Disposition': `attachment;filename=${reportName}.pdf`,
+    //   });
+    // pdfDoc.on('data', (chunk) => stream.write(chunk));
     
-    pdfDoc.on('end', () => stream.end());
+    // pdfDoc.on('end', () => stream.end());
+    
+    let stream = fs.createWriteStream(`./pdfs/${reportName}.pdf`);
+    pdfDoc.pipe(stream);
+    pdfDoc.pipe(res.setHeader('Content-disposition', `attachment; filename=${reportName}.pdf`));
     
     // Fit the image in the dimensions, and center it both horizontally and vertically
     
@@ -454,6 +621,11 @@ router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
         UserGendersPieChartPath = path.join(__dirname, '../public/images/ChartImages/UsersGendersPieChart.png')
     }
 
+    if(customerSatisfaction!=undefined){
+        CustomerSatisfactionPieChartPath = path.join(__dirname, '../public/images/ChartImages/CustomerSatisfactionBarChart.png')
+    }
+
+
     if(userGenders!=undefined || userRoles!=undefined){
         
         //Pie Charts
@@ -462,16 +634,12 @@ router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
         pdfDoc.image(WavePath, 0, 0, { align: 'center', valign: 'center', width:600})
         // Create the table - https://www.andronio.me/2017/09/02/pdfkit-tables/
         pdfDoc
-        .fontSize(20)
+        .fontSize(10)
         .font('Courier-Bold')
-        .text('User Statistics',150,150, { align: 'left' })
+        .text('User Statistics', { align: 'left' })
         .moveDown()
 
         if(userRoles!=undefined){
-        
-        
-        
-
         pdfDoc
         .moveDown()
         .fontSize(10)
@@ -480,8 +648,6 @@ router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
         .moveDown()
         }
         if(userGenders!=undefined){
-       
-
         pdfDoc
         .moveDown()
         .fontSize(10)
@@ -489,7 +655,29 @@ router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
         .image(UserGendersPieChartPath, { align: 'center', width: 300, height: 200})
         .moveDown()
         }
+        if(customerSatisfaction!=undefined){
+        pdfDoc
+        .moveDown()
+        .fontSize(10)
+        .text('Customer Satisfaction', { align: 'center' , width: 300, height: 200})
+        .image(CustomerSatisfactionPieChartPath, { align: 'center', width: 300, height: 200})
+        .moveDown()
+        }
     }
+
+    // if(customerSatisfaction!=undefined){
+    //     pdfDoc.addPage()
+    //     pdfDoc.image(WavePath, 0, 0, { align: 'center', valign: 'center', width:600})
+        
+    //     pdfDoc
+    //     .moveDown()
+    //     .fontSize(10)
+    //     .text('Customer Satisfaction', { align: 'center' , width: 300, height: 200})
+    //     .image(CustomerSatisfactionPieChartPath, { align: 'center', width: 300, height: 200})
+    //     .moveDown()
+            
+    // }
+
 
     
     // Traffic Logs New Page
@@ -562,6 +750,7 @@ router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
 // }
 
     pdfDoc.end();
+    console.log("PDF Created")
     
 
     await Report.create({
@@ -592,32 +781,44 @@ router.get("/Dashboard", ensureAdminAuthenticated, async (req, res) => {
     let traffic = []
 
     SubscribersLog = await newsLetterTrafficLogs.findAll()
+    SubscribersCount = await newsLetterTrafficLogs.count()
     let Subscribers = []
     
     totalReports = await Report.count()
     reportLogs = await Report.findAll()
     let reports = []
     
-    for(let i = 0; i < 5; i++){
+    for(let i = 0; i < await trafficLogs.count(); i++){
         if(trafficlog[i].ip != ""){
             traffic.push(trafficlog[i])
             
         }
+        if(i + 1 >= 5){
+            break
+        }
     }
-    for(let i = 0; i < 5; i++){
+    for(let i = 0; i < SubscribersCount; i++){
         if(SubscribersLog[i].ip != ""){
             Subscribers.push(SubscribersLog[i])
 
         }
+        if(i + 1 >= 5){
+            break
+        }
     }
 
-    for(let i = 0; i < 5; i++){
+    for(let i = 0; i < totalReports ; i++){
         
         reports.push(reportLogs[i])
-        
+        if(i + 1 >= 5){
+            break
+        }
     }
+
+    let totalTickets = await Ticket.count({where:{pendingStatus:"Pending"}})
+    let totalTicketsOpen = await Ticket.findAll({where:{pendingStatus:"Pending"}})
     
-    res.render("admin/AdminDashboard", { totalUsers,totalSubs,traffic,Subscribers,reports,totalReports })
+    res.render("admin/AdminDashboard", { totalUsers,totalSubs,traffic,Subscribers,reports,totalReports,totalTickets,totalTicketsOpen })
 })
 
 router.get('/manageVouchers', async (req, res) => {

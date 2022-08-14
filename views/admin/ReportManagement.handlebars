@@ -4,10 +4,10 @@
             <div class="card-header">
                 <ul id="reportTabs" class="nav nav-tabs card-header-tabs", role="tablist">
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link " data-bs-toggle="tab" data-bs-target="#inventory" type="button" role="tab" aria-controls="inventory" aria-selected="">Cards</a>
+                        <a class="nav-link " data-bs-toggle="tab" data-bs-target="#inventory" type="button" role="tab" aria-controls="inventory" aria-selected="">User Info</a>
                     </li>
                     {{!-- <li class="nav-item" role="presentation">
-                        <a class="nav-link " data-bs-toggle="tab" data-bs-target="#sales" type="button" role="tab" aria-controls="sales" aria-selected="">Sales</a>
+                        <a class="nav-link " data-bs-toggle="tab" data-bs-target="#sales" type="button" role="tab" aria-controls="sales" aria-selected="">Survey Data</a>
                     </li> --}}
                     <li class="nav-item" role="presentation">
                         <a class="nav-link " data-bs-toggle="tab" data-bs-target="#traffic" type="button" role="tab" aria-controls="traffic" aria-selected="">Traffic</a>
@@ -113,6 +113,15 @@
                                               
                                               
                                           </ul>
+                                          <label for="piecharts">Bar Charts</label>
+                                          <ul>
+                                              <li>
+                                                  <input type="checkbox" id="customerSatisfaction" name="customerSatisfaction" value="customerSatisfaction">
+                                                  <label for="customerSatisfaction">Customer Satisfaction</label>
+                                              </li>  
+                                          </ul>
+                                          
+
                                           {{!-- <label for="logs">Logs</label>
                                           <ul>
                                               <li>
@@ -187,6 +196,7 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="card-body">
                         {{!-- User Genders Pie Chart --}}
                         <div class="card shadow mb-4">
                             <!-- Card Header - Dropdown -->
@@ -206,10 +216,60 @@
                             </div>
                         </div>
                         
-                    </div>
-                    {{!-- <div id="sales" class="tab-pane fade " role="tabpanel" aria-labelledby="sales-tab">
+                        </div>
+
                         
-                    </div> --}}
+                        
+                    </div>
+                    <div id="sales" class="tab-pane fade " role="tabpanel" aria-labelledby="sales-tab">
+                        {{!-- User Ages Bar Chart --}}
+                        <div class="card-body">
+                            
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">User Ages Questionaire</h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="chart-pie pt-4">
+                                        <canvas id="SurveyQuestionsAge"></canvas>
+                                    </div>
+                                    <hr>
+                                    <div class="text-center">
+                                        <h5 class="text-gray-900 m-0">User Ages</h5>
+                                        <span class="text-gray-600 small">List Of Our Users Ages</span>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{!-- User Occupation Pie Chart --}}
+                        <div class="card-body">
+                            
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">User Occupation Questionaire</h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="chart-pie pt-4">
+                                        <canvas id="UserOccupationPieChart"></canvas>
+                                    </div>
+                                    <hr>
+                                    <div class="text-center">
+                                        <h5 class="text-gray-900 m-0">User Occupation</h5>
+                                        <span class="text-gray-600 small">List Of Our Users Occupations</span>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        
+                    </div>
                     
                     <div id="traffic" class="tab-pane fade" role="tabpanel" aria-labelledby="traffic-tab">
                     <div class="card" style="padding:10px">
@@ -332,7 +392,21 @@
                 
             </div>
             <!-- Area Chart Users Subscribed End -->
-
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Customer Statisfaction</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-bar">
+                        <canvas id="CustomerSatisfactionBarchart"></canvas>
+                    </div>
+                    <hr>
+                    <div class="text-center">
+                        <h5 class="small"><b>Customer Satisfaction Entries</b></h5>
+                        <h4 class="small font-weight-bold text-primary">Customer Ratings (1-5)</h4>
+                    
+                </div>
+            </div>  
 
             
                     
@@ -351,12 +425,9 @@
 
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
-    
-    
-    
-    
 
 <script>
     
-
 </script>
+    
+    

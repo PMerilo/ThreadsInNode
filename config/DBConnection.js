@@ -13,11 +13,15 @@ const Ticket = require('../models/Ticket')
 const User = require('../models/User')
 const Service = require('../models/Service')
 const backupCodes = require("../models/backupCodes")
-const NewsLetterLog = require("../models/Logs/NewsLetterLogs")
+const Survey = require('../models/Survey')
+
 
 const Report = require('../models/Reports')
 
 const JoinedUsersLogs = require('../models/Logs/JoinedUsersLogs');
+const CustomerSatisfactionLog = require('../models/Logs/CustomerSatisfactionLog');
+const NewsLetterLog = require("../models/Logs/NewsLetterLogs")
+
 const Tailor = require('../models/Tailor');
 
 // If drop is true, all existing tables are dropped and recreated

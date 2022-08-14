@@ -38,12 +38,12 @@ var NoOfUsers_month = [];
 var dates_month = [];
 var NoOfUsers_year = [];
 var dates_year = [];
-console.log(NoOfUsers_day);
+// console.log(NoOfUsers_day);
 $.get("/datapipeline/NoOfUsersJoined")
 .done(function (data) {
-  console.log(NoOfUsers_day);
-  console.log("hi");
-  console.log(data);
+  // console.log(NoOfUsers_day);
+  // console.log("hi");
+  // console.log(data);
   data.dataDay.forEach((element) => {
     NoOfUsers_day.push(element["NoOfUsersJoined_sum"]);
     dates_day.push(element["Dates"].slice(0, 10));
@@ -57,7 +57,7 @@ $.get("/datapipeline/NoOfUsersJoined")
     dates_year.push(element["Dates"].slice(0, 10));
   });
   
-  console.log(NoOfUsers_day);
+  // console.log(NoOfUsers_day);
   window.NoOfUsersJoinedChart = new Chart(ctxUsersJoined, {
     type: "line",
     data: {
@@ -201,12 +201,12 @@ var NoOfUsersSubscribed_month = [];
 var datesSubscribed_month = [];
 var NoOfUsersSubscribed_year = [];
 var datesSubscribed_year = [];
-console.log(NoOfUsers_day);
+// console.log(NoOfUsers_day);
 $.get("/datapipeline/NoOfNewsLetterSubscriptions")
 .done(function (data) {
-  console.log(NoOfUsers_day);
-  console.log("hi");
-  console.log(data);
+  // console.log(NoOfUsers_day);
+  // console.log("hi");
+  // console.log(data);
   data.dataDay.forEach((element) => {
     NoOfUsersSubscribed_day.push(element["NoOfNewsLetterSubscriptions_sum"]);
     datesSubscribed_day.push(element["Dates"].slice(0, 10));
@@ -220,7 +220,7 @@ $.get("/datapipeline/NoOfNewsLetterSubscriptions")
     datesSubscribed_year.push(element["Dates"].slice(0, 10));
   });
   
-  console.log(NoOfUsers_day);
+  // console.log(NoOfUsers_day);
   window.NoOfUsersSubscribedChart = new Chart(ctxUsersSubscribed, {
     type: "line",
     data: {
@@ -337,10 +337,10 @@ function setChartTypeNewsLetter(element) {
     NoOfUsersSubscribedChart.data.datasets[0].data = NoOfUsersSubscribed_year
     document.getElementById("usersSubscribedSortedBy").innerHTML = "No. of Users Subscribed By Year";
   }
-  console.log("Chart Type Subscribed: " );
-  console.log(dates)
-  console.log(dates_day)
-  console.log(users)
+  // console.log("Chart Type Subscribed: " );
+  // console.log(dates)
+  // console.log(dates_day)
+  // console.log(users)
   
   
   
@@ -353,3 +353,5 @@ function setChartTypeNewsLetter(element) {
 
   
 }
+
+

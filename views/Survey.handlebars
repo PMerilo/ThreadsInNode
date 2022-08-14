@@ -1,0 +1,258 @@
+<style>
+   
+
+
+#header-container, #header {
+  margin: 0;
+  padding: 0;
+}
+
+#title {
+  margin-bottom: 0;
+}
+
+#description {
+  text-align: justify;
+  text-justify: inter-word;
+  font-size: 20px;
+}
+
+#form-container {
+  margin: 0;
+  padding: 0;
+}
+
+#survey-form {
+  padding: 40px;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+input, select, textarea {
+  font-size: 16px;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 2px solid rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: rgba(0, 0, 0, 0.5);
+  outline: 0;
+  box-shadow: 0 0 0 0.1rem rgba(0, 0, 0, 0.25);
+}
+
+label {
+  display: flex;
+}
+
+label h3, label h4 {
+  margin-bottom: 10px;
+}
+
+label h4 {
+  margin-left: 5px;
+}
+
+#radio-table {
+  width: 100%;
+  border: none;
+  text-align: left;
+}
+
+textarea {
+  width: 100%;
+  padding: 10px;
+  resize: none;
+  font-size: 16px;
+  font-family: Roboto, Helvetica, sans-serif;
+}
+
+#submission {
+  display: flex;
+}
+
+#submission #reset {
+  background-color: #ff5050;
+  margin-right: 5px;
+}
+
+#submission #submit {
+  background-color: #99ff66;
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+#submission #reset,
+#submission #submit {
+  font-size: 20px;
+  color: white;
+  text-shadow: 0 2px 4px black;
+}
+
+#submission #reset:hover,
+#submission #submit:hover {
+  cursor: pointer;
+}
+
+#submission #reset:hover {
+  background-color: #ff6666;
+}
+
+#submission #submit:hover {
+  background-color: #aaff80;
+}
+
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+/* Mobile phone size */
+[class*="col-"] {
+  float: left;
+  padding: 15px;
+  width: 100%;
+  /*border: 1px dashed red;*/
+}
+
+@media only screen and (min-width: 700px) {
+  /* Tablet size */
+  .col-s-1 { width: 8.33%; }
+  .col-s-2 { width: 16.66%; }
+  .col-s-3 { width: 25%; }
+  .col-s-4 { width: 33.33%; }
+  .col-s-5 { width: 41.66%; }
+  .col-s-6 { width: 50%; }
+  .col-s-7 { width: 58.33%; }
+  .col-s-8 { width: 66.66%; }
+  .col-s-9 { width: 75%; }
+  .col-s-10 { width: 83.33%; }
+  .col-s-11 { width: 91.66%; }
+  .col-s-12 { width: 100%; }
+}
+
+@media only screen and (min-width: 800px) {
+  /* Desktop size */
+  .col-1 { width: 8.33%; }
+  .col-2 { width: 16.66%; }
+  .col-3 { width: 25%; }
+  .col-4 { width: 33.33%; }
+  .col-5 { width: 41.66%; }
+  .col-6 { width: 50%; }
+  .col-7 { width: 58.33%; }
+  .col-8 { width: 66.66%; }
+  .col-9 { width: 75%; }
+  .col-10 { width: 83.33%; }
+  .col-11 { width: 91.66%; }
+  .col-12 { width: 100%; }
+}
+
+@media only screen and (max-width: 700px) {
+  /*body {
+    background-color: lightblue;
+  }*/
+  
+  .space {
+    margin: 0;
+    padding: 0;
+  }
+  
+  #submission {
+    display: block;
+  }
+  
+  #submission #reset {
+    margin-right: auto;
+  }
+
+  #submission #submit {
+    margin-left: auto;
+  }
+}
+</style>
+
+<div id="header-container" class="col-12 col-s-12">
+  <div class="col-4 col-s-4 space"></div>
+  <div id="header" class="col-4 col-s-4" style="text-align: center;">
+    <h1 id="title">Survey Form</h1>
+    <p id="description" style="text-align:center ;">Please fill out the survey so that we can improve on our website. Your input is greaty appreciated</p>
+  </div>
+  <div class="col-4 col-s-4 space"></div>
+</div>
+<div class="col-3 col-s-3 space"></div>
+<div id="form-container" class="col-6 col-s-6">
+  <form id="survey-form" method="post" action="/Survey">
+    
+    <br>
+    <table id="radio-table">
+      <tr>
+        <th colspan="2"><h3>What is your age</h3></th>
+      </tr>
+      <tr>
+        <td><input type="radio" name="age" value="Above 60"></td><td>Above 60</td>
+      </tr>
+      <tr>
+        <td><input type="radio" name="age" value="40 to 60"></td><td>40 to 60</td>
+      </tr>
+      <tr>
+        <td><input type="radio" name="age" value="20 to 40"></td><td>20 to 40</td>
+      </tr>
+      <tr>
+        <td><input type="radio" name="age" value="Under 20"></td><td>Under 20</td>
+      </tr>
+    </table>
+    <br>
+    <label id="dropdown-label" for="occupation"><h3>Occupation</h3></label>
+    <select id="dropdown" name="occupation" required>
+      <optgroup label="Select your occupation">
+        <option value="student">Student</option>
+        <option value="full-time-job">Full Time Job</option>
+        <option value="freelancer">Freelancer</option>
+        <option value="other">Other</option>
+        
+      </optgroup>
+    </select>
+
+    {{!-- <label id="dropdown-label" for="recommend"><h3>Would You Recommend Threads in Times to others?</h3></label>
+    <select id="dropdown" name="recommend" required>
+      <optgroup label="Select your choice">
+        <option value="yes" >Yes</option>
+        <option value="no">No</option>
+        
+      </optgroup>
+    </select> --}}
+    <br>
+    <table id="radio-table">
+      <tr>
+        <th colspan="2"><h3>What aspects do you look for in a website?</h3></th>
+      </tr>
+      <tr>
+        <td><input type="checkbox" name="features" value=1></td><td>The Features</td>
+      </tr>
+      <tr>
+        <td><input type="checkbox" name="design" value=1></td><td>The Design</td>
+      </tr>
+      <tr>
+        <td><input type="checkbox" name="customerSupport" value=1></td><td>Customer Support</td>
+      </tr>
+      <tr>
+        <td><input type="checkbox" name="userCustomisation" value=1></td><td>User Customisation</td>
+      </tr>
+      
+    </table>
+    <br>
+    {{!-- <label for="about-me"><h3>About Me</h3></label>
+    <textarea id="about-me" name="about-me" rows="4" cols="50" placeholder="Tell us about yourself"></textarea> --}}
+    <br>
+    <p id="submission">
+      <input id="reset" type="reset" value="Reset">
+    <input id="submit" type="submit" value="Submit">
+    </p>
+  </form>
+</div>
+<div class="col-3 col-s-3 space"></div>
