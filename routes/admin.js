@@ -453,6 +453,14 @@ router.post("/DownloadPDFReports", ensureAdminAuthenticated, async (req, res) =>
 router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
     
     let { reportName,reportDescription,additionalTags,userTraffic,subscriptionTraffic,TrafficLogs,userRoles,userGenders,startDate,endDate,customerSatisfaction} = req.body;
+    if((await Report.findOne({where:{reportName:reportName}})) != undefined){
+        flashMessage(res, 'error', "Report Already Exists! Please Use a different name or delete the existing report");
+        
+        res.redirect("/admin/ReportsManagement")
+        
+    }else{
+
+    
     var pdfDoc = new PDFDocument ({ bufferPages: true, font: 'Courier' });
     let Path = path.join(__dirname, '../public/images/logo.png')
     let WavePath = path.join(__dirname, '../public/images/Letterhead.png')
@@ -781,6 +789,7 @@ router.post("/DownloadReports", ensureAdminAuthenticated, async (req, res) => {
         date: moment().format('L'),
         
     });
+}
     
     
     // flashMessage(res, 'success', "Reports Downloaded Successfully!");

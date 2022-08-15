@@ -1,10 +1,53 @@
+<link rel="stylesheet" href="/styles/graph.css">
+<div class="modal fade" id="loader" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content container-fluid">
+            <div class="d-flex justify-content-center align-items-center my-5">
+                <p class="text-blac fs-3 m-0 me-5">Loading Charts...</p>
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="loaderPDF" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content container-fluid">
+            <div class="d-flex justify-content-center align-items-center my-5">
+                <p class="text-blac fs-3 m-0 me-5">Generating PDF...</p>
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        
+        $('#loader').modal('show');
+        setTimeout(function() {
+            $('#loader').modal('hide');
+        }, 2000);
+    });
 
+    function generatePDF() {
+        $('#staticBackdrop').modal('hide');
+        $('#loaderPDF').modal('show');
+        setTimeout(function() {
+            $('#loaderPDF').modal('hide');
+        }, 1000);
+    }
+
+    
+</script>
     <div class="container-fluid">
         <div class="card" id="report-card">
             <div class="card-header">
                 <ul id="reportTabs" class="nav nav-tabs card-header-tabs", role="tablist">
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link active " data-bs-toggle="tab" data-bs-target="#inventory" type="button" role="tab" aria-controls="inventory" aria-selected="">User Info</a>
+                        <a class="nav-link active tab-pane" data-bs-toggle="tab" data-bs-target="#inventory" type="button" role="tab" aria-controls="inventory" aria-selected="">User Info</a>
                     </li>
                     {{!-- <li class="nav-item" role="presentation">
                         <a class="nav-link " data-bs-toggle="tab" data-bs-target="#sales" type="button" role="tab" aria-controls="sales" aria-selected="">Survey Data</a>
@@ -150,7 +193,7 @@
                               </div>
                               <div class="modal-footer">
                                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                  <button type="submit" class="btn btn-primary" onsubmit="done()">Create</button>
+                                  <button type="submit" class="btn btn-primary" onsubmit="done()" onclick="generatePDF()">Create</button>
                               </div>
                           </form>
                       </div>
