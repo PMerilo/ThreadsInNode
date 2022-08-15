@@ -143,11 +143,6 @@ router.post('/discount', ensureAuthenticated, async (req, res) => {
     if (discountcodeused != "") {
         var discountcodeinDB = await Reward.findOne({ where: { voucher_code: discountcodeused } })
     }
-
-    // res.send({discount_amount:discount_amount, status:"success"})
-    // res.send({discount_amount:discount_amount, status:"spools_shortage"})
-    // res.send({discount_amount:discount_amount, status:"voucher_expired"})
-    // res.send({discount_amount:discount_amount, status:"voucher_ran_out"})
     try {
         if (discountcodeinDB) {
             var discount_amount = discountcodeinDB.discount_amount
@@ -322,22 +317,6 @@ router.post('/checkout', ensureAuthenticated, async (req, res) => {
         delimiter = 100 - couponused.discount_amount
     }
     var cart = await Cart.findOne({ where: { id: req.user.id } })
-
-    // var order = await Order.create({
-    //     orderUUID: ("#" + uuidv4().slice(-12)).toUpperCase(),
-    //     orderOwnerID: req.user.id,
-    //     orderOwnerName: req.body.fname,
-    //     orderTotal: cart.cartTotal,
-    //     discountcodeused: cart.discountcodeused,
-    //     address: req.body.address,
-    //     unit_number: req.body.unit_number,
-    //     postal_code: req.body.postal_code,
-    //     email: req.body.email,
-    //     phone_number: req.body.phone,
-    //     shipping_type: "Free",
-    //     userId: req.user.id
-    // })
-
     try {
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],
@@ -415,57 +394,6 @@ router.post('/checkout', ensureAuthenticated, async (req, res) => {
         res.status(500).json({ error: e.message })
     }
 })
-// router.post('/checkout', ensureAuthenticated, async (req, res) => {
-
-//     isValid = true
-//     if (!Luhn.isValid(req.body.card_number.replaceAll(" ", ""))) {
-//         res.send({ status: "error",icon: "error",title: "Oops..", text: "Creditcard Number Is Invalid!!" })
-//     } else {
-
-
-//         var order = await Order.create({
-//             orderUUID: ("#" + uuidv4().slice(-12)).toUpperCase(),
-//             orderOwnerID: req.user.id,
-//             orderOwnerName: req.body.fname,
-//             orderTotal: cart.cartTotal,
-//             discountcodeused: cart.discountcodeused,
-//             address: req.body.address,
-//             unit_number: req.body.unit_number,
-//             postal_code: req.body.postal_code,
-//             email: req.body.email,
-//             phone_number: req.body.phone,
-//             userId: req.user.id
-//         })
-
-//         var cartproducts = await Cart.findOne({ where: { id: req.user.id }, include: { model: Product } })
-//         // console.log(JSON.stringify(cartproducts))
-//         cartproducts.products.forEach(element => {
-//             OrderItems.create({
-//                 orderId: order.id,
-//                 productSku: element.sku,
-//                 qtyPurchased: element.cartproduct.qtyPurchased,
-//                 product_name: element.name,
-//                 product_price: element.price,
-//                 seller_name: element.Owner,
-//                 seller_name: element.OwnerID,
-//                 orderStatus: "Processing",
-//             })
-//             // var sold = element.sold + element.cartproduct.qtyPurchased
-//             // var sales = element.sales + (element.cartproduct.qtyPurchased*element.price)
-//             // var qty = element.quantity - element.cartproduct.qtyPurchased
-//             Product.update({ quantity: element.quantity - element.cartproduct.qtyPurchased, sold: element.sold + element.cartproduct.qtyPurchased, sales: element.sales + (element.cartproduct.qtyPurchased * element.price) }, { where: { sku: element.sku } })
-//         });
-//         var discountcode = await Reward.findOne({ where: { voucher_code: cartproducts.discountcodeused } })
-//         User.update({ spools: req.user.spools + order.orderTotal }, { where: { id: req.user.id } })
-//         if (discountcode) {
-//             User.update({ spools: req.user.spools - discountcode.spools_needed }, { where: { id: req.user.id } })
-//             Reward.update({ quantity: discountcode.quantity - 1 }, { where: { voucher_code: cartproducts.discountcodeused } })
-//         }
-//         await Cart.destroy({ where: { id: req.user.id } })
-//         res.send({status: "success ",icon: "success",title: "Order Completed" })
-//         console.log("Order created")
-//     }
-// })
 router.post('/checkoutsave', ensureAuthenticated, async (req, res) => {
     var subtotal = req.body.subtotal
     var discountcode = req.body.discount_code
