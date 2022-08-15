@@ -40,7 +40,7 @@
                     <p>Address : {{order.address}} {{order.unit_number}} S{{order.postal_code}}</p>
                   </div>
                   <div class="modal-footer">
-                    <button type="button"S class="light-btn" data-bs-dismiss="modal">Back</button>
+                    <button type="button" S class="light-btn" data-bs-dismiss="modal">Back</button>
                   </div>
 
                 </div>
@@ -99,10 +99,14 @@
                   </div>
 
                   <div class="modal-body d-flex justify-content-between">
-                    <button type="button" data-bs-id="{{this.id}}" class="light-btn-25 statusbtn flex-fill m-2">Processing</button>
-                    <button type="button" data-bs-id="{{this.id}}" class="light-btn-25 statusbtn flex-fill m-2">Packed</button>
-                    <button type="button" data-bs-id="{{this.id}}" class="light-btn-25 statusbtn flex-fill m-2">Sent For Delivery</button>
-                    <button type="button" data-bs-id="{{this.id}}" class="light-btn-25 statusbtn flex-fill m-2">Delivered</button>
+                    <button type="button" data-bs-id="{{this.id}}"
+                      class="light-btn-25 statusbtn flex-fill m-2">Processing</button>
+                    <button type="button" data-bs-id="{{this.id}}"
+                      class="light-btn-25 statusbtn flex-fill m-2">Packed</button>
+                    <button type="button" data-bs-id="{{this.id}}" class="light-btn-25 statusbtn flex-fill m-2">Sent For
+                      Delivery</button>
+                    <button type="button" data-bs-id="{{this.id}}"
+                      class="light-btn-25 statusbtn flex-fill m-2">Delivered</button>
                   </div>
 
                   <div class="modal-footer">
@@ -159,7 +163,7 @@
 </div>
 <script>
   $(document).ready(function () {
-
+    setTimeout(() => swalF(), 100);
     const ordersTable = document.getElementById('orders-table');
     let ordertable = new simpleDatatables.DataTable(ordersTable);
     let data = {};
@@ -183,14 +187,13 @@
         contentType: "application/json",
         data: JSON.stringify({ id: data["id"], status: data["status"] }),
         success: function (res) {
-          console.log(res.message)
-          {{!-- if (res) {
-            Swal.fire({
-              icon: res.status,
-              title: 'Oops...',
-              text: res.message,
-            })
-          } --}}
+          if (res) {
+            localStorage.setItem("status", res.status)
+            localStorage.setItem("message", res.message)
+          } else {
+            localStorage.setItem("status", "")
+            localStorage.setItem("message", "")
+          }
         }
       })
       var modal_var = "#myModal_" + data["id"]
@@ -200,6 +203,20 @@
 
     recursive()
   });
+
+  function swalF() {
+    var status = localStorage.getItem("status")
+    var message = localStorage.getItem("message").toString()
+    if (status != "" && message != "") {
+      Swal.fire({
+        icon: status,
+        title: 'Oops...',
+        text: message,
+      })
+      localStorage.setItem("status", "")
+      localStorage.setItem("message", "")
+    }
+  }
 
   function reload() {
     document.location.reload()

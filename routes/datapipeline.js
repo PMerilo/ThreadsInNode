@@ -47,7 +47,6 @@ router.get('/NoOfUsersJoined', async (req, res) => {
 
   df = new dfd.DataFrame(data, { columns: ["Dates", "NoOfUsersJoined"] })
   group_df = df.groupby(["Dates"]).sum()
-  console.log(group_df)
   const df2 = dfd.toJSON(group_df, { format: "json" })
   res.status(200).json({ 'data': df2 })
 });
@@ -142,7 +141,6 @@ router.get('/salesPerDay/:id', async (req, res) => {
 
   df = new dfd.DataFrame(data, { columns: ["Dates", "Sales"] })
   group_df = df.groupby(["Dates"]).sum()
-  console.log(group_df)
   const df2 = dfd.toJSON(group_df, { format: "json" })
   res.status(200).json({ 'data': df2 })
 });
@@ -162,7 +160,6 @@ router.get('/totalSalesPerDay', async (req, res) => {
 
   df = new dfd.DataFrame(data, { columns: ["Dates", "Sales"] })
   group_df = df.groupby(["Dates"]).sum()
-  console.log(group_df)
   const df2 = dfd.toJSON(group_df, { format: "json" })
   res.status(200).json({ 'data': df2 })
 });
@@ -177,7 +174,6 @@ router.get('/myProduct/:id', async (req, res) => {
     let rawData = [element.name, element.sales, element.sold];
     data.push(rawData)
   });
-  console.log(data)
 
   df = new dfd.DataFrame(data, { columns: ["Name", "Sales", "Sold"] })
   const df2 = dfd.toJSON(df, { format: "json" })
@@ -194,7 +190,6 @@ router.get('/myProductWishlist/:id', async (req, res) => {
     let rawData = [element.name, element.wishlistcount];
     data.push(rawData)
   });
-  console.log(data)
 
   df = new dfd.DataFrame(data, { columns: ["Name", "Wishlistcount"] })
   const df2 = dfd.toJSON(df, { format: "json" })
@@ -222,6 +217,7 @@ router.post('/storestats', async (req, res) => {
   const orders = await OrderItems.count({where : {seller_id : req.body.id}, distinct: true})
   var user = await User.findByPk(req.user.id)
   var balance = user.total_balance
+  var bankacc = user.bankAccount
   
   var sellerRevenue = 0
   sellers.forEach(element => {
@@ -229,7 +225,7 @@ router.post('/storestats', async (req, res) => {
     sellerRevenue += data
   });
   const revenue = ((sellerRevenue / 100) * 83).toFixed(2)
-  res.send({revenue : revenue, orders: orders, customers : customers, balance:balance})
+  res.send({revenue : revenue, orders: orders, customers : customers, balance:balance,bank:bankacc})
 });
 module.exports = router;
 

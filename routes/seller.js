@@ -21,6 +21,7 @@ const OrderItems = require('../models/OrderItems');
 fs = require('fs');
 const upload = require('../views/helpers/imageUpload');
 const Review = require('../models/Reviews');
+const Withdrawal = require('../models/Withdrawal');
 
 router.all('/*', ensureSellerAuthenticated, function (req, res, next) {
     req.app.locals.layout = 'seller'; // set your layout here
@@ -43,17 +44,19 @@ router.get('/dashboard', (req, res) => {
 });
 
 router.get('/revenue', async (req, res) => {
-    var orders = (await OrderItems.findAll({ where: { seller_id: req.user.id }, include: Order ,order: [
-        ['createdAt', 'DESC'],
-        ['product_name', 'ASC'],
-    ]}))
+    var orders = (await OrderItems.findAll({
+        where: { seller_id: req.user.id }, include: Order, order: [
+            ['createdAt', 'DESC'],
+            ['product_name', 'ASC'],
+        ]
+    }))
     var sellerRevenue = 0
     orders.forEach(element => {
         let data = (((element.product_price * element.qtyPurchased) + element.shipping_rate) * 0.83)
         sellerRevenue += data
     });
     sellerRevenue = (sellerRevenue).toFixed(2)
-    res.render('seller/revenue.handlebars', { orders , sellerRevenue});
+    res.render('seller/revenue.handlebars', { orders, sellerRevenue });
 });
 
 router.get('/sellerProfile', (req, res) => {
@@ -97,7 +100,15 @@ router.post("/changeOrderStatus", ensureAuthenticated, async (req, res) => {
     }
 })
 
-
+router.get('/withdrawal', async (req, res) => {
+    var withdrawals = await Withdrawal.findAll({ where:{sellerID: req.user.id},
+        include: User, order: [
+            ['createdAt', 'DESC'],
+            ['withdrawal_amount', 'DESC'],
+        ]
+    })
+    res.render("seller/withdrawals", { withdrawals })
+});
 
 
 router.post('/addProduct', async function (req, res) {
@@ -145,10 +156,12 @@ router.get('/editProduct/:sku', async (req, res) => {
 })
 
 router.get('/reviews', async (req, res) => {
-    var reviews = await Review.findAll({ where: { sellerId: req.user.id }, include: { model: User } ,order: [
-        ['createdAt', 'DESC'],
-        ['title', 'ASC'],
-    ]})
+    var reviews = await Review.findAll({
+        where: { sellerId: req.user.id }, include: { model: User }, order: [
+            ['createdAt', 'DESC'],
+            ['title', 'ASC'],
+        ]
+    })
 
     res.render("seller/reviews", { reviews })
 })
@@ -174,7 +187,7 @@ router.post('/deleteProduct', ensureAuthenticated, (req, res) => {
     let { sku, name } = req.body;
     Product.destroy({ where: { sku: sku } })
     flashMessage(res, 'success', name + " Deleted successfully");
-    // CartProduct.destroy({where:{sku:sku}})
+    CartProduct.destroy({ where: { productSku: sku } })
     res.redirect("/seller/manageProducts")
 })
 
@@ -186,6 +199,18 @@ router.post('/restockProduct', ensureAuthenticated, async (req, res) => {
     await Product.update({ quantity: product.quantity + parseInt(quantity) }, { where: { sku: sku } })
     flashMessage(res, 'success', product.name + " Restocked successfully");
     res.redirect("/seller/manageProducts")
+})
+
+router.post('/withdrawal', ensureAuthenticated, async (req, res) => {
+    var user = await User.findByPk(req.user.id)
+    console.log(req.body.bal)
+    await Withdrawal.create({
+        sellerID: req.user.id,
+        withdrawal_amount: req.body.bal,
+        status: "Awaiting Authorization",
+        userId: req.user.id
+    })
+    res.redirect("/seller/dashboard")
 })
 
 module.exports = router;

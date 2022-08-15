@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="../styles/btn.css">
 <link rel="stylesheet" href="../styles/dashboard.css">
 <div class="card">
   <div class="row p-2">
@@ -46,7 +47,7 @@
       </a>
     </div>
     <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-      <a class="dashboard-stat hoki" href="">
+      <a class="dashboard-stat hoki" data-bs-toggle="modal" data-bs-target="#myModal_balance">
         <div class="visual">
           <i class='bx bxs-bank'></i>
         </div>
@@ -58,6 +59,30 @@
         </div>
       </a>
     </div>
+  </div>
+  <div class="modal" id="myModal_balance">
+    <form action="/seller/withdrawal" method="POST">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Request Withdrawal</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <p id="bankacc">Bank Account : 0</p>
+            <p>Current Balance : S${{user.total_balance}}</p>
+            <label for="bal">Enter how much you would like to withdraw</label>
+            <input type="number" name="bal" max="{{user.total_balance}}" id="bal" placeholder="e.g. 500">
+            <p class="T&C" style="font-size: 0.7rem;">* Do note that this action cannot be undone and this will reset
+              your bi-weekly payout date to today</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" S class="light-btn" data-bs-dismiss="modal">Back</button>
+            <button class="green-btn-25" type="submit">Submit</button>
+          </div>
+        </div>
+      </div>
+    </form>
   </div>
   <div class="card shadow mb-4">
     <div class="card-header py-3">
