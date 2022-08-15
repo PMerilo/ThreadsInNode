@@ -39,6 +39,10 @@ class User extends sequelize.Model {
         type: sequelize.DataTypes.STRING(8),
         allowNull: true,
       },
+      bankAccount: {
+        type: sequelize.DataTypes.STRING,
+        allowNull: true,
+      },
       role: {
         type: sequelize.DataTypes.STRING,
         allowNull: true,
@@ -79,6 +83,16 @@ class User extends sequelize.Model {
         type: sequelize.DataTypes.STRING,
         allowNull: false,
         defaultValue: "F",
+      },
+      total_balance: {
+        type: sequelize.DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
+      withdrawn_amount: {
+        type: sequelize.DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
       },
     },
     {

@@ -156,7 +156,7 @@ router.post('/sellerRegister', async function (req, res) {
 
   let isValid = true;
   if (password.length < 6) {
-    flashMessage(res, 'error', 'Password must be at least 6 char-acters');
+    flashMessage(res, 'error', 'Password must be at least 6 characters');
     isValid = false;
   }
   if (password != password2) {
@@ -182,6 +182,7 @@ router.post('/sellerRegister', async function (req, res) {
       password: req.body.password,
       gender: req.body.gender,
       phoneNumber: req.body.phoneNumber,
+      bankAccount: req.body.bankAccount,
       role: "S"
 
     });
@@ -410,7 +411,6 @@ router.get("/downloadbackupcodes", ensureAuthenticated, async (req, res) => {
     .fontSize(13)
     .text(`Backup Code 1: ${back1}`)
     .text(`Backup Code 2: ${back2}`)
-  flashMessage(res, 'success', 'Backup Codes Downloaded Successfully')
   pdfDoc.end();
 })
 

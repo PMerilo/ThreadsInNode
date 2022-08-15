@@ -15,6 +15,7 @@
             <th>Email</th>
             <th>Gender</th>
             <th>Phone Number</th>
+            <th>Bank Account</th>
             <th>Update User</th>
             <th>Delete User</th>
             <th>BAN status</th>
@@ -31,6 +32,11 @@
             <td>{{this.email}}</td>
             <td>{{this.gender}}</td>
             <td>{{this.phoneNumber}}</td>
+            {{#if this.bankAccount}}
+            <td>{{this.bankAccount}}</td>
+            {{else}}
+            <td>null</td>
+            {{/if}}
             <td>
               <a href="/admin/editUser/{{this.id}}" class="btn btn-warning">
                 <i class="fas fa-pencil-alt"></i>
