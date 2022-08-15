@@ -10,7 +10,6 @@ class TempUser extends sequelize.Model {
       email: {
         type: sequelize.DataTypes.STRING,
         allowNull: false,
-        unique: 'email',
       },
       backupcode1: {
         type: sequelize.DataTypes.STRING,

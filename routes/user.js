@@ -13,6 +13,8 @@ const { Op } = require('sequelize');
 const Mail = require("../config/MailConfig");
 const TempUser = require("../models/TempUser");
 const mail = require("../config/NewMailConfig");
+const PDFDocument = require('pdfkit');
+const path = require('path');
 
 const userController = require('../controllers/userController');
 const Service = require('../models/Service');
@@ -157,7 +159,7 @@ router.post('/sellerRegister', async function (req, res) {
 
   let isValid = true;
   if (password.length < 6) {
-    flashMessage(res, 'error', 'Password must be at least 6 char-acters');
+    flashMessage(res, 'error', 'Password must be at least 6 characters');
     isValid = false;
   }
   if (password != password2) {
@@ -183,6 +185,7 @@ router.post('/sellerRegister', async function (req, res) {
       password: req.body.password,
       gender: req.body.gender,
       phoneNumber: req.body.phoneNumber,
+      bankAccount: req.body.bankAccount,
       role: "S"
 
     });
@@ -258,8 +261,8 @@ router.post('/forgetpassword', async (req, res) => {
       email_recipient: email,
       subject: `Your Threads in Times OTP is ready`,
       template_path: "../views/MailTemplates/ForgetPassword.html",
-      context: {name: userr1.name, otp: otp },
-  });
+      context: { name: userr1.name, otp: otp },
+    });
 
     // Mail.send(res, {
     //   to: email,
@@ -269,14 +272,14 @@ router.post('/forgetpassword', async (req, res) => {
     //   html: `<div class="page">
     //   <div class="container">
     //     <div class="email_header">
-          
+
     //       <img class="logo" src="https://raw.githubusercontent.com/PMerilo/ThreadsInNode/master/public/images/logo.png" alt="Threads In Times" />
     //       <h1>Email Confirmation</h1>
     //     </div>
     //     <div class="email_body">
     //       <p><b>Hi ,</b></p>
     //       <p>Your OTP is example</b></p>
-          
+
     //       </a>
     //       <p>Thanks for supporting,<br/>
     //         <b>The Threads in Times Team</b>
@@ -350,7 +353,7 @@ router.post('/forgetpasswordchange', async (req, res) => {
   return res.redirect('/login')
 })
 router.get("/backupcodes", async (req, res) => {
-  temp = (await TempUser.findAll({where: { email: req.user.email }})).map((x) => x.dataValues)
+  temp = (await TempUser.findAll({ where: { email: req.user.email } })).map((x) => x.dataValues)
   res.render('backupcodes', { temp })
 })
 
@@ -403,6 +406,37 @@ router.post('/forgetpwbackupcodes', async (req, res) => {
 
   // }
 
+})
+
+router.get("/downloadbackupcodes", ensureAuthenticated, async (req, res) => {
+  const content = 'Some content!'
+  var pdfDoc = new PDFDocument({ bufferPages: true, font: 'Courier' });
+  let WavePath = path.join(__dirname, '../public/images/Letterhead.png')
+  bc = await TempUser.findOne({ where: { email: req.user.email } })
+  back1 = bc.backupcode1
+  back2 = bc.backupcode2
+
+
+  const stream = res.writeHead(200, {
+    'Content-Type': 'application/pdf',
+    'Content-Disposition': `attachment;filename=backupcodes.pdf`,
+  });
+  pdfDoc.on('data', (chunk) => stream.write(chunk));
+
+  pdfDoc.on('end', () => stream.end());
+  pdfDoc.image(WavePath, 0, 0, { align: 'center', valign: 'center', width: 600 })
+  pdfDoc
+    .fillColor('#444444')
+    .font('Courier-Bold')
+    .fontSize(35)
+    .text('Threads In Times', { align: 'left' })
+
+  pdfDoc
+    .fillColor('red')
+    .fontSize(13)
+    .text(`Backup Code 1: ${back1}`)
+    .text(`Backup Code 2: ${back2}`)
+  pdfDoc.end();
 })
 
 module.exports = router;
