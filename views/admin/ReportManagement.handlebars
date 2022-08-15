@@ -4,7 +4,7 @@
             <div class="card-header">
                 <ul id="reportTabs" class="nav nav-tabs card-header-tabs", role="tablist">
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link " data-bs-toggle="tab" data-bs-target="#inventory" type="button" role="tab" aria-controls="inventory" aria-selected="">User Info</a>
+                        <a class="nav-link active " data-bs-toggle="tab" data-bs-target="#inventory" type="button" role="tab" aria-controls="inventory" aria-selected="">User Info</a>
                     </li>
                     {{!-- <li class="nav-item" role="presentation">
                         <a class="nav-link " data-bs-toggle="tab" data-bs-target="#sales" type="button" role="tab" aria-controls="sales" aria-selected="">Survey Data</a>
@@ -175,7 +175,7 @@
             <div class="card-body ">
                 <div class="tab-content d-flex flex-column" id="reportTabContent">
                     {{!-- <p>Last Updated: </p> --}}
-                    <div id="inventory" class="tab-pane fade" role="tabpanel" aria-labelledby="inventory-tab">
+                    <div id="inventory" class="tab-pane fade show active" role="tabpanel" aria-labelledby="inventory-tab">
                          <!-- User Roles Pie Chart -->
                         <div class="card-body">
                             <div class="card shadow mb-4">
@@ -425,6 +425,7 @@
 
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
+    <script src="/scripts/loader.js"></script>
 
 <script>
     

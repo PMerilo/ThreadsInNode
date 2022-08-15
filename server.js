@@ -15,6 +15,7 @@ const datapipeline = require("./routes/datapipeline")
 const api = require("./routes/api")
 const bodypassword = require('body-parser')
 const GoogleAuth = require("./config/passportGoogleAuth")
+const Dialogflow = require("./config/DialogFlow")
 const DBConnection = require('./config/DBConnection');
 const Request = require('./models/Request')
 
@@ -59,6 +60,10 @@ app.use(passport.session())
 
 // Google Authentication
 GoogleAuth()
+
+
+// Dialogflow
+Dialogflow()
 
 // Initilize Passport middleware 
 

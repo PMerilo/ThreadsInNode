@@ -25,6 +25,7 @@ const fs = require('fs');
 const path = require('path');
 const moment = require('moment');
 const { NONE } = require('sequelize');
+const QRCode = require('qrcode');
 
 const dfd = require("danfojs-node");
 const ChartJsImage = require('chartjs-to-image');  
