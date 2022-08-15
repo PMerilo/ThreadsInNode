@@ -1,0 +1,66 @@
+<link rel="stylesheet" href="../styles/btn.css">
+<div class="card" style="padding:10px">
+    <div class="card-header">
+        <h2>Revenue</h2>
+        <h3>S${{sellerRevenue}}</h3>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped" id="revenue-table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer Details</th>
+                    <th>Product Name</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Order Revenue</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each orders}}
+                <tr>
+                    <td>{{order.orderUUID}}</td>
+                    <td>
+                        <button type="button" class="btn w-100" data-bs-toggle="modal"
+                            data-bs-target="#myModal_{{order.orderOwnerID}}">
+                            {{order.orderOwnerName}}
+                        </button>
+                        <div class="modal" id="myModal_{{order.orderOwnerID}}">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Customer Details</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Customer Name : {{order.orderOwnerName}}</p>
+                                        <p>Phone Number : {{order.phone_number}}</p>
+                                        <p>Address : {{order.address}} {{order.unit_number}} S{{order.postal_code}}</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" S class="light-btn" data-bs-dismiss="modal">Back</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </td>
+                    <td>{{this.product_name}}
+                    </td>
+                    <td>S${{this.product_price}}</td>
+                    <td>{{this.qtyPurchased}}</td>
+                    <td>S${{this.seller_cut}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+        {{!-- <button class="blue-btn-25">Request for Withdrawl</button> --}}
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        const revenueTable = document.getElementById('revenue-table');
+        let revenuetable = new simpleDatatables.DataTable(revenueTable);
+    });
+</script>

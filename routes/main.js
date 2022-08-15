@@ -257,12 +257,15 @@ const fulfillOrder = async (session) => {
             product_price: element.price,
             shipping_rate: shipping_rate / 100,
             shipping_type: shipping_type,
+            seller_cut: (((element.cartproduct.qtyPurchased * element.price)+ shipping_rate) * 0.83).toFixed(2),
+            tit_cut : ((element.cartproduct.qtyPurchased * element.price) * 0.17).toFixed(2),
             seller_name: element.Owner,
             seller_id: element.OwnerID,
             orderStatus: "Processing",
             posterURL: element.posterURL,
             review: 0
         })
+        shipping_rate = 0
         // var payload = {title : "New Order Placed",body: "body",url: "",senderId: "",recipient: `${element.OwnerID}`}
         // let user = await User.findByPk(element.OwnerID)
         // let notification = await Notification.create({

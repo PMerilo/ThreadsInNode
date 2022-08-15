@@ -19,6 +19,8 @@ const serviceController = require("../controllers/serviceController")
 const ensureAdminAuthenticated = require("../views/helpers/adminAuth");
 const TempUser = require("../models/TempUser");
 const Notification = require("../models/Notification");
+const Order = require('../models/Orders');
+const OrderItems = require('../models/OrderItems');
 const Chat = require('../models/Chat');
 const ChatUser = require('../models/ChatUser');
 const Msg = require('../models/Msg');
@@ -403,6 +405,19 @@ router.get('/editVoucher/:id', ensureAuthenticated, async (req, res) => {
 
     voucher = await Reward.findOne({ where: { id: req.params.id } })
     res.render("rewards/editVouchers", { voucher })
+})
+
+router.get('/revenue', ensureAuthenticated, async (req, res) => {
+    const orders = (await OrderItems.findAll({ include: Order }))
+    const sales = (await Order.sum('orderTotal')).toFixed(2)
+
+    var sellerRevenue = 0
+    orders.forEach(element => {
+        let data = ((element.product_price * element.qtyPurchased) + element.shipping_rate)
+        sellerRevenue += data
+    });
+    const revenue = (sales - ((sellerRevenue / 100) * 83)).toFixed(2)
+    res.render('admin/revenue.handlebars', { orders, revenue });
 })
 
 

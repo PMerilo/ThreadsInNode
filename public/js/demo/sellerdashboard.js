@@ -1,8 +1,28 @@
 $(document).ready(function () {
     setDate()
     setTimeout(() => filterData(), 30);
+    updateStats()
 })
 var seller_id = $("#seller_id").val()
+function updateStats() {
+    var revenue = document.getElementById("revenue")
+    var orders = document.getElementById("orders")
+    var customers = document.getElementById("customers")
+    console.log(revenue, customers, orders)
+    $.ajax({
+        url: "/datapipeline/storestats",
+        method: 'POST',
+        contentType: "application/json",
+        data: JSON.stringify({ id: seller_id }),
+        success: function (res) {
+            console.log(res)
+            revenue.innerText = "S$" + res.revenue
+            orders.innerText = res.orders
+            customers.innerText = res.customers
+        }
+    })
+}
+
 var prev_btn = document.getElementById('prev-btn');
 var next_btn = document.getElementById('next-btn');
 var now = new Date();
@@ -247,7 +267,7 @@ getSalesData.done(function (data) {
         data: {
             labels: Names,
             datasets: [{
-                label: "Product Sales",
+                label: "S$ ",
                 lineTension: 0.3,
                 backgroundColor: "rgba(78, 115, 223)",
                 borderColor: "rgba(78, 115, 223, 1)",
@@ -421,7 +441,7 @@ getSalesData.done(function (data) {
     });
 
 })
-    
+
 var getWishlistData = $.get('/datapipeline/myProductWishlist/' + seller_id)
 var ctxwishlist = document.getElementById("WishlistedProductChart").getContext('2d');
 var Name = []

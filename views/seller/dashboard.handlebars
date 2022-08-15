@@ -1,138 +1,124 @@
 <link rel="stylesheet" href="../styles/dashboard.css">
-{{!-- <div class="wrapper container">
-  <div class="row">
-    <div class="col-lg-12">
-      <h2 class="heading">Admin Dashboard Stat</h2>
+<div class="row">
+  <div class="col-lg-12">
+    <h2 class="heading">Admin Dashboard Stat</h2>
+  </div>
+</div>
+<div class="row">
+  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+    <a class="dashboard-stat red" href="/seller/revenue">
+      <div class="visual">
+        <i class='bx bx-dollar'></i>
+      </div>
+      <div class="details">
+        <div class="number">
+          <span id="revenue">$0</span>
+        </div>
+        <div class="desc">Total Revenue</div>
+      </div>
+    </a>
+  </div>
+  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+    <a class="dashboard-stat blue" href="/seller/orders">
+      <div class="visual">
+        <i class='bx bx-package'></i>
+      </div>
+      <div class="details">
+        <div class="number">
+          <span id="orders">0</span>
+        </div>
+        <div class="desc">Total Orders</div>
+      </div>
+    </a>
+  </div>
+  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+    <a class="dashboard-stat purple" href="/seller/orders">
+      <div class="visual">
+        <i class='bx bxs-user'></i>
+      </div>
+      <div class="details">
+        <div class="number">
+          <span id="customers">0</span>
+        </div>
+        <div class="desc">Customers</div>
+      </div>
+    </a>
+  </div>
+</div>
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">Revenue - {{user.name}}</h6>
+  </div>
+  <div class="card-body">
+    <div class="chart-bar">
+      <canvas id="SalesReportLineChart"></canvas>
+    </div>
+    <hr>
+    <div class="text-center">
+      <h5 class="small"><b>Daily Revenue</b></h5>
+      <h4 class="small font-weight-bold text-primary actual-date-span">Daily Revenue figures expressed in a line chart
+      </h4>
+    </div>
+    <div class="options d-flex text-left m-auto">
+      <i class='bx bx-chevron-left arrow-icon previous-week' id="prev-btn"></i>
+      <div class="date-span"></div>
+      <i class='bx bx-chevron-left bx-rotate-180 arrow-icon next-week' id="next-btn"></i>
+      <input type="hidden" id="weekcount" value="0">
+      <input type="hidden" id="prev" value="">
+      <input type="hidden" id="next" value="">
     </div>
   </div>
-  <div class="row">
-    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-      <a class="dashboard-stat red" href="#">
-        <div class="visual">
-          <i class='bx bx-dollar'></i>
-        </div>
-        <div class="details">
-          <div class="number">
-            <span>312</span>
-          </div>
-          <div class="desc">Total Revenue</div>
-        </div>
-      </a>
+</div>
+
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">Best Selling Products - {{user.name}}</h6>
+  </div>
+  <div class="card-body">
+    <div class="chart-bar">
+      <canvas id="BestSellingProductChart"></canvas>
     </div>
-    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-      <a class="dashboard-stat blue" href="#">
-        <div class="visual">
-          <i class='bx bx-package'></i>
-        </div>
-        <div class="details">
-          <div class="number">
-            <span>12.5</span>
-          </div>
-          <div class="desc">Total Order</div>
-        </div>
-      </a>
-    </div>
-    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-      <a class="dashboard-stat hoki" href="#">
-        <div class="visual">
-          <i class="fa fa-credit-card"></i>
-        </div>
-        <div class="details">
-          <div class="number">
-            <span>+ 53%</span>
-          </div>
-          <div class="desc">Profit</div>
-        </div>
-      </a>
-    </div>
-    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-      <a class="dashboard-stat purple" href="#">
-        <div class="visual">
-          <i class="fa fa-comments"></i>
-        </div>
-        <div class="details">
-          <div class="number">
-            <span>689</span>
-          </div>
-          <div class="desc">New Feedback</div>
-        </div>
-      </a>
+    <hr>
+    <div class="text-center">
+      <h5 class="small"><b>Best Selling Products</b></h5>
     </div>
   </div>
-</div> --}}
-<div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Revenue - {{user.name}}</h6>
-    </div>
-    <div class="card-body">
-        <div class="chart-bar">
-            <canvas id="SalesReportLineChart"></canvas>
-        </div>
-        <hr>
-        <div class="text-center">
-            <h5 class="small"><b>Daily Revenue</b></h5>
-            <h4 class="small font-weight-bold text-primary actual-date-span">Daily Revenue figures expressed in a line chart</h4>
-        </div>
-        <div class="options d-flex text-left m-auto">
-            <i class='bx bx-chevron-left arrow-icon previous-week' id="prev-btn"></i>
-            <div class="date-span"></div>
-            <i class='bx bx-chevron-left bx-rotate-180 arrow-icon next-week' id="next-btn"></i>
-            <input type="hidden" id="weekcount" value="0">
-            <input type="hidden" id="prev" value="">
-            <input type="hidden" id="next" value="">
-        </div>
-    </div>
 </div>
 
 <div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Best Selling Products - {{user.name}}</h6>
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">Most Popular Products - {{user.name}}</h6>
+  </div>
+  <div class="card-body">
+    <div class="chart-bar">
+      <canvas id="PopularProductChart"></canvas>
     </div>
-    <div class="card-body">
-        <div class="chart-bar">
-            <canvas id="BestSellingProductChart"></canvas>
-        </div>
-        <hr>
-        <div class="text-center">
-            <h5 class="small"><b>Best Selling Products</b></h5>
-        </div>
+    <hr>
+    <div class="text-center">
+      <h5 class="small"><b>Most Popular Products</b></h5>
     </div>
+  </div>
 </div>
 
 <div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Most Popular Products - {{user.name}}</h6>
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">Wishlisted Products - {{user.name}}</h6>
+  </div>
+  <div class="card-body">
+    <div class="chart-bar">
+      <canvas id="WishlistedProductChart"></canvas>
     </div>
-    <div class="card-body">
-        <div class="chart-bar">
-            <canvas id="PopularProductChart"></canvas>
-        </div>
-        <hr>
-        <div class="text-center">
-            <h5 class="small"><b>Most Popular Products</b></h5>
-        </div>
+    <hr>
+    <div class="text-center">
+      <h5 class="small"><b>Wishlisted Products</b></h5>
     </div>
-</div>
-
-<div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Wishlisted Products - {{user.name}}</h6>
-    </div>
-    <div class="card-body">
-        <div class="chart-bar">
-            <canvas id="WishlistedProductChart"></canvas>
-        </div>
-        <hr>
-        <div class="text-center">
-            <h5 class="small"><b>Wishlisted Products</b></h5>
-        </div>
-    </div>
+  </div>
 </div>
 <style>
-    .arrow-icon {
-        font-size: 2rem;
-        cursor: pointer;
-    }
+  .arrow-icon {
+    font-size: 2rem;
+    cursor: pointer;
+  }
 </style>
 
 <script src="/js/sb-admin-2.js"></script>
