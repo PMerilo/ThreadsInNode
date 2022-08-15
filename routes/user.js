@@ -20,6 +20,7 @@ const userController = require('../controllers/userController');
 const Service = require('../models/Service');
 const Appointment = require('../models/Appointment');
 const Tailor = require('../models/Tailor');
+const RequestItem = require('../models/RequestItem');
 
 router.use((req, res, next) => {
   res.locals.path = req.baseUrl;
@@ -208,6 +209,7 @@ router.get('/user/requests', ensureAuthenticated, async (req, res) => {
   let now = moment()
   let min = now.add(7, 'd').format('YYYY-MM-DD')
   let max = now.add(1, 'M').format('YYYY-MM-DD')
+  let tailors = await User.findAll({ include: { model: Tailor, required: true } })
   let requests = await Request.findAll({
     include: [
       { model: User, as: 'user' },
@@ -224,6 +226,9 @@ router.get('/user/requests', ensureAuthenticated, async (req, res) => {
         model: User,
         as: 'tailorChange',
       },
+      {
+        model: RequestItem,
+      },
     ],
     where: {
       [Op.or]: [
@@ -238,7 +243,7 @@ router.get('/user/requests', ensureAuthenticated, async (req, res) => {
   // requests.forEach(element => {
   //   console.log(element.toJSON())
   // });
-  res.render('services/requests', { requests, min, max })
+  res.render('services/requests', { requests, min, max, tailors })
 })
 
 router.get('/forgetpassword', (req, res) => {

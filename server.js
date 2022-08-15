@@ -121,10 +121,6 @@ app.use(async function (req, res, next) {
 	res.locals.authenticated = req.isAuthenticated();
 	res.locals.today = moment().format('YYYY-MM-DD')
 	res.locals.time = moment().format('HH:mm:ss')
-	res.locals.statuses = { "-1": {text:"Appointment Denied. Request another appointment", colour: 'red'}, "0": {text: 'Awaiting next Appointment', colour: 'yellow'}, "1": {text :'Pending Appointment Booking', colour: 'red'}, "2": {text: 'Pending Appointment Confirmation', colour: 'blue'}, "3": {text: "Appointment Confirmed", colour: 'green'}, "4": {text: 'In Progress', colour: 'blue'}, "5": {text: 'Completed', colour: 'green'} }
-	res.locals.tailors = await User.findAll({
-		include: { model: Tailor, required: true }
-	});
 	next();
 });
 
@@ -220,7 +216,7 @@ app.all("/*", (req, res, next) => {
 	next()
 });
 
-app.all('/*', serviceController.checkAppointment)
+// app.all('/*', serviceController.checkAppointment)
 
 //Set layout for all routes
 

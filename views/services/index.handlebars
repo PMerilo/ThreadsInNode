@@ -2,7 +2,7 @@
 
 <div>
     <div>
-        <h1 class="text-center">Our Services <button id="sendNotif">CLick to send notification</button></h1>
+        <h1 class="text-center">Our Services</h1>
     </div>
 </div>
 <div class="d-flex justify-content-evenly mt-5">
@@ -14,7 +14,7 @@
             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
                 content.</p>
             <button onclick="location.href = ''" class="action-button-secondary">Learn more</button>
-            <button onclick="location.href = '/services/request'" class="action-button">Request Now</button>
+            <button onclick="location.href = '/services/tailoring/request'" class="action-button">Request Now</button>
         </div>
     </div>
     <div class="card w-25 text-center">
@@ -25,7 +25,7 @@
             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
                 content.</p>
             <button onclick="location.href = ''" class="action-button-secondary">Learn more</button>
-            <button onclick="location.href = '/services/request'" class="action-button">Request Now</button>
+            <button onclick="location.href = '/services/tailoring/request'" class="action-button">Request Now</button>
         </div>
     </div>
 </div>
@@ -54,8 +54,3 @@
         </div>
     </div>
 </div> --}}
-<script>
-    $('#sendNotif').click(() => {
-        sendNotif('default', 'hi', 'i love nicole so sosososo much', '', '{{user.id}}', '1')
-    })
-</script>

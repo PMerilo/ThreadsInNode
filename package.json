@@ -26,6 +26,7 @@
     "hbs": "^4.2.0",
     "http": "^0.0.1-security",
     "install": "^0.13.0",
+    "jquery-validation": "^1.19.5",
     "kit": "^0.1.2",
     "luhn-js": "^1.1.2",
     "moment": "^2.29.4",

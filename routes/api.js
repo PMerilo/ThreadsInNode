@@ -17,6 +17,7 @@ const ChatUser = require('../models/ChatUser');
 const ensureAuthenticated = require('../views/helpers/auth');
 const NotificationCount = require('../models/NotificationCount');
 const Msg = require('../models/Msg');
+const RequestItem = require('../models/RequestItem');
 
 router.get('/requests', async (req, res) => {
     // console.log(
@@ -187,5 +188,13 @@ router.post("/updatenotificationcount", async (req, res) => {
         }
         return res.json({ notificationcount })
     }
+})
+
+router.get("/requestitems", async (req, res) => {
+    let ReqItems = await RequestItem.findAll({where: {requestId: req.query.id}})
+    res.json({
+        total: ReqItems.length,
+        rows: ReqItems
+    })
 })
 module.exports = router;
