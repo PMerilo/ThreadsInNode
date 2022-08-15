@@ -53,6 +53,7 @@ router.get('/', async (req,res) =>{
 
 router.get('/searchedItem=:string&min=:min&max=:max', async (req,res) =>{
     let noProduct;
+    let sort = req.params.sort;
     Allproducts = (await Product.findAll())
     products = []
     for(let i = 0; i < Allproducts.length; i++){
@@ -61,11 +62,9 @@ router.get('/searchedItem=:string&min=:min&max=:max', async (req,res) =>{
         }
     }   
     
-    if(await Product.count() == 0){
-        noProduct = true;
-    }
     
-    res.render("index",{products,noProduct})
+    
+    res.render("index",{products})
 })
 
 router.get('/category=:string', async (req,res) =>{
@@ -74,6 +73,23 @@ router.get('/category=:string', async (req,res) =>{
     
     res.render("index",{products})
 })
+
+router.get('/sort=:sort', async (req,res) =>{
+    let sort = req.params.sort;
+    if(sort == "allTypes"){
+        products = (await Product.findAll()).map((x)=> x.dataValues)
+    }else if(sort == "Alphabetically"){
+        products = (await Product.findAll({order: [['name', 'ASC']]})).map((x)=> x.dataValues)
+    }else if(sort == "Price"){
+        products = (await Product.findAll({order: [['price', 'ASC']]})).map((x)=> x.dataValues)
+    }else if(sort == "MostPopular"){
+        products = (await Product.findAll({order: [['wishlistcount', 'DESC']]})).map((x)=> x.dataValues)
+    }
+     
+    res.render("index",{products})
+})
+
+
 
 router.post('/search', async (req,res) =>{
     
