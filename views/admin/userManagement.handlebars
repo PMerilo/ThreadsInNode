@@ -44,7 +44,7 @@
               </a>
             </td>
             <td>
-              <form action="" method="POST">
+              <form action="/admin/deleteUser/{{this.id}}" method="POST">
 
                 <button type="button" class="danger-btn" data-bs-toggle="modal" data-bs-target="#myModal_{{this.id}}">
                   Delete user
@@ -68,7 +68,7 @@
 
                       <!-- Modal footer -->
                       <div class="modal-footer">
-                        <button onclick="location.href = '/admin/deleteUser/{{this.id}}'" class="danger-btn-fixed" data-toggle="confirmation"
+                        <button type="submit" class="danger-btn-fixed" data-toggle="confirmation"
                           data-title="Confirm delete?">
                           <i class="far fa-trash-alt"></i>
                           Delete

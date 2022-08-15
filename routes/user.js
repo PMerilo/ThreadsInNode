@@ -197,6 +197,18 @@ router.post('/sellerRegister', async function (req, res) {
       role: "S"
 
     });
+    
+    code1 = Math.random().toString(36).substring(2, 15)
+    code2 = Math.random().toString(36).substring(2, 15)
+    await TempUser.create({
+      email: req.body.email,
+      backupcode1: code1,
+      backupcode2: code2,
+      backupcode1check: 'not used',
+      backupcode2check: 'not used'
+
+    });
+
     await UsersJoinedLog.create({
       date: moment().format('L'),
       description: req.body.name + " joined as a Seller",

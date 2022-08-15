@@ -354,10 +354,11 @@ router.post('/editUser/:id', async (req, res) => {
     res.redirect('/admin/UserManagement')
 })
 
-router.get('/deleteUser/:id', async function
+router.post('/deleteUser/:id', async function
     (req, res) {
     try {
         let user = await User.findByPk(req.params.id);
+        console.log(user.id)
         User.destroy({ where: { id: user.id } });
         TempUser.destroy({ where: { email: user.email } });
         flashMessage(res, 'success', 'Account successfully deleted.');
