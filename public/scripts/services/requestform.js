@@ -96,6 +96,30 @@ $(document).ready(function () {
         }
     })
 
+    $('.item2').on('focus keyup', function() {
+        if($(this).val().length > 0){
+            var formcontainer = document.getElementById("item2")
+            var inputs = formcontainer.getElementsByClassName('item2')
+            console.log(formcontainer)
+            console.log(inputs)
+            for (var i = 0; i < inputs.length; i++) {
+                var input = inputs[i]
+                console.log(input)
+                input.setAttribute("required", "");  
+            }
+        } else {
+            var formcontainer = document.getElementById("item2")
+            var inputs = formcontainer.getElementsByClassName('item2')
+            console.log(formcontainer)
+            console.log(inputs)
+            for (var i = 0; i < inputs.length; i++) {
+                var input = inputs[i]
+                console.log(input)
+                input.removeAttribute("required");
+            }
+        }
+    });
+
     var TimeValid
 
 

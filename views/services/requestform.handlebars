@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="../styles/services.css">
+<link rel="stylesheet" href="/styles/multistep-form.css">
 
 <div class="row max-req flex-column text-center justify-content-center"
     style="display: none; height: calc(100vh - 102px);">
@@ -45,7 +45,6 @@
             <h3 class="fs-subtitle">Give your request a title so we can identify it later on</h3>
             <input type="text" name="title" placeholder="Title" required/>
             <input type="button" name="ms-next" class="ms-next action-button" value="Next" />
-
         </fieldset>
         <fieldset>
             <h2 class="fs-title">Request Items</h2>
@@ -63,24 +62,32 @@
                     <hr>
                     <textarea name="description" id="" placeholder="Description" required></textarea>
                 </div>
-                <div class="col-4">
+                <div class="col-4" id="item2">
                     <p>Item 2</p>
-                    <input type="text" name="name" placeholder="Item Name" />
-                    <input type="text" name="type" placeholder="Item Type" />
-                    <input type="text" name="color" placeholder="Item Color" />
-                    <input type="number" name="qty" placeholder="Quantity" />
-                    <textarea name="description" id="" placeholder="Description"></textarea>
+                    <input type="text"  class="item2" name="name" placeholder="Item Name" />
+                    <hr>
+                    <input type="text"  class="item2" name="type" placeholder="Item Type" />
+                    <hr>
+                    <input type="text"  class="item2" name="color" placeholder="Item Color" />
+                    <hr>
+                    <input type="number"  class="item2" name="qty" placeholder="Quantity" />
+                    <hr>
+                    <textarea name="description"  class="item2" placeholder="Description"></textarea>
                 </div>
-                <div class="col-4">
+                <div class="col-4" id="item3">
                     <p>Item 3</p>
-                    <input type="text" name="name" placeholder="Item Name" />
+                    <input type="text"  name="name" placeholder="Item Name" />
+                    <hr>
                     <input type="text" name="type" placeholder="Item Type" />
+                    <hr>
                     <input type="text" name="color" placeholder="Item Color" />
+                    <hr>
                     <input type="number" name="qty" placeholder="Quantity" />
+                    <hr>
                     <textarea name="description" id="" placeholder="Description"></textarea>
                 </div>
             </div>
-            <input type="button" name="previous" class="previous action-button" value="Previous" />
+            <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
             <input type="button" name="ms-next" class="ms-next action-button" value="Next" />
         </fieldset>
         <fieldset>
@@ -100,7 +107,7 @@
             <div class="row timings">
 
             </div>
-            <input type="button" name="previous" class="previous action-button" value="Previous" />
+            <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
             <input type="submit" class="submit action-button" value="Submit" />
         </fieldset>
     </form>
