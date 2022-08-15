@@ -157,6 +157,10 @@ getCustomerSatisfactionData.done(function(data){
       type: 'bar',
       data: {
         labels: labels,
+        legend: {
+          
+          display: true
+        },
         datasets: [{
           label: "Number Of Users",
           lineTension: 0.3,
@@ -196,6 +200,8 @@ getCustomerSatisfactionData.done(function(data){
               maxTicksLimit: 7
             }
           }],
+          
+          
           yAxes: [{
             ticks: {
               maxTicksLimit: 5,
@@ -214,9 +220,6 @@ getCustomerSatisfactionData.done(function(data){
               zeroLineBorderDash: [2]
             }
           }],
-        },
-        legend: {
-          display: false
         },
         tooltips: {
           backgroundColor: "rgb(255,255,255)",

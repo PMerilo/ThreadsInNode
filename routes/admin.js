@@ -241,10 +241,9 @@ router.get("/NewsLetterSendMail", ensureAdminAuthenticated, async (req, res) => 
 })
 
 router.post("/NewsLetterSendMail", ensureAdminAuthenticated, async (req, res) => {
-    let { subject, message,posterURL } = req.body;
+    let { subject, message} = req.body;
     let users = await User.findAll({where: {newsLetter: true}});
-    console.log(message)
-    console.log(posterURL)
+    
     // let Path = path.join(__dirname,  posterURL)
     
     users.forEach(element => {
@@ -285,7 +284,7 @@ router.post("/NewsLetterSendMail", ensureAdminAuthenticated, async (req, res) =>
         
         
         
-        let Path = path.join(process.cwd() ,"/public",posterURL)
+       
         // let Path = path.join("../public",posterURL)
         // console.log(posterURL)
         // console.log(Path)
@@ -297,8 +296,7 @@ router.post("/NewsLetterSendMail", ensureAdminAuthenticated, async (req, res) =>
             subject: subject,
             template_path: "../views/MailTemplates/NewsLetterMail.html",
             context: {name: element.name, message: message,subject: subject},
-            filename: posterURL.slice(posterURL.lastIndexOf("/") + 1),
-            path: Path
+            
             
         });
          
