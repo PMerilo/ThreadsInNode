@@ -39,7 +39,7 @@
 .cart-total {
   font-size: 1.2em;
   color: #333;
-  border:none;
+  border: none;
 }
 
 .cart-item-title {
@@ -94,7 +94,7 @@
   background-color: black;
   color: white;
   float: right;
-  margin-left:auto;
+  margin-left: auto;
 
 }
 
@@ -105,18 +105,18 @@
 }
 
 .btn-danger .bx-x {
-  background-color:white;
+  background-color: white;
   color: black;
 }
 
-.bx-x{
-    font-size: 2.5em;
-    -webkit-text-stroke: 0.1px black;
-  }
+.bx-x {
+  font-size: 2.5em;
+  -webkit-text-stroke: 0.1px black;
+}
 
 .bx-trash {
-    font-size: 2em;
-  }
+  font-size: 2em;
+}
 
 .card {
   padding: 10px;
@@ -124,7 +124,7 @@
 }
 
 .cart-card {
-  margin-top:60px;
+  margin-top: 60px;
 }
 
 .discount-card {
@@ -132,17 +132,19 @@
 }
 
 .apply-discount-button {
-  background-color:#265F63;
+  background-color: #265F63;
   color: white;
 }
 
 .discount-card .card-body input {
   line-height: 2em;
   border: 1px solid #dfdfdf;
-  width:100%;
+  width: 100%;
 }
 
-.total, .shipping, .discount{
+.total,
+.shipping,
+.discount {
   padding: 10px;
   border-bottom: 1px solid black;
 }
@@ -152,5 +154,22 @@
 }
 
 .card-footer {
-  border:none;
+  border: none;
+}
+
+.continue-shopping {
+  width: 100px;
+  background: #2098ce;
+  font-weight: bold;
+  color: white;
+  border: 0 none;
+  border-radius: 25px;
+  cursor: pointer;
+  padding: 10px 5px;
+  margin: 10px 5px;
+}
+
+.continue-shopping:hover,
+.continue-shopping:focus {
+  box-shadow: 0 0 0 2px white, 0 0 0 3px #2098ce;
 }

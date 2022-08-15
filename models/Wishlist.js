@@ -8,12 +8,7 @@ class Wishlist extends sequelize.Model{
 
 }
 Wishlist.init({
-        id:{type: sequelize.INTEGER, autoIncrement: false, primaryKey: true},
-        sku:{type: sequelize.INTEGER},
-        name: { type: sequelize.STRING }, 
-        description: { type: sequelize.STRING(2000) }, 
-        price: { type: sequelize.FLOAT }, 
-        category:{type:sequelize.STRING},
+        id:{type: sequelize.BIGINT, autoIncrement: false, primaryKey: true},
         Owner:{type:sequelize.STRING},
         OwnerID:{type: sequelize.INTEGER}
 },

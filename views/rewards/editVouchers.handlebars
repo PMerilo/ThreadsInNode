@@ -1,73 +1,49 @@
 <div class="admin-padding">
-    <div class="col py-3"
-        style="width: 60%; margin:0 auto; background:white;box-shadow: 12px 12px 22px grey; border-radius:30px">
-        <h1 class="display-4">Edit Voucher {{voucher.name}}</h1><span id="datetime"></span>
+    <div class="col py-3">
+        <div class="card" style="width: 60%; margin:0 auto;">
 
-        <form method="POST" action="/admin/editVoucher/{{voucher.id}}">
-            <div class="form-group col py-3">
-                <label for="name">Voucher Name</label>
-                <input type="text" name="name" id="name" class="form-control" value="{{voucher.name}}">
-            </div>
-            <div class="form-group col py-3">
-                <label for="description">Voucher Description</label>
-                <textarea name="description" id="description" cols="30" rows="10" class="form-control"
-                    required>{{voucher.description}}</textarea>
-            </div>
-            <div class="form-group col py-3" id="">
-                <label for="voucher_code">Discount Code</label>
-                <input type="text" name="voucher_code" id="voucher_code" class="form-control" value="{{voucher.voucher_code}}" required>
-            </div>
-            <div class="form-group col py-3" id="">
-                <label for="spools_needed">Spools Needed</label>
-                <input type="number" name="spools_needed" id="spools_needed" class="form-control" value="{{voucher.spools_needed}}" required>
-            </div>
-            <div class="form-group col py-3" id="">
-                <label for="discount_amount">Discount Amount (%)</label>
-                <input type="number" name="discount_amount" id="discount_amount" class="form-control" value="{{voucher.discount_amount}}" required>
-            </div>
-            <div class="form-group col py-3" id="">
-                <label for="quantity">Quantity</label>
-                <input type="number" name="quantity" id="quantity" class="form-control" value="{{voucher.quantity}}" required>
-            </div>
-            <div class="form-group col py-3" id="">
-                <label for="expiry_date">Expiry Date</label>
-                <input type="date" name="expiry_date" id="expiry_date" class="form-control" value="{{voucher.exipry_date}}" required>
-            </div>
-            <div class="form-group col py-3">
-                <input class="file-input" type='file' name="pic" onchange="readURL(this);" accept="image/*" />
-                <div class="image-preview" id="imagePreview">
-                    <img src="" alt="Image Preview" class="image-preview__image">
-                    <span class="image-preview__default-text">
-                        Image Preview
-                    </span>
+            <form method="POST" action="/admin/editVoucher/{{voucher.id}}" class="form">
+                <h1 class="display-4">Edit {{voucher.name}}</h1><span id="datetime"></span>
+                <div class="form-group col py-3">
+                    <label for="name">Voucher Name</label>
+                    <input type="text" name="name" id="name" class="form-control" value="{{voucher.name}}">
                 </div>
-            </div>
-            <input type="submit" value="Add Voucher" class="btn btn-primary col py-3" />
-            {{!-- <button onclick="location.href = '/admin/inventory/retrieve_product';" id="goBack"
-                class="align-right submit-button">Go Back</button> --}}
-        </form>
+                <div class="form-group col py-3">
+                    <label for="description">Voucher Description</label>
+                    <textarea name="description" id="description" cols="30" rows="10" class="form-control"
+                        required>{{voucher.description}}</textarea>
+                </div>
+                <div class="form-group col py-3" id="">
+                    <label for="voucher_code">Discount Code</label>
+                    <input type="text" name="voucher_code" id="voucher_code" class="form-control"
+                        value="{{voucher.voucher_code}}" required>
+                </div>
+                <div class="form-group col py-3" id="">
+                    <label for="spools_needed">Spools Needed</label>
+                    <input type="number" name="spools_needed" id="spools_needed" class="form-control"
+                        value="{{voucher.spools_needed}}" required>
+                </div>
+                <div class="form-group col py-3" id="">
+                    <label for="discount_amount">Discount Amount (%)</label>
+                    <input type="number" name="discount_amount" id="discount_amount" class="form-control"
+                        value="{{voucher.discount_amount}}" required>
+                </div>
+                <div class="form-group col py-3" id="">
+                    <label for="quantity">Quantity</label>
+                    <input type="number" name="quantity" id="quantity" class="form-control" value="{{voucher.quantity}}"
+                        required>
+                </div>
+                <div class="form-group col py-3" id="">
+                    <label for="expiry_date">Expiry Date</label>
+                    <input type="date" name="expiry_date" id="expiry_date" class="form-control"
+                        value="{{voucher.expiry_date}}" required>
+                </div>
+                <input type="submit" value="Edit Voucher" class="blue-btn col py-3" />
+            </form>
+        </div>
+
     </div>
 </div>
-
-<style type="text/css">
-    .image-preview {
-        width: 300px;
-        min-height: 100px;
-        border: 2px solid #dddddd;
-        margin-top: 15px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        color: #cccccc;
-    }
-
-    .image-preview__image {
-        display: none;
-        width: 100%;
-    }
-</style>
 
 <script>
     const fileInput = document.getElementById('file-input');

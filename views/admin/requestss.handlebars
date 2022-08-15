@@ -1,0 +1,59 @@
+{{setVar "scriptsPath" "_serviceScripts"}}
+
+
+<div class="card p-2">
+  <h2>My Requests</h2>
+
+  <table id="reqTable" data-toggle="table" data-url="/api/requests">
+    <thead>
+      <tr>
+        <th scope="col" data-field="id">Request_ID</th>
+        <th scope="col" data-field="title">Request Title</th>
+        <th scope="col" data-field="user.name">Customer Name</th>
+        <th scope="col" data-field="service.name">Service</th>
+        <th scope="col" data-field="tailor.user.name">Tailor</th>
+        <th scope="col" data-field="description">Description</th>
+        <th scope="col" data-field="status">Status</th>
+        <th scope="col" data-field="operate" data-formatter="operateFormatter" data-events="operateEvents"></th>
+      </tr>
+    </thead>
+  </table>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <button type="button" class="btn btn-primary statusbtn">Pending</button>
+        <button type="button" class="btn btn-primary statusbtn">Completed</button>
+        {{!-- <button type="button" class="btn btn-primary statusbtn">In Progress</button>
+        <button type="button" class="btn btn-primary statusbtn">Pending Delivery</button>
+        <button type="button" class="btn btn-primary statusbtn">Pending Collection</button> --}}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary confirm">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="delModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Delete Request?</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-danger">Warning this action is irreversable</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger del">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>

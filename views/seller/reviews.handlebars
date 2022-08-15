@@ -1,0 +1,72 @@
+<div class="card" style="padding:10px">
+    <div class="card-header">
+        <h2>Product Reviews</h2>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped" id="reviews-table">
+            <thead>
+                <tr>
+                    <th>Review ID</th>
+                    <th>Customer Details</th>
+                    <th>Review Title</th>
+                    <th>Rating</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each reviews}}
+                <tr>
+                    <td>{{this.id}}</td>
+                    <td>
+                        <button type="button" class="btn w-100" data-bs-toggle="modal"
+                            data-bs-target="#myModal_{{this.userId}}">
+                            {{this.user.name}}
+                        </button>
+
+                        <!-- The Modal -->
+                        <div class="modal" id="myModal_{{this.userId}}">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+
+                                    <!-- Modal Header -->
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Customer Details</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+
+                                    <!-- Modal body -->
+                                    <div class="modal-body">
+                                        <p>Customer Name : {{this.user.name}}</p>
+                                        <p>Phone Number : {{this.user.phoneNumber}}</p>
+                                        <p>Email : {{this.user.email}} </p>
+                                    </div>
+
+                                    <!-- Modal footer -->
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Back</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </td>
+                    <td>{{this.title}}
+                    </td>
+                    <td>{{this.stars}} / 5</td>
+                    <td>{{this.description}}</td>
+
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+
+        const reviewsTable = document.getElementById('reviews-table');
+        let reviewtable = new simpleDatatables.DataTable(reviewsTable);
+    })
+</script>

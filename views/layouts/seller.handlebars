@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+
+    {{>_links}}
+
+    <link rel="stylesheet" href="/styles/admin.css">
+    <link rel="stylesheet" href="/styles/admin_navbar.css">
+
+    <title>Threads In Time</title>
+    
+</head>
+<body>
+    
+    
+    {{>breadcrumb}}
+    {{>_sellerNavbar}}
+    <div class="container-fluid mt-2 home">    
+        {{>flashmsg}}
+        {{{body}}}
+        <br>
+    </div>
+     
+    {{>_scripts}}
+    {{#if scriptsPath}}
+    {{>(lookup . "scriptsPath") seller="/seller"}}
+    {{/if}}
+
+</body>
+</html>

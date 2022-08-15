@@ -1,0 +1,114 @@
+<link rel="stylesheet" href="../styles/reviews.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.js"></script>
+
+<div class="section grey social">
+
+    <h2 class="section-title title-divider">Used by tens of thousands of people who send stuff.</h2>
+    <div class="box">
+        <div class="slider-nav">
+            {{#each reviews}}
+            <div class="slide">
+                <div class="card">
+                    <div class="card-header">
+                        {{this.user.name}} &bull;
+                        {{this.title}}
+                        <br>
+                        {{this.stars}}/5 rating
+                    </div>
+                    <div class="card-body">
+                        {{this.description}}
+                    </div>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="card">
+                    <div class="card-header">
+                        {{this.user.name}} &bull;
+                        {{this.title}}
+                        <br>
+                        {{this.stars}}/5 rating
+                    </div>
+                    <div class="card-body">
+                        {{this.description}}
+                    </div>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="card">
+                    <div class="card-header">
+                        {{this.user.name}} &bull;
+                        {{this.title}}
+                        <br>
+                        {{this.stars}}/5 rating
+                    </div>
+                    <div class="card-body">
+                        {{this.description}}
+                    </div>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="card">
+                    <div class="card-header">
+                        {{this.user.name}} &bull;
+                        {{this.title}}
+                        <br>
+                        {{this.stars}}/5 rating
+                    </div>
+                    <div class="card-body">
+                        {{this.description}}
+                    </div>
+                </div>
+            </div>
+            <div class="slide">
+                <div class="card">
+                    <div class="card-header">
+                        {{this.user.name}} &bull;
+                        {{this.title}}
+                        <br>
+                        {{this.stars}}/5 rating
+                    </div>
+                    <div class="card-body">
+                        {{this.description}}
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</div> <!-- section end -->
+
+<script>
+    $('.slider-nav').slick({
+        slidesToShow: 4,
+        slidesToScroll: 1,
+        autoplay: true,
+        dots: false,
+        centerMode: true,
+        focusOnSelect: true
+    });
+</script>
+
+<div class="reviews" id="stars_1">
+    <input type="hidden" id="stars" value="3">
+    <span class="review-star bx bx-star"></span>
+    <span class="review-star bx bx-star"></span>
+    <span class="review-star bx bx-star"></span>
+    <span class="review-star bx bx-star"></span>
+    <span class="review-star bx bx-star"></span>
+</div>
+<div class="reviews" id="stars_2">
+    <input type="hidden" id="stars" value="4">
+    <span class="review-star bx bx-star"></span>
+    <span class="review-star bx bx-star"></span>
+    <span class="review-star bx bx-star"></span>
+    <span class="review-star bx bx-star"></span>
+    <span class="review-star bx bx-star"></span>
+</div>
+var starContainer = document.getElementsByClassName("reviews")
+        for (i = 0; i < starContainer.length; i++) {
+            var rstars = starContainer.getElementsByClassName("review-star")
+            console.log(rstars)
+        }
+        console.log(starContainer)

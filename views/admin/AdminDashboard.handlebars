@@ -1,11 +1,62 @@
-
+<link rel="stylesheet" href="../styles/dashboard.css">
 <!-- Begin Page Content -->
 <div class="container-fluid">
-
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Admin Dashboard</h1>
-    
-
+    <div class="row">
+        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+            <a class="dashboard-stat red" href="#">
+                <div class="visual">
+                    <i class='bx bx-credit-card'></i>
+                </div>
+                <div class="details">
+                    <div class="number">
+                        <span id="sales">$0</span>
+                    </div>
+                    <div class="desc">Total Sales</div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+            <a class="dashboard-stat hoki" href="/admin/revenue">
+                <div class="visual">
+                    <i class='bx bx-dollar'></i>
+                </div>
+                <div class="details">
+                    <div class="number">
+                        <span id="revenue">$0</span>
+                    </div>
+                    <div class="desc">Total Revenue</div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+            <a class="dashboard-stat blue" href="#">
+                <div class="visual">
+                    <i class='bx bx-package'></i>
+                </div>
+                <div class="details">
+                    <div class="number">
+                        <span id="orders">0</span>
+                    </div>
+                    <div class="desc">Total Orders</div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+            <a class="dashboard-stat purple" href="#">
+                <div class="visual">
+                    <i class='bx bxs-user'></i>
+                </div>
+                <div class="details">
+                    <div class="number">
+                        <span id="customers">0</span>
+                    </div>
+                    <div class="desc">Customers</div>
+                </div>
+            </a>
+        </div>
+    </div>
     <!-- Content Row -->
     <div class="row">
 
@@ -43,6 +94,31 @@
                 </div>
             </div>
 
+            <!-- Area Chart -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Sales</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="TITSales"></canvas>
+                    </div>
+                    <hr>
+                    <div class="text-center">
+                        <h5 class="text-gray-900 m-0">Threads In Time Sales</h5>
+                        <h4 class="small font-weight-bold text-primary actual-date-span"></h4>
+                    </div>
+                    <div class="options d-flex text-left m-auto">
+                        <i class='bx bx-chevron-left arrow-icon previous-week' id="prev-btn"></i>
+                        <div class="date-span"></div>
+                        <i class='bx bx-chevron-left bx-rotate-180 arrow-icon next-week' id="next-btn"></i>
+                        <input type="hidden" id="weekcount" value="0">
+                        <input type="hidden" id="prev" value="">
+                        <input type="hidden" id="next" value="">
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <!-- Donut Chart -->
@@ -61,12 +137,12 @@
                     <div class="text-center">
                         <h5 class="text-gray-900 m-0">User Roles</h5>
                         <span class="text-gray-600 small">List Of Our Users</span>
+                    </div>
                 </div>
+
             </div>
-            
-        </div>
-        
-        <div class="card shadow mb-4">
+
+            <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">User Genders</h6>
@@ -80,17 +156,51 @@
                     <div class="text-center">
                         <h5 class="text-gray-900 m-0">User Genders</h5>
                         <span class="text-gray-600 small">List Of Our Users Genders</span>
+                    </div>
                 </div>
-            </div>
-        
-    </div>
 
+            </div>
+
+        </div>
+    </div>
 </div>
+<style>
+    .arrow-icon {
+        font-size: 2rem;
+        cursor: pointer;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        updateStats()
+    })
+
+    function updateStats() {
+        var sales = document.getElementById("sales")
+        var revenue = document.getElementById("revenue")
+        var orders = document.getElementById("orders")
+        var customers = document.getElementById("customers")
+        console.log(sales , revenue , customers , orders)
+        $.ajax({
+        url: "/datapipeline/stats",
+        method: 'POST',
+        contentType: "application/json",
+        data: JSON.stringify({ status: "check" }),
+        success: function (res) {
+            console.log(res)
+            sales.innerText = "S$" + res.sales
+            revenue.innerText = "S$" + res.revenue
+            orders.innerText = res.orders
+            customers.innerText = res.customers
+        }
+    })
+    }
+
+</script>
+
 <!-- /.container-fluid -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
 <script src="/js/demo/chart-area-demo.js"></script>
 <script src="/js/demo/chart-bar-demo.js"></script>
 <script src="/js/demo/chart-pie-demo.js"></script>
 <script src="/js/sb-admin-2.js"></script>
-<script src="/js/chart.js/Chart.min.js"></script>
-
-

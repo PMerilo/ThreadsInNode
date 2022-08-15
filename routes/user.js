@@ -16,7 +16,10 @@ const mail = require("../config/NewMailConfig");
 const PDFDocument = require('pdfkit');
 const path = require('path');
 
-const userController = require('../controllers/userController')
+const userController = require('../controllers/userController');
+const Service = require('../models/Service');
+const Appointment = require('../models/Appointment');
+const Tailor = require('../models/Tailor');
 
 router.use((req, res, next) => {
   res.locals.path = req.baseUrl;
@@ -202,18 +205,40 @@ router.post('/sellerRegister', async function (req, res) {
 
 
 router.get('/user/requests', ensureAuthenticated, async (req, res) => {
+  let now = moment()
+  let min = now.add(7, 'd').format('YYYY-MM-DD')
+  let max = now.add(1, 'M').format('YYYY-MM-DD')
   let requests = await Request.findAll({
-    include: { all: true, nested: true },
+    include: [
+      { model: User, as: 'user' },
+      {
+        model: Appointment,
+        order: [['createdAt', 'DESC']],
+        limit: 1
+      },
+      {
+        model: User,
+        as: 'tailor',
+      },
+      {
+        model: User,
+        as: 'tailorChange',
+      },
+    ],
     where: {
       [Op.or]: [
         { userId: req.user.id },
-        { "$tailor.userId$": req.user.id }
-      ]
-
-    }
+        { "$tailor.id$": req.user.id }
+      ],
+    },
+    order: [
+      ["createdAt", 'DESC']
+    ]
   })
-  // console.log(requests)
-  res.render('services/requests', { requests })
+  // requests.forEach(element => {
+  //   console.log(element.toJSON())
+  // });
+  res.render('services/requests', { requests, min, max })
 })
 
 router.get('/forgetpassword', (req, res) => {

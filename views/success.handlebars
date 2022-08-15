@@ -1,0 +1,111 @@
+<title>Payment successful</title>
+<script>
+    {
+        var time = 5000;
+        setTimeout(function () {
+            window.location = "http://localhost:5000/"
+        }, time)
+    }
+</script>
+<style type="text/css">
+    body {
+        margin: 0;
+        min-height:100vh;
+        background: #fff;
+        background-image:linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(252,252,252,1) 13%, rgba(124,231,240,1) 50%, rgba(255,255,255,1) 100%);
+        background-size: 100%;
+        text-align: center;
+    }
+
+    .heading {
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        margin-bottom: 32px;
+    }
+
+    .container {
+        color: rgb(2, 2, 2);
+        margin: auto;
+        padding: 32px 16px 16px;
+    }
+
+
+    .primary-button {
+        color: #1ad0f0;
+        background-color: #fff;
+        padding: 12px 16px;
+        display: inline-block;
+        margin-top: 32px;
+        border-radius: 6px;
+        text-decoration: none;
+        text-transform: uppercase;
+    }
+
+    #my-icon .circle {
+        animation: circle-animation 0.5s ease-out forwards;
+        opacity: 0;
+        transform: scale(0.9);
+        transform-origin: center;
+    }
+
+    svg {
+        width: 200px;
+        height: 200px;
+    }
+
+    @keyframes circle-animation {
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    #my-icon .checkmark {
+        animation: checkmark-animation 1s ease-out forwards;
+        stroke-dasharray: 400;
+        stroke-dashoffset: 400;
+        stroke: #cfd8dc;
+        transform-origin: center;
+    }
+
+    @keyframes checkmark-animation {
+        40% {
+            transform: scale(1);
+        }
+
+        55% {
+            stroke: #cfd8dc;
+            transform: scale(1.2);
+        }
+
+        70% {
+            transform: scale(1);
+        }
+
+        100% {
+            stroke-dashoffset: 0;
+            transform: scale(1);
+            stroke: #21b587;
+        }
+    }
+</style>
+</head>
+
+<body style="font-family:sans-serif;">
+    <div class="container">
+        <div class="heading"><svg id="my-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 290 290">
+                <circle class="circle" cx="145" cy="145" r="124.67"
+                    style="fill: #fff;stroke: #e4f4da;stroke-miterlimit: 10;stroke-width: 20px" />
+                <polyline class="checkmark" points="88.75 148.26 124.09 183.6 201.37 106.32"
+                    style="fill: none;stroke: #a5db85;stroke-linecap: round;stroke-linejoin: round;stroke-width: 20px" />
+
+            </svg><span>Your payment is successful</span></div>
+        <div class="text-container">
+            <div>You will be redirected to the website in 5 seconds.</div>
+            <div>Click the button below, if you are not redirected to the website.</div><a class="primary-button"
+                href="http://localhost:5000/">Go to Website</a>
+        </div>
+    </div>
+</body>

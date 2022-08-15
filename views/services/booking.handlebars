@@ -49,14 +49,20 @@
                     <option value="3">Alan Walker</option>
                 </select>
             </div> --}}
-            <div class="mb-3 col-12">
+            <div class="mb-3 col-6">
                 <label for="date" class="form-label">Date</label>
-                <input type="date" class="form-control" name="date" required>
+                <input type="date" class="form-control" name="date" min={{min}} max={{max}} required value="{{min}}">
+            </div>
+            <div class="mb-3 col-6 tailor-select">
+                <label for="tailorID" class="form-label">Tailor</label>
+                <select class="form-select" aria-label="Default select example" name="tailorID" data-bs-id={{tailorId}}>
+                    <option selected>Select Tailor</option>
+                    {{>options object=tailors}}
+                </select>
+
             </div>
         </div>
         <div class="row timings">
-
-            
         </div>
         <div class="row">
             <div class="mb-3 col-12">
@@ -70,3 +76,17 @@
     </form>
 </div>
 <script src="/scripts/services/datapicker.js"></script>
+<script>
+    $(document).ready(function () {
+        let id = $('[name="tailorID"]').attr('data-bs-id')
+        if (id) {
+            $(`[value="${id}"]`).attr('selected', true)
+            $('select[name="tailorID"]').attr('disabled', true)
+            $('.tailor-select').append(`<input type="hidden" class="form-control" name="tailorID" value=${id}>`)
+        }
+        if ($('input[name=date]').val() && $('input[name=tailorID]').val()) {
+
+            getTimings()
+        }
+    })
+</script>

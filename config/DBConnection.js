@@ -1,5 +1,6 @@
 const mySQLDB = require('./DBConfig');
 const Appointment = require('../models/Appointment')
+const Cart = require('../models/Cart');
 const CartProduct = require('../models/CartProduct')
 const FAQ = require('../models/FAQ')
 const Feedback = require('../models/FAQ')
@@ -14,6 +15,15 @@ const Service = require('../models/Service')
 
 const JoinedUsersLogs = require('../models/Logs/JoinedUsersLogs');
 const Tailor = require('../models/Tailor');
+const Order = require('../models/Orders');
+const OrderItems = require('../models/OrderItems');
+const Review = require('../models/Reviews');
+const Notification = require('../models/Notification');
+const UserNotification = require('../models/UserNotifications');
+const Chat = require('../models/Chat');
+const Msg = require('../models/Msg');
+const ChatUser = require('../models/ChatUser');
+const NotificationCount = require('../models/NotificationCount');
 
 // If drop is true, all existing tables are dropped and recreated
 const setUpDB = (drop) => {
@@ -25,24 +35,65 @@ const setUpDB = (drop) => {
             The primary key from user will be a foreign key in video.
             */
 
-            User.hasMany(Request)
-            User.hasMany(Appointment)
-            User.hasOne(Tailor, {foreignKey: {allowNull: false}})
+            User.hasMany(Request, {onDelete: 'CASCADE'})
+            User.hasMany(Appointment, {onDelete: 'CASCADE'})
+            User.hasOne(Tailor, {foreignKey: {allowNull: false}, onDelete: 'CASCADE'})
 
-            Request.belongsTo(User)
-            Request.hasMany(Appointment)
-            Request.belongsTo(Tailor)
-            Request.belongsTo(Service, { as: 'service' });
+            User.hasOne(NotificationCount)
+            NotificationCount.belongsTo(User)
+
+            User.belongsToMany(Notification, {through: UserNotification})
+            Notification.belongsToMany(User, {through: UserNotification})
+
+            Request.hasMany(Appointment, {onDelete: 'CASCADE'})
+            Request.belongsTo(User, {as: 'user', foreignKey: 'userId'})
+            Request.belongsTo(User, {as: 'tailor', foreignKey: 'tailorId'})
+            Request.belongsTo(User, {as: 'tailorChange', foreignKey: 'tailorChangeId'})
 
             Appointment.belongsTo(Request)
-            Appointment.belongsTo(User)
+            Appointment.belongsTo(User, {as: 'user', foreignKey: 'userId'})
+            Appointment.belongsTo(User, {as: 'tailor', foreignKey: 'tailorId'})
 
-
-            Service.hasMany(Request, { as: 'requests'})
-
+            Tailor.hasMany(Appointment)
             Tailor.belongsTo(User)
             Tailor.hasMany(Request)
 
+            Product.belongsToMany(Cart, { through: CartProduct })
+            Cart.belongsToMany(Product, { through: CartProduct })
+
+            User.hasOne(Cart)
+            Cart.belongsTo(User)
+
+            Order.hasMany(OrderItems)
+            OrderItems.belongsTo(Order)
+
+            Order.belongsTo(User)
+            User.hasMany(Order)
+
+            Wishlist.belongsTo(Product)
+            Product.hasMany(Wishlist)
+
+            Review.belongsTo(User)
+            User.hasMany(Review)
+
+            Review.belongsTo(Product)
+            Product.hasMany(Review)
+
+            Chat.hasMany(Request, {onDelete: "CASCADE"})
+            Request.belongsTo(Chat, {onDelete: "CASCADE"})
+
+            Chat.belongsToMany(User, {through: ChatUser})
+            User.belongsToMany(Chat, {through: ChatUser})
+
+            Chat.hasMany(ChatUser)
+            ChatUser.belongsTo(Chat)
+            User.hasMany(ChatUser)
+            ChatUser.belongsTo(User)
+
+            Chat.hasMany(Msg, {onDelete: "CASCADE"})
+            Msg.belongsTo(Chat, {onDelete: "CASCADE"})
+            Msg.belongsTo(User, {onDelete: "CASCADE"})
+            
             mySQLDB.sync({
                 alter: true,
                 force: drop

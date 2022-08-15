@@ -8,14 +8,14 @@ class Reward extends sequelize.Model{
 
 }
 Reward.init({
-        id:{type: sequelize.INTEGER, autoIncrement: true, primaryKey: true},
+        id:{type: sequelize.BIGINT, autoIncrement: true, primaryKey: true},
         name: { type: sequelize.STRING }, 
         voucher_code: { type: sequelize.STRING }, 
         description: { type: sequelize.STRING(2000) }, 
         spools_needed: { type: sequelize.INTEGER }, 
         discount_amount: { type: sequelize.INTEGER }, 
         quantity: {type: sequelize.INTEGER},
-        expiry_date:{type:sequelize.DATE}
+        expiry_date:{type:sequelize.DATEONLY}
 },
     {
         freezeTableName: true,

@@ -1,0 +1,174 @@
+<link rel="stylesheet" href="../styles/pastorderDetails.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
+  integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A=="
+  crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+<div class="row">
+  <div class="container content-section col-12 col-md-9">
+    <div class="card cart-card">
+      <div class="card-header">
+        <h2>Order Summary</h2>
+      </div>
+
+      <div class="card-body">
+        <div class="cart-row">
+          <span class="cart-item cart-header cart-column">ITEM</span>
+          <span class="cart-price cart-header cart-column">PRICE</span>
+          <span class="cart-quantity cart-header cart-column">QUANTITY</span>
+          <span class="c-t cart-header cart-column">Order Status</span>
+        </div>
+        <div class="cart-items">
+          {{#each orderitems}}
+          <div class="cart-row">
+            <div class="cart-item cart-column">
+              {{#if this.posterURL}}
+              <img class="cart-item-image" src="{{this.posterURL}}" height="100" width="100">
+              {{else}}
+              <img class="cart-item-image" src="/images/no-image.jpg" width="100" height="100">
+              {{/if}}
+              <span class="cart-item-title">{{ this.product_name }}</span>
+            </div>
+            <span class="cart-price cart-column">S${{ this.product_price }}</span>
+            <div class="cart-quantity cart-column">
+              <span class="cart-quantityy">{{this.qtyPurchased}}</span>
+            </div>
+            <div class="c-t cart-column d-flex">
+              <p class="cart-total cart-column orderStatus">{{this.orderStatus}}</p>
+              {{!-- <button class="hidden btn btn-secondary" style="display:none;" id="{{this.productSku}}">Confirm
+                Delivery</button> --}}
+              <button class="btn confirm-btn btn-outline btn-secondary" style="display:none;" type="submit"
+                data-bs-toggle="modal" data-bs-target="#Modal-confirm-{{this.productSku}}">Confirm
+                Delivery</button>
+              {{#equals this.review 0}}
+              <button class="btn review-btn btn-outline btn-secondary" style="display:none; font-size:0.8rem" type="submit" data-bs-toggle="modal"
+                data-bs-target="#Modal-review-{{this.productSku}}">Leave a Review</button>
+              {{/equals}}
+            </div>
+          </div>
+          <input type="hidden" value="{{ order.orderTotal}}" class="total-p">
+
+          <div class="modal fade" style="margin-top:100px;" id="Modal-confirm-{{this.productSku}}" tabindex="-1"
+            role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Confirm Delivery</h5>
+                  <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                  </button>
+                </div>
+                <form action="/confirmDelivery" method="POST">
+                  <div class="modal-body">
+                    <p>This action cannot be undone</p>
+
+                  </div>
+                  <div class="modal-footer">
+                    <input type="hidden" name="sku" id="sku" value="{{this.productSku}}">
+                    <input type="hidden" name="id" id="id" value="{{this.id}}">
+                    <button class="btn btn-primary" type="submit">Confrim</button>
+                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal fade " style="margin-top:100px;" id="Modal-review-{{this.productSku}}" tabindex="-1"
+            role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content modal-review">
+                <div class="cont">
+                  <div class="title">
+                    <h3>Review for {{this.product_name}}
+                    </h3>
+                  </div>
+
+
+                  <div class="cont">
+
+                    <div class="stars">
+                      <form class="form" action="/submitProductReview" method="post">
+                        <input class="star star-5" id="star-5" value="5" type="radio" name="star" />
+                        <label class="star star-5" for="star-5"></label>
+                        <input class="star star-4" id="star-4" value="4"  type="radio" name="star" />
+                        <label class="star star-4" for="star-4"></label>
+                        <input class="star star-3" id="star-3" value="3"  type="radio" name="star" />
+                        <label class="star star-3" for="star-3"></label>
+                        <input class="star star-2" id="star-2" value="2"  type="radio" name="star" />
+                        <label class="star star-2" for="star-2"></label>
+                        <input class="star star-1" id="star-1" value="1"  type="radio" name="star" />
+                        <label class="star star-1" for="star-1"></label>
+
+                        <input type="hidden" id="sku" name="sku" value="{{this.productSku}}">
+                        <input type="hidden" id="id" name="id" value="{{this.id}}">
+
+                        <div class="rev-box">
+                          <table>
+                            <tr>
+                              <input class="title" col="20" name="title" placeholder="Review Title" id="title">
+                            </tr>
+                            <tr>
+                              <textarea class="review" col="70" name="review"
+                                placeholder="Review Description" id="text"></textarea>
+                            </tr>
+                          </table>
+                          <input type="submit" class="submit-btn" value="Submit Review"></input>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {{/each}}
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="container col-12 col-md-3">
+    <div class="card summary-card">
+      <div class="cart-header card-header">
+        <p>Order Summary</p>
+      </div>
+      <div class="grandtotal-after d-flex">
+        <p>Order Total:</p>
+        <p class="cart-gt-after ms-auto">S${{ order.orderTotal}}</p>
+      </div>
+      {{!-- <div class="grandtotal-after d-flex">
+        <p>Order Status:</p>
+        <p class="cart-gt-after ms-auto">{{ order.orderStatus}}</p>
+      </div> --}}
+      {{!-- {{#if order.discountcodeused}}
+      <div class="grandtotal-after d-flex">
+        <p>Discount Code Used:</p>
+        <p class="cart-gt-after ms-auto">{{ order.discountcodeused}}</p>
+      </div>
+      {{/if}} --}}
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function () {
+    var cartItemContainer = document.getElementsByClassName('cart-items')[0]
+    var cartRows = cartItemContainer.getElementsByClassName('cart-row')
+    for (var i = 0; i < cartRows.length; i++) {
+      var cartRow = cartRows[i]
+      console.log(cartRow)
+      var orderStatus = cartRow.getElementsByClassName("orderStatus")[0].innerText
+      console.log(orderStatus)
+      if (orderStatus == "Delivered") {
+        btn = cartRow.getElementsByClassName("confirm-btn")[0]
+        btn.style.display = "block"
+      } else if(orderStatus == "Delivery Confirmed") {
+        btn = cartRow.getElementsByClassName("review-btn")[0]
+        btn.style.display = "block"
+      }
+
+    }
+  })
+</script>

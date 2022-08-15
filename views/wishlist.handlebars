@@ -1,46 +1,82 @@
 <link rel="stylesheet" href="styles/homepage.css">
 <link rel="stylesheet" href="styles/product.css">
 <div class="container">
+  <h1>My Wishlist</h1>
   <div class="row mt-3">
+    {{#if wishlistproducts}}
     {{#each wishlistproducts}}
     <div class="col-12 col-xs-12 col-md-6 col-lg-4 col-xl-3" id="product_card">
-      <div class="card">
-        <img class="card-img-top product-image" src="/images/items/11.jpg" alt="Card image cap" width="153px"
+      <div class="card img">
+        {{#equals this.product.quantity 0}}
+
+        {{#if this.product.posterURL}}
+        <img class="card-img-top product-image" src="{{this.product.posterURL}}" alt="Card image cap" width="153px"
           height="372px">
+        {{else}}
+        <img class="card-img-top product-image" src="/images/no-image.jpg" alt="Card image cap" width="153px"
+          height="372px">
+        {{/if}}
+        <div class="overlay">
+          <div class="content">
+            <img src="/images/hanger-line.png" width="75px" height="75px">
+            <p>Sold Out</p>
+            <div class="btttn">
+              <button type="button" value="{{ this.product.sku }}" class="wishlist dark-btn"
+                onclick="wishLists(this)">Delete</button>
+            </div>
+          </div>
+        </div>
+        {{else}}
+        {{#if this.product.posterURL}}
+        <img class="card-img-top product-image" src="{{this.product.posterURL}}" alt="Card image cap" width="153px"
+          height="372px">
+        {{else}}
+        <img class="card-img-top product-image" src="/images/no-image.jpg" alt="Card image cap" width="153px"
+          height="372px">
+        {{/if}}
         <div class="card-button">
-          <button type="button" class="btn show-item" value="{{this.sku}}" data-bs-toggle="modal" data-bs-target="#myModal_{{this.sku}}">
+          <button type="button" class="show-item modal-opener" value="{{this.product.sku}}" data-bs-toggle="modal"
+            data-bs-target="#myModal_{{this.product.sku}}">
             Shop This Product
           </button>
         </div>
+        {{/equals}}
 
-        <div class="modal" id="myModal_{{this.sku}}">
+        <div class="modal" id="myModal_{{this.product.sku}}">
           <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
               <div class="row">
+                {{#if this.product.posterURL}}
                 <div class="container col-12 col-md-6">
-                  <img src="/images/items/11.jpg" height="541px" width="381px" class="image">
+                  <img src="{{this.product.posterURL}}" height="541px" width="381px" class="image">
                 </div>
+                {{else}}
+                <div class="container col-12 col-md-6">
+                  <img src="/images/no-image.jpg" height="541px" width="381px" class="image">
+                </div>
+                {{/if}}
 
                 <div class="container col-12 col-md-6 modal-info">
                   <button type="button" class="btn-close x-button" data-bs-dismiss="modal"></button>
                   <div class="modal-header">
-                    <h6 class="modal-title">{{ this.name }}</h6>
-                    <div class="review">
-                      <span class="bx bxs-star"></span>
-                      <span class="bx bxs-star"></span>
-                      <span class="bx bxs-star"></span>
-                      <span class="bx bxs-star"></span>
-                      <span class="bx bx-star"></span>
+                    <h6 class="modal-title">{{ this.product.name }}</h6>
+                    <div class="review" id="review_{{this.product.sku}}">
+                      <span class="review-star bx bx-star"></span>
+                      <span class="review-star bx bx-star"></span>
+                      <span class="review-star bx bx-star"></span>
+                      <span class="review-star bx bx-star"></span>
+                      <span class="review-star bx bx-star"></span>
+                      <p class="totalreviews">{{this.product.reviews_given}} Review/s</p>
                     </div>
                   </div>
 
                   <div class="modal-body">
-                    <div class="price">${{ this.price }}</div>
-                    <div class="desc">{{ this.description }}</div>
+                    <div class="price">${{ this.product.price }}</div>
+                    <div class="desc">{{ this.product.description }}</div>
                   </div>
 
                   <div class="modal-footer">
-                    <button class="button shop-item-button" value="{{ this.sku }}" value="1"
+                    <button class="button shop-item-button" value="{{ this.product.sku }}" value="1"
                       onclick="addtocartClicked(this)">
                       <span>Add to cart</span>
                       <div class="cart">
@@ -51,8 +87,11 @@
                       </div>
                     </button>
 
-                    <button type="button" value="{{ this.sku }}" class="wishlist btn bx bx-bookmark-heart" style="font-size: 1.75em;"
-                      onclick="wishList(this)"></button>
+                    <button type="button" value="{{ this.product.sku }}" class="wishlist btn bx bx-bookmark-heart"
+                      style="font-size: 1.75em;" onclick="wishList(this)"></button>
+                    <div class="to-reviews"
+                      onclick="location.href='http://localhost:5000/reviews/{{this.product.sku}}';">See
+                      Full Details</div>
                   </div>
                 </div>
               </div>
@@ -62,8 +101,40 @@
       </div>
     </div>
     {{/each}}
+    {{else}}
+    <div class="mx-auto" style="display:block;">
+      <img src="images/nothing.png" class="nth">
+      <button class="blue-btn w-100" onclick="location.href='http://localhost:5000/';">View Products</button>
+    </div>
+    {{/if}}
   </div>
 </div>
+
+<style>
+  .nth {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+  }
+
+  .blue-btn {
+    width: 100%;
+    background: #2098ce;
+    font-weight: bold;
+    color: white;
+    border: 0 none;
+    border-radius: 25px;
+    cursor: pointer;
+    padding: 10px 5px;
+    margin: 10px 5px;
+  }
+
+  .blue-btn:hover,
+  .blue-btn:focus {
+    box-shadow: 0 0 0 2px white, 0 0 0 3px #2098ce;
+  }
+</style>
 
 <script>
   document.querySelectorAll('.button').forEach(button => button.addEventListener('click', e => {

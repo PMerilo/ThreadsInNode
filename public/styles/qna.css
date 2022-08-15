@@ -1,0 +1,11 @@
+.action-button-fixed {
+    width: 150px;
+    background: #2098ce;
+    font-weight: bold;
+    color: white;
+    border: 0 none;
+    border-radius: 25px;
+    cursor: pointer;
+    padding: 10px 5px;
+    margin: 10px 5px;
+}

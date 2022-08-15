@@ -1,37 +1,159 @@
 {{setVar "scriptsPath" "_serviceScripts"}}
 
 
-<div class="card p-2">
-  <h2>My Requests</h2>
-
-  <table id="reqTable" data-toggle="table" data-url="/api/requests">
+{{!-- <div class="card">
+  <div class="card-header">
+  </div>
+  <div id="toolbar">
+    <button></button>
+  </div>
+  <table id="reqTable" data-toggle="table" data-url="/api/requests" data-detail-view="true"
+    data-detail-view-by-click="false" data-detail-view-icon="false" data-detail-formatter="apptDetailFormatter"
+    data-toolbar="#toolbar">
     <thead>
       <tr>
-        <th scope="col" data-field="id">Request_ID</th>
         <th scope="col" data-field="title">Request Title</th>
-        <th scope="col" data-field="user.name">Customer Name</th>
         <th scope="col" data-field="service.name">Service</th>
         <th scope="col" data-field="tailorID">Tailor</th>
         <th scope="col" data-field="description">Description</th>
         <th scope="col" data-field="status">Status</th>
+        <th scope="col" data-field="appointments" data-formatter="apptFormatter" data-events="apptEvents">Appointments
+        </th>
         <th scope="col" data-field="operate" data-formatter="operateFormatter" data-events="operateEvents"></th>
       </tr>
     </thead>
   </table>
+</div> --}}
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+    <h6 class="m-0 font-weight-bold text-primary">Requests per Tailor</h6>
+  </div>
+  <div class="card-body">
+    <div class="chart-bar">
+      <canvas id="requestbytailor"></canvas>
+    </div>
+    <hr>
+  </div>
 </div>
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+
+<div>
+  <h2>My Requests</h2>
+</div>
+<hr>
+{{#unless requests}}
+You have no requests
+{{/unless}}
+{{#each requests}}
+<div class="card">
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <h3 class="req-title m-0 flex-grow-1">ID. {{id}} - {{title}}</h3>
+      <div class="d-flex align-items-center">
+        {{user.name}}
+      </div>
+    </li>
+    <li class="list-group-item">
+      <p class="req-description">
+        {{description}}
+      </p>
+    </li>
+    <li class="list-group-item">
+      {{#if tailorChange}}
+      <a href="#" role="button" class="text-primary stretched-link pe-auto change-tailor" data-bs-toggle="modal"
+        data-bs-target="#changeTailorModal" data-bs-id="{{id}}">
+        <span class="text-decoration-line-through">{{tailor.name}}</span>
+        <i class='bx bxs-chevrons-right align-middle fs-5'></i>
+        <span class="tailor-change-name">{{tailorChange.name}}</span> |
+        Click here to approve tailor change
+      </a>
+      <i class="bi bi-chevron-right float-end"></i>
+
+      {{else}}
+
+      {{#if appointments.[0]}}
+      {{#equals statusCode -1}}
+      <a href="#appt_{{id}}" role="button" data-bs-toggle="collapse" class="pe-auto text-black stretched-link">
+        You denied the appointment for {{appointments.[0].datetimeHuman}}
+      </a>
+      <i class="bi bi-chevron-right float-end"></i>
+      {{else}}
+      <a href="#appt_{{id}}" role="button" data-bs-toggle="collapse" class="pe-auto text-black stretched-link">
+        You have an appointment scheduled for {{appointments.[0].datetimeHuman}}{{#equals statusCode 2}}, pending
+        confirmation{{/equals}}
+      </a>
+      <i class="bi bi-chevron-right float-end"></i>
+      {{/equals}}
+      {{else}}
+      <a href="#" onclick="return false;" class="pe-none text-black stretched-link">
+        Customer has not booked an appointment
+      </a>
+      {{/if}}
+
+      {{/if}}
+    </li>
+  </ul>
+  <div class="collapse" id="appt_{{id}}">
+    <div class="p-3">
+      <table id="apptTable" data-toggle="table" data-url="/api/appointment/{{id}}">
+        <thead>
+          <tr>
+            <th data-field="id" data-visible="false">Id</th>
+            <th data-field="date">Date</th>
+            <th data-field="time">Time</th>
+            <th data-field="description">Description</th>
+            <th data-width="150" data-field="operate" data-formatter="operateFormatter" data-events="operateEvents">
+            </th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+  </div>
+
+  <div class="card-footer d-flex justify-content-between align-items-center border-0">
+    <div class="my-auto">
+      {{#with (lookup ../statuses [statusCode])~}}{{text}}{{/with}}
+    </div>
+    <div class="my-auto">
+      {{#unless tailorChange}}
+      {{#ge appointments.[0].date ../today }}
+      <button class="btn btn-primary status mx-2" style="width: 80px;" data-bs-toggle="modal"
+        data-bs-target="#statusModal" data-bs-id="{{id}}">
+        <i class='bx bx-time-five'></i>
+      </button>
+      {{/ge}}
+      {{/unless}}
+      <button class="btn btn-danger delete" style="width: 80px;" data-bs-toggle="modal" data-bs-target="#delModal"
+        title="Delete" data-bs-id="{{id}}">
+        <i class="bi bi-trash"></i>
+      </button>
+    </div>
+  </div>
+
+</div>
+{{/each}}
+<div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel"></h5>
+        <h5 class="modal-title" id="statusModalLabel">Set status</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-        <button type="button" class="btn btn-primary statusbtn">Pending</button>
-        <button type="button" class="btn btn-primary statusbtn">Completed</button>
-        {{!-- <button type="button" class="btn btn-primary statusbtn">In Progress</button>
-        <button type="button" class="btn btn-primary statusbtn">Pending Delivery</button>
-        <button type="button" class="btn btn-primary statusbtn">Pending Collection</button> --}}
+      <div class="modal-body container overflow-hidden">
+        <div class="row gx-3">
+          <div class="col-3 d-grid">
+            <button type="button" class="btn btn-primary statusbtn" value="4">{{#with (lookup statuses
+              "4")~}}{{text}}{{/with}}</button>
+          </div>
+          <div class="col-3 d-grid">
+            <button type="button" class="btn btn-primary statusbtn" value="0">{{#with (lookup statuses
+              "0")~}}{{text}}{{/with}}</button>
+          </div>
+          <div class="col-6 d-grid">
+            <button type="button" class="btn btn-primary statusbtn" value="5">{{#with (lookup statuses
+              "5")~}}{{text}}{{/with}}</button>
+          </div>
+
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -40,11 +162,29 @@
     </div>
   </div>
 </div>
-<div class="modal fade" id="delModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="changeTailorModal" tabindex="-1" aria-labelledby="changeTailorModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Delete Request?</h5>
+        <h5 class="modal-title" id="changeTailorModalLabel"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-danger">You will no longer have access to this request and will not belong to you</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Back</button>
+        <button type="button" class="btn btn-danger confirm">Change</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="delModal" tabindex="-1" aria-labelledby="delModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="delModalLabel">Cancel Request?</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -52,8 +192,168 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-danger del">Delete</button>
+        <button type="button" class="btn btn-danger del" data-bs-url="/services/request/cancel">Delete</button>
       </div>
     </div>
   </div>
 </div>
+<div class="modal fade" id="approveApptModal" tabindex="-1" aria-labelledby="approveApptModal" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="approveApptModal">Approve Appointment</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body container overflow-hidden">
+        <div class="row gx-3">
+          <div class="col-6 d-grid">
+            <button type="button" class="btn btn-primary apprBtn" value="false">Disapproved</button>
+          </div>
+          <div class="col-6 d-grid">
+            <button type="button" class="btn btn-primary apprBtn" value="true">Approved</button>
+          </div>
+        </div>
+        <input type="hidden" class="form-control" name="confirmed" required>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary confirm">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/scripts/admin/main.js"></script>
+<script src="/scripts/admin/tableEvents.js"></script>
+<script src="/scripts/admin/tableFormatters.js"></script>
+<script>
+  function number_format(number, decimals, dec_point, thousands_sep) {
+    // *     example: number_format(1234.56, 2, ',', ' ');
+    // *     return: '1 234,56'
+    number = (number + '').replace(',', '').replace(' ', '');
+    var n = !isFinite(+number) ? 0 : +number,
+      prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+      sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+      dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+      s = '',
+      toFixedFix = function (n, prec) {
+        var k = Math.pow(10, prec);
+        return '' + Math.round(n * k) / k;
+      };
+    // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+    s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+    if (s[0].length > 3) {
+      s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+    }
+    if ((s[1] || '').length < prec) {
+      s[1] = s[1] || '';
+      s[1] += new Array(prec - s[1].length + 1).join('0');
+    }
+    return s.join(dec);
+  }
+  var requestsbytailor = $.get('/datapipeline/requestsbytailor')
+  var ctxreq = document.getElementById("requestbytailor");
+  requestsbytailor.done(function (data) {
+    var count = []
+    var name = []
+    console.log(data.data)
+    data.data.forEach(element => {
+      count.push(element["Request_count"])
+      name.push(element["Tailor"])
+
+    });
+    console.log(name)
+    console.log(count)
+
+    var mybarChart = new Chart(ctxreq, {
+      type: 'bar',
+      data: {
+        labels: name,
+        datasets: [{
+          label: "Requests",
+          lineTension: 0.3,
+          backgroundColor: "rgba(78, 115, 223)",
+          borderColor: "rgba(78, 115, 223, 1)",
+          pointRadius: 3,
+          pointBackgroundColor: "rgba(78, 115, 223, 1)",
+          pointBorderColor: "rgba(78, 115, 223, 1)",
+          pointHoverRadius: 3,
+          pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+          pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+          pointHitRadius: 10,
+          pointBorderWidth: 2,
+          data: count,
+        }],
+      },
+      options: {
+        maintainAspectRatio: false,
+        layout: {
+          padding: {
+            left: 10,
+            right: 25,
+            top: 25,
+            bottom: 0
+          }
+        },
+        scales: {
+          xAxes: [{
+            time: {
+              unit: 'name'
+            },
+            gridLines: {
+              display: false,
+              drawBorder: false
+            },
+            ticks: {
+              maxTicksLimit: 7
+            }
+          }],
+          yAxes: [{
+            ticks: {
+              maxTicksLimit: 3,
+              padding: 10,
+              beginAtZero: true,
+            },
+            gridLines: {
+              color: "rgb(234, 236, 244)",
+              zeroLineColor: "rgb(234, 236, 244)",
+              drawBorder: false,
+              borderDash: [2],
+              zeroLineBorderDash: [2]
+            }
+          }],
+        },
+        legend: {
+          display: false
+        },
+        tooltips: {
+          backgroundColor: "rgb(255,255,255)",
+          bodyFontColor: "#858796",
+          titleMarginBottom: 10,
+          titleFontColor: '#6e707e',
+          titleFontSize: 14,
+          borderColor: '#dddfeb',
+          borderWidth: 1,
+          xPadding: 15,
+          yPadding: 15,
+          displayColors: false,
+          intersect: false,
+          mode: 'index',
+          caretPadding: 10,
+          callbacks: {
+            label: function (tooltipItem, chart) {
+              var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+              return datasetLabel + " " + number_format(tooltipItem.yLabel);
+            }
+          }
+        }
+      }
+    });
+
+  })
+
+</script>
+<script src="/js/demo/chart-area-demo.js"></script>
+<script src="/js/demo/chart-bar-demo.js"></script>
+<script src="/js/demo/chart-pie-demo.js"></script>
+<script src="/js/sb-admin-2.js"></script>
+<script src="/js/chart.js/Chart.min.js"></script>

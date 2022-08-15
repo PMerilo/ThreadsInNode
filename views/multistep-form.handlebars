@@ -3,7 +3,7 @@
 <!-- MultiStep Form -->
 <div class="row multi-form">
     <div class="container col-12 col-md-9">
-        <form id="msform" class="m-auto">
+        <form id="msform" class="m-auto" method="post" action="/checkout">
             <!-- progressbar -->
             <ul id="progressbar">
                 <li class="active">Personal Details</li>
@@ -13,17 +13,18 @@
             <!-- fieldsets -->
             <fieldset>
                 <h2 class="fs-title">Personal Details</h2>
-                <input type="text" name="fname" placeholder="First Name" />
-                <input type="text" name="email" placeholder="Email" />
-                <input type="text" name="phone" placeholder="Phone" />
+                <h3 class="fs-subtitle">Fill in your personal details</h3>
+                <input type="text" id="fname" name="fname" placeholder="Full Name" value="{{user.name}}"/>
+                <input type="text" id="email" name="email" placeholder="Email" value="{{user.email}}"/>
+                <input type="text" id="phone" name="phone" placeholder="Phone" value="{{user.phoneNumber}}"/>
                 <input type="button" name="next" class="next action-button" value="Next" />
             </fieldset>
             <fieldset>
                 <h2 class="fs-title">Shipping Address</h2>
                 <h3 class="fs-subtitle">Fill in your shipping details</h3>
-                <input type="text" name="address" placeholder="Address" />
-                <input type="text" name="unit-number" placeholder="Unit Number" />
-                <input type="text" name="postal-code" placeholder="Postal Code" />
+                <input type="text" id="address" name="address" placeholder="Address" />
+                <input type="text" id="unit_number" name="unit-number" placeholder="Unit Number" />
+                <input type="text" id="postalcode" name="postal-code" placeholder="Postal Code" />
                 <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
                 <input type="button" name="next" class="next action-button" value="Next" />
             </fieldset>
@@ -152,7 +153,8 @@
                     </div>
                     <div class="field-container">
                         {{!-- <label for="cardnumber">Card Number</label> --}}
-                        <input id="cardnumber" type="text" pattern="[0-9]*" inputmode="numeric" placeholder="Card Number">
+                        <input id="cardnumber" type="text" pattern="[0-9]*" inputmode="numeric"
+                            placeholder="Card Number">
                         <svg id="ccicon" class="ccicon" width="750" height="471" viewBox="0 0 750 471" version="1.1"
                             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 
@@ -160,44 +162,58 @@
                     </div>
                     <div class="field-container">
                         {{!-- <label for="expirationdate">Expiration (mm/yy)</label> --}}
-                        <input id="expirationdate" type="text" pattern="[0-9]*" inputmode="numeric" placeholder="Expiration (mm/yy)">
+                        <input id="expirationdate" type="text" pattern="[0-9]*" inputmode="numeric"
+                            placeholder="Expiration (mm/yy)">
                     </div>
                     <div class="field-container">
                         {{!-- <label for="securitycode">Security Code</label> --}}
-                        <input id="securitycode" type="text" pattern="[0-9]*" inputmode="numeric" placeholder="Security Code">
+                        <input id="securitycode" type="text" pattern="[0-9]*" inputmode="numeric"
+                            placeholder="Security Code">
                     </div>
                 </div>
                 <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
-                <input type="button" name="pay" class="next action-button" value="Pay" />
+                <input type="button" name="pay" class="next action-button" value="Pay" onclick="checkoutcheck()"/>
             </fieldset>
         </form>
     </div>
     <div class="container col-12 col-md-3 total-card">
-      <div class="card summary-card">
-        <div class="cart-header card-header">
-          <p>Order Summary</p>
-        </div>
+        <div class="card summary-card">
+            <div class="cart-header card-header">
+                <p>Order Summary</p>
+            </div>
 
-        <div class="cart-body">
-          <div class="total  d-flex">
-            <p>Grand Total</p>
-            <p class="cart-total-price ms-auto">S$0</p>
-          </div>
-          <div class="shipping d-flex">
-            <p>Shipping</p>
-            <p class="shipping-fee ms-auto">S$0</p>
-          </div>
-          <div class="grandtotal d-flex">
-            <p>Grand Total after Shipping</p>
-            <p class="cart-grandtotal-price ms-auto">S$0</p>
-          </div>
+            <div class="cart-body">
+                <div class="total  d-flex">
+                    <p>Grand Total</p>
+                    <p class="cart-gtotal ms-auto">S${{cart.cartTotal}}</p>
+                </div>
+                <div class="shipping d-flex">
+                    <p>Shipping</p>
+                    <p class="shipping-fee ms-auto">Calculated at Payment</p>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="button" name="cancel" class="cancel w-100" value="Cancel"
+                    onclick="history.back()">Cancel</button>
+            </div>
         </div>
-        <div class="card-footer">
-          <button href="/shoppingcart" type="button" name="cancel" class="cancel w-100" value="Cancel">Cancel</button>
-        </div>
-      </div>
-    </form>
-  </div>
+        </form>
+    </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        CheckoutTotalCalculation()
+    })
+        {{!-- function CheckoutTotalCalculation() {
+            var shippingfee = 0
+            var subtotal = $('.cart-gtotal').text().replace('S$', '')
+
+            $(".shipping-fee").text("S$" + shippingfee)
+            var grandtotal = shippingfee + parseFloat(subtotal)
+            console.log(grandtotal)
+            $('.cart-grandtotal').text("S$" + grandtotal)
+        } --}}
+</script>
 
 <!-- /.MultiStep Form -->

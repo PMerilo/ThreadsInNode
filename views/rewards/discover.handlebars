@@ -1,17 +1,93 @@
 {{setVar "scriptsPath" "_copyCodeScript"}}
-    
-<div class="container-fluid">
-    <div class="col-md-12 text-center">
-        <p class="h3 mt-4">Vouchers</p>
-    </div>
+<link rel="stylesheet" href="styles/voucher.css">
 
+<div class="col-md-12 text-center">
+    <p class="h3 mt-4">Vouchers</p>
+</div>
+
+<div class="row">
     {{#each vouchers}}
-    <div class="container-sm my-5" style="width: 80%;">
+        <div class="col-12 col-xs-12 col-md-12 col-lg-6 col-xl-6 ">
+            <div class="voucher-container">
+                <div class="vouchers">
+                    <div class="face front" onclick="addclass(this)" style="cursor: pointer;">
+                        <div class="voucher-body bg-blue-gradient">
+                            <div class="voucher-text">
+                                <h5 class="text-white mb-0 font-weight-bold">Threads In Time</h5>
+                                <p class="text-white mb-0" style="line-height: 1;"><strong style="font-size: 1.25rem">{{this.name}}</strong><br>Voucher</p>
+                            </div>
+                            <div class="voucher-border-left"></div>
+                            <div class="voucher-border-right"></div>
+                        </div>
+                        <div class="voucher-footer">
+                            <div class="voucher-details">
+                                <div class="details-icon">
+                                    <i class='bx bx-time'></i>
+                                </div>
+                                <div class="details-text">
+                                    <div class="text-title">Valid till</div>
+                                    <div class="text-description text-primary">{{this.expiry_date}}</div>
+                                </div>
+                            </div>
+                            <div class="voucher-details">
+                                <div class="details-icon">
+                                    <i class='bx bx-money'></i>
+                                </div>
+                                <div class="details-text">
+                                    <div class="text-title" style="width: 90px;">Minimum spend</div>
+                                    <div class="text-description text-primary">None</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="face back">
+                        <div class="voucher-body bg-blue-gradient" onclick="removeclass(this)" style="cursor: pointer;">
+                            <div class="voucher-text">
+                                <h5 class="text-white mb-0 font-weight-bold">T&C</h5>
+                                <p class="text-white mb-0" style="line-height: 1;">{{this.description}}</p>
+                            </div>
+                            <div class="voucher-border-left"></div>
+                            <div class="voucher-border-right"></div>
+                        </div>
+                        <div class="voucher-footer">
+                            <div class="voucher-details">
+                                <div class="details-icon">
+                                    <i class='bx bx-time'></i>
+                                </div>
+                                <div class="details-text">
+                                    <div class="text-title">Valid till</div>
+                                    <div class="text-description text-primary">{{this.expiry_date}}</div>
+                                </div>
+                            </div>
+                            <div class="voucher-details" style="cursor: pointer;">
+                                <div class="details-icon">
+                                    <i class='bx bx-copy'></i>
+                                </div>
+                                <div class="details-text">
+                                    <div class="text-title">Discount Code</div>
+                                    <div class="text-description text-primary" onclick="copycode(this)">{{this.voucher_code}}</div>
+                                </div>
+                            </div>
+                            <div class="voucher-details">
+                                <div class="details-icon">
+                                    <i class='bx bx-coin-stack'></i>
+                                </div>
+                                <div class="details-text">
+                                    <div class="text-title" style="width: 90px;">Spools Needed</div>
+                                    <div class="text-description text-primary">{{this.spools_needed}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {{!-- <div class="container-sm my-5" style="width: 80%;">
         <div class="row align-items-center voucher">
             <div class="col">
-                {{!-- <a class="rounded float-start"><img
+                <a class="rounded float-start"><img
                         src="{{url_for('static', filename='reward_uploads/' + voucher.get_filename()) }}" alt=""
-                        width="250" height="150"></a> --}}
+                        width="250" height="150"></a>
             </div>
             <div class="col-6 mx-3">
                 <p class="fs-5 mb-0 d-none voucher_id" style="font-weight: 600;">{{ this.id }}</p>
@@ -35,10 +111,219 @@
 
         </div>
 
-    </div>
+    </div> --}}
     {{/each}}
-
-    <div class="border border-primary w-100 py-3 my-3" style="background-color: rgb(239, 241, 206);">
-        <p class="text-center" style="font-size: 17px;">$1 Spent = 1 Spool</p>
-    </div>
 </div>
+    {{!-- <div class="">
+        <div class="row">
+            <div class="col-12 col-xs-12 col-md-12 col-lg-6 col-xl-6 ">
+                <div class="voucher-container">
+                    <div class="vouchers">
+                        <div class="face front" onclick="addclass(this)" style="cursor: pointer;">
+                            <div class="voucher-body bg-blue-gradient">
+                                <div class="voucher-text">
+                                    <h5 class="text-white mb-0 font-weight-bold">Threads In Time</h5>
+                                    <p class="text-white mb-0" style="line-height: 1;"><strong
+                                            style="font-size: 1.25rem">%10
+                                            OFF</strong><br>Voucher</p>
+                                </div>
+                                <div class="voucher-border-left"></div>
+                                <div class="voucher-border-right"></div>
+                            </div>
+                            <div class="voucher-footer">
+                                <div class="voucher-details">
+                                    <div class="details-icon">
+                                        <i class='bx bx-time'></i>
+                                    </div>
+                                    <div class="details-text">
+                                        <div class="text-title">Valid till</div>
+                                        <div class="text-description text-primary">12 Jun 2019</div>
+                                    </div>
+                                </div>
+                                <div class="voucher-details">
+                                    <div class="details-icon">
+                                        <i class='bx bx-money'></i>
+                                    </div>
+                                    <div class="details-text">
+                                        <div class="text-title" style="width: 90px;">Minimum spend</div>
+                                        <div class="text-description text-primary">None</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="face back">
+                            <div class="voucher-body bg-blue-gradient" onclick="removeclass(this)"
+                                style="cursor: pointer;">
+                                <div class="voucher-text">
+                                    <h5 class="text-white mb-0 font-weight-bold">T&C</h5>
+                                    <p class="text-white mb-0" style="line-height: 1;">Lorem ipsum dolor sit amet
+                                        consectetur
+                                        adipisicing elit. Rem animi sint deserunt numquam neque nulla quibusdam
+                                        inventore
+                                        voluptate iste vel! Repellendus minus vitae ea nam numquam laudantium
+                                        voluptatibus,
+                                        excepturi reprehenderit?</p>
+                                </div>
+                                <div class="voucher-border-left"></div>
+                                <div class="voucher-border-right"></div>
+                            </div>
+                            <div class="voucher-footer">
+                                <div class="voucher-details">
+                                    <div class="details-icon">
+                                        <i class='bx bx-time'></i>
+                                    </div>
+                                    <div class="details-text">
+                                        <div class="text-title">Valid till</div>
+                                        <div class="text-description text-primary">12 Jun 2019</div>
+                                    </div>
+                                </div>
+                                <div class="voucher-details" style="cursor: pointer;">
+                                    <div class="details-icon">
+                                        <i class='bx bx-copy'></i>
+                                    </div>
+                                    <div class="details-text">
+                                        <div class="text-title">Discount Code</div>
+                                        <div class="text-description text-primary" onclick="copycode(this)">DISC100
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="voucher-details">
+                                    <div class="details-icon">
+                                        <i class='bx bx-money'></i>
+                                    </div>
+                                    <div class="details-text">
+                                        <div class="text-title" style="width: 90px;">Minimum spend</div>
+                                        <div class="text-description text-primary">None</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-xs-12 col-md-12 col-lg-6 col-xl-6 ">
+                <div class="voucher-container">
+                    <div class="vouchers">
+                        <div class="face front" onclick="addclass(this)" style="cursor: pointer;">
+                            <div class="voucher-body bg-blue-gradient">
+                                <div class="voucher-text">
+                                    <h5 class="text-white mb-0 font-weight-bold">Threads In Time</h5>
+                                    <p class="text-white mb-0" style="line-height: 1;"><strong
+                                            style="font-size: 1.25rem">%10
+                                            OFF</strong><br>Voucher</p>
+                                </div>
+                                <div class="voucher-border-left"></div>
+                                <div class="voucher-border-right"></div>
+                            </div>
+                            <div class="voucher-footer">
+                                <div class="voucher-details">
+                                    <div class="details-icon">
+                                        <i class='bx bx-time'></i>
+                                    </div>
+                                    <div class="details-text">
+                                        <div class="text-title">Valid till</div>
+                                        <div class="text-description text-primary">12 Jun 2019</div>
+                                    </div>
+                                </div>
+                                <div class="voucher-details">
+                                    <div class="details-icon">
+                                        <i class='bx bx-money'></i>
+                                    </div>
+                                    <div class="details-text">
+                                        <div class="text-title" style="width: 90px;">Minimum spend</div>
+                                        <div class="text-description text-primary">None</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="face back">
+                            <div class="voucher-body bg-blue-gradient" onclick="removeclass(this)"
+                                style="cursor: pointer;">
+                                <div class="voucher-text">
+                                    <h5 class="text-white mb-0 font-weight-bold">T&C</h5>
+                                    <p class="text-white mb-0" style="line-height: 1;">Lorem ipsum dolor sit amet
+                                        consectetur
+                                        adipisicing elit. Rem animi sint deserunt numquam neque nulla quibusdam
+                                        inventore
+                                        voluptate iste vel! Repellendus minus vitae ea nam numquam laudantium
+                                        voluptatibus,
+                                        excepturi reprehenderit?</p>
+                                </div>
+                                <div class="voucher-border-left"></div>
+                                <div class="voucher-border-right"></div>
+                            </div>
+                            <div class="voucher-footer">
+                                <div class="voucher-details">
+                                    <div class="details-icon">
+                                        <i class='bx bx-time'></i>
+                                    </div>
+                                    <div class="details-text">
+                                        <div class="text-title">Valid till</div>
+                                        <div class="text-description text-primary">12 Jun 2019</div>
+                                    </div>
+                                </div>
+                                <div class="voucher-details" style="cursor: pointer;" onclick="copycode(this)">
+                                    <div class="details-icon">
+                                        <i class='bx bx-copy'></i>
+                                    </div>
+                                    <div class="details-text">
+                                        <div class="text-title">Discount Code</div>
+                                        <div class="text-description text-primary">DISC1233</div>
+                                    </div>
+                                </div>
+                                <div class="voucher-details">
+                                    <div class="details-icon">
+                                        <i class='bx bx-money'></i>
+                                    </div>
+                                    <div class="details-text">
+                                        <div class="text-title" style="width: 90px;">Minimum spend</div>
+                                        <div class="text-description text-primary">None</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> --}}
+            {{!-- <div class="spools_explanation">
+                <p>$1 Spent = 1 Spool</p>
+            </div> --}}
+            {{!-- <div class="border border-primary w-100 py-3 my-3" style="background-color: rgb(239, 241, 206);">
+                <p class="text-center" style="font-size: 17px;">$1 Spent = 1 Spool</p>
+            </div> --}}
+        {{!-- </div> --}}
+    {{!-- </div> --}}
+
+
+    <script>
+        $(document).ready(function () {
+            new SnackBar({
+                message: "$1 Spent = 1 Spool",
+                status: "info",
+                fixed: true,
+                position: "br",
+                timeout: false,
+                dismissible: false
+            })
+        })
+
+        function removeclass(card) {
+            var parent = card.parentNode.previousSibling.parentNode;
+            $(parent).removeClass('flipped');
+        };
+        function addclass(card) {
+            var parent = card.parentNode;
+            $(parent).addClass('flipped');
+        };
+
+        function copycode(val) {
+            var value = val.innerText;
+            console.log(value)
+            navigator.clipboard.writeText(value);
+            new SnackBar({
+                message: "Code Copied",
+                status: "success",
+                fixed: true
+            });
+        }
+    </script>
