@@ -4,6 +4,8 @@ var $editApptModal = $('#editApptModal')
 var $delModal = $('#delModal')
 var $delApptModal = $('#delApptModal')
 var $tailorModal = $('#tailorModal')
+var $editItemModal = $('#editItemModal')
+var $removeItemModal = $('#delItemModal')
 
 
 $(document).ready(function () {
@@ -37,7 +39,7 @@ $(document).ready(function () {
             $editModal.modal('hide');
             $table.bootstrapTable('refresh');
             location.reload()
-            
+
         });
     });
 
@@ -58,6 +60,24 @@ $(document).ready(function () {
         });
     });
 
+    $("#editItemModal .confirm").click(function () {
+        let data = {
+            id: $(this).attr("data-bs-id"),
+            name: $('[name="name"]', $editItemModal).val(),
+            type: $('[name="type"]', $editItemModal).val(),
+            color: $('[name="color"]', $editItemModal).val(),
+            description: $('textarea', $editItemModal).val(),
+        };
+        
+        $.post("/services/item/edit", data, function (result) {
+            if (result.send) {
+                sendNotif('request:notif', 'Request Item Changed', `The request item in request ${data.id} was changed. Click here to see changes`, `/admin/requests`, ``, result.recipient)
+            }
+            $editItemModal.modal('hide');
+            $table.bootstrapTable('refresh');
+        });
+    });
+
     $('.del').click(function () {
         $.ajax({
             url: $(this).attr('data-bs-url'),
@@ -66,6 +86,7 @@ $(document).ready(function () {
                 id: $(this).attr('data-bs-id')
             },
             success: (result) => {
+                console.log(result)
                 $(this).closest('.modal').modal('hide');
                 $table.bootstrapTable('refresh')
                 if (result.send) {
@@ -74,7 +95,7 @@ $(document).ready(function () {
                 location.reload()
             }
         });
-        
+
     });
 
     $('.delete').click(function () {
@@ -143,7 +164,7 @@ $(document).ready(function () {
                     $(`[value="${appt.time}"]`).attr('disabled', '')
                 });
                 // console.log($('.timings button'))
-    
+
             })
         }
     })
@@ -157,7 +178,6 @@ window.operateEvents = {
 
     'click [title="Edit Appointment"]': function (e, value, row, index) {
         $.get(`/api/appointments?date=${row.date}&id=${row.tailorId}`, function (data) {
-            console.log(data)
             data = data.rows
             var timings = `
                 <div class="container overflow-hidden mb-3">
@@ -219,5 +239,22 @@ window.operateEvents = {
             })
         })
 
+    },
+}
+
+window.itemoperateEvents = {
+    'click [title="Remove Item"]': function (e, value, row, index) {
+        $removeItemModal.find('.del').attr('data-bs-id', row.id)
+        $removeItemModal.modal("show")
+    },
+    'click [title="Edit Item"]': function (e, value, row, index) {
+        $editItemModal.find('[name="name"]').val(row.name)
+        $editItemModal.find('[name="type"]').val(row.type)
+        $editItemModal.find('[name="color"]').val(row.color)
+        $editItemModal.find('[name="description"]').val(row.description)
+
+
+        $editItemModal.find('.confirm').attr('data-bs-id', row.id)
+        $editItemModal.modal("show")
     },
 }

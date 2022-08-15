@@ -15,24 +15,24 @@ function getTimings() {
         var timings = `
             <div class="container overflow-hidden mb-3">
                 <label class="form-label">Time</label>
-                <div class="border border-1 rounded mx-auto row g-2 pb-2 m-0">
-                    <div class="col-lg-2 col-md-6 d-grid">
-                        <button type="button" class="btn btn-lg btn-primary" value="09:00:00">9:00AM</button>
+                <div class="mx-auto row g-2 pb-2 m-0">
+                    <div class="col-lg-2 col-md-6 d-flex">
+                        <button type="button" class="action-button flex-fill" value="09:00:00">9:00AM</button>
                     </div>
-                    <div class="col-lg-2 col-md-6 d-grid">
-                        <button type="button" class="btn btn-lg btn-primary" value="10:30:00">10:30AM</button>
+                    <div class="col-lg-2 col-md-6 d-flex">
+                        <button type="button" class="action-button flex-fill" value="10:30:00">10:30AM</button>
                     </div>
-                    <div class="col-lg-2 col-md-6 d-grid">
-                        <button type="button" class="btn btn-lg btn-primary" value="12:00:00">12:00PM</button>
+                    <div class="col-lg-2 col-md-6 d-flex">
+                        <button type="button" class="action-button flex-fill" value="12:00:00">12:00PM</button>
                     </div>
-                    <div class="col-lg-2 col-md-6 d-grid">
-                        <button type="button" class="btn btn-lg btn-primary" value="15:00:00">3:00PM</button>
+                    <div class="col-lg-2 col-md-6 d-flex">
+                        <button type="button" class="action-button flex-fill" value="15:00:00">3:00PM</button>
                     </div>
-                    <div class="col-lg-2 col-md-6 d-grid">
-                        <button type="button" class="btn btn-lg btn-primary" value="16:30:00">4:30PM</button>
+                    <div class="col-lg-2 col-md-6 d-flex">
+                        <button type="button" class="action-button flex-fill" value="16:30:00">4:30PM</button>
                     </div>
-                    <div class="col-lg-2 col-md-6 d-grid">
-                        <button type="button" class="btn btn-lg btn-primary" value="18:00:00">6:00PM</button>
+                    <div class="col-lg-2 col-md-6 d-flex">
+                        <button type="button" class="action-button flex-fill" value="18:00:00">6:00PM</button>
                     </div>
                 </div>
             </div>

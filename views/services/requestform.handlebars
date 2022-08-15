@@ -7,41 +7,18 @@
     <a href="/services" class="btn btn-lg btn-primary col-4 mx-auto">Go Back</a>
 </div>
 
-<div>
-    <h2>Create a tailoring request</h2>
-</div>
-<hr>
-<div>
-    <form method="post" class="col-10 mx-auto border rounded p-5" id="req-form">
+<div class="col-11 mx-auto">
+    <div>
+        <h2>Create a tailoring request</h2>
+    </div>
+    <hr>
+    {{!-- <form method="post" class="mx-auto border rounded p-5" id="req-form" >
         <label for="basic-url" class="form-label fs-3">Fill in request details</label>
-        {{!-- <div class="row">
-            <div class="mb-3 col-3">
-                <label for="fName" class="form-label">First Name</label>
-                <input type="text" class="form-control" name="fName">
-            </div>
-            <div class="mb-3 col-3">
-                <label for="lName" class="form-label">Last Name</label>
-                <input type="text" class="form-control" name="lName">
-            </div>
-            <div class="mb-3 col-6">
-                <label for="email" class="form-label">Email address</label>
-                <input type="email" class="form-control" name="email" placeholder="name@example.com">
-            </div>
-        </div> --}}
         <div class="row">
             <div class="mb-3 col-12">
                 <label for="title" class="form-label">Request Title</label>
                 <input type="text" class="form-control" name="title" placeholder="Eg. Wedding gown">
             </div>
-            {{!-- <div class="mb-3 col-3">
-                <label for="select1" class="form-label">Type</label>
-                <select class="form-select" aria-label="Default select example" id="select1">
-                    <option selected>Select Type</option>
-                    <option value="1"></option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                </select>
-            </div> --}}
         </div>
         <div class="row">
             <div class="mb-3 col-12">
@@ -53,18 +30,97 @@
         <div class="d-flex">
             <button type="submit" class="btn btn-primary col-12 action-button-fixed">Submit</button>
         </div>
+    </form> --}}
+    <!-- multistep form -->
+    <form method="post" id="msform">
+        <!-- progressbar -->
+        <ul id="progressbar">
+            <li class="active">Request Details</li>
+            <li>Request Items</li>
+            <li>Book Appointment</li>
+        </ul>
+        <!-- fieldsets -->
+        <fieldset>
+            <h2 class="fs-title">Create your Request</h2>
+            <h3 class="fs-subtitle">Give your request a title so we can identify it later on</h3>
+            <input type="text" name="title" placeholder="Title" required/>
+            <input type="button" name="ms-next" class="ms-next action-button" value="Next" />
+
+        </fieldset>
+        <fieldset>
+            <h2 class="fs-title">Request Items</h2>
+            <h3 class="fs-subtitle">Specify what items you want to be tailored (Max 3)</h3>
+            <div class="row">
+                <div class="col-4">
+                    <p>Item 1</p>
+                    <input type="text" name="name" placeholder="Item Name" required/>
+                    <hr>
+                    <input type="text" name="type" placeholder="Item Type" required/>
+                    <hr>
+                    <input type="text" name="color" placeholder="Item Color" required/>
+                    <hr>
+                    <input type="number" name="qty" placeholder="Quantity" required/>
+                    <hr>
+                    <textarea name="description" id="" placeholder="Description" required></textarea>
+                </div>
+                <div class="col-4">
+                    <p>Item 2</p>
+                    <input type="text" name="name" placeholder="Item Name" />
+                    <input type="text" name="type" placeholder="Item Type" />
+                    <input type="text" name="color" placeholder="Item Color" />
+                    <input type="number" name="qty" placeholder="Quantity" />
+                    <textarea name="description" id="" placeholder="Description"></textarea>
+                </div>
+                <div class="col-4">
+                    <p>Item 3</p>
+                    <input type="text" name="name" placeholder="Item Name" />
+                    <input type="text" name="type" placeholder="Item Type" />
+                    <input type="text" name="color" placeholder="Item Color" />
+                    <input type="number" name="qty" placeholder="Quantity" />
+                    <textarea name="description" id="" placeholder="Description"></textarea>
+                </div>
+            </div>
+            <input type="button" name="previous" class="previous action-button" value="Previous" />
+            <input type="button" name="ms-next" class="ms-next action-button" value="Next" />
+        </fieldset>
+        <fieldset>
+            <h2 class="fs-title">Appointment Details</h2>
+            <h3 class="fs-subtitle">Meet the tailor to get your measurements</h3>
+            <div class="row">
+                <div class="col-6">
+                    <select class="form-select col-6" aria-label="Select Tailor" name="tailorID" data-bs-id={{tailorId}} required>
+                        <option selected>Select Tailor</option>
+                        {{>options object=tailors}}
+                    </select>
+                </div>
+                <div class="col-6">
+                    <input type="date" class="col-6" name="date" min={{min}} max={{max}} required value="{{min}}">
+                </div>
+            </div>
+            <div class="row timings">
+
+            </div>
+            <input type="button" name="previous" class="previous action-button" value="Previous" />
+            <input type="submit" class="submit action-button" value="Submit" />
+        </fieldset>
     </form>
 </div>
 
 <script>
     $(document).ready(function () {
-        var userID = {{user.id}}
+        var userID = {{ user.id }}
         $.get('/api/request/count', (data) => {
-            if (data.total > 2) {
-                $('.max-req').show().addClass('d-flex')
-                $('.max-req').siblings().hide()
-            }
-        })
+        if (data.total > 2) {
+            $('.max-req').show().addClass('d-flex')
+            $('.max-req').siblings().hide()
+        }
+    })
 
     })
 </script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/additional-methods.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/additional-methods.min.jss"></script>
+<script src="/scripts/services/requestform.js"></script>
+<script src="/scripts/services/datapicker.js"></script>

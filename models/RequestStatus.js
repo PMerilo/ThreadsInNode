@@ -4,26 +4,19 @@ const db = require('../config/DBConfig');
 const Appointment = require('./Appointment');
 const moment = require("moment")
 
-class Request extends sequelize.Model {
+class RequestStatus extends sequelize.Model {
 
 }
-Request.init({
-    title: { type: sequelize.STRING, allowNull: false },
+RequestStatus.init({
     status: { type: sequelize.STRING, allowNull: false },
     adminstatus: { type: sequelize.STRING, allowNull: false },
     userColor: { type: sequelize.STRING, allowNull: false },
     adminColor: { type: sequelize.STRING, allowNull: false },
-    
 },
     {
-        hooks: {
-            // beforeFind: async function (request) {
-                
-            // }
-        },
         timestamps: true,
         sequelize: db,
-        modelName: "request",
+        modelName: "requestStatus",
     }
 )
-module.exports = Request;
+module.exports = RequestStatus;

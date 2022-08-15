@@ -41,8 +41,8 @@ Appointment.init({
             throw new Error('Do not try to set the `datetime` value!');
         }
     },
-    description: { type: sequelize.STRING(1000), allowNull: false },
-    confirmed: { type: sequelize.BOOLEAN, defaultValue: null},
+    confirmed: { type: sequelize.ENUM, values: ['Rejected', 'Pending', 'Confirmed'], defaultValue: null},
+    type: { type: sequelize.ENUM, values: ['Measurement', 'Fitting'], defaultValue: null},
 
 },
     {

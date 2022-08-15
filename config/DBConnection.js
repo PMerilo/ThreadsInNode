@@ -24,6 +24,7 @@ const Chat = require('../models/Chat');
 const Msg = require('../models/Msg');
 const ChatUser = require('../models/ChatUser');
 const NotificationCount = require('../models/NotificationCount');
+const RequestItem = require('../models/RequestItem');
 
 // If drop is true, all existing tables are dropped and recreated
 const setUpDB = (drop) => {
@@ -49,6 +50,9 @@ const setUpDB = (drop) => {
             Request.belongsTo(User, {as: 'user', foreignKey: 'userId'})
             Request.belongsTo(User, {as: 'tailor', foreignKey: 'tailorId'})
             Request.belongsTo(User, {as: 'tailorChange', foreignKey: 'tailorChangeId'})
+
+            Request.hasMany(RequestItem)
+            RequestItem.belongsTo(Request)
 
             Appointment.belongsTo(Request)
             Appointment.belongsTo(User, {as: 'user', foreignKey: 'userId'})

@@ -26,103 +26,148 @@
   <h2>My Tailoring Requests</h2>
 </div>
 <hr>
-{{#unless requests}}
-You have no requests
-{{/unless}}
-{{#each requests}}
-<div class="card" {{#with (lookup ../statuses
-  [statusCode])~}}style="border: 1px solid {{colour}}; border-left: 8px solid {{colour}};" {{/with}}>
-  <ul class="list-group list-group-flush">
-    <li class="list-group-item d-flex justify-content-between align-items-center">
-      <h3 class="req-title m-0 flex-grow-1">Tailoring - {{title}}</h3>
-      <div class="d-flex align-items-center">
-        {{#if tailorChange}}
-        <button class="cancel-tailor btn p-0 m-0 me-1" style="height: 24px;" data-bs-toggle="modal"
-          data-bs-target="#cancelTailorModal" data-bs-id="{{id}}"><i class='bx bx-block'></i></button>
-        <p class="m-0"><span class="text-decoration-line-through"> {{tailor.name}}</span> <i
-            class='bx bxs-chevrons-right align-middle fs-5'></i>{{tailorChange.name}}</p>
-        {{else}}
-        {{#if tailor}}
-        <button class="edit-tailor btn p-0 m-0 me-1" style="height: 24px;" data-bs-toggle="modal"
-          data-bs-target="#tailorModal" data-bs-id="{{tailor.id}}" data-bs-reqId="{{id}}"><i
-            class="bi bi-arrow-left-right"></i></button>
-        {{/if}}
-        <p class="m-0">{{#if tailor}}Tailor: {{tailor.name}}{{else}}Book an appointment to select your tailor{{/if}}</p>
-        {{/if}}
+<div class="card-container m-5">
+
+  {{#unless requests}}
+  <div class="card text-center p-5 col-6 mx-auto">
+    <h3> You have no current requests </h3>
+    <p class="mt-5">Need a nicely fitted suit or dress?</p>
+    <a href="/services/tailoring/request" class="btn btn-primary col-6 mx-auto">Request Now!</a>
+  </div>
+  {{/unless}}
+  {{#each requests}}
+  <div class="card" style="border: 1px solid {{userColor}}; border-left: 8px solid {{userColor}};">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <h3 class="req-title m-0 flex-grow-1">Tailoring - {{title}}</h3>
+        <div class="d-flex align-items-center">
+          {{#if tailorChange}}
+          <button class="cancel-tailor btn p-0 m-0 me-1" style="height: 24px;" data-bs-toggle="modal"
+            data-bs-target="#cancelTailorModal" data-bs-id="{{id}}"><i class='bx bx-block'></i></button>
+          <p class="m-0"><span class="text-decoration-line-through"> {{tailor.name}}</span> <i
+              class='bx bxs-chevrons-right align-middle fs-5'></i>{{tailorChange.name}}</p>
+          {{else}}
+          {{#if tailor}}
+          <button class="edit-tailor btn p-0 m-0 me-1" style="height: 24px;" data-bs-toggle="modal"
+            data-bs-target="#tailorModal" data-bs-id="{{tailor.id}}" data-bs-reqId="{{id}}"><i
+              class="bi bi-arrow-left-right"></i></button>
+          {{/if}}
+          <p class="m-0">{{#if tailor}}Tailor: {{tailor.name}}{{else}}Book an appointment to select your tailor{{/if}}
+          </p>
+          {{/if}}
 
 
+        </div>
+      </li>
+      <li class="list-group-item">
+        <a href="#item_{{id}}" data-bs-toggle="collapse" class="pe-auto text-black stretched-link">
+          Click here to view your request items
+        </a>
+        <i class="bi bi-chevron-down float-end"></i>
+      </li>
+      <div class="collapse border-bottom" id="item_{{id}}">
+        <div class="p-3">
+          <table id="itemtable_{{id}}" data-toggle="table" data-url="/api/requestitems?id={{id}}" data-row-style="">
+            <thead>
+              <tr>
+                <th data-field="id" data-visible="false" rowspan="2">Id</th>
+                <th data-field="name" rowspan="2">Name</th>
+                <th data-field="description" rowspan="2">Description</th>
+                <th data-field="type" rowspan="2">Type</th>
+                <th data-field="color" rowspan="2" data-formatter="colorFormatter">Color</th>
+                <th data-field="" colspan="8">Measurements (cm)</th>
+                <th data-field="qty" rowspan="2">Quantity</th>
+                <th data-width="150" data-field="operate" data-formatter="itemoperateFormatter"
+                  data-events="itemoperateEvents" rowspan="2">
+                </th>
+              </tr>
+              <tr>
+                <th data-field="head">Head</th>
+                <th data-field="neck">Neck</th>
+                <th data-field="bust">Bust</th>
+                <th data-field="waist">Waist</th>
+                <th data-field="arm">Arm</th>
+                <th data-field="hip">Hip</th>
+                <th data-field="inseam">Inseam</th>
+                <th data-field="height">Height</th>
+              </tr>R
+            </thead>
+          </table>
+        </div>
       </div>
-    </li>
-    <li class="list-group-item">
-      <p class="req-description">
-        {{description}}
-      </p>
-    </li>
-    <li class="list-group-item">
-      {{#if tailorChange}}
-      <a href="#" onclick="return false;" class="text-primary pe-none">Your tailor change is being approved</a>
-      {{else}}
-      {{#if appointments.[0]}}
-      {{#equals statusCode -1}}
-      <a href="/services/book/{{id}}" class="pe-auto text-black stretched-link">
-        Your appointment scheduled for {{appointments.[0].datetimeHuman}} was denied. Click here to book again.
-      </a>
-      {{else}}
-      <a href="#appt_{{id}}" data-bs-toggle="collapse" class="pe-auto text-black stretched-link">
-        Your appointment scheduled for {{appointments.[0].datetimeHuman}}{{#equals statusCode 2}}, pending
-        confirmation{{else}} is confirmed!{{/equals}}
-      </a>
-      {{/equals}}
-      {{else}}
-      <a href="/services/book/{{id}}" class="pe-auto text-black stretched-link">
-        You have not booked your appointment. Click here to book
-      </a>
-      {{/if}}
-      <i class="bi bi-chevron-right float-end"></i>
-      {{/if}}
-    </li>
-  </ul>
-  <div class="collapse" id="appt_{{id}}">
-    <div class="p-3">
-      <table id="apptTable" data-toggle="table" data-url="/api/appointment/{{id}}" data-row-style="rowStyle">
-        <thead>
-          <tr>
-            <th data-field="id" data-visible="false">Id</th>
-            <th data-field="date">Date</th>
-            <th data-field="time">Time</th>
-            <th data-field="description">Description</th>
-            <th data-width="150" data-field="operate" data-formatter="operateFormatter" data-events="operateEvents">
-            </th>
-          </tr>
-        </thead>
-      </table>
+      <li class="list-group-item">
+        {{#if tailorChange}}
+        <a href="#" onclick="return false;" class="text-primary pe-none">Your tailor change is being approved</a>
+        {{else}}
+        {{#equals status "Ready for fitting! Please book an appointment"}}
+        
+        {{else}}
+        {{/equals}}
+        {{#if appointments.[0]}}
+        {{#equals appointments.[0].confirmed 'Rejected'}}
+        <a href="/services/book/{{id}}" class="pe-auto text-black stretched-link">
+          Your appointment scheduled for {{appointments.[0].datetimeHuman}} was denied. Click here to book again.
+        </a>
+        {{else}}
+        <a href="#appt_{{id}}" data-bs-toggle="collapse" class="pe-auto text-black stretched-link">
+          Your appointment scheduled for {{appointments.[0].datetimeHuman}}{{#equals appointments.[0].confirmed
+          'Pending'}}, pending
+          confirmation{{else}} is confirmed!{{/equals}}
+        </a>
+        {{/equals}}
+        {{else}}
+        <a href="#addApptModal" data-bs-toggle="modal" class="pe-auto text-black stretched-link">
+          You have no appointmetns. Click here to book again.
+        </a>
+        {{/if}}
+        <i class="bi bi-chevron-down float-end"></i>
+        {{/if}}
+      </li>
+    </ul>
+    <div class="collapse" id="appt_{{id}}">
+      <div class="p-3">
+        <table id="apptTable" data-toggle="table" data-url="/api/appointment/{{id}}" data-row-style="rowStyle">
+          <thead>
+            <tr>
+              <th data-field="id" data-visible="false">Id</th>
+              <th data-field="date">Date</th>
+              <th data-field="time">Time</th>
+              <th data-field="type">Type</th>
+              <th data-width="150" data-field="operate" data-formatter="operateFormatter" data-events="operateEvents"
+                class="text-center">
+                Edit | Delete
+              </th>
+            </tr>
+          </thead>
+        </table>
+      </div>
     </div>
-  </div>
 
-  <div class="card-footer d-flex justify-content-between align-items-center border-0">
-    <div class="my-auto">
-      {{#with (lookup ../statuses [statusCode])~}}{{text}}{{/with}}
+    <div class="card-footer d-flex justify-content-between align-items-center border-0">
+      <div class="my-auto">
+        {{status}}
+      </div>
+      <div class="my-auto">
+        {{#if chatId}}
+        <button class="btn btn-success chat" style="width: 80px;" data-bs-toggle="modal" data-bs-target="#chatModal"
+          data-bs-chatId="{{chatId}}">
+          <i class="bi bi-envelope"></i>
+        </button>
+        {{/if}}
+        <button class="btn btn-primary edit mx-2" style="width: 80px;" data-bs-toggle="modal"
+          data-bs-target="#editModal" data-bs-id="{{id}}">
+          <i class="bi bi-pencil-square"></i>
+        </button>
+        <button class="btn btn-danger delete" style="width: 80px;" data-bs-toggle="modal" data-bs-target="#delModal"
+          title="Delete" data-bs-id="{{id}}">
+          <i class="fa-solid fa-ban"></i>
+        </button>
+      </div>
     </div>
-    <div class="my-auto">
-      {{#if chatId}}
-      <button class="btn btn-success chat" style="width: 80px;" data-bs-toggle="modal" data-bs-target="#chatModal"
-        data-bs-chatId="{{chatId}}">
-        <i class="bi bi-envelope"></i>
-      </button>
-      {{/if}}
-      <button class="btn btn-primary edit mx-2" style="width: 80px;" data-bs-toggle="modal" data-bs-target="#editModal"
-        data-bs-id="{{id}}">
-        <i class="bi bi-pencil-square"></i>
-      </button>
-      <button class="btn btn-danger delete" style="width: 80px;" data-bs-toggle="modal" data-bs-target="#delModal"
-        title="Delete" data-bs-id="{{id}}">
-        <i class="bi bi-trash"></i>
-      </button>
-    </div>
-  </div>
 
+  </div>
+  {{/each}}
 </div>
-{{/each}}
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -135,10 +180,6 @@ You have no requests
           <div class="mb-3 col-12">
             <label for="title" class="form-label">Title</label>
             <input type="text" class="form-control" name="title">
-          </div>
-          <div class="mb-3 col-12">
-            <label for="description" class="form-label">Description</label>
-            <textarea class="form-control" name="description"></textarea>
           </div>
         </div>
       </div>
@@ -161,7 +202,6 @@ You have no requests
           <div class="mb-3 col-10">
             <label for="service" class="form-label">Tailor</label>
             <select class="form-select" aria-label="Default select example" name="tailor">
-              <option selected>Select Tailor</option>
               {{>options object=tailors}}
             </select>
           </div>
@@ -231,6 +271,72 @@ You have no requests
     </div>
   </div>
 </div>
+<div class="modal fade" id="delItemModal" tabindex="-1" aria-labelledby="delItemModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="delItemModalLabel">Are you sure you want to remove your item?</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-danger">Warning this action is irreversable</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger del" data-bs-url="/services/item/remove">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="addApptModal" tabindex="-1" aria-labelledby="addApptModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addApptModalLabel">Edit Appointment</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="mb-3 col-12">
+            <label for="date" class="form-label">Date</label>
+            <input type="date" class="form-control" name="date" min="{{min}}" max="{{max}}" required>
+          </div>
+        </div>
+        <div class="row timings">
+          <div class="container overflow-hidden mb-3">
+            <label class="form-label">Time</label>
+            <div class="border border-1 rounded mx-auto row g-2 pb-2 m-0">
+              <div class="col-lg-2 col-md-6 d-grid">
+                <button type="button" class="btn btn-lg btn-primary" value="09:00:00">9:00AM</button>
+              </div>
+              <div class="col-lg-2 col-md-6 d-grid">
+                <button type="button" class="btn btn-lg btn-primary" value="10:30:00">10:30AM</button>
+              </div>
+              <div class="col-lg-2 col-md-6 d-grid">
+                <button type="button" class="btn btn-lg btn-primary" value="12:00:00">12:00PM</button>
+              </div>
+              <div class="col-lg-2 col-md-6 d-grid">
+                <button type="button" class="btn btn-lg btn-primary" value="15:00:00">3:00PM</button>
+              </div>
+              <div class="col-lg-2 col-md-6 d-grid">
+                <button type="button" class="btn btn-lg btn-primary" value="16:30:00">4:30PM</button>
+              </div>
+              <div class="col-lg-2 col-md-6 d-grid">
+                <button type="button" class="btn btn-lg btn-primary" value="18:00:00">6:00PM</button>
+              </div>
+            </div>
+          </div>
+          <input type="hidden" class="form-control" name="time" required>
+        </div>
+        <input type="hidden" class="form-control" name="tailorID" required>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary confirm">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="modal fade" id="editApptModal" tabindex="-1" aria-labelledby="editApptModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -272,10 +378,40 @@ You have no requests
           <input type="hidden" class="form-control" name="time" required>
         </div>
         <input type="hidden" class="form-control" name="tailorID" required>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary confirm">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="editItemModal" tabindex="-1" aria-labelledby="editItemModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editItemModalLabel">Edit Item</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="mb-3 col-4">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" name="name" required>
+          </div>
+          <div class="mb-3 col-4">
+            <label for="type" class="form-label">Type</label>
+            <input type="text" class="form-control" name="type" required>
+          </div>
+          <div class="mb-3 col-4">
+            <label for="color" class="form-label">Color</label>
+            <input type="text" class="form-control" name="color" required>
+          </div>
+        </div>
         <div class="row">
           <div class="mb-3 col-12">
-            <span class="">Please write a brief description of your request</span>
-            <textarea name="description" class="form-control" aria-label="With textarea" required></textarea>
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" name="description"></textarea>
           </div>
         </div>
       </div>
@@ -287,7 +423,7 @@ You have no requests
   </div>
 </div>
 <div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModal" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title chat-name" id="chatModalLabel">Name</h5>

@@ -18,6 +18,7 @@ const userController = require('../controllers/userController');
 const Service = require('../models/Service');
 const Appointment = require('../models/Appointment');
 const Tailor = require('../models/Tailor');
+const RequestItem = require('../models/RequestItem');
 
 router.use((req, res, next) => {
   res.locals.path = req.baseUrl;
@@ -205,6 +206,7 @@ router.get('/user/requests', ensureAuthenticated, async (req, res) => {
   let now = moment()
   let min = now.add(7, 'd').format('YYYY-MM-DD')
   let max = now.add(1, 'M').format('YYYY-MM-DD')
+  let tailors = await User.findAll({ include: { model: Tailor, required: true } })
   let requests = await Request.findAll({
     include: [
       { model: User, as: 'user' },
@@ -221,6 +223,9 @@ router.get('/user/requests', ensureAuthenticated, async (req, res) => {
         model: User,
         as: 'tailorChange',
       },
+      {
+        model: RequestItem,
+      },
     ],
     where: {
       [Op.or]: [
@@ -235,7 +240,7 @@ router.get('/user/requests', ensureAuthenticated, async (req, res) => {
   // requests.forEach(element => {
   //   console.log(element.toJSON())
   // });
-  res.render('services/requests', { requests, min, max })
+  res.render('services/requests', { requests, min, max, tailors })
 })
 
 router.get('/forgetpassword', (req, res) => {
@@ -258,8 +263,8 @@ router.post('/forgetpassword', async (req, res) => {
       email_recipient: email,
       subject: `Your Threads in Times OTP is ready`,
       template_path: "../views/MailTemplates/ForgetPassword.html",
-      context: {name: userr1.name, otp: otp },
-  });
+      context: { name: userr1.name, otp: otp },
+    });
 
     // Mail.send(res, {
     //   to: email,
@@ -269,14 +274,14 @@ router.post('/forgetpassword', async (req, res) => {
     //   html: `<div class="page">
     //   <div class="container">
     //     <div class="email_header">
-          
+
     //       <img class="logo" src="https://raw.githubusercontent.com/PMerilo/ThreadsInNode/master/public/images/logo.png" alt="Threads In Times" />
     //       <h1>Email Confirmation</h1>
     //     </div>
     //     <div class="email_body">
     //       <p><b>Hi ,</b></p>
     //       <p>Your OTP is example</b></p>
-          
+
     //       </a>
     //       <p>Thanks for supporting,<br/>
     //         <b>The Threads in Times Team</b>
@@ -350,7 +355,7 @@ router.post('/forgetpasswordchange', async (req, res) => {
   return res.redirect('/login')
 })
 router.get("/backupcodes", async (req, res) => {
-  temp = (await TempUser.findAll({where: { email: req.user.email }})).map((x) => x.dataValues)
+  temp = (await TempUser.findAll({ where: { email: req.user.email } })).map((x) => x.dataValues)
   res.render('backupcodes', { temp })
 })
 
