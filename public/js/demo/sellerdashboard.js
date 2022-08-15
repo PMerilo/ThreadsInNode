@@ -8,6 +8,7 @@ function updateStats() {
     var revenue = document.getElementById("revenue")
     var orders = document.getElementById("orders")
     var customers = document.getElementById("customers")
+    var balance = document.getElementById("balance")
     console.log(revenue, customers, orders)
     $.ajax({
         url: "/datapipeline/storestats",
@@ -19,6 +20,7 @@ function updateStats() {
             revenue.innerText = "S$" + res.revenue
             orders.innerText = res.orders
             customers.innerText = res.customers
+            balance.innerText ="S$" + res.balance
         }
     })
 }

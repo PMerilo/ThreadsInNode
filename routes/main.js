@@ -241,7 +241,7 @@ const fulfillOrder = async (session) => {
         phone_number: session.metadata.phone_number,
         userId: id
     })
-
+    
     // console.log(JSON.stringify(cartproducts))
     cartproducts.products.forEach(async element => {
         OrderItems.create({
@@ -252,7 +252,7 @@ const fulfillOrder = async (session) => {
             product_price: element.price,
             shipping_rate: shipping_rate / 100,
             shipping_type: shipping_type,
-            seller_cut: (((element.cartproduct.qtyPurchased * element.price)+ shipping_rate) * 0.83).toFixed(2),
+            seller_cut: (((element.cartproduct.qtyPurchased * element.price)+ (shipping_rate/100)) * 0.83).toFixed(2),
             tit_cut : ((element.cartproduct.qtyPurchased * element.price) * 0.17).toFixed(2),
             seller_name: element.Owner,
             seller_id: element.OwnerID,
@@ -260,6 +260,10 @@ const fulfillOrder = async (session) => {
             posterURL: element.posterURL,
             review: 0
         })
+        var seller = await User.findByPk(parseInt(element.OwnerID))
+        var total_bal = seller.total_balance
+        var total_balance = total_bal + (((element.cartproduct.qtyPurchased * element.price)+ (shipping_rate/100)) * 0.83).toFixed(2)
+        await User.update({total_balance: total_balance},{where: {id :element.OwnerID}})
         shipping_rate = 0
         // var payload = {title : "New Order Placed",body: "body",url: "",senderId: "",recipient: `${element.OwnerID}`}
         // let user = await User.findByPk(element.OwnerID)
@@ -274,14 +278,14 @@ const fulfillOrder = async (session) => {
         // var sold = element.sold + element.cartproduct.qtyPurchased
         // var sales = element.sales + (element.cartproduct.qtyPurchased*element.price)
         // var qty = element.quantity - element.cartproduct.qtyPurchased
-        Product.update({ quantity: element.quantity - element.cartproduct.qtyPurchased, sold: element.sold + element.cartproduct.qtyPurchased, sales: element.sales + (element.cartproduct.qtyPurchased * element.price) }, { where: { sku: element.sku } })
+        await Product.update({ quantity: element.quantity - element.cartproduct.qtyPurchased, sold: element.sold + element.cartproduct.qtyPurchased, sales: element.sales + (element.cartproduct.qtyPurchased * element.price) }, { where: { sku: element.sku } })
     });
     var discountcode = await Reward.findOne({ where: { voucher_code: cartproducts.discountcodeused } })
     var user = await User.findByPk(id)
     User.update({ spools: user.spools + order.orderTotal }, { where: { id: id } })
     if (discountcode) {
-        User.update({ spools: user.spools - discountcode.spools_needed }, { where: { id: id } })
-        Reward.update({ quantity: discountcode.quantity - 1 }, { where: { voucher_code: cartproducts.discountcodeused } })
+        await User.update({ spools: user.spools - discountcode.spools_needed }, { where: { id: id } })
+        await Reward.update({ quantity: discountcode.quantity - 1 }, { where: { voucher_code: cartproducts.discountcodeused } })
     }
     await Cart.destroy({ where: { id: id } })
     console.log("Order created")

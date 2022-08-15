@@ -220,6 +220,8 @@ router.post('/storestats', async (req, res) => {
   const sellers = await OrderItems.findAll({ where: { seller_id: req.body.id }});
   const customers = await OrderItems.count({where : {seller_id : req.body.id}})
   const orders = await OrderItems.count({where : {seller_id : req.body.id}, distinct: true})
+  var user = await User.findByPk(req.user.id)
+  var balance = user.total_balance
   
   var sellerRevenue = 0
   sellers.forEach(element => {
@@ -227,7 +229,7 @@ router.post('/storestats', async (req, res) => {
     sellerRevenue += data
   });
   const revenue = ((sellerRevenue / 100) * 83).toFixed(2)
-  res.send({revenue : revenue, orders: orders, customers : customers})
+  res.send({revenue : revenue, orders: orders, customers : customers, balance:balance})
 });
 module.exports = router;
 
