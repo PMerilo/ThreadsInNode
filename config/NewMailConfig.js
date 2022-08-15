@@ -73,19 +73,7 @@ class mail {
                         to: email_recipient,
                         subject,
                         html: contexts,
-                        attachments: [
-                            {   // utf-8 string as an attachment
-                                filename: filename,
-                                path: Path,
-                                contentType: 'image/png', 
-                                contentDisposition: 'attachment',
-                                encoding: 'base64',
-                                
-
-
-                            }
-                            
-                        ]
+                        
                     };
 
                     transporter.sendMail(mailOptions, (error, response) => {
