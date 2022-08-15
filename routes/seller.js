@@ -38,21 +38,21 @@ router.get('/', (req, res) => {
     res.render('seller/dashboard');
 });
 
-router.get('/reports', (req, res) => {
-    res.render('seller/reports');
-});
-
 router.get('/dashboard', (req, res) => {
     res.render('seller/dashboard.handlebars');
 });
 
 router.get('/revenue', async (req, res) => {
-    var orders = (await OrderItems.findAll({ where: { seller_id: req.user.id }, include: Order }))
+    var orders = (await OrderItems.findAll({ where: { seller_id: req.user.id }, include: Order ,order: [
+        ['createdAt', 'DESC'],
+        ['product_name', 'ASC'],
+    ]}))
     var sellerRevenue = 0
     orders.forEach(element => {
         let data = (((element.product_price * element.qtyPurchased) + element.shipping_rate) * 0.83)
         sellerRevenue += data
     });
+    sellerRevenue = (sellerRevenue).toFixed(2)
     res.render('seller/revenue.handlebars', { orders , sellerRevenue});
 });
 
@@ -145,7 +145,10 @@ router.get('/editProduct/:sku', async (req, res) => {
 })
 
 router.get('/reviews', async (req, res) => {
-    var reviews = await Review.findAll({ where: { sellerId: req.user.id }, include: { model: User } })
+    var reviews = await Review.findAll({ where: { sellerId: req.user.id }, include: { model: User } ,order: [
+        ['createdAt', 'DESC'],
+        ['title', 'ASC'],
+    ]})
 
     res.render("seller/reviews", { reviews })
 })

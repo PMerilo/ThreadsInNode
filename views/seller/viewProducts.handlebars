@@ -1,11 +1,10 @@
+<link rel="stylesheet" href="../styles/btn.css">
 <div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Your Products</h6>
+    <div class="card-header">
+        <h2>Products</h2>
     </div>
 
-</div>
-<div class="card-body">
-    <div class="table-responsive">
+    <div class="card-body" style="padding:10px">
         <table class="table table-bordered" id="products-table" width="100%" cellspacing="0">
             <thead>
                 <tr>
@@ -20,19 +19,6 @@
                     <th>Delete Item</th>
                 </tr>
             </thead>
-            <tfoot>
-                <tr>
-                    <th>Image</th>
-                    <th>Barcode</th>
-                    <th>Item</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>More Info</th>
-                    <th>Restock</th>
-                    <th>Edit Product</th>
-                    <th>Delete Item</th>
-                </tr>
-            </tfoot>
 
             <tbody>
                 {{#each products}}
@@ -51,19 +37,21 @@
                     <td>${{this.price}}</td>
                     <td>{{this.quantity}}</td>
                     <td>
-                        <button style="margin-top: 15px;" class="btn btn-outline btn-info" data-bs-toggle="modal"
+                        <button style="margin-top: 15px;" class="blue-btn-full" data-bs-toggle="modal"
                             data-bs-target="#Modal-MoreInfo-{{this.sku}}">More Info</button>
                     </td>
                     <td>
-                        <button style="margin-top: 15px;" class="btn btn-outline btn-secondary" data-bs-toggle="modal"
-                            data-bs-target="#Modal-Restock-{{this.sku}}">Restock Item</button>
+                        <button style="margin-top: 15px;" class="light-btn-full" data-bs-toggle="modal"
+                            data-bs-target="#Modal-Restock-{{this.sku}}">Restock
+                            Item</button>
                     </td>
                     <td>
                         <a href="/seller/editProduct/{{this.sku}}"><button style="margin-top: 15px;"
-                                class="btn btn-outline btn-warning" onclick="/seller/editProduct">Edit Item</button></a>
+                                class="warning-btn" onclick="/seller/editProduct">Edit
+                                Item</button></a>
                     </td>
                     <td>
-                        <button class="btn btn-outline btn-danger" style="margin-top: 15px;" type="submit"
+                        <button class="danger-btn" style="margin-top: 15px;" type="submit"
                             data-bs-toggle="modal" data-bs-target="#Modal-Delete-{{this.sku}}">Delete Item</button>
                     </td>
                 </tr>
@@ -75,8 +63,6 @@
 
     </div>
 </div>
-</div>
-</section>
 
 
 
@@ -94,10 +80,10 @@
             </div>
             <div class="modal-body">
                 {{#if this.posterURL}}
-                <img class="card-img-top" style="max-height:200px; max-width:200px;" src="{{this.posterURL}}"
+                <img class="card-img-top" style="max-height:150px; max-width:150px;" src="{{this.posterURL}}"
                     alt="Item Image" />
                 {{else}}
-                <img class="card-img-top" style="max-height:200px; max-width:200px;" src="/images/no-image.jpg"
+                <img class="card-img-top" style="max-height:150px; max-width:150px;" src="/images/no-image.jpg"
                     alt="Card image cap" width="153px" height="372px">
                 {{/if}}
                 <hr>
@@ -109,7 +95,7 @@
 
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                <button class="light-btn" type="button" data-bs-dismiss="modal">Cancel</button>
 
             </div>
         </div>
@@ -134,14 +120,14 @@
                     <input type="number" name="quantity" id="quantity" class="form-control" required>
                 </div>
                 <div class="modal-body">
-                    
 
-                  </div>
 
-                   <div class="modal-footer">
+                </div>
+
+                <div class="modal-footer">
                     <button class="light-btn" type="button" data-bs-dismiss="modal">Cancel</button>
                     <input id="uuid" name="uuid" type="hidden" value="{{this.sku}}">
-                    <button class="btn btn-success" type="submit">Restock</button>
+                    <button class="green-btn-25" type="submit">Restock</button>
                 </div>
             </form>
         </div>
@@ -162,9 +148,9 @@
             <form action="/seller/deleteProduct" method="POST">
                 <div class="modal-body">
                     {{#if this.posterURL}}
-                    <img class="card-img-top" style="max-height:300px" src="{{this.posterURL}}" alt="Item Image" />
+                    <img class="card-img-top" style="max-width:150px" src="{{this.posterURL}}" alt="Item Image" />
                     {{else}}
-                    <img class="card-img-top" style="max-height:300px" src="/images/no-image.jpg" alt="Item Image" />
+                    <img class="card-img-top" style="max-width:150px" src="/images/no-image.jpg" alt="Item Image" />
                     {{/if}}
                     <hr>
                     <p>SKU: {{this.sku}}</p>

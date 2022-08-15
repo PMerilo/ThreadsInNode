@@ -1,5 +1,5 @@
 <div class="admin-padding">
-  <div class="col py-3" style="width: 60%; margin:0 auto; background:white;box-shadow: 12px 12px 22px grey; border-radius:30px; padding: 40px;">
+  <div class="card p-3" style="width: 60%; margin:0 auto; border-radius:30px;">
     <h1 class="display-4">Add Product</h1><span id="datetime"></span>
 
     <form method="POST" action="/seller/addProduct">
@@ -19,7 +19,7 @@
         </select>
 
       </div>
-      
+
       <div class="form-group col py-3" id="">
         <label for="price">Price</label>
         <input type="number" name="price" id="price" class="form-control" required>
@@ -44,11 +44,10 @@
         <img id="poster" src="/images/no-image.jpg" alt="Poster" class="border img-thumbnail img-fluid">
         <input id="posterURL" type="hidden" name="posterURL">
       </div>
-      <input type="submit" value="Add Product" class="blue-btn"/>
+      <input type="submit" value="Add Product" class="blue-btn" />
     </form>
   </div>
 </div>
-
 <style type="text/css">
   .image-preview {
     width: 300px;

@@ -5,6 +5,7 @@ const flashMessage = require('../views/helpers/messenger');
 const sequelizeUser = require("../config/DBConfig");
 const { serializeUser } = require('passport');
 const { Op, where } = require('sequelize');
+const XLSX = require("xlsx");
 const User = require("../models/User");
 const Ticket = require('../models/Ticket');
 const Feedback = require('../models/Feedback');
@@ -408,7 +409,10 @@ router.get('/editVoucher/:id', ensureAuthenticated, async (req, res) => {
 })
 
 router.get('/revenue', ensureAuthenticated, async (req, res) => {
-    const orders = (await OrderItems.findAll({ include: Order }))
+    const orders = (await OrderItems.findAll({ include: Order , order: [
+        ['createdAt', 'DESC'],
+        ['product_name', 'ASC'],
+    ]}))
     const sales = (await Order.sum('orderTotal')).toFixed(2)
 
     var sellerRevenue = 0
