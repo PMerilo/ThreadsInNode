@@ -201,6 +201,34 @@ router.get('/myProductWishlist/:id', async (req, res) => {
   res.status(200).json({ 'data': df })
 });
 
+router.post('/stats', async (req, res) => {
+  const sellers = await OrderItems.findAll()
+  const sales = (await Order.sum('orderTotal')).toFixed(2)
+  const customers = await Order.count('orderOwnerID')
+  const orders = await Order.count('id')
+  
+  var sellerRevenue = 0
+  sellers.forEach(element => {
+    let data = ((element.product_price * element.qtyPurchased) + element.shipping_rate)
+    sellerRevenue += data
+  });
+  const revenue = (sales - ((sellerRevenue / 100) * 83)).toFixed(2)
+  res.send({revenue : revenue, sales : sellerRevenue, orders: orders, customers : customers})
+});
+
+router.post('/storestats', async (req, res) => {
+  const sellers = await OrderItems.findAll({ where: { seller_id: req.body.id }});
+  const customers = await OrderItems.count({where : {seller_id : req.body.id}})
+  const orders = await OrderItems.count({where : {seller_id : req.body.id}, distinct: true})
+  
+  var sellerRevenue = 0
+  sellers.forEach(element => {
+    let data = ((element.product_price * element.qtyPurchased) + element.shipping_rate)
+    sellerRevenue += data
+  });
+  const revenue = ((sellerRevenue / 100) * 83).toFixed(2)
+  res.send({revenue : revenue, orders: orders, customers : customers})
+});
 module.exports = router;
 
 

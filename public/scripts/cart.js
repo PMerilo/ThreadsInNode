@@ -265,14 +265,9 @@ $(".delete-cart").one("mouseenter", function () {
 })
 
 function wishList(element) {
-    // element.classList.toggle("bxs-bookmark-heart")
     element.classList.add("bx-tada")
     var sku = element.value
     console.log(sku)
-
-    // $.post('wishlist', {
-    //     sku: sku
-    //   })
     $.ajax({
         url: "/wishlist",
         method: 'POST',
@@ -300,17 +295,25 @@ function wishList(element) {
     if (element.classList.contains("bx-tada")) {
         setTimeout(() => element.classList.remove('bx-tada'), 1100);
     }
-    // if (element.classList.contains("bxs-bookmark-heart")) {
-    //     new SnackBar({
-    //         message:"Item has been added to your wishlist!",
-    //         status: "info",
-    //         fixed : true
-    //     })
-    // } else {
-    //     new SnackBar({
-    //         message:"Item has been removed from your wishlist!",
-    //         status: "info",
-    //         fixed : true
-    //     })
-    // }
+}
+
+
+function wishLists(element) {
+    var sku = element.value
+    console.log(sku)
+    $.ajax({
+        url: "/wishlist",
+        method: 'POST',
+        contentType: "application/json",
+        data: JSON.stringify({ sku: sku, status: "add/remove" }),
+        success: function (res) {
+            if (res.response == 'remove' && res.status == "add/remove") {
+                new SnackBar({
+                    message: "Item has been removed from your wishlist!",
+                    status: "info",
+                    fixed: true
+                })
+            }
+        }
+    })
 }

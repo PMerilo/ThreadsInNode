@@ -46,13 +46,23 @@ router.get('/dashboard', (req, res) => {
     res.render('seller/dashboard.handlebars');
 });
 
+router.get('/revenue', async (req, res) => {
+    var orders = (await OrderItems.findAll({ where: { seller_id: req.user.id }, include: Order }))
+    var sellerRevenue = 0
+    orders.forEach(element => {
+        let data = (((element.product_price * element.qtyPurchased) + element.shipping_rate) * 0.83)
+        sellerRevenue += data
+    });
+    res.render('seller/revenue.handlebars', { orders , sellerRevenue});
+});
+
 router.get('/sellerProfile', (req, res) => {
     res.render('seller/sellerProfile');
 });
 
 router.get('/manageProducts', async (req, res) => {
 
-    products = await Product.findAll({ where: { ownerID: req.user.id } })
+    var products = await Product.findAll({ where: { ownerID: req.user.id } })
     res.render('seller/viewProducts', { products });
 });
 
@@ -63,7 +73,7 @@ router.get('/addProduct', (req, res) => {
 })
 
 router.get('/orders', ensureAuthenticated, async (req, res) => {
-    orders = (await OrderItems.findAll({
+    var orders = (await OrderItems.findAll({
         where: { seller_name: req.user.name }, include: Order, order: [
             ['createdAt', 'DESC'],
             ['product_name', 'ASC'],
@@ -115,8 +125,8 @@ router.post('/addProduct', async function (req, res) {
             Owner: req.user.name,
             OwnerID: req.user.id,
             posterURL: posterURL,
-            reviews_given:0,
-            stars_given:0,
+            reviews_given: 0,
+            stars_given: 0,
         });
         flashMessage(res, "success", name + 'Product Added Successfully');
         res.redirect("/seller/addProduct")
@@ -135,7 +145,7 @@ router.get('/editProduct/:sku', async (req, res) => {
 })
 
 router.get('/reviews', async (req, res) => {
-    var reviews = await Review.findAll({ where: { sellerId: req.user.id}, include: {model:User}})
+    var reviews = await Review.findAll({ where: { sellerId: req.user.id }, include: { model: User } })
 
     res.render("seller/reviews", { reviews })
 })
@@ -165,13 +175,13 @@ router.post('/deleteProduct', ensureAuthenticated, (req, res) => {
     res.redirect("/seller/manageProducts")
 })
 
-router.post('/restockProduct',ensureAuthenticated, async (req,res) => {
-    let {sku, quantity} = req.body;
+router.post('/restockProduct', ensureAuthenticated, async (req, res) => {
+    let { sku, quantity } = req.body;
     var product = await Product.findByPk(sku)
     console.log(sku)
     console.log(quantity)
-    await Product.update({quantity: product.quantity + parseInt(quantity)},{where : {sku: sku}})
-    flashMessage(res, 'success', product.name+ " Restocked successfully");
+    await Product.update({ quantity: product.quantity + parseInt(quantity) }, { where: { sku: sku } })
+    flashMessage(res, 'success', product.name + " Restocked successfully");
     res.redirect("/seller/manageProducts")
 })
 
