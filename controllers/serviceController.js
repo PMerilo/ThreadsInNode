@@ -29,7 +29,7 @@ const checkAppointment = async (req, res, next) => {
 
 const appointmentDelete = async (req, res) => {
     let x = await Appointment.findByPk(req.body.id)
-    await Request.update({ statusCode: 1 }, { where: { id: x.requestId } })
+    await Request.update({ status: 'Appointment Cancelled', adminStatus: "User Cancelled Appointment", userColor: "red", adminColor: 'blue' }, { where: { id: x.requestId } })
     let appt = await Appointment.findByPk(req.body.id)
     await Appointment.destroy({ where: { id: req.body.id } }).then((count) => {
         let payload = {};

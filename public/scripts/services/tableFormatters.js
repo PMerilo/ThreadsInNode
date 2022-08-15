@@ -18,6 +18,10 @@ function itemoperateFormatter(value, row) {
   ].join('')
 }
 
+function qtyFormatter(value, row) {
+  return `<input class="form-control" type="number" min="1" value="${value}" name="qty"></input>`
+}
+
 function colorFormatter(value, row) {
   if (value.startsWith('#') && value.length == 7) {
     return `<span class="" style="width: 20px; background-color: ${value}" aria-hidden="true">${value}</span>`
