@@ -26,7 +26,6 @@ const NewsLetterLog = require("../models/Logs/NewsLetterLogs")
 // const PDFDocument = require("pdfkit-table");
 const fs = require('fs');
 const path = require('path');
-const moment = require('moment');
 const { NONE } = require('sequelize');
 const QRCode = require('qrcode');
 
@@ -41,9 +40,7 @@ const mail = require("../config/NewMailConfig");
 const { cwd } = require('process');
 const Service = require('../models/Service');
 const Appointment = require('../models/Appointment');
-const ensureAuthenticated = require("../views/helpers/auth");
 const serviceController = require("../controllers/serviceController")
-const ensureAdminAuthenticated = require("../views/helpers/adminAuth");
 const TempUser = require("../models/TempUser");
 const Notification = require("../models/Notification");
 const Order = require('../models/Orders');

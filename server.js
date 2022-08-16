@@ -145,7 +145,7 @@ app.engine(
 			equals(arg1, arg2, options) {
 				return arg1 == arg2 ? options.fn(this) : options.inverse(this);
 			},
-			identifystring(s1,s2){
+			identifystring(s1, s2) {
 				return s1 == s2;
 			},
 
@@ -243,41 +243,42 @@ app.all("/*", (req, res, next) => {
 
 app.use("/", main)
 app.use("/", user)
-app.use("/admin",admin)
-app.use("/services",services)
-app.use("/seller",seller)
-app.use("/datapipeline",datapipeline)
-app.use("/api",api)
+app.use("/admin", admin)
+app.use("/services", services)
+app.use("/seller", seller)
+app.use("/datapipeline", datapipeline)
+app.use("/api", api)
 
-  // error handler
-  app.use(function(err, req, res, next) {
+// error handler
+app.use(function (err, req, res, next) {
 	// set locals, only providing error in development
 	res.locals.message = err.message;
 	res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-	var err = new Error('Not Found');
-	err.status = 404;
-	next(err);
-  });
-  
-  // error handler
-  app.use(function(err, req, res, next) {
-	// set locals, only providing error in development
-	res.locals.message = err.message;
-	res.locals.error = req.app.get('env') === 'development' ? err : {};
-  
-	// render the error page
-	res.status(err.status || 500);
-	res.render('error404');
-  });
+	// catch 404 and forward to error handler
+	app.use(function (req, res, next) {
+		var err = new Error('Not Found');
+		err.status = 404;
+		next(err);
+	});
 
-const port = 5000;
+	// error handler
+	app.use(function (err, req, res, next) {
+		// set locals, only providing error in development
+		res.locals.message = err.message;
+		res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+		// render the error page
+		res.status(err.status || 500);
+		res.render('error404');
+	});
+
+	const port = 5000;
 
 
 
-// Starts the server and listen to port
-httpServer.listen(port, () => {
-	console.log(`Server started on port ${port}`);
-});
+	// Starts the server and listen to port
+	httpServer.listen(port, () => {
+		console.log(`Server started on port ${port}`);
+	})
+})
