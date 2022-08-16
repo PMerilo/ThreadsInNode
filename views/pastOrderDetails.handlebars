@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="../styles/pastorderDetails.css">
+<link rel="stylesheet" href="../styles/btn.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
   integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A=="
   crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -66,9 +67,8 @@
                   <div class="modal-footer">
                     <input type="hidden" name="sku" id="sku" value="{{this.productSku}}">
                     <input type="hidden" name="id" id="id" value="{{this.id}}">
-                    <button class="btn btn-primary" type="submit">Confrim</button>
-                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
-
+                    <button class="green-btn-25" type="submit">Confrim</button>
+                    <button class="light-btn" type="button" data-bs-dismiss="modal">Cancel</button>
                   </div>
                 </form>
               </div>
@@ -114,7 +114,7 @@
                                 placeholder="Review Description" id="text"></textarea>
                             </tr>
                           </table>
-                          <input type="submit" class="submit-btn" value="Submit Review"></input>
+                          <button type="submit" class="green-btn-25" value="">Submit Review</button>
                         </div>
                       </form>
                     </div>

@@ -16,6 +16,7 @@
                     <th>Price</th>
                     <th>Quantity</th>
                     <th>Order Revenue</th>
+                    <th>Order Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -53,15 +54,66 @@
                     <td>S${{this.product_price}}</td>
                     <td>{{this.qtyPurchased}}</td>
                     <td>S${{this.tit_cut}}</td>
+                    <td><p  class="order-stat blue-full">{{this.orderStatus}}</p></td>
                 </tr>
                 {{/each}}
             </tbody>
         </table>
     </div>
 </div>
+<style>
+.blue-full {
+    text-align: center;
+    width: 100%;
+    background: #2098ce;
+    font-weight: bold;
+    color: white;
+    border-radius: 25px;
+    padding: 10px 5px;
+    margin: 10px 5px;
+}
+.green-full {
+    text-align: center;
+    width: 100%;
+    background: #07fd6e;
+    font-weight: bold;
+    color: white;
+    border-radius: 25px;
+    padding: 10px 5px;
+    margin: 10px 5px;
+}
+.green-full-confirmed {
+    text-align: center;
+    width: 100%;
+    background: #00be10;
+    font-weight: bold;
+    color: white;
+    border-radius: 25px;
+    padding: 10px 5px;
+    margin: 10px 5px;
+}
+</style>
 <script>
     $(document).ready(function () {
         const revenueTable = document.getElementById('revenue-table');
         let revenuetable = new simpleDatatables.DataTable(revenueTable);
+        recursive()
     });
+
+    function changeColor() {
+    document.querySelectorAll('.order-stat').forEach(button => {
+      if (button.innerText == "Delivered") {
+        button.classList.remove("blue-full")
+        button.classList.add("green-full")
+      } else if (button.innerText == "Delivery Confirmed") {
+        button.classList.remove("blue-full")
+        button.classList.add("green-full-confirmed")
+      }
+    })
+  }
+
+  function recursive() {
+    changeColor()
+    setTimeout(() => recursive(), 400);
+  }
 </script>

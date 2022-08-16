@@ -1,0 +1,208 @@
+<link rel="stylesheet" href="../styles/btn.css">
+<div class="card" style="padding:10px">
+    <div class="card-header">
+        <h2>Withdrawl Requests</h2>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped" id="withdrawal-table">
+            <thead>
+                <tr>
+                    <th>Withdrawal ID</th>
+                    <th>Seller Details</th>
+                    <th>Authorization By</th>
+                    <th>Withdrawl amount</th>
+                    <th>Withdrawal Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each withdrawals}}
+                <tr>
+                    <td>{{this.id}}</td>
+                    <td>
+                        <button type="button" class="btn w-100" data-bs-toggle="modal"
+                            data-bs-target="#myModal_{{this.userId}}">
+                            {{this.user.name}}
+                        </button>
+                        <div class="modal" id="myModal_{{this.userId}}">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Seller Details</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Name : {{this.user.name}}</p>
+                                        <p>Email : {{this.user.email}}</p>
+                                        <p>Lifetime Earnings : S${{this.user.total_balance}}</p>
+                                        <p>Withdrawals : S${{this.user.withdrawn_amount}}</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" S class="light-btn" data-bs-dismiss="modal">Back</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    {{#if this.authorization_by}}
+                    <td>{{this.authorizee_id}} | {{this.authorization_by}}</td>
+                    {{else}}
+                    <td>-</td>
+                    {{/if}}
+                    <td>S${{this.withdrawal_amount}}</td>
+                    <td>
+                        <button type="button" class="blue-btn-full withdrawal-stat-btn" data-bs-toggle="modal"
+                            data-bs-target="#myModal_{{this.id}}">
+                            {{this.status}}
+                        </button>
+                        <div class="modal " id="myModal_{{this.id}}">
+                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                <div class="modal-content">
+
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Order Status</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+
+                                    <div class="modal-body d-flex justify-content-between">
+                                        <button type="button" data-bs-id="{{this.id}}"
+                                            class="light-btn-25 statusbtn flex-fill m-2">Awaiting Authorization</button>
+                                        <button type="button" data-bs-id="{{this.id}}"
+                                            class="light-btn-25 statusbtn flex-fill m-2">Processing</button>
+                                        <button type="button" data-bs-id="{{this.id}}"
+                                            class="light-btn-25 statusbtn flex-fill m-2">Payout Received</button>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="light-btn" data-bs-dismiss="modal">Back</button>
+                                        <button type="button" class="green-btn-25 confirm">Save Changes</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
+<input type="hidden" id="message" value="">
+<input type="hidden" id="status" value="">
+<style>
+    .blue-full {
+        text-align: center;
+        width: 100%;
+        background: #2098ce;
+        font-weight: bold;
+        color: white;
+        border-radius: 25px;
+        padding: 10px 5px;
+        margin: 10px 5px;
+    }
+
+    .yellow-full {
+        text-align: center;
+        width: 100%;
+        background: #fdd626;
+        font-weight: bold;
+        color: white;
+        border-radius: 25px;
+        padding: 10px 5px;
+        margin: 10px 5px;
+    }
+
+    .green-full-confirmed {
+        text-align: center;
+        width: 100%;
+        background: #00be10;
+        font-weight: bold;
+        color: white;
+        border-radius: 25px;
+        padding: 10px 5px;
+        margin: 10px 5px;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        setTimeout(() => swalF(), 100);
+        const withdrawalTable = document.getElementById('withdrawal-table');
+        let withdrawaltable = new simpleDatatables.DataTable(withdrawalTable);
+        $('.statusbtn').click(function () {
+            data = {
+                id: $(this).attr('data-bs-id'),
+                status: $(this).text()
+            }
+
+            $('.statusbtn').removeClass("light-btn-25 blue-btn-25")
+            $('.statusbtn').not($(this)).addClass("light-btn-25")
+            $(this).addClass("blue-btn-25")
+        })
+        $(".confirm").click(function () {
+            $.ajax({
+                url: "/admin/withdrawal",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ id: data["id"], status: data["status"] }),
+                success: function (res) {
+                    if (res) {
+                        localStorage.setItem("status", res.status)
+                        localStorage.setItem("message", res.message)
+                    } else {
+                        localStorage.setItem("status", "")
+                        localStorage.setItem("message", "")
+                    }
+                }
+            })
+            var modal_var = "#myModal_" + data["id"]
+            $(modal_var).modal('hide')
+            setTimeout(() => reload(), 40);
+
+        });
+        recursive()
+    });
+
+    function swalF() {
+        var status = localStorage.getItem("status")
+        var message = localStorage.getItem("message").toString()
+        if (status != "" && message != "") {
+            Swal.fire({
+                icon: status,
+                title: 'Oops...',
+                text: message,
+            })
+            localStorage.setItem("status", "")
+            localStorage.setItem("message", "")
+        }
+    }
+
+    function changeColor() {
+        document.querySelectorAll('.withdrawal-stat-btn').forEach(button => {
+            if (button.innerText == "Processing") {
+                button.classList.remove("blue-full")
+                button.classList.add("yellow-full")
+            } else if (button.innerText == "Payout Received") {
+                button.classList.remove("blue-full")
+                button.classList.add("green-full-confirmed")
+            }
+        })
+    }
+    function recursive() {
+        $('.statusbtn').click(function () {
+            data = {
+                id: $(this).attr('data-bs-id'),
+                status: $(this).text()
+            }
+
+            $('.statusbtn').removeClass("light-btn-25 blue-btn-25")
+            $('.statusbtn').not($(this)).addClass("light-btn-25")
+            $(this).addClass("blue-btn-25")
+        })
+        changeColor()
+        setTimeout(() => recursive(), 400);
+    }
+    function reload() {
+        document.location.reload()
+    }
+</script>

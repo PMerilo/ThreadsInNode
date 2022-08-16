@@ -5,6 +5,7 @@ const flashMessage = require('../views/helpers/messenger');
 const sequelizeUser = require("../config/DBConfig");
 const { serializeUser } = require('passport');
 const { Op, where } = require('sequelize');
+const XLSX = require("xlsx");
 const User = require("../models/User");
 const Ticket = require('../models/Ticket');
 const Feedback = require('../models/Feedback');
@@ -50,6 +51,7 @@ const OrderItems = require('../models/OrderItems');
 const Chat = require('../models/Chat');
 const ChatUser = require('../models/ChatUser');
 const Msg = require('../models/Msg');
+const Withdrawal = require('../models/Withdrawal');
 
 router.all('/*', ensureAdminAuthenticated, function (req, res, next) {
     req.app.locals.layout = 'admin'; // set your layout here
@@ -1071,7 +1073,12 @@ router.get('/editVoucher/:id', ensureAuthenticated, async (req, res) => {
 })
 
 router.get('/revenue', ensureAuthenticated, async (req, res) => {
-    const orders = (await OrderItems.findAll({ include: Order }))
+    const orders = (await OrderItems.findAll({
+        include: Order, order: [
+            ['createdAt', 'DESC'],
+            ['product_name', 'ASC'],
+        ]
+    }))
     const sales = (await Order.sum('orderTotal')).toFixed(2)
 
     var sellerRevenue = 0
@@ -1130,9 +1137,40 @@ router.get('/livechat/:id', async (req, res) => {
     res.render("admin/livechat")
 });
 
+router.get('/withdrawal', async (req, res) => {
+    var withdrawals = await Withdrawal.findAll({
+        include: User, order: [
+            ['createdAt', 'DESC'],
+            ['withdrawal_amount', 'DESC'],
+        ]
+    })
+    res.render("admin/withdrawals", { withdrawals })
+});
 
-
-
+router.post('/withdrawal', async (req, res) => {
+    var withdrawal = await Withdrawal.findOne({ where: { id: req.body.id } })
+    var user = await User.findByPk(withdrawal.sellerID)
+    if (withdrawal.status == "Payout Received" && req.body.status != "Payout Received" || withdrawal.status == "Processing" && req.body.status == "Awaiting Authorization") {
+        res.send({ message: "Cannot change status of payout is being processed/after its been received", status: "error" })
+    } else if (req.body.status == "Processing") {
+        await Withdrawal.update({ status: req.body.status, authorization_by: req.user.name, authorizee_id: req.user.id }, {
+            where: {
+                id: req.body.id
+            }
+        })
+        await User.update({total_balance: user.total_balance - parseInt(withdrawal.withdrawal_amount), withdrawn_amount: user.withdrawn_amount + parseInt(withdrawal.withdrawal_amount)},{where : {id: withdrawal.sellerID}})
+    } else if (req.body.status == "Payout Received") {
+        if (req.user.id == withdrawal.authorizee_id) {
+            await Withdrawal.update({ status: req.body.status, authorization_by: req.user.name, authorizee_id: req.user.id }, {
+                where: {
+                    id: req.body.id
+                }
+            })
+        } else {
+            res.send({ message: "Only the Admin that authorized the payout can complete it", status: "error" })
+        }
+    }
+});
 
 module.exports = router;
 

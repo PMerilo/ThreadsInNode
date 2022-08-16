@@ -180,6 +180,22 @@
 .light-btn:focus {
     box-shadow: 0 0 0 2px white, 0 0 0 3px #aCbEd0;
 }
+.light-btn-full {
+    min-width: 100%;
+    background: #aCbEd0;
+    font-weight: bold;
+    color: white;
+    border: 0 none;
+    border-radius: 25px;
+    cursor: pointer;
+    padding: 10px 5px;
+    margin: 10px 5px;
+}
+
+.light-btn-full:hover,
+.light-btn-full:focus {
+    box-shadow: 0 0 0 2px white, 0 0 0 3px #aCbEd0;
+}
 .light-btn-25 {
     background: #b3d9ff;
     font-weight: bold;

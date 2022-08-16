@@ -35,6 +35,7 @@
     "install": "^0.13.0",
     "jspdf": "^2.5.1",
     "jquery-validation": "^1.19.5",
+    "jsontoxml": "^1.0.1",
     "kit": "^0.1.2",
     "luhn-js": "^1.1.2",
     "moment": "^2.29.4",
@@ -58,6 +59,7 @@
     "stripe": "^9.16.0",
     "stripe-cli": "^0.1.0",
     "toast-me": "^1.4.8",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "xlsx": "^0.18.5"
   }
 }

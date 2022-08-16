@@ -89,12 +89,12 @@ class User extends sequelize.Model {
         defaultValue: "F",
       },
       total_balance: {
-        type: sequelize.DataTypes.INTEGER,
+        type: sequelize.DataTypes.FLOAT,
         allowNull: false,
         defaultValue: 0,
       },
       withdrawn_amount: {
-        type: sequelize.DataTypes.INTEGER,
+        type: sequelize.DataTypes.FLOAT,
         allowNull: false,
         defaultValue: 0,
       },

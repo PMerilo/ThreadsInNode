@@ -237,7 +237,7 @@ router.post('/wishlist', ensureAuthenticated, async (req, res) => {
     var status = req.body.status
     checkProductinWishlist = await Wishlist.findOne({ where: { id: req.user.id + sku } })
     product = await Product.findOne({ where: { sku: sku } })
-    
+
     if (status == "check") {
         if (checkProductinWishlist) {
             res.send({ response: "add", status: "check" })
@@ -250,9 +250,11 @@ router.post('/wishlist', ensureAuthenticated, async (req, res) => {
 
         try {
             if (checkProductinWishlist) {
-                Wishlist.destroy({ where: { id: req.user.id + sku } })
+                await Wishlist.destroy({ where: { id: req.user.id + sku } })
                 var newwishlistcount = product.wishlistcount - 1
-                Product.update({ wishlistcount: newwishlistcount }, { where: { sku: sku } })
+                console.log(newwishlistcount)
+                console.log(product.wishlistcount)
+                await Product.update({ wishlistcount: newwishlistcount }, { where: { sku: sku } })
                 console.log('Item removed')
                 res.send({ response: "remove", status: "add/remove" })
             } else {
@@ -264,7 +266,9 @@ router.post('/wishlist', ensureAuthenticated, async (req, res) => {
                     productSku: sku
                 });
                 var newwishlistcount = product.wishlistcount + 1
-                Product.update({ wishlistcount: newwishlistcount }, { where: { sku: sku } })
+                console.log(newwishlistcount)
+                console.log(product.wishlistcount)
+                await Product.update({ wishlistcount: newwishlistcount }, { where: { sku: sku } })
                 console.log('Item added')
                 res.send({ response: "add", status: "add/remove" })
             }
@@ -279,11 +283,9 @@ router.post('/wishlist', ensureAuthenticated, async (req, res) => {
 const fulfillOrder = async (session) => {
     // let io = req.app.get("io")
     var id = session.metadata.userId
-    var shipping_rate = session.total_details.amount_shipping
+    var shipping_rate = parseInt(session.total_details.amount_shipping)
+    console.log(shipping_rate)
     var shipping_type = "Free Shipping";
-    if (shipping_rate == 1000) {
-        shipping_type = "Express Shipping"
-    }
 
     var cartproducts = await Cart.findOne({ where: { id: id }, include: { model: Product } })
 
@@ -303,16 +305,27 @@ const fulfillOrder = async (session) => {
 
     // console.log(JSON.stringify(cartproducts))
     cartproducts.products.forEach(async element => {
-        OrderItems.create({
+
+        if (shipping_rate == 1000) {
+            shipping_type = "Express Shipping"
+            shipping_rate = parseInt(shipping_rate / 100)
+        }
+        var seller = await User.findByPk(parseInt(element.OwnerID))
+        var total_bal = seller.total_balance
+        var total_balance = ((((element.cartproduct.qtyPurchased * element.price)) * 0.83) + (shipping_rate)).toFixed(2)
+        console.log(total_bal)
+        console.log(total_balance)
+        console.log(shipping_rate)
+        await OrderItems.create({
             orderId: order.id,
             productSku: element.sku,
             qtyPurchased: element.cartproduct.qtyPurchased,
             product_name: element.name,
             product_price: element.price,
-            shipping_rate: shipping_rate / 100,
+            shipping_rate: shipping_rate,
             shipping_type: shipping_type,
-            seller_cut: (((element.cartproduct.qtyPurchased * element.price)+ shipping_rate) * 0.83).toFixed(2),
-            tit_cut : ((element.cartproduct.qtyPurchased * element.price) * 0.17).toFixed(2),
+            seller_cut: ((((element.cartproduct.qtyPurchased * element.price)) * 0.83) + (shipping_rate)).toFixed(2),
+            tit_cut: ((element.cartproduct.qtyPurchased * element.price) * 0.17).toFixed(2),
             seller_name: element.Owner,
             seller_id: element.OwnerID,
             orderStatus: "Processing",
@@ -333,21 +346,20 @@ const fulfillOrder = async (session) => {
         // var sold = element.sold + element.cartproduct.qtyPurchased
         // var sales = element.sales + (element.cartproduct.qtyPurchased*element.price)
         // var qty = element.quantity - element.cartproduct.qtyPurchased
-        Product.update({ quantity: element.quantity - element.cartproduct.qtyPurchased, sold: element.sold + element.cartproduct.qtyPurchased, sales: element.sales + (element.cartproduct.qtyPurchased * element.price) }, { where: { sku: element.sku } })
+        await User.increment({ total_balance: total_balance }, { where: { id: element.OwnerID } })
+        await Product.update({ quantity: element.quantity - element.cartproduct.qtyPurchased, sold: element.sold + element.cartproduct.qtyPurchased, sales: element.sales + (element.cartproduct.qtyPurchased * element.price) }, { where: { sku: element.sku } })
     });
     var discountcode = await Reward.findOne({ where: { voucher_code: cartproducts.discountcodeused } })
     var user = await User.findByPk(id)
     User.update({ spools: user.spools + order.orderTotal }, { where: { id: id } })
     if (discountcode) {
-        User.update({ spools: user.spools - discountcode.spools_needed }, { where: { id: id } })
-        Reward.update({ quantity: discountcode.quantity - 1 }, { where: { voucher_code: cartproducts.discountcodeused } })
+        await User.update({ spools: user.spools - discountcode.spools_needed }, { where: { id: id } })
+        await Reward.update({ quantity: discountcode.quantity - 1 }, { where: { voucher_code: cartproducts.discountcodeused } })
     }
     await Cart.destroy({ where: { id: id } })
     console.log("Order created")
     // console.log("Fulfilling order", session);
 };
-
-
 
 
 router.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (req, res) => {
@@ -362,11 +374,13 @@ router.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (req
 
     if (event.type === 'checkout.session.completed') {
         const session = event.data.object;
-        fulfillOrder(session)
+        if (session.metadata.request_type == "Checkout_Payment") {
+            fulfillOrder(session)
+        }
     }
-
     res.status(200);
 });
+
 
 router.post('/checkout', ensureAuthenticated, async (req, res) => {
     var cartproducts = await Cart.findOne({ where: { id: req.user.id }, include: { model: Product } })
@@ -442,7 +456,8 @@ router.post('/checkout', ensureAuthenticated, async (req, res) => {
                 unit_number: `${req.body.unit_number}`,
                 postal_code: `${req.body.postal_code}`,
                 email: `${req.body.email}`,
-                phone_number: `${req.body.phone}`
+                phone_number: `${req.body.phone}`,
+                request_type : "Checkout_Payment"
             },
             success_url: `http://localhost:5000/checkout/success`,
             cancel_url: `http://localhost:5000/checkout`,
@@ -483,9 +498,9 @@ router.post("/submitProductReview", ensureAuthenticated, async (req, res) => {
         sellerId: product.OwnerID,
     })
 
-    await Product.update({stars_given: product.stars_given + parseInt(req.body.star),reviews_given:product.reviews_given + 1}, {where: {sku: req.body.sku}})
+    await Product.update({ stars_given: product.stars_given + parseInt(req.body.star), reviews_given: product.reviews_given + 1 }, { where: { sku: req.body.sku } })
 
-    await OrderItems.update({review: 1}, {where:{id:req.body.id}})
+    await OrderItems.update({ review: 1 }, { where: { id: req.body.id } })
 
     res.redirect(`/`)
 })
@@ -495,27 +510,27 @@ router.post("/reviewUpdate", ensureAuthenticated, async (req, res) => {
     var product = await Product.findByPk(sku)
     var starsAvg = product.stars_given / product.reviews_given
     var roundedAvg = Math.round(starsAvg / 0.5) * 0.5
-    var fivecount = await Review.count({where: {stars: 5, productSku: sku}})
-    var fourcount = await Review.count({where: {stars: 4, productSku: sku}})
-    var threecount = await Review.count({where: {stars: 3, productSku: sku}})
-    var twocount = await Review.count({where: {stars: 2, productSku: sku}})
-    var onecount = await Review.count({where: {stars: 1, productSku: sku}})
+    var fivecount = await Review.count({ where: { stars: 5, productSku: sku } })
+    var fourcount = await Review.count({ where: { stars: 4, productSku: sku } })
+    var threecount = await Review.count({ where: { stars: 3, productSku: sku } })
+    var twocount = await Review.count({ where: { stars: 2, productSku: sku } })
+    var onecount = await Review.count({ where: { stars: 1, productSku: sku } })
     if (req.body.status == "details") {
-        res.send({starAvg: starsAvg, roundedAvg: roundedAvg,one:onecount,two:twocount,three:threecount,four:fourcount,five:fivecount})
-    } else if(req.body.status == "modal") {
-        res.send({starAvg: starsAvg, roundedAvg: roundedAvg})
+        res.send({ starAvg: starsAvg, roundedAvg: roundedAvg, one: onecount, two: twocount, three: threecount, four: fourcount, five: fivecount })
+    } else if (req.body.status == "modal") {
+        res.send({ starAvg: starsAvg, roundedAvg: roundedAvg })
     }
 })
 
 
 router.get('/reviews/:sku', ensureAuthenticated, async (req, res) => {
     var sku = req.params.sku
-    var reviews = await Review.findAll({where: {productSku: sku}, include: { model: User}})
+    var reviews = await Review.findAll({ where: { productSku: sku }, include: { model: User } })
     var product = await Product.findByPk(sku)
     var starsAvg = product.stars_given / product.reviews_given
     starsAvg = starsAvg.toFixed(2)
     var roundedAvg = Math.round(starsAvg / 0.5) * 0.5
-    res.render("reviews.handlebars", {reviews, product, starsAvg, roundedAvg})
+    res.render("reviews.handlebars", { reviews, product, starsAvg, roundedAvg })
 })
 
 router.get('/RewardsPage', (req, res) => {
@@ -644,10 +659,12 @@ router.get('/changePassword', ensureAuthenticated, (req, res) => {
 })
 
 router.get('/myOrders', ensureAuthenticated, async (req, res) => {
-    orders = (await Order.findAll({ where: { orderOwnerID: req.user.id } , order : [
-        ['createdAt', 'DESC'],
-        ['id','ASC']
-    ]}))
+    orders = (await Order.findAll({
+        where: { orderOwnerID: req.user.id }, order: [
+            ['createdAt', 'DESC'],
+            ['id', 'ASC']
+        ]
+    }))
     res.render("pastOrder.handlebars", { orders })
 })
 
@@ -664,10 +681,12 @@ router.get('/cart', ensureAuthenticated, async (req, res) => {
 })
 
 router.get('/wishlist', ensureAuthenticated, async (req, res) => {
-    wishlistproducts = (await Wishlist.findAll({ where: { OwnerID: req.user.id }, include: Product, order : [
-        ['createdAt', 'DESC'],
-        ['id','ASC']
-    ]}))
+    wishlistproducts = (await Wishlist.findAll({
+        where: { OwnerID: req.user.id }, include: Product, order: [
+            ['createdAt', 'DESC'],
+            ['id', 'ASC']
+        ]
+    }))
     res.render("wishlist.handlebars", { wishlistproducts })
 })
 
@@ -793,8 +812,8 @@ router.get('/livechat/generate', async (req, res) => {
     let chatId;
     while (true) {
         chatId = Nanoid.nanoid()
-        let chat = await Chat.findOne({ where: { liveId: chatId, livechat: true }})
-        if (chat === null){
+        let chat = await Chat.findOne({ where: { liveId: chatId, livechat: true } })
+        if (chat === null) {
             break
         }
     }
@@ -918,7 +937,7 @@ router.post('/upload', ensureAuthenticated, (req, res) => {
         } else {
             res.json({ file: `/uploads/${req.user.id}/${req.file.filename}` });
             img = "/uploads/" + req.user.id + "/" + req.file.filename
-            User.update({profilepic: img},{where: {id:req.user.id}})
+            User.update({ profilepic: img }, { where: { id: req.user.id } })
         }
     });
 });
@@ -997,7 +1016,7 @@ router.post('/ticketHistory/editTicket', async (req, res) => {
 })
 
 router.get('/discover', async (req, res) => {
-    vouchers = await Reward.findAll({where : { expiry_date: {[Op.gte] : moment(new Date()).format("YYYY-MM-DD")}}})
+    vouchers = await Reward.findAll({ where: { expiry_date: { [Op.gte]: moment(new Date()).format("YYYY-MM-DD") } } })
     res.render('rewards/discover', { vouchers });
 });
 

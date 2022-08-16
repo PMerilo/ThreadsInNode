@@ -115,7 +115,11 @@
                       <span class="review-star bx bx-star"></span>
                       <span class="review-star bx bx-star"></span>
                       <span class="review-star bx bx-star"></span>
+                      {{#if this.reviews_given}}
                       <p class="totalreviews">{{this.reviews_given}} Review/s</p>
+                      {{else}}
+                      <p class="totalreviews">0 Review</p>
+                      {{/if}}
                     </div>
                   </div>
 

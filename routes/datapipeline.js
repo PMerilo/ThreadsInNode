@@ -478,13 +478,12 @@ router.get('/salesPerDay/:id', async (req, res) => {
   let cols = ["Dates", "Sales"];
 
   sales.forEach(element => {
-    let rawData = [moment(element.createdAt).format("DD/MM/YYYY"), (element.product_price * element.qtyPurchased)];
+    let rawData = [moment(element.createdAt).format("DD/MM/YYYY"), element.seller_cut];
     data.push(rawData)
   });
 
   df = new dfd.DataFrame(data, { columns: ["Dates", "Sales"] })
   group_df = df.groupby(["Dates"]).sum()
-  console.log(group_df)
   const df2 = dfd.toJSON(group_df, { format: "json" })
   res.status(200).json({ 'data': df2 })
 });
@@ -504,7 +503,6 @@ router.get('/totalSalesPerDay', async (req, res) => {
 
   df = new dfd.DataFrame(data, { columns: ["Dates", "Sales"] })
   group_df = df.groupby(["Dates"]).sum()
-  console.log(group_df)
   const df2 = dfd.toJSON(group_df, { format: "json" })
   res.status(200).json({ 'data': df2 })
 });
@@ -519,7 +517,6 @@ router.get('/myProduct/:id', async (req, res) => {
     let rawData = [element.name, element.sales, element.sold];
     data.push(rawData)
   });
-  console.log(data)
 
   df = new dfd.DataFrame(data, { columns: ["Name", "Sales", "Sold"] })
   const df2 = dfd.toJSON(df, { format: "json" })
@@ -536,7 +533,6 @@ router.get('/myProductWishlist/:id', async (req, res) => {
     let rawData = [element.name, element.wishlistcount];
     data.push(rawData)
   });
-  console.log(data)
 
   df = new dfd.DataFrame(data, { columns: ["Name", "Wishlistcount"] })
   const df2 = dfd.toJSON(df, { format: "json" })
@@ -562,14 +558,17 @@ router.post('/storestats', async (req, res) => {
   const sellers = await OrderItems.findAll({ where: { seller_id: req.body.id }});
   const customers = await OrderItems.count({where : {seller_id : req.body.id}})
   const orders = await OrderItems.count({where : {seller_id : req.body.id}, distinct: true})
+  var user = await User.findByPk(req.user.id)
+  var balance = (user.total_balance).toFixed(2)
+  var bankacc = user.bankAccount
   
   var sellerRevenue = 0
   sellers.forEach(element => {
-    let data = ((element.product_price * element.qtyPurchased) + element.shipping_rate)
+    let data = element.seller_cut
     sellerRevenue += data
   });
-  const revenue = ((sellerRevenue / 100) * 83).toFixed(2)
-  res.send({revenue : revenue, orders: orders, customers : customers})
+  sellerRevenue = sellerRevenue.toFixed(2)
+  res.send({revenue : sellerRevenue, orders: orders, customers : customers, balance:balance,bank:bankacc})
 });
 module.exports = router;
 
