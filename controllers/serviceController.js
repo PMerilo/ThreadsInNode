@@ -83,10 +83,10 @@ const requestStatus = async (req, res, next) => {
         userColor = 'yellow'
         adminColor = 'yellow'
     } else if (req.body.status == 'Finished Request') {
-        status = 'Request is completed! Please select a delivery method'
+        status = 'Request is completed! Ready for pickup'
         
-        adminstatus = 'Request completed! Awaiting delivery method'
-        userColor = 'yellow'
+        adminstatus = 'Request completed! Ready for pickup!'
+        userColor = 'green'
         adminColor = 'green'
     } else if (req.body.status ==  "In Progress") {
         status = 'Request in progress'

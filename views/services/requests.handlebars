@@ -148,7 +148,6 @@
               <th data-field="id" data-visible="false">Id</th>
               <th data-field="date">Date</th>
               <th data-field="time">Time</th>
-              <th data-field="type">Type</th>
               <th data-width="150" data-field="operate" data-formatter="operateFormatter" data-events="operateEvents"
                 class="text-center">
                 Edit | Delete
@@ -165,10 +164,7 @@
       </div>
       <div class="my-auto">
         {{#equals status 'Request is completed! Please select a delivery method'}}
-        <button class="btn btn-primary delivery" style="width: 80px;" data-bs-toggle="modal" data-bs-target="#deliverModal"
-          title="Deliver" data-bs-id="{{id}}">
-          <i class="bi bi-truck"></i>
-        </button>
+        
         {{else}}
         {{#if chatId}}
         <button class="btn btn-success chat" style="width: 80px;" data-bs-toggle="modal" data-bs-target="#chatModal"

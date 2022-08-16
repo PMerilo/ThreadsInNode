@@ -145,7 +145,7 @@ You have no requests
       {{adminstatus}}
     </div>
     <div class="my-auto">
-      {{#ne status 'Request is completed! Please select a delivery method'}}
+      {{#ne status 'Request is completed! Ready for pickup'}}
       {{#if chatId}}
       <a class="btn btn-success chat" style="width: 80px;" href="/admin/requests/chat/{{chatId}}">
         <i class="bi bi-envelope"></i>
@@ -191,7 +191,7 @@ You have no requests
             <button type="button" class="btn btn-primary statusbtn" value="Request Fitting Appointment">Request Fitting
               Appointment</button>
           </div>
-          <div class="flex-fill d-grid mx-2" style="display: none">
+          <div class="flex-fill d-grid mx-2">
             <button type="button" class="btn btn-primary statusbtn" value="Finished Request">Finished Request</button>
           </div>
 
