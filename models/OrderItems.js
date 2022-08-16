@@ -11,7 +11,7 @@ OrderItems.init({
         product_name:{ type: sequelize.STRING},
         product_price:{ type: sequelize.INTEGER},
         shipping_type:{type: sequelize.STRING},
-        shipping_rate:{type: sequelize.INTEGER},
+        shipping_rate:{type: sequelize.FLOAT},
         seller_name: { type: sequelize.STRING},
         seller_id: { type: sequelize.INTEGER},
         orderStatus:{type: sequelize.STRING},

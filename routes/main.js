@@ -52,6 +52,7 @@ const Notification = require('../models/Notification');
 const UserNotification = require('../models/UserNotifications');
 const Tailor = require('../models/Tailor');
 const Chat = require('../models/Chat');
+const mail = require('../config/NewMailConfig')
 
 // for forgetpassword
 otp = 'placeholder'
@@ -67,63 +68,63 @@ emailvariable = 'placeholder'
 
 router.get('/', async (req, res) => {
     let noProduct;
-    var products = await Product.findAll({where : { quantity: {[Op.gte] : 1}}})
-    if(await Product.count() == 0){
+    var products = await Product.findAll({ where: { quantity: { [Op.gte]: 1 } } })
+    if (await Product.count() == 0) {
         noProduct = true;
     }
 
-    var top10Products = await Product.findAll({ limit:10 , order : [['sold', 'DESC'], ['sales', 'DESC']],where : { quantity: {[Op.gte] : 1}}})
+    var top10Products = await Product.findAll({ limit: 10, order: [['sold', 'DESC'], ['sales', 'DESC']], where: { quantity: { [Op.gte]: 1 } } })
     const io = req.app.get('io')
     io.emit('test', 'from main')
     res.render("index", { products, top10Products, noProduct })
 })
 
-router.get('/searchedItem=:string', async (req,res) =>{
+router.get('/searchedItem=:string', async (req, res) => {
     let noProduct;
     let sort = req.params.sort;
     Allproducts = (await Product.findAll())
     products = []
-    for(let i = 0; i < Allproducts.length; i++){
-        if(Allproducts[i].dataValues.name.includes(req.params.string)){
+    for (let i = 0; i < Allproducts.length; i++) {
+        if (Allproducts[i].dataValues.name.includes(req.params.string)) {
             products.push(Allproducts[i].dataValues)
         }
-    }   
-    
-    
-    
-    res.render("index",{products})
-})
-
-router.get('/category=:string', async (req,res) =>{
-    let products = (await Product.findAll({where:{category:req.params.string}})).map((x)=> x.dataValues)
-    
-    
-    res.render("index",{products})
-})
-
-router.get('/sort=:sort', async (req,res) =>{
-    let sort = req.params.sort;
-    if(sort == "allTypes"){
-        products = (await Product.findAll()).map((x)=> x.dataValues)
-    }else if(sort == "Alphabetically"){
-        products = (await Product.findAll({order: [['name', 'ASC']]})).map((x)=> x.dataValues)
-    }else if(sort == "Price"){
-        products = (await Product.findAll({order: [['price', 'ASC']]})).map((x)=> x.dataValues)
-    }else if(sort == "MostPopular"){
-        products = (await Product.findAll({order: [['wishlistcount', 'DESC']]})).map((x)=> x.dataValues)
     }
-     
-    res.render("index",{products})
+
+
+
+    res.render("index", { products })
+})
+
+router.get('/category=:string', async (req, res) => {
+    let products = (await Product.findAll({ where: { category: req.params.string } })).map((x) => x.dataValues)
+
+
+    res.render("index", { products })
+})
+
+router.get('/sort=:sort', async (req, res) => {
+    let sort = req.params.sort;
+    if (sort == "allTypes") {
+        products = (await Product.findAll()).map((x) => x.dataValues)
+    } else if (sort == "Alphabetically") {
+        products = (await Product.findAll({ order: [['name', 'ASC']] })).map((x) => x.dataValues)
+    } else if (sort == "Price") {
+        products = (await Product.findAll({ order: [['price', 'ASC']] })).map((x) => x.dataValues)
+    } else if (sort == "MostPopular") {
+        products = (await Product.findAll({ order: [['wishlistcount', 'DESC']] })).map((x) => x.dataValues)
+    }
+
+    res.render("index", { products })
 })
 
 
 
-router.post('/search', async (req,res) =>{
-    
-    
+router.post('/search', async (req, res) => {
+
+
     let search = req.body.search;
-    
-    res.redirect("/searchedItem="+search)
+
+    res.redirect("/searchedItem=" + search)
 })
 
 router.post('/addtoCart', ensureAuthenticated, async (req, res) => {
@@ -306,9 +307,11 @@ const fulfillOrder = async (session) => {
     // console.log(JSON.stringify(cartproducts))
     cartproducts.products.forEach(async element => {
 
-        if (shipping_rate == 1000) {
+        if (shipping_rate != 0) {
             shipping_type = "Express Shipping"
-            shipping_rate = parseInt(shipping_rate / 100)
+            shipping_rate = 1.99
+        } else {
+            shipping_rate = 0
         }
         var seller = await User.findByPk(parseInt(element.OwnerID))
         var total_bal = seller.total_balance
@@ -332,7 +335,7 @@ const fulfillOrder = async (session) => {
             posterURL: element.posterURL,
             review: 0
         })
-        shipping_rate = 0
+        // shipping_rate = 0
         // var payload = {title : "New Order Placed",body: "body",url: "",senderId: "",recipient: `${element.OwnerID}`}
         // let user = await User.findByPk(element.OwnerID)
         // let notification = await Notification.create({
@@ -385,6 +388,7 @@ router.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (req
 router.post('/checkout', ensureAuthenticated, async (req, res) => {
     var cartproducts = await Cart.findOne({ where: { id: req.user.id }, include: { model: Product } })
     var couponused = await Reward.findOne({ where: { voucher_code: cartproducts.discountcodeused } })
+    var shipping = cartproducts.products.length * 199
     var delimiter = 100
     if (couponused) {
         delimiter = 100 - couponused.discount_amount
@@ -419,7 +423,7 @@ router.post('/checkout', ensureAuthenticated, async (req, res) => {
                     shipping_rate_data: {
                         type: 'fixed_amount',
                         fixed_amount: {
-                            amount: 1000,
+                            amount: shipping,
                             currency: 'sgd',
                         },
                         display_name: 'Express Shipping',
@@ -457,7 +461,8 @@ router.post('/checkout', ensureAuthenticated, async (req, res) => {
                 postal_code: `${req.body.postal_code}`,
                 email: `${req.body.email}`,
                 phone_number: `${req.body.phone}`,
-                request_type : "Checkout_Payment"
+                ship : "199",
+                request_type: "Checkout_Payment"
             },
             success_url: `http://localhost:5000/checkout/success`,
             cancel_url: `http://localhost:5000/checkout`,
@@ -468,6 +473,88 @@ router.post('/checkout', ensureAuthenticated, async (req, res) => {
         res.status(500).json({ error: e.message })
     }
 })
+
+router.post('/tailorCheckout', ensureAuthenticated, async (req, res) => {
+    let { reqId } = req.body
+    var request = await Request.findByPk(reqId, { include: [RequestItems, "user"] })
+    // try {
+    //     const session = await stripe.checkout.sessions.create({
+    //         payment_method_types: ["card"],
+    //         mode: "payment",
+    //         shipping_address_collection: {
+    //             allowed_countries: ['SG'],
+    //         },
+    //         shipping_options: [
+    //             {
+    //                 shipping_rate_data: {
+    //                     type: 'fixed_amount',
+    //                     fixed_amount: {
+    //                         amount: 0,
+    //                         currency: 'sgd',
+    //                     },
+    //                     display_name: 'Free shipping',
+    //                     delivery_estimate: {
+    //                         minimum: {
+    //                             unit: 'business_day',
+    //                             value: 7,
+    //                         },
+    //                         maximum: {
+    //                             unit: 'business_day',
+    //                             value: 9,
+    //                         },
+    //                     }
+    //                 }
+    //             },
+    //             {
+    //                 shipping_rate_data: {
+    //                     type: 'fixed_amount',
+    //                     fixed_amount: {
+    //                         amount: 1000,
+    //                         currency: 'sgd',
+    //                     },
+    //                     display_name: 'Express Shipping',
+    //                     delivery_estimate: {
+    //                         minimum: {
+    //                             unit: 'business_day',
+    //                             value: 2,
+    //                         },
+    //                         maximum: {
+    //                             unit: 'business_day',
+    //                             value: 3,
+    //                         },
+    //                     }
+    //                 }
+    //             },
+    //         ],
+    //         line_items: cartproducts.products.map(item => {
+    //             return {
+    //                 price_data: {
+    //                     currency: "sgd",
+    //                     product_data: {
+    //                         name: item.name,
+    //                     },
+    //                     unit_amount: item.price * delimiter,
+    //                 },
+    //                 quantity: item.cartproduct.qtyPurchased,
+    //             }
+    //         }),
+    //         metadata: {
+    //             userId: `${req.user.id}`,
+    //             orderOwnerName: `${req.body.fname}`,
+    //             email: `${req.body.email}`,
+    //             phone_number: `${req.body.phone}`,
+    //             request_type: "Tailoring_Payment"
+    //         },
+    //         success_url: `http://localhost:5000/checkout/success`,
+    //         cancel_url: `http://localhost:5000/checkout`,
+    //     })
+    //     res.json({ url: session.url })
+    // } catch (e) {
+    //     console.log(e.message)
+    //     res.status(500).json({ error: e.message })
+    // }
+})
+
 router.post('/checkoutsave', ensureAuthenticated, async (req, res) => {
     var subtotal = req.body.subtotal
     var discountcode = req.body.discount_code
@@ -723,20 +810,20 @@ router.get('/multistep', (req, res) => {
 })
 
 
-router.get('/messages',ensureAuthenticated, async function (req,res){
-    message = (await Message.findAll({where: {ownerID:req.user.id}}))
-    currentMessageCount = await Message.count({where: {ownerID:req.user.id}})
-    User.update({MessagesCount:currentMessageCount}, {where:{id:req.user.id}})
+router.get('/messages', ensureAuthenticated, async function (req, res) {
+    message = (await Message.findAll({ where: { ownerID: req.user.id } }))
+    currentMessageCount = await Message.count({ where: { ownerID: req.user.id } })
+    User.update({ MessagesCount: currentMessageCount }, { where: { id: req.user.id } })
     console.log(currentMessageCount)
-    res.render("messages.handlebars",{message})
+    res.render("messages.handlebars", { message })
 })
 
-router.get('/deletemessages',ensureAuthenticated, async function (req,res){
-    message = (await Message.findAll({where: {ownerID:req.user.id}}))
-    currentMessageCount = await Message.count({where: {ownerID:req.user.id}})
-    User.update({MessagesCount:currentMessageCount}, {where:{id:req.user.id}})
+router.get('/deletemessages', ensureAuthenticated, async function (req, res) {
+    message = (await Message.findAll({ where: { ownerID: req.user.id } }))
+    currentMessageCount = await Message.count({ where: { ownerID: req.user.id } })
+    User.update({ MessagesCount: currentMessageCount }, { where: { id: req.user.id } })
     console.log(currentMessageCount)
-    res.render("deleteMessages.handlebars",{message})
+    res.render("deleteMessages.handlebars", { message })
 })
 
 router.post('/deletemessages', ensureAuthenticated, async function (req, res) {
@@ -745,11 +832,11 @@ router.post('/deletemessages', ensureAuthenticated, async function (req, res) {
         deletedMessage = req.body.messageID
         Message.destroy({ where: { id: messageID } })
         flashMessage(res, 'success', "Message Deleted");
-        currentMessageCount = await Message.count({where: {ownerID:req.user.id}})
+        currentMessageCount = await Message.count({ where: { ownerID: req.user.id } })
         console.log(currentMessageCount)
         console.log("Check deleted count here")
-        User.update({MessagesCount:currentMessageCount-1}, {where:{id:req.user.id}})
-    }else{
+        User.update({ MessagesCount: currentMessageCount - 1 }, { where: { id: req.user.id } })
+    } else {
         flashMessage(res, 'danger', "Please Select a Message to Delete");
     }
 
@@ -868,26 +955,26 @@ router.post('/addComment', ensureAuthenticated, async function (req, res) {
     }
 })
 
-router.get('/Survey',ensureAuthenticated ,async (req,res) => {
+router.get('/Survey', ensureAuthenticated, async (req, res) => {
 
     res.render("Survey")
 })
 
-router.post('/Survey',ensureAuthenticated ,async (req,res) => {
-    let {age,occupation,recommend,features,design,customerSupport,userCustomisation} = req.body;
-    if(features==undefined){
+router.post('/Survey', ensureAuthenticated, async (req, res) => {
+    let { age, occupation, recommend, features, design, customerSupport, userCustomisation } = req.body;
+    if (features == undefined) {
         features = 0
     }
-    if(design==undefined){
+    if (design == undefined) {
         design = 0
     }
-    if(customerSupport==undefined){
+    if (customerSupport == undefined) {
         customerSupport = 0
     }
-    if(userCustomisation==undefined){
+    if (userCustomisation == undefined) {
         userCustomisation = 0
     }
-    
+
 
     await Survey.create({
         age: age,
@@ -898,15 +985,15 @@ router.post('/Survey',ensureAuthenticated ,async (req,res) => {
         customerSupport: customerSupport,
         userCustomisation: userCustomisation,
     })
-    flashMessage(res,"success",'Survey Submitted Successfully. Thanks for your feedback.');
+    flashMessage(res, "success", 'Survey Submitted Successfully. Thanks for your feedback.');
 
 
     res.redirect("/Survey")
 })
 
-router.post('/deleteComment', async (req,res) => { 
-    let{commentID} = req.body;
-    
+router.post('/deleteComment', async (req, res) => {
+    let { commentID } = req.body;
+
     deletedcomment = req.body.commentID
     FAQ.destroy({ where: { id: commentID } })
     flashMessage(res, 'success', "Comment Deleted Successfully!");
@@ -974,20 +1061,20 @@ router.post('/feedback', ensureAuthenticated, async function (req, res) {
             dateAdded: year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds,
             owner: req.user.name,
             ownerID: req.user.id
-  
-          });
-          flashMessage(res,"success",'Feedback Sent Successfully');
 
-          await CustomerSatisfactionLog.create({
+        });
+        flashMessage(res, "success", 'Feedback Sent Successfully');
+
+        await CustomerSatisfactionLog.create({
             date: moment().format('L'),
             rating: req.body.rating,
             description: req.body.description,
             remarks: req.body.remarks,
-          })
-          res.redirect("/feedback")
-    }catch(e){
-         console.log(e)
-         res.redirect("/feedback")
+        })
+        res.redirect("/feedback")
+    } catch (e) {
+        console.log(e)
+        res.redirect("/feedback")
     }
 })
 
@@ -1029,7 +1116,7 @@ router.post('/newsLetter', ensureAuthenticated, async (req, res) => {
     email = req.user.email
     console.log(email)
     link = "http://localhost:5000/newsLetter"
-    
+
     // Mail.send(res, {
     //     to: email,
     //     subject: "Threads in Times Subcription to News Letter",
@@ -1039,14 +1126,14 @@ router.post('/newsLetter', ensureAuthenticated, async (req, res) => {
     //     html:`<div class="page">
     //     <div class="container">
     //       <div class="email_header">
-            
+
     //         <img class="logo" src="https://raw.githubusercontent.com/PMerilo/ThreadsInNode/master/public/images/logo.png" alt="Threads In Times" />
     //         <h1>Email Confirmation</h1>
     //       </div>
     //       <div class="email_body">
     //         <p><b>Hi ,</b></p>
     //         <p>Thanks for subscribing to the <b>Threads In Times Newsletter!</b></p>
-            
+
     //         </a>
     //         <p>Thanks for supporting,<br/>
     //           <b>The Threads in Times Team</b>
@@ -1055,23 +1142,23 @@ router.post('/newsLetter', ensureAuthenticated, async (req, res) => {
     //       <div class="email_footer">© Threads in Times 2020</div>
     //     </div>
     //   </div>`,
-        
-    
-    
+
+
+
     //  });
     mail.Send({
         email_recipient: email,
         subject: "Threads in Times Subcription to News Letter",
         template_path: "../views/MailTemplates/NewsLetter.html",
-        context: {name: req.user.name },
+        context: { name: req.user.name },
     });
-     console.log("Mail sent")
-     await NewsLetterLog.create({
+    console.log("Mail sent")
+    await NewsLetterLog.create({
         date: moment().format('L'),
         description: email + " subscribed to the newsletter",
         noOfUsersJoined: 1
     })
-    
+
     flashMessage(res, 'success', "Thank you for subscribing to our newsletter! Check for an email from us soon!");
     User.update({ newsLetter: true }, { where: { id: req.user.id } })
     res.redirect("/newsLetter");
@@ -1080,7 +1167,7 @@ router.post('/newsLetterUnSubscribe', ensureAuthenticated, async (req, res) => {
     email = req.user.email
     console.log(email)
     link = "http://localhost:5000/newsLetter"
-    
+
     // Mail.send(res, {
     //     to: email,
     //     subject: "Threads in Times Unsubcription to News Letter",
@@ -1090,14 +1177,14 @@ router.post('/newsLetterUnSubscribe', ensureAuthenticated, async (req, res) => {
     //     html:`<div class="page">
     //     <div class="container">
     //       <div class="email_header">
-            
+
     //         <img class="logo" src="https://raw.githubusercontent.com/PMerilo/ThreadsInNode/master/public/images/logo.png" alt="Threads In Times" />
     //         <h1>Email Confirmation</h1>
     //       </div>
     //       <div class="email_body">
     //         <p><b>Hi ,</b></p>
     //         <p>You have unsubscribed from the <b>Threads In Times Newsletter</b></p>
-            
+
     //         </a>
     //         <p>Be sure to check us out again sometime soon to get the latest threads out there, goodbye for now.<br/>
     //           <b>The Threads in Times Team</b>
@@ -1106,28 +1193,28 @@ router.post('/newsLetterUnSubscribe', ensureAuthenticated, async (req, res) => {
     //       <div class="email_footer">© Threads in Times 2020</div>
     //     </div>
     //   </div>`,
-        
-    
-    
+
+
+
     //  });
     mail.Send({
         email_recipient: email,
         subject: "Threads in Times UnSubcription to News Letter",
         template_path: "../views/MailTemplates/NewsLetterUnSub.html",
-        context: {name: req.user.name },
+        context: { name: req.user.name },
     });
-     
-     
-     console.log("Mail sent")
-    
+
+
+    console.log("Mail sent")
+
     flashMessage(res, 'success', "You have unsubscribed to our newsletter! Come checkback sometime soon!");
     await NewsLetterLog.create({
         date: moment().format('L'),
         description: email + " unsubscribed to the newsletter",
         noOfUsersJoined: -1
     })
-    User.update({newsLetter:false},{where: {id:req.user.id}})
-    res.redirect("/newsLetter" );
+    User.update({ newsLetter: false }, { where: { id: req.user.id } })
+    res.redirect("/newsLetter");
 });
 
 
