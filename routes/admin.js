@@ -157,10 +157,10 @@ router.post('/appointment/status', async (req, res) => {
         x.adminColor = "green"
         x.userColor = "green"
     } else {
-        x.status = "Appointment Rejected! Please book again."
-        x.adminstatus = "You have rejected this appointment"
-        x.adminColor = "red"
-        x.userColor = "red"
+        x.status = "Appointment Confirmed"
+        x.adminstatus = "Appointment Rejected! Please book again."
+        x.adminColor = "green"
+        x.userColor = "green"
     }
     x.save()
     return res.json({});
@@ -408,7 +408,7 @@ router.post('/editUser/:id', async (req, res) => {
     res.redirect('/admin/UserManagement')
 })
 
-router.get('/deleteUser/:id', async function
+router.post('/deleteUser/:id', async function
     (req, res) {
     try {
         let user = await User.findByPk(req.params.id);
