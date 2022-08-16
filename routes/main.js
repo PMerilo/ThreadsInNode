@@ -589,7 +589,7 @@ router.post("/submitProductReview", ensureAuthenticated, async (req, res) => {
 
     await OrderItems.update({ review: 1 }, { where: { id: req.body.id } })
 
-    res.redirect(`/`)
+    res.redirect(`/myOrders`)
 })
 
 router.post("/reviewUpdate", ensureAuthenticated, async (req, res) => {
