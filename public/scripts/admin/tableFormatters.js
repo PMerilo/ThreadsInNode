@@ -40,10 +40,14 @@ function colorFormatter(value, row) {
 function rowStyle(row, index) {
   if (row.confirmed == "Pending") {
     return {
-      classes: 'table-secondary'
+      classes: 'table-warning'
     }
+  } else if (row.confirmed == "Rejected") {
+    return { classes: 'table-danger' }
+  } else {
+    
+    return { classes: 'table-success' }
   }
-  return { classes: 'table-primary' }
 
 
 }

@@ -61,7 +61,7 @@ router.get('/appointments', async (req, res) => {
         let date2 = moment(`${req.query.date}`).add(1, 'd')
         return res.json({
             total: await Appointment.count(),
-            rows: await Appointment.findAll({ where: { datetime: { [Op.gte]: date, [Op.lt]: date2 }, tailorId: req.query.id, confirmed: { [Op.or]: [true, null] } } })
+            rows: await Appointment.findAll({ where: { datetime: { [Op.gte]: date, [Op.lt]: date2 }, tailorId: req.query.id, confirmed: { [Op.or]: ['Pending', 'Confirmed'] } } })
         })
         // console.log(await Appointment.findAll({ where: { datetime: { [Op.gte]: date, [Op.lt]: date2 }, tailorId: req.query.id, confirmed: { [Op.ne]: false } } }))
     }
@@ -72,9 +72,8 @@ router.get('/appointments', async (req, res) => {
 });
 
 router.get('/appointment/:id', async (req, res) => {
-    return res.json({
-        total: await Appointment.count(),
-        rows: await Appointment.findAll({
+    let confirmed
+    let appts = await Appointment.findAll({
             include: Request,
             where: {
                 [Op.or]: {
@@ -85,6 +84,16 @@ router.get('/appointment/:id', async (req, res) => {
             },
             order: [["createdAt", "DESC"]],
         })
+    appts.forEach(appt => {
+        if (appt.confirmed == "Confirmed") {
+            confirmed++
+        }
+    });
+    return res.json({
+        total: await Appointment.count(),
+        rows: appts,
+        confirmed: confirmed
+
     })
 });
 

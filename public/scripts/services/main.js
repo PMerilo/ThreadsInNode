@@ -114,6 +114,7 @@ $(document).ready(function () {
         $('[name="color"]', $addItemModal).val('')
         $('textarea', $addItemModal).val('')
         $addItemModal.modal('hide')
+        location.reload()
 
     })
 
@@ -140,13 +141,13 @@ $(document).ready(function () {
             }
             $addApptModal.modal('hide');
             $table.bootstrapTable('refresh');
+            location.reload()
         });
 
         $('[name="date"]', $addApptModal).val('')
         $('[name="time"]', $addApptModal).val('')
         $('[name="tailorID"]', $addApptModal).val('')
         $addApptModal.modal('hide')
-        location.reload()
 
     })
 
@@ -174,6 +175,24 @@ $(document).ready(function () {
 
     $('.delete').click(function () {
         $('#delModal').find('.del').attr('data-bs-id', $(this).attr('data-bs-id'))
+    })
+
+    $('.delivery').click(function () {
+        $('#deliverModal').find('.deliveryBtn').attr('data-bs-id', $(this).attr('data-bs-id'))
+    })
+
+    $('.deliveryBtn').click(function () {
+        let data = {
+            id: $(this).attr('data-bs-id'),
+            method: $(this).val(),
+        }
+
+        $.post("/services/deliver", data, function (result) {
+
+            $editItemModal.modal('hide');
+            $table.bootstrapTable('refresh');
+        });
+
     })
 
 

@@ -110,10 +110,16 @@
         </a>
         {{else}}
         {{#if appointments.[0]}}
+        {{#equals status "Appointment Cancelled"}}
+        <a href="#addApptModal" data-bs-toggle="modal" data-bs-id="{{tailorId}}" data-bs-reqId="{{id}}"
+          class="pe-auto text-black stretched-link">
+          You cancelled your appointment. Click here to book again.
+        </a>
+        {{else}}
         {{#equals appointments.[0].confirmed 'Rejected'}}
         <a href="#addApptModal" data-bs-toggle="modal" data-bs-id="{{tailorId}}" data-bs-reqId="{{id}}"
           class="pe-auto text-black stretched-link">
-          Your appointment scheduled for {{appointments.[0].datetimeHuman}} was denied. Click here to book again.
+          Your appointment scheduled for {{appointments.[0].datetimeHuman}} was {{#equals status "Appointment Cancelled"}}cancelled{{else}}denied.{{/equals}} Click here to book again.
         </a>
         {{else}}
         <a href="#appt_{{id}}" data-bs-toggle="collapse" class="pe-auto text-black stretched-link">
@@ -121,6 +127,7 @@
           'Pending'}}, pending
           confirmation{{else}} is confirmed!{{/equals}}
         </a>
+        {{/equals}}
         {{/equals}}
         {{else}}
         <a href="#addApptModal" data-bs-toggle="modal" data-bs-id="{{tailorId}}" data-bs-reqId="{{id}}"
@@ -494,6 +501,27 @@
             autocomplete="off" />
           <button type="submit" class="btn">Send</button>
         </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="deliverModal" tabindex="-1" aria-labelledby="deliveryModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deliveryModalLabel">Delivery Method</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body container overflow-hidden">
+        <div class="row gx-3">
+          <div class="col-6 d-grid">
+            <button type="button" class="btn btn-primary deliveryBtn" value="Pick Up">Pick Up</button>
+          </div>
+          <div class="col-6 d-grid">
+            <button type="button" class="btn btn-primary deliveryBtn" value="Delivery">Delivery</button>
+          </div>
+        </div>
+        <input type="hidden" class="form-control" name="confirmed" required>
       </div>
     </div>
   </div>

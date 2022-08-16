@@ -211,10 +211,12 @@ router.post('/appointment/add', async (req, res, next) => {
         flashMessage(res, 'error', `Appointment date out of range. Please pick a date between ${moment().add(7, 'd').format('DD-MM-YYYY')} and ${moment().add(1, "M").format('DD-MM-YYYY')}`)
         // return res.json({})
     } else {
-        let request = await Request.findByPk(reqId) 
-        if (request.status == 'Ready for fitting! Please book your appointment') {
+        let request = await Request.findByPk(reqId, {include: Appointment})
+        if (request.appointments[0].type == "Fitting") {
             type = 'Fitting'
-        } else {
+        }  else if (request.appointments[0].type == "Measurement" && request.appointments[0].confirmed == "Confirmed") {
+            type = 'Fitting'
+        }  else {
             type = 'Measurement'
         }
 
@@ -295,7 +297,12 @@ router.post('/appointment/edit', async (req, res, next) => {
                     .then(async () => {
                         flashMessage(res, 'success', 'Appointment updated sucessfully!')
                         send = true
-                        await Request.update({ statusCode: req.body.status }, { where: { id: req.body.statusId } })
+                        await Request.update({
+                            status: "Pending Appointment Confirmation",
+                            adminstatus: 'Please confirm this Appointment',
+                            userColor: 'blue',
+                            adminColor: 'yellow',
+                        }, { where: { id: req.body.statusId } })
                         // return res.json({})
                     })
                     .catch(err => {
@@ -426,6 +433,18 @@ router.delete('/item/remove', async (req, res) => {
     }
     await RequestItem.destroy({ where: { id: req.body.id } })
     res.json(payload)
+
+});
+
+router.post('/deliver', async (req, res) => {
+    let { method, id } = req.body
+    let time = moment().add(7, 'd')
+    if (method == 'Pick Up') {
+        await Request.update({ status: `You may pick up from us from ${time.toDate()}`, adminstatus: `Set to pick up from ${time.toDate()}`, userColor: 'green', adminColor: 'green' }, { where: { id: id } })
+    } else {
+
+    }
+    res.json({})
 
 });
 

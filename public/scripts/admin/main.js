@@ -47,11 +47,12 @@ $(document).ready(function () {
         $statusModal.find('.confirm').removeAttr('data-bs-status')
         $statusModal.find('.confirm').attr('data-bs-id', $(this).attr('data-bs-id'))
         $('.statusbtn').parent().removeClass('d-grid')
-        $.get(`/api/appointment/${$(this).attr('data-bs-id')}`, ({ rows }) => {
+        $.get(`/api/appointment/${$(this).attr('data-bs-id')}`, ({ rows, confirmed }) => {
             console.log(rows.length);
             if (rows[0].request.adminstatus == 'In Progress') {
                 $('.statusbtn[value="Request Fitting Appointment"').parent().toggleClass('d-grid')
-            } else if (rows.length > 1) {
+            } else if (rows[0].request.adminstatus == 'In Progress' && confirmed > 1) {
+                $('.statusbtn[value="Request Fitting Appointment"').parent().toggleClass('d-grid')
                 $('.statusbtn[value="Finished Request"').parent().toggleClass('d-grid')
             } else if (rows[0].request.adminstatus == 'Awaiting Fitting Appointment Booking') {
                 $('.statusbtn[value="Cancel Fitting Appointment Request"').parent().toggleClass('d-grid')

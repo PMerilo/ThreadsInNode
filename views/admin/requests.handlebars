@@ -102,8 +102,8 @@ You have no requests
 
       {{else}}
 
-      {{#if appointments.[0]}}
-      {{#equals statusCode -1}}
+      {{#if appointments.[0]}}{{adminstatus}}
+      {{#equals adminstatus "You have rejected this appointment"}}
       <a href="#appt_{{id}}" role="button" data-bs-toggle="collapse" class="pe-auto text-black stretched-link">
         You denied the appointment for {{appointments.[0].datetimeHuman}}
       </a>

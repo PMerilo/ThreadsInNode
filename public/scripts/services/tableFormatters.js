@@ -2,15 +2,15 @@
 
 function operateFormatter(value, row) {
   let datetime = moment(`${row.date} ${row.time}`)
-  if (moment() < datetime) {
+  if (moment() > datetime || row.confirmed == "Rejected") {
+    return null
+  } else {
     return [
       `<div class="d-flex justify-content-evenly">`,
       `<button type="button" class="btn btn-primary" title="Edit Appointment"><i class="bi bi-pencil-square"></i></button>`,
       `<button class="btn btn-danger" title="Cancel Appointment"><i class="fa-solid fa-ban"></i></button>`,
       `</div>`,
     ].join('')
-  } else {
-    return null
   }
 }
 
@@ -41,8 +41,12 @@ function rowStyle(row, index) {
     return {
       classes: 'table-secondary'
     }
+  } else if (row.confirmed == "Rejected") {
+    return { classes: 'table-danger' }
+  } else {
+    
+    return { classes: 'table-success' }
   }
-  return { classes: 'table-primary' }
 
 
 }

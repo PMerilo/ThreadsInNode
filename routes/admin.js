@@ -157,10 +157,10 @@ router.post('/appointment/status', async (req, res) => {
         x.adminColor = "green"
         x.userColor = "green"
     } else {
-        x.status = "Appointment Confirmed"
-        x.adminstatus = "Appointment Rejected! Please book again."
-        x.adminColor = "green"
-        x.userColor = "green"
+        x.status = "Appointment Rejected! Please book again."
+        x.adminstatus = "You have rejected this appointment"
+        x.adminColor = "red"
+        x.userColor = "red"
     }
     x.save()
     return res.json({});
