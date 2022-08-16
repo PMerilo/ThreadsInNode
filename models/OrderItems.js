@@ -16,7 +16,7 @@ OrderItems.init({
         seller_id: { type: sequelize.INTEGER},
         orderStatus:{type: sequelize.STRING},
         posterURL: { type: sequelize.STRING },
-        review: { type: sequelize.INTEGER},
+        review: { type: sequelize.BOOLEAN},
         seller_cut :{ type: sequelize.FLOAT },
         tit_cut :{ type: sequelize.FLOAT},
     },

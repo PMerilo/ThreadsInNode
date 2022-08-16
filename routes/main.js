@@ -333,7 +333,7 @@ const fulfillOrder = async (session) => {
             seller_id: element.OwnerID,
             orderStatus: "Processing",
             posterURL: element.posterURL,
-            review: 0
+            review: false
         })
         // shipping_rate = 0
         // var payload = {title : "New Order Placed",body: "body",url: "",senderId: "",recipient: `${element.OwnerID}`}
@@ -587,7 +587,7 @@ router.post("/submitProductReview", ensureAuthenticated, async (req, res) => {
 
     await Product.update({ stars_given: product.stars_given + parseInt(req.body.star), reviews_given: product.reviews_given + 1 }, { where: { sku: req.body.sku } })
 
-    await OrderItems.update({ review: 1 }, { where: { id: req.body.id } })
+    await OrderItems.update({ review: true }, { where: { id: req.body.id } })
 
     res.redirect(`/myOrders`)
 })
