@@ -72,7 +72,7 @@ const requestStatus = async (req, res, next) => {
     let adminColor
     let userColor
     console.log(req.body.status);
-    if (req.body.status == 'Finish Appointment' || req.body.status == 'Cancel Fitting Appointment Request') {
+    if (req.body.status == 'Finished Appointment' || req.body.status == 'Cancel Fitting Appointment Request') {
         status = 'In Progress'
         adminstatus = 'In Progress'
         userColor = 'blue'
@@ -84,6 +84,7 @@ const requestStatus = async (req, res, next) => {
         adminColor = 'yellow'
     } else if (req.body.status == 'Finished Request') {
         status = 'Request is completed! Please select a delivery method'
+        
         adminstatus = 'Request completed! Awaiting delivery method'
         userColor = 'yellow'
         adminColor = 'green'
