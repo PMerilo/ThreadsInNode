@@ -51,13 +51,13 @@ router.get('/', async (req,res) =>{
     res.render("index",{products, noProduct})
 })
 
-router.get('/searchedItem=:string&min=:min&max=:max', async (req,res) =>{
+router.get('/searchedItem=:string', async (req,res) =>{
     let noProduct;
     let sort = req.params.sort;
     Allproducts = (await Product.findAll())
     products = []
     for(let i = 0; i < Allproducts.length; i++){
-        if(Allproducts[i].dataValues.name.includes(req.params.string) && Allproducts[i].dataValues.price >= req.params.min && Allproducts[i].dataValues.price <= req.params.max){
+        if(Allproducts[i].dataValues.name.includes(req.params.string)){
             products.push(Allproducts[i].dataValues)
         }
     }   
@@ -95,9 +95,8 @@ router.post('/search', async (req,res) =>{
     
     
     let search = req.body.search;
-    let min = req.body.min;
-    let max = req.body.max;
-    res.redirect("/searchedItem="+search+"&min="+min+"&max="+max)
+    
+    res.redirect("/searchedItem="+search)
 })
 
 router.post('/addtoCart',ensureAuthenticated, async (req,res) =>{
