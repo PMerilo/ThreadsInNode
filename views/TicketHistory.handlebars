@@ -10,86 +10,76 @@
 		crossorigin="anonymous"></script>
 		<!-- Bootstrap Confirmation-->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap-confirmation2/dist/bootstrap-confirmation.min.js"></script>
-<div class="container">
-	
-	<div class="card card-body">
-		<h3 class="text-primary">Pending Tickets</h3>
-		{{#each tickets}}
-		<div class="card border-primary mb-2 w-100 mx-auto">
-			<div class="card-header">
-				<h5 class="card-title">{{this.title}}</h5>
-			</div>
-			<div class="card-body">
-				<div class="row">
-					
-					<div class="col-sm-12 col-md-12 col-lg-2">
-						<p class="font-italic">Date Sent</p>
-						<p class="text-info">{{this.dateAdded}}</p>
-						<p class="font-italic">Urgency</p>
-						<p class="text-info">{{this.urgency}}</p>
-					</div>
-					<div class="col-sm-12 col-md-12 col-lg-2">
-						
-						<p>
-                            <form action="/ticketHistory/deleteTicket" method="POST">
-                             
-                            
-                            <button type="submit" class="btn btn-outline-primary" data-toggle="confirmation" data-title="Confirm delete?">
-                            <i class="bx bx-trash alt icon"></i>
-							<input type="hidden" name="ticketID" id="ticketID" value="{{this.id}}">
-								<p>Delete Ticket</p>
-								
-							</button>
-                            </form>
-							
-						</p>
-						<p>
-							{{!-- <form action="/ticketHistory/editTicket" method="POST"> --}}
-                             
-                            
-                            <button type="submit" class="btn btn-outline-primary"  data-bs-toggle="modal" data-bs-target="#myModalEditTicket_{{this.id}}">
-                            <i class="bx bx-pencil alt icon"></i>
-							<input type="hidden" name="ticketID" id="ticketID" value="{{this.id}}">
-								<p>Edit Ticket</p>
-								
-							</button>
-                            </form>
-							<div class="col">
-							<img src="{{this.posterURL}}" alt="" height="100px">
-							{{!-- </div> --}}
-						</p>
-						
-					</div>
-					
-				</div>
-				
-			</div>
-			
 
-			<div class="accordion" id="storyAccordion">
-				<div class="card-header" id="headingOne">
-					<button class="btn btn-link" type="button" style="text-decoration: none;">
-						Description <i class="bx bx-chevron-down bx-xs icon"></i>
+
+<div class="main-ticket">
+  <h1>Pending Tickets</h1>
+  <ul class="ticket-cards">
+    {{#each tickets}}
+    <li class="ticket-cards_item">
+      <div class="ticket-card">
+        <div class="ticket-card_image">
+          
+            <img src="{{this.posterURL}}">
+          
+            {{!-- <p>{{this.title}}</p> --}}
+          
+        </div>
+        <div class="rip"></div>
+        <div class="ticket-card_content">
+          <p class="ticket-card_title">{{this.title}}</p>
+          <p class="ticket-card_text">
+			<b>Description: </b>
+			<br>
+			{{this.description}}
+			<br>
+			<b>Urgency: </b> {{this.urgency}}
+			<br>
+			<b>Date: </b>{{this.createdAt}}
+			</p>
+          <button class="btn ticket-card_btn" data-bs-toggle="modal" data-bs-target="#myModalEditTicket_{{this.id}}">Update Ticket</button>
+		  <br>
+		  <button class="btn ticket-card_btn" data-bs-toggle="modal" data-bs-target="#myModalDeleteTicket_{{this.id}}">Delete Ticet</button>
+        </div>
+      </div>
+    </li>
+
+	{{!-- Delete Ticket Modal --}}
+	<div class="modal fade" id="myModalDeleteTicket_{{this.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="myModalLabel">Delete Ticket</h5>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
-				<div  class="" aria-labelledby="headingOne" data-parent="#storyAccordion">
-					<div class="card-body">
-						{{this.description}}
-					</div>
+				<div class="modal-body">
+					Are you sure you want to delete this ticket?
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<form action="/ticketHistory/deleteTicket" method="POST">
+						<input type="hidden" name="ticketID"  id ="ticketID" value="{{this.id}}">
+						<input type="submit" class="btn btn-danger" value="Delete Ticket">
+					
+					</form>
 				</div>
 			</div>
 		</div>
-		{{!-- Edit Modal --}}
-		<div class="modal" id="myModalEditTicket_{{this.id}}">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-
-                    <div class="modal-header">
-                      <h4 class="modal-title">Edit Ticket Case: {{this.title}}</h4>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-
-                    <div class="modal-body">
+	</div>
+	
+	<!-- Modal Edit Ticket -->
+	<div class="modal fade" id="myModalEditTicket_{{this.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="myModalLabel">Update Ticket</h5>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
                     <div class="card mx-auto shadow" style="margin-top: 5px; " >
 					<div class="card-body">
 					<h4 class="card-title mb-4">Edit Ticket Form</h4>
@@ -133,41 +123,188 @@
 					</div> <!-- form-row.// -->
 
 						</div>
-					<div class="form-row">
-						<div class="form-group col-md-6">
-
-						</div> <!-- form-group end.// -->
-						<div class="form-group col-md-6">
-
-						</div> <!-- form-group end.// -->
-					</div> <!-- form-row.// -->
+					
 					
 
 					
 					</div> <!-- card-body.// -->
 				</div>
-
-                    <div class="modal-footer">
-					  <input type="hidden" name="ticketID" id="ticketID" value="{{this.id}}">
-                      <button type="submit" class="btn btn-warning">Confirm Changes</button>
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" >Cancel</button>
-					  </form>
-                    </div>
-
+				</div>
+				
+				<div class="modal-footer">
+					<input type="hidden" name="ticketID"  id ="ticketID" value="{{this.id}}">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary" >Save changes</button>
+				</div>
+				</form>
 			</div>
 		</div>
-		</div>
-	</div>	
-	</div>	
-		{{/each}}
 	</div>
+
+
+
+
+
+
+	{{/each}}
+    
+     
 	
-	
-	
+    
+
+  </ul>
 </div>
+
+<style>
+  /* Design */
+
+.main-ticket{
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.ticket-card_image img{
+ height: 350px;
+ width: 500px;
+  vertical-align: middle;
+}
+.ticket-card_image {
+  position: relative;
+}
+.ticket-card_image p{
+  position: absolute;
+  color: white;
+  font-weight: bold; 
+  font-size: 2em;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%,-50%);
+  -webkit-transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%);
+  margin:0;
+  padding:0;
+   text-shadow: 1px 1px 0 rgba(0,0,0,5);
+  background: rgba(0, 0, 0, 0.5);
+  
+}
+
+.ticket-card_btn {
+  color: #4D4D4D;
+  padding: 0.8rem;
+  font-size: 14px;
+  text-transform: uppercase;
+  border-radius: 4px;
+  font-weight: 400;
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  background: transparent;
+  
+}
+
+
+.btn:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+  box-shadow: inset 450px 0 0 0 #D80286;
+}
+
+.ticket-cards {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ticket-cards_item {
+  display: flex;
+  padding: 1rem;
+  
+}
+
+@media (min-width: 40rem) {
+  .ticket-cards_item {
+    width: 50%;
+  }
+}
+
+@media (min-width: 56rem) {
+  .ticket-cards_item {
+    width: 33.3333%;
+  }
+}
+
+.ticket-card {
+  background-color: white;
+  border-radius: 0.25rem;
+  box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.ticket-card_content {
+  padding: 1rem;
+  background: linear-gradient(to bottom left, #D1EBF5 40%, #EFF5F5 100%);
+}
+
+.ticket-card_title {
+  color: #4D4D4D;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: capitalize;
+  margin: 0px;
+}
+
+.ticket-card_text {
+  color: #4D4D4D;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin-bottom: 1.25rem;    
+  font-weight: 400;
+}
+         
+
+.rip {
+height: 20px;
+margin: 0 10px;
+background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAACCAYAAAB7Xa1eAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAYdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjAuOWwzfk4AAAAaSURBVBhXY5g7f97/2XPn/AcCBmSMQ+I/AwB2eyNBlrqzUQAAAABJRU5ErkJggg==);
+background-size: 4px 2px;
+background-repeat: repeat-x;
+background-position: center;
+position: relative;
+box-shadow: 0 1px 0 0 #fff, 0 -1px 0 0 #fff;
+&:before,
+&:after {
+	content: '';
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	top: 50%;
+	transform: translate(-50%, -50%) rotate(45deg);
+	border: 5px solid transparent;
+	border-top-color: #fff;
+	border-right-color: #fff;
+	border-radius: 100%;
+	pointer-events:none;
+}
+&:before {
+	left: -10px;
+}
+&:after {
+	transform: translate(-50%, -50%) rotate(225deg);
+	right: -40px;
+}
+}
+      
+</style>
 
 <script>
 	$('[data-toggle=confirmation]').confirmation({
 		rootSelector: '[data-toggle=confirmation]',
 	});
 </script>
+

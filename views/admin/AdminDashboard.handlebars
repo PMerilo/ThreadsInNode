@@ -59,10 +59,127 @@
     </div>
     <!-- Content Row -->
     <div class="row">
+        <!-- Total Number Of Users  -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Our Registered Users (Total)</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{totalUsers}}</div>
+                            <br>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <a type="button" class="small text-black stretched-link" data-bs-toggle="modal"
+                                    data-bs-target="#Visitors_Today">View Details</a>
+                                <div class="small text-white"><i class="bi bi-chevron-right"></i></div>
+                            </div>
+
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subscribers Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Subscribed to our newsLetter (Total)</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{totalSubs}}</div>
+                            <br>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <a type="button" class="small text-black stretched-link" data-bs-toggle="modal"
+                                    data-bs-target="#Subscribers_Today">View Details</a>
+                                <div class="small text-white"><i class="bi bi-chevron-right"></i></div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Number of Reports Card  -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Reports(Total)
+                            </div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{totalReports}}</div>
+                                    <br>
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"></div>
+                                </div>
+                                <br>
+                                <div class="card-footer d-flex align-items-center justify-content-between">
+                                    <a type="button" class="small text-black stretched-link" data-bs-toggle="modal"
+                                        data-bs-target="#Reports_Today">View Details</a>
+                                    <div class="small text-white"><i class="bi bi-chevron-right"></i></div>
+                                </div>
+
+
+                                <!--                                <div class="col">-->
+                                <!--                                    <div class="progress progress-sm mr-2">-->
+                                <!--                                        <div class="progress-bar bg-info" role="progressbar"-->
+                                <!--                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"-->
+                                <!--                                            aria-valuemax="100"></div>-->
+                                <!--                                    </div>-->
+                                <!--                                </div>-->
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Number of Ticket Card -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Current Pending Tickets</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{totalTickets}}</div>
+                            <br>
+                            <div class="card-footer d-flex align-items-center justify-content-between">
+                                <a type="button" class="small text-black stretched-link" data-bs-toggle="modal"
+                                    data-bs-target="#Pending_Tickets">View Details</a>
+                                <div class="small text-white"><i class="bi bi-chevron-right"></i></div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
 
         <div class="col-xl-8 col-lg-7">
 
-            <!-- Area Chart -->
+            <!-- Area Chart Users Joined By Day -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">User Activity</h6>
@@ -73,27 +190,44 @@
                     </div>
                     <hr>
                     <div class="text-center">
-                        <h5 class="text-gray-900 m-0">No. of Users Joined</h5>
+                        <h5 class="text-gray-900 m-0" id="usersJoinedSortedBy">No. of Users Joined By Day</h5>
                         {{!-- <span class="text-gray-600 small">Last 7 days</span> --}}
                     </div>
+                    <button class="btn btn-primary" id="day" onclick="setChartType(this)">Day</button>
+                    <button class="btn btn-secondary" id="month" onclick="setChartType(this)">Month</button>
+                    <button class="btn btn-warning" id="year" onclick="setChartType(this)">Year</button>
                 </div>
+
+
             </div>
 
-            <!-- Bar Chart -->
+
+
+            <!-- Area Chart Users Subscribed Start -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Bar Chart</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">User Subscription Activity(NewsLetter)</h6>
                 </div>
                 <div class="card-body">
-                    <div class="chart-bar">
-                        <canvas id="myBarChart"></canvas>
+                    <div class="chart-area">
+                        <canvas id="NoOfUsersSubscribedChart"></canvas>
                     </div>
                     <hr>
-                    Styling for the bar chart can be found in the
-                    <code>/js/demo/chart-bar-demo.js</code> file.
-                </div>
-            </div>
+                    <div class="text-center">
+                        <h5 class="text-gray-900 m-0" id="usersSubscribedSortedBy">No. of Users Subscribed By Day</h5>
+                        {{!-- <span class="text-gray-600 small">Last 7 days</span> --}}
+                    </div>
+                    <button class="btn btn-primary" id="daySubscribed"
+                        onclick="setChartTypeNewsLetter(this)">Day</button>
+                    <button class="btn btn-secondary" id="monthSubscribed"
+                        onclick="setChartTypeNewsLetter(this)">Month</button>
+                    <button class="btn btn-warning" id="yearSubscribed"
+                        onclick="setChartTypeNewsLetter(this)">Year</button>
 
+                </div>
+
+
+            </div>
             <!-- Area Chart -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
@@ -119,88 +253,325 @@
                 </div>
             </div>
 
-        </div>
+            <!-- Donut Chart -->
+            <div class="col-xl-4 col-lg-5">
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">User Roles</h6>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <div class="chart-pie pt-4">
+                            <canvas id="UserRolesPieChart"></canvas>
+                        </div>
+                        <hr>
+                        <div class="text-center">
+                            <h5 class="text-gray-900 m-0">User Roles</h5>
+                            <span class="text-gray-600 small">List Of Our Users</span>
+                        </div>
+                    </div>
 
-        <!-- Donut Chart -->
-        <div class="col-xl-4 col-lg-5">
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">User Roles</h6>
                 </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    <div class="chart-pie pt-4">
-                        <canvas id="UserRolesPieChart"></canvas>
+
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">User Genders</h6>
                     </div>
-                    <hr>
-                    <div class="text-center">
-                        <h5 class="text-gray-900 m-0">User Roles</h5>
-                        <span class="text-gray-600 small">List Of Our Users</span>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <div class="chart-pie pt-4">
+                            <canvas id="UserGendersPieChart"></canvas>
+                        </div>
+                        <hr>
+                        <div class="text-center">
+                            <h5 class="text-gray-900 m-0">User Genders</h5>
+                            <span class="text-gray-600 small">List Of Our Users Genders</span>
+                        </div>
                     </div>
+
                 </div>
 
             </div>
+            <div class="col">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Customer Statisfaction</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-bar">
+                            <canvas id="CustomerSatisfactionBarchart"></canvas>
+                        </div>
+                        <hr>
+                        <div class="text-center">
+                            <h5 class="small"><b>Customer Satisfaction Entries</b></h5>
+                            <h4 class="small font-weight-bold text-primary">Customer Ratings (1-5)</h4>
 
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">User Genders</h6>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    <div class="chart-pie pt-4">
-                        <canvas id="UserGendersPieChart"></canvas>
-                    </div>
-                    <hr>
-                    <div class="text-center">
-                        <h5 class="text-gray-900 m-0">User Genders</h5>
-                        <span class="text-gray-600 small">List Of Our Users Genders</span>
+                        </div>
                     </div>
                 </div>
+
+
+                {{!-- Visitors Today Log --}}
+                <div class="modal" id="Visitors_Today">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="row">
+
+
+                                <div class="container col-12 modal-info">
+                                    <button type="button" class="btn-close x-button" data-bs-dismiss="modal"></button>
+                                    <div class="modal-header">
+                                        <h6 class="modal-title">Our Registered Users</h6>
+
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+
+                                                    <th>Description</th>
+                                                    <th>Role</th>
+                                                    <th>Joined At</th>
+
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {{#each traffic}}
+                                                <tr>
+
+                                                    <td>{{this.description}}</td>
+                                                    <td>{{this.role}}</td>
+                                                    <td>{{this.createdAt}}</td>
+
+
+
+                                                </tr>
+                                                {{/each}}
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <a href="/admin/ReportsManagement">View Full Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{!-- Newsletter Subscribers Log --}}
+                <div class="modal" id="Subscribers_Today">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="row">
+
+
+                                <div class="container col-12 modal-info">
+                                    <button type="button" class="btn-close x-button" data-bs-dismiss="modal"></button>
+                                    <div class="modal-header">
+                                        <h6 class="modal-title">Our Recent Subscribers</h6>
+
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+
+                                                    <th>Description</th>
+                                                    <th>Registered On</th>
+
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {{#each Subscribers}}
+                                                <tr>
+
+                                                    <td>{{this.description}}</td>
+                                                    <td>{{this.createdAt}}</td>
+
+
+
+                                                </tr>
+                                                {{/each}}
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <a href="/admin/ReportsManagement">View Full Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                {{!-- Reports Log --}}
+                <div class="modal" id="Reports_Today">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="row">
+
+
+                                <div class="container col-12 modal-info">
+                                    <button type="button" class="btn-close x-button" data-bs-dismiss="modal"></button>
+                                    <div class="modal-header">
+                                        <h6 class="modal-title">Our Report </h6>
+
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+
+                                                    <th>Report Name</th>
+                                                    <th>Report Type</th>
+
+                                                    <th>Tags</th>
+                                                    <th>Date</th>
+
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {{#each reports}}
+                                                <tr>
+
+                                                    <td><a href="">{{this.reportName}}</a> </td>
+                                                    <td>{{this.reportType}}</td>
+
+                                                    <td>{{this.tags}}</td>
+                                                    <td>{{this.date}}</td>
+
+
+
+                                                </tr>
+                                                {{/each}}
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <a href="/admin/ReportsManagement">View Full Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{!-- Pending Tickets Log --}}
+                <div class="modal" id="Pending_Tickets">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="row">
+
+
+                                <div class="container col-12 modal-info">
+                                    <button type="button" class="btn-close x-button" data-bs-dismiss="modal"></button>
+                                    <div class="modal-header">
+                                        <h6 class="modal-title">Our Recent Ticket Requests</h6>
+
+                                    </div>
+
+                                    <div class="modal-body">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+
+                                                    <th>Title</th>
+                                                    <th>Description</th>
+                                                    <th>Pending Status</th>
+                                                    <th>Urgency</th>
+                                                    <th>Owner</th>
+                                                    <th>Image</th>
+
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {{#each totalTicketsOpen}}
+                                                <tr>
+
+                                                    <td>{{this.title}}</td>
+                                                    <td>{{this.description}}</td>
+                                                    <td>{{this.pendingStatus}}</td>
+                                                    <td>{{this.urgency}}</td>
+                                                    <td>{{this.owner}}</td>
+                                                    <td><img src="{{this.posterURL}}" alt="" height="100px"></td>
+
+
+
+                                                </tr>
+                                                {{/each}}
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <a href="/admin/TicketMangement">View Full Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
 
             </div>
-
         </div>
-    </div>
-</div>
-<style>
-    .arrow-icon {
-        font-size: 2rem;
-        cursor: pointer;
-    }
-</style>
-<script>
-    $(document).ready(function () {
-        updateStats()
-    })
+        <style>
+            .arrow-icon {
+                font-size: 2rem;
+                cursor: pointer;
+            }
+        </style>
+        <script>
+            $(document).ready(function () {
+                updateStats()
+            })
 
-    function updateStats() {
-        var sales = document.getElementById("sales")
-        var revenue = document.getElementById("revenue")
-        var orders = document.getElementById("orders")
-        var customers = document.getElementById("customers")
-        console.log(sales , revenue , customers , orders)
-        $.ajax({
-        url: "/datapipeline/stats",
-        method: 'POST',
-        contentType: "application/json",
-        data: JSON.stringify({ status: "check" }),
-        success: function (res) {
-            console.log(res)
-            sales.innerText = "S$" + res.sales
-            revenue.innerText = "S$" + res.revenue
-            orders.innerText = res.orders
-            customers.innerText = res.customers
-        }
-    })
-    }
+            function updateStats() {
+                var sales = document.getElementById("sales")
+                var revenue = document.getElementById("revenue")
+                var orders = document.getElementById("orders")
+                var customers = document.getElementById("customers")
+                console.log(sales, revenue, customers, orders)
+                $.ajax({
+                    url: "/datapipeline/stats",
+                    method: 'POST',
+                    contentType: "application/json",
+                    data: JSON.stringify({ status: "check" }),
+                    success: function (res) {
+                        console.log(res)
+                        sales.innerText = "S$" + res.sales
+                        revenue.innerText = "S$" + res.revenue
+                        orders.innerText = res.orders
+                        customers.innerText = res.customers
+                    }
+                })
+            }
 
-</script>
+        </script>
 
-<!-- /.container-fluid -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
-<script src="/js/demo/chart-area-demo.js"></script>
-<script src="/js/demo/chart-bar-demo.js"></script>
-<script src="/js/demo/chart-pie-demo.js"></script>
-<script src="/js/sb-admin-2.js"></script>
+        <!-- /.container-fluid -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
+        <script src="/js/demo/chart-area-demo.js"></script>
+        <script src="/js/demo/chart-bar-demo.js"></script>
+        <script src="/js/demo/chart-pie-demo.js"></script>
+        <script src="/js/sb-admin-2.js"></script>

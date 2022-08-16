@@ -6,14 +6,23 @@ const FAQ = require('../models/FAQ')
 const Feedback = require('../models/FAQ')
 const Message = require('../models/Messages')
 const Product = require('../models/Product')
+const ProductReview = require("../models/ProductReview")
 const Request = require('../models/Request')
 const Reward = require('../models/Reward')
 const Wishlist = require('../models/Wishlist')
 const Ticket = require('../models/Ticket')
 const User = require('../models/User')
 const Service = require('../models/Service')
+const backupCodes = require("../models/backupCodes")
+const Survey = require('../models/Survey')
+
+
+const Report = require('../models/Reports')
 
 const JoinedUsersLogs = require('../models/Logs/JoinedUsersLogs');
+const CustomerSatisfactionLog = require('../models/Logs/CustomerSatisfactionLog');
+const NewsLetterLog = require("../models/Logs/NewsLetterLogs")
+
 const Tailor = require('../models/Tailor');
 const Order = require('../models/Orders');
 const OrderItems = require('../models/OrderItems');

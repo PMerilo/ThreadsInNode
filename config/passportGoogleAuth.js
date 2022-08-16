@@ -21,6 +21,7 @@ async function InitaliseGoogleLogin() {
               name: profile.displayName,
               password: null,
               email: profile.emails[0].value,
+              
             },
           });
   

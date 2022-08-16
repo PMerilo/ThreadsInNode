@@ -1,0 +1,477 @@
+<link rel="stylesheet" href="/styles/graph.css">
+<div class="modal fade" id="loader" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content container-fluid">
+            <div class="d-flex justify-content-center align-items-center my-5">
+                <p class="text-blac fs-3 m-0 me-5">Loading Charts...</p>
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="loaderPDF" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content container-fluid">
+            <div class="d-flex justify-content-center align-items-center my-5">
+                <p class="text-blac fs-3 m-0 me-5">Generating PDF...</p>
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        
+        $('#loader').modal('show');
+        setTimeout(function() {
+            $('#loader').modal('hide');
+        }, 2000);
+    });
+
+    function generatePDF() {
+        $('#staticBackdrop').modal('hide');
+        $('#loaderPDF').modal('show');
+        setTimeout(function() {
+            $('#loaderPDF').modal('hide');
+        }, 1000);
+    }
+
+    
+</script>
+    <div class="container-fluid">
+        <div class="card" id="report-card">
+            <div class="card-header">
+                <ul id="reportTabs" class="nav nav-tabs card-header-tabs", role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active tab-pane" data-bs-toggle="tab" data-bs-target="#inventory" type="button" role="tab" aria-controls="inventory" aria-selected="">User Info</a>
+                    </li>
+                    {{!-- <li class="nav-item" role="presentation">
+                        <a class="nav-link " data-bs-toggle="tab" data-bs-target="#sales" type="button" role="tab" aria-controls="sales" aria-selected="">Survey Data</a>
+                    </li> --}}
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link " data-bs-toggle="tab" data-bs-target="#traffic" type="button" role="tab" aria-controls="traffic" aria-selected="">Traffic</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link " data-bs-toggle="tab" data-bs-target="#TrafficChart" type="button" role="tab" aria-controls="TrafficChart" aria-selected="">Chart</a>
+                    </li>
+                    <div class="btn-group ms-auto align-self-start">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                        Create report &nbsp; <i class="bi bi-plus-square"></i>
+                    </button>
+                    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="visually-hidden">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/admin/Reports">View Reports</a></li>
+                    </ul>
+                    </div>
+                  {{!-- Report Modal Start --}}
+                  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                      <div class="modal-content">
+                          <div class="modal-header">
+                              <h5 class="modal-title" id="staticBackdropLabel">Create</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <form method="POST" action="/admin/DownloadReports">
+                              <div class="modal-body">
+                                  <div class="form-group">
+                                      <label for="reportName">Report Name</label>
+                                      <input type="text" class="form-control" id="reportName" name="reportName" placeholder="Report Name" required>
+                                  </div>
+                                  
+                                  <div class="form-group">
+                                      <label for="additionalTags">Additional Tags</label>
+                                      <input type="text" class="form-control" id="additionalTags" name="additionalTags" placeholder="Additional Tags (e.g Management, Revenue)">
+                                  </div>
+                                    <div class="form-group">
+                                        <label for="reportDescription">Report Description</label>
+                                        <textarea class="form-control" id="reportDescription" name="reportDescription" rows="3" placeholder="Report Description" required></textarea>
+                                  </div>
+                                  <div class="form-group">
+                                    {{!-- start date --}}
+                                    <label for="startDate">Start Date</label>
+                                    <input type="date" class="form-control" id="startDate" name="startDate" placeholder="Start Date" required>
+                                  </div>
+                                    <div class="form-group">
+                                        {{!-- end date --}}
+                                        <label for="endDate">End Date</label>
+                                        <input type="date" class="form-control" id="endDate" name="endDate" placeholder="End Date" required>
+                                    </div>
+                                  
+                              <div class="modal-body">
+                                  <div class="row">
+                                      <div class="col-12">
+                                          <div class="form-floating ">
+                                              
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div class="row">
+                                      <div class="col-6">
+                                          <div class="form-floating ">
+                                              
+                                          </div>
+                                      </div>
+                                      <div class="col-6">
+                                          <div class="form-floating ">
+                                              
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <div class="row chartselect">
+                                      <div class="col-12">
+                                          <label for="charts">Charts</label>
+                                          <ul>
+                                              <li>
+                                                  <input type="checkbox" id="userTraffic" name="userTraffic" value="NoOfUsersJoinedChart">
+                                                  <label for="userTraffic">User Sign Ups Traffic</label>
+                                              </li>
+                                              <li>
+                                                  <input type="checkbox" id="subscriptionTraffic" name="subscriptionTraffic" value="subscriptionTraffic">
+                                                  <label for="charts">Newsletter Subscription Traffic</label>
+                                              </li>
+                                              {{!-- <li>
+                                                  <input type="checkbox" id="charts" name="charts" value="charts">
+                                                  <label for="charts">Customer Satisfaction</label>
+                                              </li> --}}
+                                              
+                                              
+                                          </ul>
+                                          <label for="piecharts">Pie Charts</label>
+                                          <ul>
+                                              <li>
+                                                  <input type="checkbox" id="userGenders" name="userGenders" value="userGenders">
+                                                  <label for="TrafficLogs">User Genders</label>
+                                              </li>
+                                              <li>
+                                                  <input type="checkbox" id="userRoles" name="userRoles" value="userRoles">
+                                                  <label for="charts">User Roles</label>
+                                              </li>
+                                              
+                                              
+                                              
+                                          </ul>
+                                          <label for="piecharts">Bar Charts</label>
+                                          <ul>
+                                              <li>
+                                                  <input type="checkbox" id="customerSatisfaction" name="customerSatisfaction" value="customerSatisfaction">
+                                                  <label for="customerSatisfaction">Customer Satisfaction</label>
+                                              </li>  
+                                          </ul>
+                                          
+
+                                          {{!-- <label for="logs">Logs</label>
+                                          <ul>
+                                              <li>
+                                                  <input type="checkbox" id="TrafficLogs" name="TrafficLogs" value="TrafficLogs">
+                                                  <label for="TrafficLogs">Traffic Logs</label>
+                                              </li> --}}
+                                              {{!-- <li>
+                                                  <input type="checkbox" id="subscriptionTrafficLogs" name="subscriptionTrafficLogs" value="subscriptionTrafficLogs">
+                                                  <label for="charts">Newsletter Subscription Traffic Logs</label>
+                                              </li> --}}
+                                              
+                                              
+                                              
+                                          {{!-- </ul> --}}
+                                          </div>    
+                                      </div>
+                                     
+                                  </div>
+                                  <div class="row dbselect">
+                                      <div class="col-12">
+                                          <div class="form-floating ">
+                                             
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                  <button type="submit" class="btn btn-primary" onsubmit="done()" onclick="generatePDF()">Create</button>
+                              </div>
+                          </form>
+                      </div>
+                  </div>
+                  </div>
+                  {{!-- Report Modal End --}}
+                    {{!-- <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                    <a class="nav-link px-3 dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Charts
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu" aria-labelledby="navbarDarkDropdownMenuLink" role="presentation">
+                        <li class="nav-item" role="presentation"><a class="dropdown-item" data-bs-toggle="tab" data-bs-target="#inventoryChart" type="button" role="tab">Inventory</a></li>
+                        <li class="nav-item" role="presentation"><a class="dropdown-item" data-bs-toggle="tab" data-bs-target="#salesChart" type="button" role="tab">Sales</a></li>
+                        <li class="nav-item" role="presentation"><a class="dropdown-item" data-bs-toggle="tab" data-bs-target="#TrafficChart" type="button" role="tab">Traffic</a></li>
+                    </ul>
+                    </li>
+                </ul> --}}
+                    
+                {{!-- </ul> --}}
+            </div>
+            <div class="card-body ">
+                <div class="tab-content d-flex flex-column" id="reportTabContent">
+                    {{!-- <p>Last Updated: </p> --}}
+                    <div id="inventory" class="tab-pane fade show active" role="tabpanel" aria-labelledby="inventory-tab">
+                         <!-- User Roles Pie Chart -->
+                        <div class="card-body">
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">User Roles</h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="chart-pie pt-4">
+                                        <canvas id="UserRolesPieChart"></canvas>
+                                    </div>
+                                    <hr>
+                                    <div class="text-center">
+                                        <h5 class="text-gray-900 m-0">User Roles</h5>
+                                        <span class="text-gray-600 small">List Of Our Users</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                        {{!-- User Genders Pie Chart --}}
+                        <div class="card shadow mb-4">
+                            <!-- Card Header - Dropdown -->
+                            <div class="card-header py-3">
+                                <h6 class="m-0 font-weight-bold text-primary">User Genders</h6>
+                            </div>
+                            <!-- Card Body -->
+                            <div class="card-body">
+                                <div class="chart-pie pt-4">
+                                    <canvas id="UserGendersPieChart"></canvas>
+                                </div>
+                                <hr>
+                                <div class="text-center">
+                                    <h5 class="text-gray-900 m-0">User Genders</h5>
+                                    <span class="text-gray-600 small">List Of Our Users Genders</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        </div>
+
+                        
+                        
+                    </div>
+                    <div id="sales" class="tab-pane fade " role="tabpanel" aria-labelledby="sales-tab">
+                        {{!-- User Ages Bar Chart --}}
+                        <div class="card-body">
+                            
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">User Ages Questionaire</h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="chart-pie pt-4">
+                                        <canvas id="SurveyQuestionsAge"></canvas>
+                                    </div>
+                                    <hr>
+                                    <div class="text-center">
+                                        <h5 class="text-gray-900 m-0">User Ages</h5>
+                                        <span class="text-gray-600 small">List Of Our Users Ages</span>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{!-- User Occupation Pie Chart --}}
+                        <div class="card-body">
+                            
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">User Occupation Questionaire</h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="chart-pie pt-4">
+                                        <canvas id="UserOccupationPieChart"></canvas>
+                                    </div>
+                                    <hr>
+                                    <div class="text-center">
+                                        <h5 class="text-gray-900 m-0">User Occupation</h5>
+                                        <span class="text-gray-600 small">List Of Our Users Occupations</span>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        
+                    </div>
+                    
+                    <div id="traffic" class="tab-pane fade" role="tabpanel" aria-labelledby="traffic-tab">
+                    <div class="card" style="padding:10px">
+                    <div>
+
+                    <h2>Current traffic logs</h2>  
+                    </div>
+                    
+                    <div>
+                    <table class="table table-striped">
+                    <thead>
+                    <tr>
+                    
+                    <th>Description</th>
+                    <th>Role</th>
+                    <th>Joined At</th>
+                    
+                    
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{#each traffic}}
+                        <tr>
+                        
+                        <td>{{this.description}}</td>
+                        <td>{{this.role}}</td>
+                        <td>{{this.createdAt}}</td>
+                        
+                        
+                        
+                        </tr>
+                    {{/each}}
+                
+                    </tbody>
+                    </table>
+                            </div>
+                        </div>
+
+                    <div class="card" style="padding:10px">
+                    <div>
+
+                    <h2>NewsLetter Subscription Traffic</h2>  
+                    </div>
+                    
+                    <div>
+                    <table class="table table-striped">
+                    <thead>
+                    <tr>
+                    
+                    <th>Description</th>
+                    
+                    <th>Registered On</th>
+                    
+                    
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{#each newsLetterTraffic}}
+                        <tr>
+                        
+                        <td>{{this.description}}</td>
+                        <td>{{this.date}}</td>
+                        
+                        
+                        
+                        
+                        </tr>
+                    {{/each}}
+                
+                    </tbody>
+                    </table>
+                            </div>
+                        </div>
+                        
+
+                    </div>
+
+            <div id="TrafficChart" class="fade" role="tabpanel">
+            <!-- Area Chart Users Joined Start -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">User Activity</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="NoOfUsersJoinedChart"></canvas>
+                    </div>
+                    <hr>
+                    <div class="text-center">
+                        <h5 class="text-gray-900 m-0" id="usersJoinedSortedBy">No. of Users Joined By Day</h5>
+                        {{!-- <span class="text-gray-600 small">Last 7 days</span> --}}
+                    </div>
+                    <button class="btn btn-primary" id="day" onclick="setChartType(this)">Day</button>
+                    <button class="btn btn-secondary" id="month" onclick="setChartType(this)">Month</button>
+                    <button class="btn btn-warning" id="year" onclick="setChartType(this)">Year</button>
+                    
+                </div>
+                
+            </div>
+            <!-- Area Chart Users Joined End -->
+            <!-- Area Chart Users Subscribed Start -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">User Subscription Activity(NewsLetter)</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="NoOfUsersSubscribedChart"></canvas>
+                    </div>
+                    <hr>
+                    <div class="text-center">
+                        <h5 class="text-gray-900 m-0" id="usersSubscribedSortedBy">No. of Users Subscribed By Day</h5>
+                        {{!-- <span class="text-gray-600 small">Last 7 days</span> --}}
+                    </div>
+                    <button class="btn btn-primary" id="daySubscribed" onclick="setChartTypeNewsLetter(this)">Day</button>
+                    <button class="btn btn-secondary" id="monthSubscribed" onclick="setChartTypeNewsLetter(this)">Month</button>
+                    <button class="btn btn-warning" id="yearSubscribed" onclick="setChartTypeNewsLetter(this)">Year</button>
+                    
+                </div>
+                
+            </div>
+            <!-- Area Chart Users Subscribed End -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Customer Statisfaction</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-bar">
+                        <canvas id="CustomerSatisfactionBarchart"></canvas>
+                    </div>
+                    <hr>
+                    <div class="text-center">
+                        <h5 class="small"><b>Customer Satisfaction Entries</b></h5>
+                        <h4 class="small font-weight-bold text-primary">Customer Ratings (1-5)</h4>
+                    
+                </div>
+            </div>  
+
+            
+                    
+            </div>
+            </div>
+
+            
+                    
+                    
+
+                
+            
+            </div>
+            
+            </div>
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js"></script>
+    <script src="/scripts/loader.js"></script>
+
+<script>
+    
+</script>
+    
+    

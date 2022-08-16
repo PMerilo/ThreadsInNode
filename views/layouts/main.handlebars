@@ -9,7 +9,7 @@
     {{>_links}}
 
     <title>Threads In Time</title>
-    <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+    {{!-- <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
     <link rel="stylesheet" href="styles/js-snackbar.css">
     <script src="js/js-snackbar.js"></script>
     <df-messenger
@@ -18,7 +18,15 @@
     chat-title="Chatty"
     agent-id="221170f4-72db-467a-a988-8de654e227fe"
     language-code="en"
-    ></df-messenger>
+    ></df-messenger> --}}
+    <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+<df-messenger
+  chat-icon="https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;PMerilo&#x2F;ThreadsInNode&#x2F;master&#x2F;public&#x2F;images&#x2F;logo.png"
+  intent="WELCOME"
+  chat-title="ChatBuddy"
+  agent-id="f65c3361-12a3-4fec-b7bc-14b9a1f42050"
+  language-code="en"
+></df-messenger>
 </head>
 <body>
     

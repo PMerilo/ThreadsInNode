@@ -1,3 +1,4 @@
+
 <nav class="navbar navbar-expand-lg navbar-light " style="background-color:#ffffff;">
 
   <div class="container-fluid">
@@ -29,26 +30,86 @@
     {{else}}
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
+ <!-- Topbar Search -->
+          <li class="nav-item" style="padding-right:30px">
+          <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" action="/search" method="post">
+                        <div class="input-group">
+                         
+                            <input type="text" id="search" name="search" class="form-control bg-light border-0 small" placeholder="Search for..."
+                                aria-label="Search" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-secondary" type="submit">
+                                    <i class="bx bxs-search icon"></i>
+                                </button>
+                            </div>
+                        </div>
+                    
+          </li>
+          
+          
+          {{!-- <li class="nav-item" style="padding-right:30px">
+            
+            <div class="wrapper">
+        <div class="values">
+          <span id="range1">
+            0
+          </span>
+          <span> &dash; </span>
+          <span id="range2">
+            100
+          </span>
+        </div>
+        <div class="container">
+          <div class="slider-track"></div>
+          <label for="min">Min</label>
+          <input type="range" min="0" max="9999" value="30" id="slider-1" name="min" oninput="slideOne()">
+          <label for="max">Max</label>
+          <input type="range" min="0" max="9999" value="70" id="slider-2" name="max" oninput="slideTwo()">
+        </div>
+      </div>
+                        
+          </li> --}}
+</form>
         <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownSort" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Sort By
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdownSort">
+            <li>
+              <a class="dropdown-item" href="/sort=allTypes">All Types</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/sort=Alphabetically">Sort Alphabetically</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/sort=Price">Sort By Price</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/sort=MostPopular">Most Popular</a>
+            </li>
+          </ul>
+        </li>
+                 
+        <li class="nav-item dropdown">
+          
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Category
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             <li>
-              <a class="dropdown-item" href="">T-Shirts & Tops</a>
+              <a class="dropdown-item" href="/category=T-Shirts & Tops">T-Shirts & Tops</a>
             </li>
             <li>
-              <a class="dropdown-item" href="">Jeans & Joggers</a>
+              <a class="dropdown-item" href="/category=Jeans & Joggers">Jeans & Joggers</a>
             </li>
             <li>
-              <a class="dropdown-item" href="">Shorts & Skirts</a>
+              <a class="dropdown-item" href="/category=Shorts & Skirts">Shorts & Skirts</a>
             </li>
             <li>
-              <a class="dropdown-item" href="">Dresses</a>
+              <a class="dropdown-item" href="/category=Dresses">Dresses</a>
             </li>
             <li>
-              <a class="dropdown-item" href="">Hoodies</a>
+              <a class="dropdown-item" href="/category=Hoodies">Hoodies</a>
             </li>
           </ul>
         </li>
@@ -67,6 +128,9 @@
         <li class="nav-item">
           <a class="nav-link" href="/newsLetter">News Letter</a>
         </li>
+        {{!-- <li class="nav-item">
+          <a class="nav-link" href="/Survey">Survey</a>
+        </li> --}}
 
       </ul>
       {{/equals}}
@@ -77,14 +141,14 @@
         {{else}}
         <!-- Nav Item - Messages -->
         <li class="nav-item dropdown no-arrow mx-1">
-        <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
+        <a class="nav-link dropdown-toggle" href="/messages" id="messagesDropdown" role="button"
         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="bx bxs-envelope bx-fw icon"></i>
         <!-- Counter - Messages -->
         <span class="badge badge-danger badge-counter">{{user.MessagesCount}}</span>
         </a>
         <!-- Dropdown - Messages -->
-        <div class="dropdown-list dropdown-menu dropdown-menu-end shadow animated--grow-in"
+        {{!-- <div class="dropdown-list dropdown-menu dropdown-menu-end shadow animated--grow-in"
         aria-labelledby="messagesDropdown">
         <h6 class="dropdown-header">
          Message Center
@@ -105,7 +169,7 @@
                                 
           <a class="dropdown-item text-center small text-gray-500" href="/messages">Read More Messages</a>
                                 
-         </div>
+         </div> --}}
         </li>
         {{/equals}}
         {{/if}}
@@ -222,3 +286,39 @@
   }
   
 </style>
+
+<script>
+  window.onload = function () {
+  slideOne();
+  slideTwo();
+};
+
+let sliderOne = document.getElementById("slider-1");
+let sliderTwo = document.getElementById("slider-2");
+let displayValOne = document.getElementById("range1");
+let displayValTwo = document.getElementById("range2");
+let minGap = 0;
+let sliderTrack = document.querySelector(".slider-track");
+let sliderMaxValue = document.getElementById("slider-1").max;
+
+function slideOne() {
+  if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
+    sliderOne.value = parseInt(sliderTwo.value) - minGap;
+  }
+  displayValOne.textContent = sliderOne.value;
+  fillColor();
+}
+function slideTwo() {
+  if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
+    sliderTwo.value = parseInt(sliderOne.value) + minGap;
+  }
+  displayValTwo.textContent = sliderTwo.value;
+  fillColor();
+}
+function fillColor() {
+  percent1 = (sliderOne.value / sliderMaxValue) * 100;
+  percent2 = (sliderTwo.value / sliderMaxValue) * 100;
+  sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${percent1}% , #3264fe ${percent1}% , #3264fe ${percent2}%, #dadae5 ${percent2}%)`;
+}
+
+</script>
