@@ -1,297 +1,301 @@
 <link rel="stylesheet" href="../styles/dashboard.css">
 <!-- Begin Page Content -->
 <div class="container-fluid">
-    <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Admin Dashboard</h1>
-    <div class="row">
-        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-            <a class="dashboard-stat red" href="#">
-                <div class="visual">
-                    <i class='bx bx-credit-card'></i>
-                </div>
-                <div class="details">
-                    <div class="number">
-                        <span id="sales">$0</span>
-                    </div>
-                    <div class="desc">Total Sales</div>
-                </div>
-            </a>
-        </div>
-        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-            <a class="dashboard-stat hoki" href="/admin/revenue">
-                <div class="visual">
-                    <i class='bx bx-dollar'></i>
-                </div>
-                <div class="details">
-                    <div class="number">
-                        <span id="revenue">$0</span>
-                    </div>
-                    <div class="desc">Total Revenue</div>
-                </div>
-            </a>
-        </div>
-        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-            <a class="dashboard-stat blue" href="#">
-                <div class="visual">
-                    <i class='bx bx-package'></i>
-                </div>
-                <div class="details">
-                    <div class="number">
-                        <span id="orders">0</span>
-                    </div>
-                    <div class="desc">Total Orders</div>
-                </div>
-            </a>
-        </div>
-        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-            <a class="dashboard-stat purple" href="#">
-                <div class="visual">
-                    <i class='bx bxs-user'></i>
-                </div>
-                <div class="details">
-                    <div class="number">
-                        <span id="customers">0</span>
-                    </div>
-                    <div class="desc">Customers</div>
-                </div>
-            </a>
-        </div>
-    </div>
-    <!-- Content Row -->
-    {{!-- <div class="row">
-        <!-- Total Number Of Users  -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Our Registered Users (Total)</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{totalUsers}}</div>
-                            <br>
-                            <div class="card-footer d-flex align-items-center justify-content-between">
-                                <a type="button" class="small text-black stretched-link" data-bs-toggle="modal"
-                                    data-bs-target="#Visitors_Today">View Details</a>
-                                <div class="small text-white"><i class="bi bi-chevron-right"></i></div>
-                            </div>
+    <div class="card">
 
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                        </div>
+        <!-- Page Heading -->
+        <h1 class="h3 mb-2 text-gray-800 p-2">Admin Dashboard</h1>
+        <div class="row p-2">
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                <a class="dashboard-stat red" href="#">
+                    <div class="visual">
+                        <i class='bx bx-credit-card'></i>
                     </div>
-                </div>
+                    <div class="details">
+                        <div class="number">
+                            <span id="sales">$0</span>
+                        </div>
+                        <div class="desc">Total Sales</div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                <a class="dashboard-stat hoki" href="/admin/revenue">
+                    <div class="visual">
+                        <i class='bx bx-dollar'></i>
+                    </div>
+                    <div class="details">
+                        <div class="number">
+                            <span id="revenue">$0</span>
+                        </div>
+                        <div class="desc">Total Revenue</div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                <a class="dashboard-stat blue" href="#">
+                    <div class="visual">
+                        <i class='bx bx-package'></i>
+                    </div>
+                    <div class="details">
+                        <div class="number">
+                            <span id="orders">0</span>
+                        </div>
+                        <div class="desc">Total Orders</div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                <a class="dashboard-stat purple" href="#">
+                    <div class="visual">
+                        <i class='bx bxs-user'></i>
+                    </div>
+                    <div class="details">
+                        <div class="number">
+                            <span id="customers">0</span>
+                        </div>
+                        <div class="desc">Customers</div>
+                    </div>
+                </a>
             </div>
         </div>
-
-        <!-- Subscribers Card -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Subscribed to our newsLetter (Total)</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{totalSubs}}</div>
-                            <br>
-                            <div class="card-footer d-flex align-items-center justify-content-between">
-                                <a type="button" class="small text-black stretched-link" data-bs-toggle="modal"
-                                    data-bs-target="#Subscribers_Today">View Details</a>
-                                <div class="small text-white"><i class="bi bi-chevron-right"></i></div>
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Number of Reports Card  -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Reports(Total)
-                            </div>
-                            <div class="row no-gutters align-items-center">
-                                <div class="col-auto">
-
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{totalReports}}</div>
-                                    <br>
-                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"></div>
-                                </div>
+        <!-- Content Row -->
+        {{!-- <div class="row">
+            <!-- Total Number Of Users  -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Our Registered Users (Total)</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{totalUsers}}</div>
                                 <br>
                                 <div class="card-footer d-flex align-items-center justify-content-between">
                                     <a type="button" class="small text-black stretched-link" data-bs-toggle="modal"
-                                        data-bs-target="#Reports_Today">View Details</a>
+                                        data-bs-target="#Visitors_Today">View Details</a>
                                     <div class="small text-white"><i class="bi bi-chevron-right"></i></div>
                                 </div>
 
-
-                                <!--                                <div class="col">-->
-                                <!--                                    <div class="progress progress-sm mr-2">-->
-                                <!--                                        <div class="progress-bar bg-info" role="progressbar"-->
-                                <!--                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"-->
-                                <!--                                            aria-valuemax="100"></div>-->
-                                <!--                                    </div>-->
-                                <!--                                </div>-->
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-calendar fa-2x text-gray-300"></i>
                             </div>
                         </div>
-                        <div class="col-auto">
-                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subscribers Card -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    Subscribed to our newsLetter (Total)</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{totalSubs}}</div>
+                                <br>
+                                <div class="card-footer d-flex align-items-center justify-content-between">
+                                    <a type="button" class="small text-black stretched-link" data-bs-toggle="modal"
+                                        data-bs-target="#Subscribers_Today">View Details</a>
+                                    <div class="small text-white"><i class="bi bi-chevron-right"></i></div>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                            </div>
+
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Number of Ticket Card -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Current Pending Tickets</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{totalTickets}}</div>
-                            <br>
-                            <div class="card-footer d-flex align-items-center justify-content-between">
-                                <a type="button" class="small text-black stretched-link" data-bs-toggle="modal"
-                                    data-bs-target="#Pending_Tickets">View Details</a>
-                                <div class="small text-white"><i class="bi bi-chevron-right"></i></div>
+            <!-- Number of Reports Card  -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-info shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Reports(Total)
+                                </div>
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col-auto">
+
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{totalReports}}</div>
+                                        <br>
+                                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"></div>
+                                    </div>
+                                    <br>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a type="button" class="small text-black stretched-link" data-bs-toggle="modal"
+                                            data-bs-target="#Reports_Today">View Details</a>
+                                        <div class="small text-white"><i class="bi bi-chevron-right"></i></div>
+                                    </div>
+
+
+                                    <!--                                <div class="col">-->
+                                    <!--                                    <div class="progress progress-sm mr-2">-->
+                                    <!--                                        <div class="progress-bar bg-info" role="progressbar"-->
+                                    <!--                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"-->
+                                    <!--                                            aria-valuemax="100"></div>-->
+                                    <!--                                    </div>-->
+                                    <!--                                </div>-->
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
                             </div>
                         </div>
-                        <div class="col-auto">
-                            <i class="fas fa-comments fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Number of Ticket Card -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-warning shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                    Current Pending Tickets</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{totalTickets}}</div>
+                                <br>
+                                <div class="card-footer d-flex align-items-center justify-content-between">
+                                    <a type="button" class="small text-black stretched-link" data-bs-toggle="modal"
+                                        data-bs-target="#Pending_Tickets">View Details</a>
+                                    <div class="small text-white"><i class="bi bi-chevron-right"></i></div>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-comments fa-2x text-gray-300"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div> --}}
+        </div> --}}
 
-    <div class="row">
-        <div class="col-xl-8 col-lg-7">
-            <!-- Area Chart Users Joined By Day -->
-            <div class="card shadow mb-4 h-90">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">User Activity</h6>
-                </div>
-                <div class="card-body">
-                    <div class="chart-area">
-                        <canvas id="NoOfUsersJoinedChart"></canvas>
+        <div class="row p-2">
+            <div class="col-xl-8 col-lg-7">
+                <!-- Area Chart Users Joined By Day -->
+                <div class="card shadow mb-4 h-90">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">User Activity</h6>
                     </div>
-                    <hr>
-                    <div class="text-center">
-                        <h5 class="text-gray-900 m-0" id="usersJoinedSortedBy">No. of Users Joined By Day</h5>
-                        {{!-- <span class="text-gray-600 small">Last 7 days</span> --}}
-                    </div>
-                    <button class="btn btn-primary" id="day" onclick="setChartType(this)">Day</button>
-                    <button class="btn btn-secondary" id="month" onclick="setChartType(this)">Month</button>
-                    <button class="btn btn-warning" id="year" onclick="setChartType(this)">Year</button>
-                </div>
-            </div>
-            <!-- Area Chart Users Subscribed Start -->
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">User Subscription Activity(NewsLetter)</h6>
-                </div>
-                <div class="card-body">
-                    <div class="chart-area">
-                        <canvas id="NoOfUsersSubscribedChart"></canvas>
-                    </div>
-                    <hr>
-                    <div class="text-center">
-                        <h5 class="text-gray-900 m-0" id="usersSubscribedSortedBy">No. of Users Subscribed By Day</h5>
-                        {{!-- <span class="text-gray-600 small">Last 7 days</span> --}}
-                    </div>
-                    <button class="btn btn-primary" id="daySubscribed"
-                        onclick="setChartTypeNewsLetter(this)">Day</button>
-                    <button class="btn btn-secondary" id="monthSubscribed"
-                        onclick="setChartTypeNewsLetter(this)">Month</button>
-                    <button class="btn btn-warning" id="yearSubscribed"
-                        onclick="setChartTypeNewsLetter(this)">Year</button>
-                </div>
-            </div>
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Sales</h6>
-                </div>
-                <div class="card-body">
-                    <div class="chart-area">
-                        <canvas id="TITSales"></canvas>
-                    </div>
-                    <hr>
-                    <div class="text-center">
-                        <h5 class="text-gray-900 m-0">Threads In Time Sales</h5>
-                        <h4 class="small font-weight-bold text-primary actual-date-span"></h4>
-                    </div>
-                    <div class="options d-flex text-left m-auto">
-                        <i class='bx bx-chevron-left arrow-icon previous-week' id="prev-btn"></i>
-                        <div class="date-span"></div>
-                        <i class='bx bx-chevron-left bx-rotate-180 arrow-icon next-week' id="next-btn"></i>
-                        <input type="hidden" id="weekcount" value="0">
-                        <input type="hidden" id="prev" value="">
-                        <input type="hidden" id="next" value="">
+                    <div class="card-body">
+                        <div class="chart-area">
+                            <canvas id="NoOfUsersJoinedChart"></canvas>
+                        </div>
+                        <hr>
+                        <div class="text-center">
+                            <h5 class="text-gray-900 m-0" id="usersJoinedSortedBy">No. of Users Joined By Day</h5>
+                            {{!-- <span class="text-gray-600 small">Last 7 days</span> --}}
+                        </div>
+                        <button class="btn btn-primary" id="day" onclick="setChartType(this)">Day</button>
+                        <button class="btn btn-secondary" id="month" onclick="setChartType(this)">Month</button>
+                        <button class="btn btn-warning" id="year" onclick="setChartType(this)">Year</button>
                     </div>
                 </div>
-            </div>
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Customer Statisfaction</h6>
-                </div>
-                <div class="card-body">
-                    <div class="chart-bar">
-                        <canvas id="CustomerSatisfactionBarchart"></canvas>
+                <!-- Area Chart Users Subscribed Start -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">User Subscription Activity(NewsLetter)</h6>
                     </div>
-                    <hr>
-                    <div class="text-center">
-                        <h5 class="small"><b>Customer Satisfaction Entries</b></h5>
-                        <h4 class="small font-weight-bold text-primary">Customer Ratings (1-5)</h4>
+                    <div class="card-body">
+                        <div class="chart-area">
+                            <canvas id="NoOfUsersSubscribedChart"></canvas>
+                        </div>
+                        <hr>
+                        <div class="text-center">
+                            <h5 class="text-gray-900 m-0" id="usersSubscribedSortedBy">No. of Users Subscribed By Day
+                            </h5>
+                            {{!-- <span class="text-gray-600 small">Last 7 days</span> --}}
+                        </div>
+                        <button class="btn btn-primary" id="daySubscribed"
+                            onclick="setChartTypeNewsLetter(this)">Day</button>
+                        <button class="btn btn-secondary" id="monthSubscribed"
+                            onclick="setChartTypeNewsLetter(this)">Month</button>
+                        <button class="btn btn-warning" id="yearSubscribed"
+                            onclick="setChartTypeNewsLetter(this)">Year</button>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Donut Chart -->
-        <div class="col-xl-4 col-lg-5">
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">User Roles</h6>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    <div class="chart-pie pt-4">
-                        <canvas id="UserRolesPieChart"></canvas>
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Sales</h6>
                     </div>
-                    <hr>
-                    <div class="text-center">
-                        <h5 class="text-gray-900 m-0">User Roles</h5>
-                        <span class="text-gray-600 small">List Of Our Users</span>
+                    <div class="card-body">
+                        <div class="chart-area">
+                            <canvas id="TITSales"></canvas>
+                        </div>
+                        <hr>
+                        <div class="text-center">
+                            <h5 class="text-gray-900 m-0">Threads In Time Sales</h5>
+                            <h4 class="small font-weight-bold text-primary actual-date-span"></h4>
+                        </div>
+                        <div class="options d-flex text-left m-auto">
+                            <i class='bx bx-chevron-left arrow-icon previous-week' id="prev-btn"></i>
+                            <div class="date-span"></div>
+                            <i class='bx bx-chevron-left bx-rotate-180 arrow-icon next-week' id="next-btn"></i>
+                            <input type="hidden" id="weekcount" value="0">
+                            <input type="hidden" id="prev" value="">
+                            <input type="hidden" id="next" value="">
+                        </div>
+                    </div>
+                </div>
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Customer Statisfaction</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-bar">
+                            <canvas id="CustomerSatisfactionBarchart"></canvas>
+                        </div>
+                        <hr>
+                        <div class="text-center">
+                            <h5 class="small"><b>Customer Satisfaction Entries</b></h5>
+                            <h4 class="small font-weight-bold text-primary">Customer Ratings (1-5)</h4>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">User Genders</h6>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    <div class="chart-pie pt-4">
-                        <canvas id="UserGendersPieChart"></canvas>
+            <!-- Donut Chart -->
+            <div class="col-xl-4 col-lg-5">
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">User Roles</h6>
                     </div>
-                    <hr>
-                    <div class="text-center">
-                        <h5 class="text-gray-900 m-0">User Genders</h5>
-                        <span class="text-gray-600 small">List Of Our Users Genders</span>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <div class="chart-pie pt-4">
+                            <canvas id="UserRolesPieChart"></canvas>
+                        </div>
+                        <hr>
+                        <div class="text-center">
+                            <h5 class="text-gray-900 m-0">User Roles</h5>
+                            <span class="text-gray-600 small">List Of Our Users</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">User Genders</h6>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <div class="chart-pie pt-4">
+                            <canvas id="UserGendersPieChart"></canvas>
+                        </div>
+                        <hr>
+                        <div class="text-center">
+                            <h5 class="text-gray-900 m-0">User Genders</h5>
+                            <span class="text-gray-600 small">List Of Our Users Genders</span>
+                        </div>
                     </div>
                 </div>
             </div>
