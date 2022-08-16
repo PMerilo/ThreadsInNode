@@ -135,7 +135,7 @@ router.get('/salesPerDay/:id', async (req, res) => {
   let cols = ["Dates", "Sales"];
 
   sales.forEach(element => {
-    let rawData = [moment(element.createdAt).format("DD/MM/YYYY"), (element.product_price * element.qtyPurchased)];
+    let rawData = [moment(element.createdAt).format("DD/MM/YYYY"), element.seller_cut];
     data.push(rawData)
   });
 
@@ -216,16 +216,16 @@ router.post('/storestats', async (req, res) => {
   const customers = await OrderItems.count({where : {seller_id : req.body.id}})
   const orders = await OrderItems.count({where : {seller_id : req.body.id}, distinct: true})
   var user = await User.findByPk(req.user.id)
-  var balance = user.total_balance
+  var balance = (user.total_balance).toFixed(2)
   var bankacc = user.bankAccount
   
   var sellerRevenue = 0
   sellers.forEach(element => {
-    let data = ((element.product_price * element.qtyPurchased) + element.shipping_rate)
+    let data = element.seller_cut
     sellerRevenue += data
   });
-  const revenue = ((sellerRevenue / 100) * 83).toFixed(2)
-  res.send({revenue : revenue, orders: orders, customers : customers, balance:balance,bank:bankacc})
+  sellerRevenue = sellerRevenue.toFixed(2)
+  res.send({revenue : sellerRevenue, orders: orders, customers : customers, balance:balance,bank:bankacc})
 });
 module.exports = router;
 

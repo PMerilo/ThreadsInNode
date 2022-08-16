@@ -227,10 +227,6 @@ const fulfillOrder = async (session) => {
     var shipping_rate = parseInt(session.total_details.amount_shipping)
     console.log(shipping_rate)
     var shipping_type = "Free Shipping";
-    if (shipping_rate == 1000) {
-        shipping_type = "Express Shipping"
-        shipping_rate = shipping_rate / 100
-    }
 
     var cartproducts = await Cart.findOne({ where: { id: id }, include: { model: Product } })
 
@@ -250,9 +246,14 @@ const fulfillOrder = async (session) => {
 
     // console.log(JSON.stringify(cartproducts))
     cartproducts.products.forEach(async element => {
+
+        if (shipping_rate == 1000) {
+            shipping_type = "Express Shipping"
+            shipping_rate = parseInt(shipping_rate / 100)
+        }
         var seller = await User.findByPk(parseInt(element.OwnerID))
         var total_bal = seller.total_balance
-        var total_balance = (total_bal + parseInt((((element.cartproduct.qtyPurchased * element.price)) * 0.83) + (shipping_rate))).toFixed(2)
+        var total_balance = ((((element.cartproduct.qtyPurchased * element.price)) * 0.83) + (shipping_rate)).toFixed(2)
         console.log(total_bal)
         console.log(total_balance)
         console.log(shipping_rate)
@@ -264,7 +265,7 @@ const fulfillOrder = async (session) => {
             product_price: element.price,
             shipping_rate: shipping_rate,
             shipping_type: shipping_type,
-            seller_cut: parseInt((((element.cartproduct.qtyPurchased * element.price)) * 0.83) + (shipping_rate)).toFixed(2),
+            seller_cut: ((((element.cartproduct.qtyPurchased * element.price)) * 0.83) + (shipping_rate)).toFixed(2),
             tit_cut: ((element.cartproduct.qtyPurchased * element.price) * 0.17).toFixed(2),
             seller_name: element.Owner,
             seller_id: element.OwnerID,
@@ -272,7 +273,7 @@ const fulfillOrder = async (session) => {
             posterURL: element.posterURL,
             review: 0
         })
-        var shipping_rate = 0
+        shipping_rate = 0
         // var payload = {title : "New Order Placed",body: "body",url: "",senderId: "",recipient: `${element.OwnerID}`}
         // let user = await User.findByPk(element.OwnerID)
         // let notification = await Notification.create({
@@ -286,7 +287,7 @@ const fulfillOrder = async (session) => {
         // var sold = element.sold + element.cartproduct.qtyPurchased
         // var sales = element.sales + (element.cartproduct.qtyPurchased*element.price)
         // var qty = element.quantity - element.cartproduct.qtyPurchased
-        await User.update({ total_balance: total_balance }, { where: { id: element.OwnerID } })
+        await User.increment({ total_balance: total_balance }, { where: { id: element.OwnerID } })
         await Product.update({ quantity: element.quantity - element.cartproduct.qtyPurchased, sold: element.sold + element.cartproduct.qtyPurchased, sales: element.sales + (element.cartproduct.qtyPurchased * element.price) }, { where: { sku: element.sku } })
     });
     var discountcode = await Reward.findOne({ where: { voucher_code: cartproducts.discountcodeused } })
@@ -316,7 +317,9 @@ router.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (req
 
     if (event.type === 'checkout.session.completed') {
         const session = event.data.object;
-        fulfillOrder(session)
+        if (session.metadata.request_type == "Checkout_Payment") {
+            fulfillOrder(session)
+        }
     }
 
     res.status(200);
@@ -396,7 +399,8 @@ router.post('/checkout', ensureAuthenticated, async (req, res) => {
                 unit_number: `${req.body.unit_number}`,
                 postal_code: `${req.body.postal_code}`,
                 email: `${req.body.email}`,
-                phone_number: `${req.body.phone}`
+                phone_number: `${req.body.phone}`,
+                request_type : "Checkout_Payment"
             },
             success_url: `http://localhost:5000/checkout/success`,
             cancel_url: `http://localhost:5000/checkout`,

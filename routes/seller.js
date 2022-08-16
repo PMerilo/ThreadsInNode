@@ -192,11 +192,11 @@ router.post('/deleteProduct', ensureAuthenticated, (req, res) => {
 })
 
 router.post('/restockProduct', ensureAuthenticated, async (req, res) => {
-    let { sku, quantity } = req.body;
-    var product = await Product.findByPk(sku)
-    console.log(sku)
+    let { uuid, quantity } = req.body;
+    var product = await Product.findByPk(uuid)
+    console.log(uuid)
     console.log(quantity)
-    await Product.update({ quantity: product.quantity + parseInt(quantity) }, { where: { sku: sku } })
+    await Product.update({ quantity: product.quantity + parseInt(quantity) }, { where: { sku: uuid } })
     flashMessage(res, 'success', product.name + " Restocked successfully");
     res.redirect("/seller/manageProducts")
 })
