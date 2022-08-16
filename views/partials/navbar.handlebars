@@ -1,18 +1,18 @@
-
 <nav class="navbar navbar-expand-lg navbar-light " style="background-color:#ffffff;">
 
   <div class="container-fluid">
 
-    <img src="/images/logo.png" width="50px" height="50px" style="margin-right:10px" >
-    {{#equals path "/seller"}}  
+    <img src="/images/logo.png" width="50px" height="50px" style="margin-right:10px">
+    {{#equals path "/seller"}}
     <a class="navbar-brand" href="/seller">Threads in Time</a>
     {{else}}
     <a class="navbar-brand" href="/">Threads in Time</a>
     {{/equals}}
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <i class='bx bx-menu toggle'></i>
     </button>
-    {{#equals path "/seller"}}  
+    {{#equals path "/seller"}}
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
@@ -30,48 +30,50 @@
     {{else}}
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
- <!-- Topbar Search -->
-          <li class="nav-item" style="padding-right:30px">
-          <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" action="/search" method="post">
-                        <div class="input-group">
-                         
-                            <input type="text" id="search" name="search" class="form-control bg-light border-0 small" placeholder="Search for..."
-                                aria-label="Search" aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-secondary" type="submit">
-                                    <i class="bx bxs-search icon"></i>
-                                </button>
-                            </div>
-                        </div>
-                    
-          </li>
-          
-          
-          {{!-- <li class="nav-item" style="padding-right:30px">
-            
-            <div class="wrapper">
-        <div class="values">
-          <span id="range1">
-            0
-          </span>
-          <span> &dash; </span>
-          <span id="range2">
-            100
-          </span>
-        </div>
-        <div class="container">
-          <div class="slider-track"></div>
-          <label for="min">Min</label>
-          <input type="range" min="0" max="9999" value="30" id="slider-1" name="min" oninput="slideOne()">
-          <label for="max">Max</label>
-          <input type="range" min="0" max="9999" value="70" id="slider-2" name="max" oninput="slideTwo()">
-        </div>
-      </div>
-                        
-          </li> --}}
-</form>
+        <!-- Topbar Search -->
+        <li class="nav-item" style="padding-right:30px">
+          <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search"
+            action="/search" method="post">
+            <div class="input-group">
+
+              <input type="text" id="search" name="search" class="form-control bg-light border-0 small"
+                placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+              <div class="input-group-append">
+                <button class="btn btn-secondary" type="submit">
+                  <i class="bx bxs-search icon"></i>
+                </button>
+              </div>
+            </div>
+
+        </li>
+
+
+        {{!-- <li class="nav-item" style="padding-right:30px">
+
+          <div class="wrapper">
+            <div class="values">
+              <span id="range1">
+                0
+              </span>
+              <span> &dash; </span>
+              <span id="range2">
+                100
+              </span>
+            </div>
+            <div class="container">
+              <div class="slider-track"></div>
+              <label for="min">Min</label>
+              <input type="range" min="0" max="9999" value="30" id="slider-1" name="min" oninput="slideOne()">
+              <label for="max">Max</label>
+              <input type="range" min="0" max="9999" value="70" id="slider-2" name="max" oninput="slideTwo()">
+            </div>
+          </div>
+
+        </li> --}}
+        </form>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownSort" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownSort" role="button" data-bs-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
             Sort By
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdownSort">
@@ -89,10 +91,11 @@
             </li>
           </ul>
         </li>
-                 
+
         <li class="nav-item dropdown">
-          
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
             Category
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -137,43 +140,42 @@
 
       <ul class="navbar-nav d-flex flex-row me-1">
         {{#if authenticated}}
-        {{#equals path "/seller"}}  
+        {{#equals path "/seller"}}
         {{else}}
         <!-- Nav Item - Messages -->
         <li class="nav-item dropdown no-arrow mx-1">
-        <a class="nav-link dropdown-toggle" href="/messages" id="messagesDropdown" role="button"
-        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="bx bxs-envelope bx-fw icon"></i>
-        <!-- Counter - Messages -->
-        <span class="badge badge-danger badge-counter">{{user.MessagesCount}}</span>
-        </a>
-        <!-- Dropdown - Messages -->
-        {{!-- <div class="dropdown-list dropdown-menu dropdown-menu-end shadow animated--grow-in"
-        aria-labelledby="messagesDropdown">
-        <h6 class="dropdown-header">
-         Message Center
-         </h6>
-                                
-           <a class="dropdown-item d-flex align-items-center" href="">
-           <div class="dropdown-list-image mr-3">
-           <img class="rounded-circle" src="/images/avatars/avatar2.jpg"
-            alt="..." height="50px">
-           <div class="status-indicator bg-success"></div>
-           </div>
-          <div class="font-weight-bold">
-
-               <div class="text-truncate">Hi You Never Fixed Messages Yet</div>
-              <div class="small text-gray-500">Mr Bobby</div>
-          </div>
+          <a class="nav-link dropdown-toggle" href="/messages" id="messagesDropdown" role="button"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="bx bxs-envelope bx-fw icon"></i>
+            <!-- Counter - Messages -->
+            <span class="badge badge-danger badge-counter">{{user.MessagesCount}}</span>
           </a>
-                                
-          <a class="dropdown-item text-center small text-gray-500" href="/messages">Read More Messages</a>
-                                
-         </div> --}}
+          <!-- Dropdown - Messages -->
+          {{!-- <div class="dropdown-list dropdown-menu dropdown-menu-end shadow animated--grow-in"
+            aria-labelledby="messagesDropdown">
+            <h6 class="dropdown-header">
+              Message Center
+            </h6>
+
+            <a class="dropdown-item d-flex align-items-center" href="">
+              <div class="dropdown-list-image mr-3">
+                <img class="rounded-circle" src="/images/avatars/avatar2.jpg" alt="..." height="50px">
+                <div class="status-indicator bg-success"></div>
+              </div>
+              <div class="font-weight-bold">
+
+                <div class="text-truncate">Hi You Never Fixed Messages Yet</div>
+                <div class="small text-gray-500">Mr Bobby</div>
+              </div>
+            </a>
+
+            <a class="dropdown-item text-center small text-gray-500" href="/messages">Read More Messages</a>
+
+          </div> --}}
         </li>
         {{/equals}}
         {{/if}}
-        {{#equals path "/seller"}}  
+        {{#equals path "/seller"}}
         {{else}}
         <li class="nav-item me-3 me-lg-0 cart">
           <a class="nav-link bx bxs-cart" href="/cart">
@@ -186,139 +188,140 @@
         {{/equals}}
 
         <li class="nav-item dropdown">
-          <a class="nav-link bx bxs-user" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" >
-            
-          </a>
-          {{#equals path "/seller"}}  
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-            {{!-- if user is not authenticated --}}
-              <a class="dropdown-item" href="/seller/sellerProfile">My Profile</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="/seller/manageProducts">My Products</a>
-            </li>
-          
-            <li>
-              <a class="dropdown-item" href="/seller/addProduct">Add Products</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="/seller/reports">Dashboard</a>
-            </li>
-            
-            
-            
-            <li>
-              <a class="dropdown-item" href="/logout">Log Out</a>
-            </li>
-            
-          </ul>
+          <a class="nav-link bx bxs-user" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
 
-          {{else}}
-          {{#if authenticated}}
-          
+          </a>
+          {{#equals path "/seller"}}
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
             {{!-- if user is not authenticated --}}
-              <a class="dropdown-item" href="/Profile">My Profile</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="/myOrders">My Orders</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="/wishlist">My Wishlist</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="/user/requests">My Request</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="/ticketHistory">Past Tickets</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="">{{user.spools}} spools</a>
-            </li>
-            
-            
-            <li>
-              <a class="dropdown-item" href="/logout">Log Out</a>
-            </li>
-            
-          </ul>
-          
-          {{else}}
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-            {{!-- if user is not authenticated --}}
-            <li>
-              <a class="dropdown-item" href="/login">Log In</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="/register">Sign Up</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="/sellerRegister">Become a Seller</a>
-            </li>
-            
-          </ul>
-          {{/if}}
+            <a class="dropdown-item" href="/seller/sellerProfile">My Profile</a>
         </li>
-        {{!-- <li class="nav-item dropdown">
-            <a class="nav-link" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" >
-            <p>{{user.name}}</p>
-            </a>
-            
-        </li> --}}
+        <li>
+          <a class="dropdown-item" href="/seller/manageProducts">My Products</a>
+        </li>
+
+        <li>
+          <a class="dropdown-item" href="/seller/addProduct">Add Products</a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="/seller/reports">Dashboard</a>
+        </li>
+
+
+
+        <li>
+          <a class="dropdown-item" href="/logout">Log Out</a>
+        </li>
+
+      </ul>
+
+      {{else}}
+      {{#if authenticated}}
+
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+        {{!-- if user is not authenticated --}}
+        <a class="dropdown-item" href="/Profile">My Profile</a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="/myOrders">My Orders</a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="/wishlist">My Wishlist</a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="/user/requests">My Request</a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="/ticketHistory">Past Tickets</a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="">{{user.spools}} spools</a>
+        </li>
+
+
+        <li>
+          <a class="dropdown-item" href="/logout">Log Out</a>
+        </li>
+
+      </ul>
+
+      {{else}}
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+        {{!-- if user is not authenticated --}}
+        <li>
+          <a class="dropdown-item" href="/login">Log In</a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="/register">Sign Up</a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="/sellerRegister">Become a Seller</a>
+        </li>
+
+      </ul>
+      {{/if}}
+      </li>
+      {{!-- <li class="nav-item dropdown">
+        <a class="nav-link" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <p>{{user.name}}</p>
+        </a>
+
+      </li> --}}
       </ul>
       {{/equals}}
-  </div>
+    </div>
 </nav>
 
 <style type="text/css">
   @media only screen and (min-width: 768px) {
-  .dropdown:hover .dropdown-menu{
-    display: block;
+    .dropdown:hover .dropdown-menu {
+      display: block;
+    }
+
+    .dropdown:hover .dropdown-menu-end {
+      display: block;
+      right: 10px;
+    }
   }
-  .dropdown:hover .dropdown-menu-end{
-    display: block;
-    right: 10px;
-  }
-  }
-  
+
   .bx {
     font-size: 1.5em;
   }
-  
 </style>
 
 <script>
   window.onload = function () {
-  slideOne();
-  slideTwo();
-};
+    slideOne();
+    slideTwo();
+  };
 
-let sliderOne = document.getElementById("slider-1");
-let sliderTwo = document.getElementById("slider-2");
-let displayValOne = document.getElementById("range1");
-let displayValTwo = document.getElementById("range2");
-let minGap = 0;
-let sliderTrack = document.querySelector(".slider-track");
-let sliderMaxValue = document.getElementById("slider-1").max;
+  let sliderOne = document.getElementById("slider-1");
+  let sliderTwo = document.getElementById("slider-2");
+  let displayValOne = document.getElementById("range1");
+  let displayValTwo = document.getElementById("range2");
+  let minGap = 0;
+  let sliderTrack = document.querySelector(".slider-track");
+  let sliderMaxValue = document.getElementById("slider-1").max;
 
-function slideOne() {
-  if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
-    sliderOne.value = parseInt(sliderTwo.value) - minGap;
+  function slideOne() {
+    if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
+      sliderOne.value = parseInt(sliderTwo.value) - minGap;
+    }
+    displayValOne.textContent = sliderOne.value;
+    fillColor();
   }
-  displayValOne.textContent = sliderOne.value;
-  fillColor();
-}
-function slideTwo() {
-  if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
-    sliderTwo.value = parseInt(sliderOne.value) + minGap;
+  function slideTwo() {
+    if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
+      sliderTwo.value = parseInt(sliderOne.value) + minGap;
+    }
+    displayValTwo.textContent = sliderTwo.value;
+    fillColor();
   }
-  displayValTwo.textContent = sliderTwo.value;
-  fillColor();
-}
-function fillColor() {
-  percent1 = (sliderOne.value / sliderMaxValue) * 100;
-  percent2 = (sliderTwo.value / sliderMaxValue) * 100;
-  sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${percent1}% , #3264fe ${percent1}% , #3264fe ${percent2}%, #dadae5 ${percent2}%)`;
-}
+  function fillColor() {
+    percent1 = (sliderOne.value / sliderMaxValue) * 100;
+    percent2 = (sliderTwo.value / sliderMaxValue) * 100;
+    sliderTrack.style.background = `linear-gradient(to right, #dadae5 ${percent1}% , #3264fe ${percent1}% , #3264fe ${percent2}%, #dadae5 ${percent2}%)`;
+  }
 
 </script>

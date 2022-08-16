@@ -554,7 +554,7 @@ router.post('/stats', async (req, res) => {
     sellerRevenue += data
   });
   const revenue = (sales - ((sellerRevenue / 100) * 83)).toFixed(2)
-  res.send({revenue : revenue, sales : sellerRevenue, orders: orders, customers : customers})
+  res.send({revenue : revenue, sales : sellerRevenue.toFixed(2), orders: orders, customers : customers})
 });
 
 router.post('/storestats', async (req, res) => {
