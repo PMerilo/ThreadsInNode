@@ -244,6 +244,7 @@ app.use("/services", services)
 app.use("/seller", seller)
 app.use("/datapipeline", datapipeline)
 app.use("/api", api)
+app.use("/msg", msg)
 
 // error handler
 app.use(function (err, req, res, next) {
