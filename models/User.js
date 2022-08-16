@@ -39,6 +39,10 @@ class User extends sequelize.Model {
         type: sequelize.DataTypes.STRING(8),
         allowNull: true,
       },
+      bankName: {
+        type: sequelize.DataTypes.STRING,
+        allowNull: true,
+      },
       bankAccount: {
         type: sequelize.DataTypes.STRING,
         allowNull: true,

@@ -393,7 +393,8 @@ router.post('/editUser/:id', async (req, res) => {
     let phoneNumber = req.body.phoneNumber;
     let gender = req.body.gender;
     let isban = req.body.isban;
-    await User.update({ name, email, phoneNumber, gender, isban }, { where: { id: req.params.id } })
+    let bankAccount = req.body.bankAccount;
+    await User.update({ name, email, phoneNumber, bankAccount, gender, isban }, { where: { id: req.params.id } })
     await TempUser.update({ email }, { where: { email: userr.email } })
     flashMessage(res, 'success', 'Account successfully edited');
     res.redirect('/admin/UserManagement')

@@ -156,16 +156,23 @@ router.get('/sellerRegister', (req, res) => {
 
 router.post('/sellerRegister', async function (req, res) {
 
-  let { name, email, password, password2 } = req.body;
+  let { name, bankName, email, password, password2 } = req.body;
 
   let isValid = true;
+  if (bankName == 'nothing'){
+    flashMessage(res, 'error', 'Please choose a bank');
+    isValid = false;
+    return res.redirect('/sellerRegister')
+  }
   if (password.length < 6) {
     flashMessage(res, 'error', 'Password must be at least 6 characters');
     isValid = false;
+    return res.redirect('/sellerRegister')
   }
   if (password != password2) {
     flashMessage(res, 'error', 'Passwords do not match');
     isValid = false;
+    return res.redirect('/sellerRegister')
   }
 
   try {
@@ -187,6 +194,7 @@ router.post('/sellerRegister', async function (req, res) {
       gender: req.body.gender,
       phoneNumber: req.body.phoneNumber,
       bankAccount: req.body.bankAccount,
+      bankName: req.body.bankName,
       role: "S"
 
     });
