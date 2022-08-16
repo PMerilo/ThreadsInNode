@@ -6,9 +6,9 @@ function RtimeClick() {
         $('.editApptpicker').find('.timings button').not($(this)).not('.ori').addClass('btn btn-lg btn-primary')
         $('.editApptpicker').find('input[name="time"]').val(this.value)
         // console.log($('input[name="time"]'))
-        $('.timelabel').text(`${$('.editApptpicker').find('input[name="date"]').val()} ${$('.editApptpicker').find('input[name="time"]').val()}`)
+        $('.editApptpicker').find('.timelabel').text(`${$('.editApptpicker').find('input[name="date"]').val()} ${$('.editApptpicker').find('input[name="time"]').val()}`)
     })
-    $('.timelabel').text(`${$('.editApptpicker').find('input[name="date"]').val()} ${$('.editApptpicker').find('input[name="time"]').val()}`)
+    $('.editApptpicker').find('.timelabel').text(`${$('.editApptpicker').find('input[name="date"]').val()} ${$('.editApptpicker').find('input[name="time"]').val()}`)
     
     $('.editApptpicker').find(`[value="${$('.timelabel').text().split(' ')[1]}"]`).addClass('btn-success')
     $('.editApptpicker').find(`[value="${$('.timelabel').text().split(' ')[1]}"]`).removeClass('btn-primary')

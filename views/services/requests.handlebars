@@ -103,13 +103,16 @@
         {{#if tailorChange}}
         <a href="#" onclick="return false;" class="text-primary pe-none">Your tailor change is being approved</a>
         {{else}}
-        {{#equals status "Ready for fitting! Please book an appointment"}}
-
+        {{#equals status "Ready for fitting! Please book your appointment"}}
+        <a href="#addApptModal" data-bs-toggle="modal" data-bs-id="{{tailorId}}" data-bs-reqId="{{id}}"
+          class="pe-auto text-black stretched-link">
+          Book Again
+        </a>
         {{else}}
-        {{/equals}}
         {{#if appointments.[0]}}
         {{#equals appointments.[0].confirmed 'Rejected'}}
-        <a href="/services/book/{{id}}" class="pe-auto text-black stretched-link">
+        <a href="#addApptModal" data-bs-toggle="modal" data-bs-id="{{tailorId}}" data-bs-reqId="{{id}}"
+          class="pe-auto text-black stretched-link">
           Your appointment scheduled for {{appointments.[0].datetimeHuman}} was denied. Click here to book again.
         </a>
         {{else}}
@@ -126,6 +129,7 @@
         </a>
         {{/if}}
         <i class="bi bi-chevron-down float-end"></i>
+        {{/equals}}
         {{/if}}
       </li>
     </ul>
@@ -153,6 +157,12 @@
         {{status}}
       </div>
       <div class="my-auto">
+        {{#equals status 'Request is completed! Please select a delivery method'}}
+        <button class="btn btn-primary delivery" style="width: 80px;" data-bs-toggle="modal" data-bs-target="#deliverModal"
+          title="Deliver" data-bs-id="{{id}}">
+          <i class="bi bi-truck"></i>
+        </button>
+        {{else}}
         {{#if chatId}}
         <button class="btn btn-success chat" style="width: 80px;" data-bs-toggle="modal" data-bs-target="#chatModal"
           data-bs-chatId="{{chatId}}">
@@ -167,6 +177,7 @@
           title="Delete" data-bs-id="{{id}}">
           <i class="fa-solid fa-ban"></i>
         </button>
+        {{/equals}}
       </div>
     </div>
 
@@ -384,8 +395,8 @@
         </div>
         <input type="hidden" class="form-control" name="time">
         <input type="hidden" class="form-control" name="tailorID" required>
+        <span class="timelabel"></span>
       </div>
-      <span class="timelabel"></span>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         <button type="button" class="btn btn-primary confirm">Save Changes</button>

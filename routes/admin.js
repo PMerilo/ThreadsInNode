@@ -84,7 +84,10 @@ router.get('/requests', async (req, res) => {
                     { userId: req.user.id },
                     { "$tailor.id$": req.user.id }
                 ],
-            }
+            },
+            order: [
+                ['createdAt', 'DESC'],
+            ]
         })
         // console.log(requests[0].toJSON())
         res.render('admin/requests', { requests })
@@ -112,10 +115,16 @@ router.post('/appointment/status', async (req, res) => {
     let x = await Request.findOne({ include: { model: Appointment, where: { id: req.body.id } } })
     x.appointments[0].confirmed = req.body.status
     x.appointments[0].save()
-    if (req.body.status === "true") {
-        x.statusCode = 3
+    if (req.body.status === 'Confirmed') {
+        x.status = "Appointment Confirmed"
+        x.adminstatus = "Appointment Confirmed"
+        x.adminColor = "green"
+        x.userColor = "green"
     } else {
-        x.statusCode = -1
+        x.status = "Appointment Confirmed"
+        x.adminstatus = "Appointment Rejected! Please book again."
+        x.adminColor = "green"
+        x.userColor = "green"
     }
     x.save()
     return res.json({});

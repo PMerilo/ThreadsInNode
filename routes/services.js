@@ -205,14 +205,18 @@ router.post('/request/edit', async (req, res) => {
 
 router.post('/appointment/add', async (req, res, next) => {
     let { tailorId, date, time, reqId } = req.body
-    console.log(req.body);
     let payload = {}
     let datetime = moment(`${date} ${time}`)
     if (!moment(datetime).isBetween(moment().add(7, 'd'), moment().add(1, "M"), 'date', '[]')) {
         flashMessage(res, 'error', `Appointment date out of range. Please pick a date between ${moment().add(7, 'd').format('DD-MM-YYYY')} and ${moment().add(1, "M").format('DD-MM-YYYY')}`)
         // return res.json({})
     } else {
-
+        let request = await Request.findByPk(reqId) 
+        if (request.status == 'Ready for fitting! Please book your appointment') {
+            type = 'Fitting'
+        } else {
+            type = 'Measurement'
+        }
 
         await Appointment.findOrCreate({
             where: {

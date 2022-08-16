@@ -75,6 +75,7 @@ router.get('/appointment/:id', async (req, res) => {
     return res.json({
         total: await Appointment.count(),
         rows: await Appointment.findAll({
+            include: Request,
             where: {
                 [Op.or]: {
                     userId: req.user.id,
@@ -83,8 +84,6 @@ router.get('/appointment/:id', async (req, res) => {
                 requestId: req.params.id
             },
             order: [["createdAt", "DESC"]],
-            limit: 1
-
         })
     })
 });
