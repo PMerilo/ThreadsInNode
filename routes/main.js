@@ -303,8 +303,6 @@ const fulfillOrder = async (session) => {
 };
 
 
-
-
 router.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (req, res) => {
     const payload = req.body;
     const sig = req.headers['stripe-signature'];
@@ -321,9 +319,9 @@ router.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (req
             fulfillOrder(session)
         }
     }
-
     res.status(200);
 });
+
 
 router.post('/checkout', ensureAuthenticated, async (req, res) => {
     var cartproducts = await Cart.findOne({ where: { id: req.user.id }, include: { model: Product } })
