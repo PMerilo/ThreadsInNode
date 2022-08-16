@@ -203,6 +203,76 @@ router.post('/request/edit', async (req, res) => {
 //     next()
 // }, serviceController.requestStatus);
 
+router.post('/appointment/add', async (req, res, next) => {
+    let { tailorId, date, time, reqId } = req.body
+    let payload = {}
+    let datetime = moment(`${date} ${time}`)
+    if (!moment(datetime).isBetween(moment().add(7, 'd'), moment().add(1, "M"), 'date', '[]')) {
+        flashMessage(res, 'error', `Appointment date out of range. Please pick a date between ${moment().add(7, 'd').format('DD-MM-YYYY')} and ${moment().add(1, "M").format('DD-MM-YYYY')}`)
+        // return res.json({})
+    } else {
+        let request = await Request.findByPk(reqId) 
+        if (request.status == 'Ready for fitting! Please book your appointment') {
+            type = 'Fitting'
+        } else {
+            type = 'Measurement'
+        }
+
+        await Appointment.findOrCreate({
+            where: {
+                tailorId: tailorId,
+                datetime: datetime,
+                confirmed: {
+                    [Op.or]: ['Pending', 'Confirmed']
+                }
+            },
+            defaults: {
+                tailorId: tailorId,
+                datetime: datetime,
+                confirmed: 'Pending',
+                type: 'Measurement',
+                userId: req.user.id,
+                requestId: reqId,
+            }
+        })
+            .then(async ([appt, created]) => {
+                if (created) {
+                    await Appointment.destroy({
+                        where: {
+                            datetime: datetime,
+                            tailorId: tailorId,
+                            confirmed: 'Rejected'
+                        }
+                    })
+
+                    await Request.update({
+                        status: 'Pending Appointment Confirmation',
+                        adminstatus: 'Please confirm this Appointment',
+                        userColor: 'blue',
+                        adminColor: 'yellow',
+                    }, {
+                        where: {
+                            id: reqId
+                        }
+                    })
+                    flashMessage(res, 'success', 'Appointment Added sucessfully!')
+                    payload.send = true
+                } else {
+                    flashMessage(res, 'error', 'Time slot already taken!')
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                flashMessage(res, 'error', 'Failed to book Appointment')
+            });
+        payload = {
+            datetime: datetime,
+            to: tailorId
+        };
+    }
+    return res.json(payload)
+});
+
 router.post('/appointment/edit', async (req, res, next) => {
     let { id, date, time, description } = req.body
     let datetime = moment(`${date} ${time}`)
@@ -221,7 +291,7 @@ router.post('/appointment/edit', async (req, res, next) => {
             } else {
                 req.body.statusId = (await appt.getRequest()).id
                 req.body.status = (appt.date != date || appt.time != time ? 2 : 3)
-                await Appointment.update({ datetime: datetime, description: description, confirmed: null }, { where: { id: id } })
+                await Appointment.update({ datetime: datetime, description: description, confirmed: 'Pending' }, { where: { id: id } })
                     .then(async () => {
                         flashMessage(res, 'success', 'Appointment updated sucessfully!')
                         send = true
@@ -274,6 +344,49 @@ router.post('/request/tailorChange', async (req, res) => {
     return res.json(payload)
 });
 
+router.post('/item/updateqty', async (req, res) => {
+    let { id, qty } = req.body
+    console.log(qty);
+    await RequestItem.update({
+        qty: qty
+    }, { where: { id: id } })
+        .catch((e) => {
+            console.log(e);
+        })
+
+    res.json({})
+
+});
+
+router.post('/item/add', async (req, res) => {
+    let { id, name, type, color, description } = req.body
+    let request = await Request.findByPk(id)
+    let tailor = await request.getTailor()
+    let payload = {
+        recipient: tailor.id,
+    }
+    await RequestItem.create({
+        name: name,
+        type: type,
+        color: color,
+        description: description,
+        requestId: id
+    })
+        .then((item) => {
+            if (item !== null) {
+                payload.send = true
+            } else {
+                payload.send = false
+            }
+        })
+        .catch((e) => {
+            console.log(e);
+            payload.send = false
+        })
+
+    res.json(payload)
+
+});
 
 router.post('/item/edit', async (req, res) => {
     let { id, name, type, color, description } = req.body

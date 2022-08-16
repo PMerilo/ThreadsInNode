@@ -44,7 +44,7 @@
 You have no requests
 {{/unless}}
 {{#each requests}}
-<div class="card">
+<div class="card" style="border: 1px solid {{adminColor}}; border-left: 8px solid {{adminColor}};">
   <ul class="list-group list-group-flush">
     <li class="list-group-item d-flex justify-content-between align-items-center">
       <h3 class="req-title m-0 flex-grow-1">ID. {{id}} - {{title}}</h3>
@@ -53,10 +53,42 @@ You have no requests
       </div>
     </li>
     <li class="list-group-item">
-      <p class="req-description">
-        {{description}}
-      </p>
+      <a href="#item_{{id}}" data-bs-toggle="collapse" class="pe-auto text-black stretched-link">
+        Click here to view your request items
+      </a>
+      <i class="bi bi-chevron-down float-end"></i>
     </li>
+    <div class="collapse border-bottom" id="item_{{id}}">
+      <div class="p-3">
+        <table id="itemtable_{{id}}" class="itemtable" data-toggle="table" data-url="/api/requestitems?id={{id}}"
+          data-row-style="">
+          <thead>
+            <tr>
+              <th data-field="id" data-visible="false" rowspan="2">Id</th>
+              <th data-field="name" rowspan="2">Name</th>
+              <th data-field="description" rowspan="2">Description</th>
+              <th data-field="type" rowspan="2">Type</th>
+              <th data-field="color" rowspan="2" data-formatter="colorFormatter">Color</th>
+              <th data-field="" colspan="8">Measurements (cm)</th>
+              <th data-field="qty" rowspan="2">Quantity</th>
+              <th data-width="150" data-field="operate" data-formatter="itemoperateFormatter"
+                data-events="itemoperateEvents" rowspan="2">
+              </th>
+            </tr>
+            <tr>
+              <th data-field="head">Head</th>
+              <th data-field="neck">Neck</th>
+              <th data-field="bust">Bust</th>
+              <th data-field="waist">Waist</th>
+              <th data-field="arm">Arm</th>
+              <th data-field="hip">Hip</th>
+              <th data-field="inseam">Inseam</th>
+              <th data-field="height">Height</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
     <li class="list-group-item">
       {{#if tailorChange}}
       <a href="#" role="button" class="text-primary stretched-link pe-auto change-tailor" data-bs-toggle="modal"
@@ -94,13 +126,12 @@ You have no requests
   </ul>
   <div class="collapse" id="appt_{{id}}">
     <div class="p-3">
-      <table id="apptTable" data-toggle="table" data-url="/api/appointment/{{id}}">
+      <table id="apptTable" data-toggle="table" data-url="/api/appointment/{{id}}" data-row-style="rowStyle">
         <thead>
           <tr>
             <th data-field="id" data-visible="false">Id</th>
             <th data-field="date">Date</th>
             <th data-field="time">Time</th>
-            <th data-field="description">Description</th>
             <th data-width="150" data-field="operate" data-formatter="operateFormatter" data-events="operateEvents">
             </th>
           </tr>
@@ -111,21 +142,30 @@ You have no requests
 
   <div class="card-footer d-flex justify-content-between align-items-center border-0">
     <div class="my-auto">
-      {{#with (lookup ../statuses [statusCode])~}}{{text}}{{/with}}
+      {{adminstatus}}
     </div>
     <div class="my-auto">
+      {{#ne status 'Request is completed! Please select a delivery method'}}
+      {{#if chatId}}
+      <a class="btn btn-success chat" style="width: 80px;" href="/admin/requests/chat/{{chatId}}">
+        <i class="bi bi-envelope"></i>
+      </a>
+      {{/if}}
       {{#unless tailorChange}}
-      {{#ge appointments.[0].date ../today }}
+      {{#ne status "Pending Appointment Confirmation"}}
+      {{#ge ../today appointments.[0].date}}
       <button class="btn btn-primary status mx-2" style="width: 80px;" data-bs-toggle="modal"
         data-bs-target="#statusModal" data-bs-id="{{id}}">
         <i class='bx bx-time-five'></i>
       </button>
       {{/ge}}
+      {{/ne}}
       {{/unless}}
       <button class="btn btn-danger delete" style="width: 80px;" data-bs-toggle="modal" data-bs-target="#delModal"
         title="Delete" data-bs-id="{{id}}">
         <i class="bi bi-trash"></i>
       </button>
+      {{/ne}}
     </div>
   </div>
 
@@ -139,18 +179,20 @@ You have no requests
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body container overflow-hidden">
-        <div class="row gx-3">
-          <div class="col-3 d-grid">
-            <button type="button" class="btn btn-primary statusbtn" value="4">{{#with (lookup statuses
-              "4")~}}{{text}}{{/with}}</button>
+        <div class="hstack gx-3">
+          <div class="flex-fill d-grid mx-2" style="display: none">
+            <button type="button" class="btn btn-primary statusbtn" value="Cancel Fitting Appointment Request">Cancel Fitting Appointment Request</button>
           </div>
-          <div class="col-3 d-grid">
-            <button type="button" class="btn btn-primary statusbtn" value="0">{{#with (lookup statuses
-              "0")~}}{{text}}{{/with}}</button>
+          <div class="flex-fill d-grid mx-2" style="display: none">
+            <button type="button" class="btn btn-primary statusbtn" value="Finished Appointment">Finished
+              Appointment</button>
           </div>
-          <div class="col-6 d-grid">
-            <button type="button" class="btn btn-primary statusbtn" value="5">{{#with (lookup statuses
-              "5")~}}{{text}}{{/with}}</button>
+          <div class="flex-fill d-grid mx-2" style="display: none">
+            <button type="button" class="btn btn-primary statusbtn" value="Request Fitting Appointment">Request Fitting
+              Appointment</button>
+          </div>
+          <div class="flex-fill d-grid mx-2" style="display: none">
+            <button type="button" class="btn btn-primary statusbtn" value="Finished Request">Finished Request</button>
           </div>
 
         </div>
@@ -167,7 +209,7 @@ You have no requests
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="changeTailorModalLabel"></h5>
+        <h5 class="modal-title" id="changeTailorModalLabel">Approve tailor change?</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -207,10 +249,10 @@ You have no requests
       <div class="modal-body container overflow-hidden">
         <div class="row gx-3">
           <div class="col-6 d-grid">
-            <button type="button" class="btn btn-primary apprBtn" value="false">Disapproved</button>
+            <button type="button" class="btn btn-primary apprBtn" value="Rejected">Disapproved</button>
           </div>
           <div class="col-6 d-grid">
-            <button type="button" class="btn btn-primary apprBtn" value="true">Approved</button>
+            <button type="button" class="btn btn-primary apprBtn" value="Confirmed">Approved</button>
           </div>
         </div>
         <input type="hidden" class="form-control" name="confirmed" required>
@@ -222,9 +264,63 @@ You have no requests
     </div>
   </div>
 </div>
+<div class="modal fade" id="editItemModal" tabindex="-1" aria-labelledby="editItemModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editItemModalLabel">Edit Item</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="mb-3 col-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" name="head" required>
+          </div>
+          <div class="mb-3 col-3">
+            <label for="type" class="form-label">Type</label>
+            <input type="text" class="form-control" name="neck" required>
+          </div>
+          <div class="mb-3 col-3">
+            <label for="color" class="form-label">Color</label>
+            <input type="text" class="form-control" name="bust" required>
+          </div>
+          <div class="mb-3 col-3">
+            <label for="color" class="form-label">Color</label>
+            <input type="text" class="form-control" name="waist" required>
+          </div>
+        </div>
+        <div class="row">
+          <div class="mb-3 col-3">
+            <label for="description" class="form-label">Description</label>
+            <input class="form-control" name="arm"></input>
+          </div>
+          <div class="mb-3 col-3">
+            <label for="description" class="form-label">Description</label>
+            <input class="form-control" name="hip"></input>
+          </div>
+          <div class="mb-3 col-3">
+            <label for="description" class="form-label">Description</label>
+            <input class="form-control" name="inseam"></input>
+          </div>
+          <div class="mb-3 col-3">
+            <label for="description" class="form-label">Description</label>
+            <input class="form-control" name="height"></input>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary confirm">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script src="/scripts/admin/main.js"></script>
-<script src="/scripts/admin/tableEvents.js"></script>
 <script src="/scripts/admin/tableFormatters.js"></script>
+<script src="/scripts/services/datapicker.js"></script>
+<script src="/scripts/services/datapickerRequest.js"></script>
+<script src="/scripts/admin/tableEvents.js"></script>
 <script>
   function number_format(number, decimals, dec_point, thousands_sep) {
     // *     example: number_format(1234.56, 2, ',', ' ');

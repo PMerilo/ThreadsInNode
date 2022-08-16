@@ -41,7 +41,7 @@
             <div class="border-bottom border-end h-100">
                 <div class="d-flex px-4 py-2 justify-content-center align-items-center h-100">
                     <div class="px-5 fs-5">
-                        Messages
+                        Chats
                     </div>
                 </div>
             </div>
@@ -78,6 +78,9 @@
                 </div>
             </a>
             {{/each}}
+        </div>
+        <div class="col-xxl-9 col-sm-8 p-0 vstack" style="display: none; height:100%;" id="info-panel">
+            Hi
         </div>
         <div class="col-xxl-9 col-sm-8 p-0 vstack" style="height:100%;">
             <div class="flex-grow-1 overflow-auto" id="chat-panel">
@@ -123,7 +126,10 @@
             console.log(e)
         }
 
-        
+        $('#info').click(function(){
+            $('#info-panel').toggle()
+            $('#chat-panel').parent().toggle()
+        })
         
 
         $('.chat').click(function (e) {

@@ -29,7 +29,7 @@ const checkAppointment = async (req, res, next) => {
 
 const appointmentDelete = async (req, res) => {
     let x = await Appointment.findByPk(req.body.id)
-    await Request.update({ statusCode: 1 }, { where: { id: x.requestId } })
+    await Request.update({ status: 'Appointment Cancelled', adminStatus: "User Cancelled Appointment", userColor: "red", adminColor: 'blue' }, { where: { id: x.requestId } })
     let appt = await Appointment.findByPk(req.body.id)
     await Appointment.destroy({ where: { id: req.body.id } }).then((count) => {
         let payload = {};
@@ -68,7 +68,32 @@ const tailorChangeDelete = async (req, res) => {
 }
 
 const requestStatus = async (req, res, next) => {
-    await Request.update({ statusCode: req.body.status }, { where: { id: req.body.statusId } })
+    let adminstatus
+    let adminColor
+    let userColor
+    console.log(req.body.status);
+    if (req.body.status == 'Finish Appointment' || req.body.status == 'Cancel Fitting Appointment Request') {
+        status = 'In Progress'
+        adminstatus = 'In Progress'
+        userColor = 'blue'
+        adminColor = 'blue'
+    } else if (req.body.status == 'Request Fitting Appointment') {
+        status = 'Ready for fitting! Please book your appointment'
+        adminstatus = 'Awaiting Fitting Appointment Booking'
+        userColor = 'yellow'
+        adminColor = 'yellow'
+    } else if (req.body.status == 'Finished Request') {
+        status = 'Request is completed! Please select a delivery method'
+        adminstatus = 'Request completed! Awaiting delivery method'
+        userColor = 'yellow'
+        adminColor = 'green'
+    } else if (req.body.status ==  "In Progress") {
+        status = 'Request in progress'
+        adminstatus = 'Request in progress'
+        userColor = 'blue'
+        adminColor = 'blue'
+    }
+    await Request.update({ status: status, adminstatus: adminstatus, userColor: userColor, adminColor: adminColor  }, { where: { id: req.body.statusId } })
     next()
 }
 

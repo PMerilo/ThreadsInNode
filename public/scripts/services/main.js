@@ -6,6 +6,9 @@ var $delApptModal = $('#delApptModal')
 var $tailorModal = $('#tailorModal')
 var $editItemModal = $('#editItemModal')
 var $removeItemModal = $('#delItemModal')
+var $addItemModal = $('#addItemModal')
+var $addApptModal = $('#addApptModal')
+let datetime;
 
 
 $(document).ready(function () {
@@ -68,7 +71,7 @@ $(document).ready(function () {
             color: $('[name="color"]', $editItemModal).val(),
             description: $('textarea', $editItemModal).val(),
         };
-        
+
         $.post("/services/item/edit", data, function (result) {
             if (result.send) {
                 sendNotif('request:notif', 'Request Item Changed', `The request item in request ${data.id} was changed. Click here to see changes`, `/admin/requests`, ``, result.recipient)
@@ -77,6 +80,77 @@ $(document).ready(function () {
             $table.bootstrapTable('refresh');
         });
     });
+
+    $('.itemtable').on('load-success.bs.table', function (data) {
+        if ($(data.currentTarget).find('tbody tr').length > 2) {
+            console.log($(data.currentTarget).closest('.bootstrap-table').siblings('button'));
+            $(data.currentTarget).closest('.bootstrap-table').siblings('button').hide()
+        }
+    })
+
+    $('[title="Add Item"]').click(function () {
+        $addItemModal.find('.confirm').attr('data-bs-id', $(this).attr('data-bs-id'))
+        $addItemModal.modal("show")
+    })
+
+    $('#addItemModal .confirm').click(function () {
+        let data = {
+            id: $(this).attr("data-bs-id"),
+            name: $('[name="name"]', $addItemModal).val(),
+            type: $('[name="type"]', $addItemModal).val(),
+            color: $('[name="color"]', $addItemModal).val(),
+            description: $('textarea', $addItemModal).val(),
+        };
+        $.post("/services/item/add", data, function (result) {
+            if (result.send) {
+                sendNotif('request:notif', 'Request Item Added', `A request item in request ${data.id} was added. Click here to see it`, `/admin/requests`, ``, result.recipient)
+            }
+            $editItemModal.modal('hide');
+            $table.bootstrapTable('refresh');
+        });
+
+        $('[name="name"]', $addItemModal).val('')
+        $('[name="type"]', $addItemModal).val('')
+        $('[name="color"]', $addItemModal).val('')
+        $('textarea', $addItemModal).val('')
+        $addItemModal.modal('hide')
+
+    })
+
+    $('[href="#addApptModal"]').click(function () {
+        let today = new Date()
+        $addApptModal.find('.confirm').attr('data-bs-id', $(this).attr('data-bs-reqId'))
+        $addApptModal.find('[name=time]').val('')
+        $addApptModal.find('[name=tailorID]').val($(this).attr('data-bs-id'))
+        console.log($('.datapicker').find('[name=tailorID]').val());
+        
+        getTimings()
+    })
+
+    $('#addApptModal .confirm').click(function () {
+        let data = {
+            date: $('[name="date"]', $addApptModal).val(),
+            time: $('[name="time"]', $addApptModal).val(),
+            tailorId: $('[name="tailorID"]', $addApptModal).val(),
+            reqId: $(this).attr('data-bs-id')
+        };
+        $.post("/services/appointment/add", data, function (result) {
+            if (result.send) {
+                sendNotif('request:notif', 'Appointment Booked', `You have an appointment scheduled for ${result.datetime}. Click here to see it`, `/admin/requests`, ``, result.to)
+            }
+            $addApptModal.modal('hide');
+            $table.bootstrapTable('refresh');
+        });
+
+        $('[name="date"]', $addApptModal).val('')
+        $('[name="time"]', $addApptModal).val('')
+        $('[name="tailorID"]', $addApptModal).val('')
+        $addApptModal.modal('hide')
+        location.reload()
+
+    })
+
+
 
     $('.del').click(function () {
         $.ajax({
@@ -125,49 +199,57 @@ $(document).ready(function () {
         $('#cancelTailorModal').find('.del').attr('data-bs-id', $(this).attr('data-bs-id'))
     })
 
-    $('input[name=date]').change(function () {
-        $('input[name="time"]').val('')
-        // console.log($('[name=tailorID]').val())
-        if ($('[name=tailorID]').val() != "Select Tailor") {
-            $.get(`/api/appointments?date=${row.date}&id=${row.tailorId}`, function (data) {
-                console.log(data)
-                data = data.rows
-                var timings = `
-                    <div class="container overflow-hidden mb-3">
-                        <label class="form-label">Time</label>
-                        <div class="border border-1 rounded mx-auto row g-2 pb-2 m-0">
-                            <div class="col-lg-2 col-md-6 d-grid">
-                                <button type="button" class="btn btn-lg btn-primary" value="09:00:00">9:00AM</button>
-                            </div>
-                            <div class="col-lg-2 col-md-6 d-grid">
-                                <button type="button" class="btn btn-lg btn-primary" value="10:30:00">10:30AM</button>
-                            </div>
-                            <div class="col-lg-2 col-md-6 d-grid">
-                                <button type="button" class="btn btn-lg btn-primary" value="12:00:00">12:00PM</button>
-                            </div>
-                            <div class="col-lg-2 col-md-6 d-grid">
-                                <button type="button" class="btn btn-lg btn-primary" value="15:00:00">3:00PM</button>
-                            </div>
-                            <div class="col-lg-2 col-md-6 d-grid">
-                                <button type="button" class="btn btn-lg btn-primary" value="16:30:00">4:30PM</button>
-                            </div>
-                            <div class="col-lg-2 col-md-6 d-grid">
-                                <button type="button" class="btn btn-lg btn-primary" value="18:00:00">6:00PM</button>
-                            </div>
-                        </div>
-                    </div>
-                    <input type="hidden" class="form-control" name="time">
-                `
-                $('.timings').empty()
-                $('.timings').append(timings)
-                data.forEach(appt => {
-                    $(`[value="${appt.time}"]`).attr('disabled', '')
-                });
-                // console.log($('.timings button'))
+    // $('input[name=date]').change(function () {
+        
+    //     let owndate = [$(this).val(), $(this).closest('.modal-body').find('[name=time]').val()]
+    //     $('input[name="time"]').val('')
+    //     let tailorId = $(this).closest('.modal-body').find('[name=tailorID]').val()
+    //     let date = $(this).val()
+    //     $.get(`/api/appointments?date=${date}&id=${tailorId}`, function (data) {
+    //         data = data.rows
+    //         var timings = `
+    //                 <div class="container overflow-hidden mb-3">
+    //                     <label class="form-label">Time</label>
+    //                     <div class="border border-1 rounded mx-auto row g-2 pb-2 m-0">
+    //                         <div class="col-lg-2 col-md-6 d-grid">
+    //                             <button type="button" class="btn btn-lg btn-primary" value="09:00:00">9:00AM</button>
+    //                         </div>
+    //                         <div class="col-lg-2 col-md-6 d-grid">
+    //                             <button type="button" class="btn btn-lg btn-primary" value="10:30:00">10:30AM</button>
+    //                         </div>
+    //                         <div class="col-lg-2 col-md-6 d-grid">
+    //                             <button type="button" class="btn btn-lg btn-primary" value="12:00:00">12:00PM</button>
+    //                         </div>
+    //                         <div class="col-lg-2 col-md-6 d-grid">
+    //                             <button type="button" class="btn btn-lg btn-primary" value="15:00:00">3:00PM</button>
+    //                         </div>
+    //                         <div class="col-lg-2 col-md-6 d-grid">
+    //                             <button type="button" class="btn btn-lg btn-primary" value="16:30:00">4:30PM</button>
+    //                         </div>
+    //                         <div class="col-lg-2 col-md-6 d-grid">
+    //                             <button type="button" class="btn btn-lg btn-primary" value="18:00:00">6:00PM</button>
+    //                         </div>
+    //                     </div>
+    //                 </div>
+    //                 <input type="hidden" class="form-control" name="time">
+    //             `
+    //         $('.timings').empty()
+    //         $('.timings').append(timings)
+    //         data.forEach(appt => {
+    //             console.log([appt.date, appt.time], owndate);
+    //             if ([appt.date, appt.time] == owndate) {
+    //                 $(`[value="${appt.time}"]`).addClass('btn-success')
+    //                 $(`[value="${appt.time}"]`).removeClass('btn-primary')
+    //             } else {
+    //                 $(`[value="${appt.time}"]`).attr('disabled', '')
+    //             }
+    //         });
+    //         // console.log($('.timings button'))
 
-            })
-        }
-    })
+    //     })
+    // })
+
+
 
 });
 window.operateEvents = {
@@ -175,69 +257,76 @@ window.operateEvents = {
         $delApptModal.find('.del').attr('data-bs-id', row.id)
         $delApptModal.modal("show")
     },
-
+    
     'click [title="Edit Appointment"]': function (e, value, row, index) {
-        $.get(`/api/appointments?date=${row.date}&id=${row.tailorId}`, function (data) {
-            data = data.rows
-            var timings = `
-                <div class="container overflow-hidden mb-3">
-                    <label class="form-label">Time</label>
-                    <div class="border border-1 rounded mx-auto row g-2 pb-2 m-0">
-                        <div class="col-lg-2 col-md-6 d-grid">
-                            <button type="button" class="btn btn-lg btn-primary" value="09:00:00">9:00AM</button>
-                        </div>
-                        <div class="col-lg-2 col-md-6 d-grid">
-                            <button type="button" class="btn btn-lg btn-primary" value="10:30:00">10:30AM</button>
-                        </div>
-                        <div class="col-lg-2 col-md-6 d-grid">
-                            <button type="button" class="btn btn-lg btn-primary" value="12:00:00">12:00PM</button>
-                        </div>
-                        <div class="col-lg-2 col-md-6 d-grid">
-                            <button type="button" class="btn btn-lg btn-primary" value="15:00:00">3:00PM</button>
-                        </div>
-                        <div class="col-lg-2 col-md-6 d-grid">
-                            <button type="button" class="btn btn-lg btn-primary" value="16:30:00">4:30PM</button>
-                        </div>
-                        <div class="col-lg-2 col-md-6 d-grid">
-                            <button type="button" class="btn btn-lg btn-primary" value="18:00:00">6:00PM</button>
-                        </div>
-                    </div>
-                </div>
-                <input type="hidden" class="form-control" name="time">
-            `
-            $('.timings').empty()
-            $('.timings').append(timings)
-            data.forEach(appt => {
-                $(`[value="${appt.time}"]`).attr('disabled', '')
-            });
-            // console.log($('.timings button'))
+        $editApptModal.find('.confirm').attr('data-bs-id', row.id)
+        $editApptModal.find('[name=date]').val(row.date)
+        $editApptModal.find('[name=time]').val(row.time)
+        $editApptModal.find('[name=tailorID]').val(row.tailorId)
+        $editApptModal.modal("show")
+        datetime = [row.date, row.time]
+        RgetTimings()
+        
+        // $.get(`/api/appointments?date=${row.date}&id=${row.tailorId}`, function (data) {
+        //     data = data.rows
+        //     var timings = `
+        //         <div class="container overflow-hidden mb-3">
+        //             <label class="form-label">Time</label>
+        //             <div class="border border-1 rounded mx-auto row g-2 pb-2 m-0">
+        //                 <div class="col-lg-2 col-md-6 d-grid">
+        //                     <button type="button" class="btn btn-lg btn-primary" value="09:00:00">9:00AM</button>
+        //                 </div>
+        //                 <div class="col-lg-2 col-md-6 d-grid">
+        //                     <button type="button" class="btn btn-lg btn-primary" value="10:30:00">10:30AM</button>
+        //                 </div>
+        //                 <div class="col-lg-2 col-md-6 d-grid">
+        //                     <button type="button" class="btn btn-lg btn-primary" value="12:00:00">12:00PM</button>
+        //                 </div>
+        //                 <div class="col-lg-2 col-md-6 d-grid">
+        //                     <button type="button" class="btn btn-lg btn-primary" value="15:00:00">3:00PM</button>
+        //                 </div>
+        //                 <div class="col-lg-2 col-md-6 d-grid">
+        //                     <button type="button" class="btn btn-lg btn-primary" value="16:30:00">4:30PM</button>
+        //                 </div>
+        //                 <div class="col-lg-2 col-md-6 d-grid">
+        //                     <button type="button" class="btn btn-lg btn-primary" value="18:00:00">6:00PM</button>
+        //                 </div>
+        //             </div>
+        //         </div>
+        //         <input type="hidden" class="form-control" name="time">
+        //     `
+        //     $('.timings').empty()
+        //     $('.timings').append(timings)
+        //     data.forEach(appt => {
+        //         $(`[value="${appt.time}"]`).attr('disabled', '')
+        //     });
+        //     // console.log($('.timings button'))
 
-        }).then(function (e) {
-            $editApptModal.find('.confirm').attr('data-bs-id', row.id)
-            $editApptModal.find('[name=date]').val(row.date)
-            $editApptModal.find('[name=time]').val(row.time)
-            $editApptModal.find('[name=description]').val(row.description)
-            $editApptModal.find('[name=tailorID]').val(row.tailorId)
-            console.log($('.timings button.original'))
+        // }).then(function (e) {
+        //     $editApptModal.find('.confirm').attr('data-bs-id', row.id)
+        //     $editApptModal.find('[name=date]').val(row.date)
+        //     $editApptModal.find('[name=time]').val(row.time)
+        //     $editApptModal.find('[name=description]').val(row.description)
+        //     $editApptModal.find('[name=tailorID]').val(row.tailorId)
+        //     console.log($('.timings button.original'))
 
-            $(`.timings [value='${row.time}']`).addClass('original btn-success')
-            $(`.timings [value='${row.time}']`).removeClass('btn-primary')
-            $('.timings button').not($(`.timings [value='${row.time}']`)).addClass('btn-primary')
-            $('.original').removeAttr('disabled')
-            $editApptModal.modal("show")
+        //     $(`.timings [value='${row.time}']`).addClass('original btn-success')
+        //     $(`.timings [value='${row.time}']`).removeClass('btn-primary')
+        //     $('.timings button').not($(`.timings [value='${row.time}']`)).addClass('btn-primary')
+        //     $('.original').removeAttr('disabled')
 
-            $('.timings button').click(function () {
-                $('.timings button').removeClass('btn-success')
-                $('.original').addClass('btn-outline-success')
-                if ($(this).val() == $('.original').val()) {
-                    $('.original').removeClass('btn-outline-success')
-                    $('.original').addClass('btn-success')
-                } else {
-                    $(this).addClass('btn-success')
-                }
-                $('input[name="time"]').val(this.value)
-            })
-        })
+        //     $('.timings button').click(function () {
+        //         $('.timings button').removeClass('btn-success')
+        //         $('.original').addClass('btn-outline-success')
+        //         if ($(this).val() == $('.original').val()) {
+        //             $('.original').removeClass('btn-outline-success')
+        //             $('.original').addClass('btn-success')
+        //         } else {
+        //             $(this).addClass('btn-success')
+        //         }
+        //         $('input[name="time"]').val(this.value)
+        //     })
+        // })
 
     },
 }
@@ -257,4 +346,15 @@ window.itemoperateEvents = {
         $editItemModal.find('.confirm').attr('data-bs-id', row.id)
         $editItemModal.modal("show")
     },
+}
+
+window.qtyEvents = {
+    'change [name="qty"]': function (e, value, row, index) {
+        var id = row.id
+        var quantity = e.currentTarget.value
+        $.post('/services/item/updateqty', {
+            id: id,
+            qty: quantity,
+        })
+    }
 }

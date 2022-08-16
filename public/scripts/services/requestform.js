@@ -96,9 +96,6 @@ $(document).ready(function () {
         }
     })
 
-    var TimeValid
-
-
 
 
 
