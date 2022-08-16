@@ -16,7 +16,6 @@ const api = require("./routes/api")
 const msg = require("./routes/messaging")
 const bodypassword = require('body-parser')
 const GoogleAuth = require("./config/passportGoogleAuth")
-const Dialogflow = require("./config/DialogFlow")
 const DBConnection = require('./config/DBConnection');
 const Request = require('./models/Request')
 const Service = require('./models/Service')
@@ -105,9 +104,6 @@ app.use(passport.session())
 // Google Authentication
 GoogleAuth()
 
-
-// Dialogflow
-Dialogflow()
 
 // Initilize Passport middleware 
 
@@ -273,12 +269,10 @@ app.use(function (err, req, res, next) {
 		res.render('error404');
 	});
 
-	const port = 5000;
-
-
-
-	// Starts the server and listen to port
-	httpServer.listen(port, () => {
-		console.log(`Server started on port ${port}`);
-	})
+	
+})
+const port = 5000;
+// Starts the server and listen to port
+httpServer.listen(port, () => {
+	console.log(`Server started on port ${port}`);
 })

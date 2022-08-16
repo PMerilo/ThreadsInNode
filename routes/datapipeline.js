@@ -19,6 +19,9 @@ const moment = require('moment')
 const dfd = require("danfojs-node");
 const Product = require('../models/Product');
 const Survey = require('../models/Survey');
+const Order = require('../models/Orders');
+const OrderItems = require('../models/OrderItems');
+const Request = require('../models/Request');
 
 const ChartJsImage = require('chartjs-to-image');      
 router.use((req, res, next) => {
