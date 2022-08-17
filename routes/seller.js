@@ -22,6 +22,7 @@ fs = require('fs');
 const upload = require('../views/helpers/imageUpload');
 const Review = require('../models/Reviews');
 const Withdrawal = require('../models/Withdrawal');
+const Notification = require('../models/Notification');
 
 router.all('/*', ensureSellerAuthenticated, function (req, res, next) {
     req.app.locals.layout = 'seller'; // set your layout here
@@ -101,7 +102,8 @@ router.post("/changeOrderStatus", ensureAuthenticated, async (req, res) => {
 })
 
 router.get('/withdrawal', async (req, res) => {
-    var withdrawals = await Withdrawal.findAll({ where:{sellerID: req.user.id},
+    var withdrawals = await Withdrawal.findAll({
+        where: { sellerID: req.user.id },
         include: User, order: [
             ['createdAt', 'DESC'],
             ['withdrawal_amount', 'DESC'],
@@ -209,6 +211,24 @@ router.post('/withdrawal', ensureAuthenticated, async (req, res) => {
         withdrawal_amount: req.body.bal,
         status: "Awaiting Authorization",
         userId: req.user.id
+    }).then(async () => {
+        let io = req.app.get('io')
+        let payload = {
+            title: "New Withdrawal Request",
+            body: "You have a new request. Click here to see it",
+            url: "/admin/withdrawal",
+            senderId: req.user.id,
+        }
+        var admins = await User.findAll({where : { role: "A"}})
+        await Notification.create({
+            title: payload.title,
+            body: payload.body,
+            url: payload.url,
+        })
+            .then(notification => {
+                notification.addUsers(admins)
+                io.to("admins").emit('notification', payload)
+            })
     })
     res.redirect("/seller/dashboard")
 })
