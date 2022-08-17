@@ -25,7 +25,7 @@ function updateStats() {
             var n = string.length - 4
             var rest = string.length - n;
             var str = string.slice(0, Math.ceil(rest / 2) + 1) + '*'.repeat(n) + string.slice(-Math.floor(rest / 2) + 1);
-            $("#bankacc").text("Bank Account : " + str)
+            $("#bankacc").text("Bank Account No. : " + str)
         }
     })
 }

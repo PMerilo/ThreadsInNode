@@ -511,7 +511,7 @@ router.get('/totalSalesPerDay', async (req, res) => {
 });
 
 router.get('/myProduct/:id', async (req, res) => {
-  const product = await Product.findAll({ where: { OwnerID: req.params.id } });
+  const product = await Product.findAll({limit: 10, order: [['sold', 'DESC'], ['sales', 'DESC']], where: { OwnerID: req.params.id } });
 
   let data = [];
   let cols = ["Name", "Sales", "Sold"];
@@ -527,7 +527,7 @@ router.get('/myProduct/:id', async (req, res) => {
 });
 
 router.get('/myProductWishlist/:id', async (req, res) => {
-  const product = await Product.findAll({ where: { OwnerID: req.params.id } });
+  const product = await Product.findAll({limit: 10, order: [['wishlistcount', 'DESC'], ['sold', 'DESC']], where: { OwnerID: req.params.id } });
 
   let data = [];
   let cols = ["Name", "Wishlistcount"];

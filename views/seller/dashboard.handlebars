@@ -69,7 +69,8 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
-            <p id="bankacc">Bank Account : 0</p>
+            <p>Bank : {{user.bankName}}</p>
+            <p id="bankacc">Bank Account No.: 0</p>
             <p>Current Balance : S${{user.total_balance}}</p>
             <label for="bal">Enter how much you would like to withdraw</label>
             <input type="number" name="bal" max="{{user.total_balance}}" id="bal" placeholder="e.g. 500">
