@@ -34,19 +34,25 @@
                 }
                 data.forEach(data => {
                     const x = ['<li>',
-                        `<a class="position-relative py-2 dropdown-item notification-link" href="${data.url}">`,
+                        `<a class="position-relative py-2 dropdown-item notification-link" href="${data.url}" onclick="notifSeen(${data.id})">`,
                         `<p class="m-0 text-wrap">${data.title}</p>`,
                         `<p class="m-0 text-wrap notification-body">${data.body}</p>`,
-                        `<span class="position-absolute end-0 top-50 translate-middle p-1 bg-danger border border-light rounded-circle"></span>`,
-                        `</a>`,
                         `</li>`,
+                        `</a>`,
                         `<hr class="m-0">`
                     ]
+                    if (!data.usernotification.seen) {
+                        x.splice(3, 0, `<span class="position-absolute end-0 top-50 translate-middle p-1 bg-danger border border-light rounded-circle"></span>`,)   
+                    }
                     $('#notifications').prepend(x.join(''))
                 })
 
             }
         })
+    }
+
+    function notifSeen(id) {
+        $.post(`/api/seennotif`, {id:id})
     }
 
 </script>

@@ -41,7 +41,7 @@ socket.on('notification', (data) => {
       $('#notifications').text('')
     }
     const x = ['<li>',
-      `<a class="position-relative py-2 dropdown-item notification-link" href="${data.url}">`,
+      `<a class="position-relative py-2 dropdown-item notification-link" href="${data.url}" onclick="notifSeen(${data.id})">`,
       `<p class="m-0 text-wrap">${data.title}</p>`,
       `<p class="m-0 text-wrap notification-body">${data.body}</p>`,
       `<span class="position-absolute end-0 top-50 translate-middle p-1 bg-danger border border-light rounded-circle"></span>`,
@@ -51,6 +51,7 @@ socket.on('notification', (data) => {
     ]
     $('#notifications').prepend(x.join(''))
   }
+  updateNotificationCount("#notificationdropdown")
 })
 
 
@@ -82,12 +83,13 @@ function sendNotif(event, title, body, url, sender, recipient) {
     body: body,
     url: url,
     sender: sender,
-    recipient: recipient
+    recipient: recipient,
   }
-  $.post('/createNotification', data, function (notif) {
-    // console.log(notif)
+  console.log(data);
+  $.post('/createNotification', data, function ({id}) {
+    data.id = id
+    socket.emit(event, data)
   })
-  socket.emit(event, data)
 }
 
 

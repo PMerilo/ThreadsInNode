@@ -1235,8 +1235,11 @@ router.post("/createnotification", async (req, res) => {
             await notification.addUser(user)
         });
     }
-
-    // return res.json(notification)
+    console.log(notification.id, "IDD");
+    let resp = {
+        id: notification.id
+    }
+    res.json(resp)
 })
 
 

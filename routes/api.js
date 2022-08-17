@@ -16,6 +16,7 @@ const Chat = require('../models/Chat');
 const ChatUser = require('../models/ChatUser');
 const ensureAuthenticated = require('../views/helpers/auth');
 const NotificationCount = require('../models/NotificationCount');
+const UserNotifications = require('../models/UserNotifications');
 const Msg = require('../models/Msg');
 const RequestItem = require('../models/RequestItem');
 
@@ -167,11 +168,11 @@ router.get("/checktailor", async (req, res) => {
 router.get("/getnotificationcount", async (req, res) => {
     let [notificationcount] = await NotificationCount.findOrCreate({ where: { userId: req.user.id }, defaults: { userId: req.user.id } })
     let counter;
-    if (req.query.type == 'msg') {
+    if (req.query.type == 'messages') {
         counter = { count } = await Msg.findAndCountAll({ where: { seen: false, userId: { [Op.ne]: req.user.id } }, include: { model: Chat, include: { model: User, where: {id: req.user.id}, required: true} , required: true}, raw:true })
         notificationcount = notificationcount.msgCount
     } else if (req.query.type == 'notification') {
-        // counter = { count } = await Notification.findAndCountAll({ where: { senderId: req.user.id, seen: false } })
+        counter = { count } = await Notification.findAndCountAll({ include: {model: User, through: { attributes:['seen'], where: {seen: false}}, required: true}, where: { '$Users.id$': req.user.id}})
         notificationcount = notificationcount.notificationCount
 
     }
@@ -204,5 +205,9 @@ router.get("/requestitems", async (req, res) => {
         total: ReqItems.length,
         rows: ReqItems
     })
+})
+
+router.post("/seennotif", async (req, res) => {
+    await UserNotifications.update({seen: true}, {where: {userId: req.user.id, notificationId: req.body.id}})
 })
 module.exports = router;

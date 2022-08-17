@@ -27,7 +27,6 @@
     </div>
 
 
-    {{>_scripts}}
     <script defer>
         $(document).ready(() => {
             $.get(`/api/checktailor`, (data) => {
@@ -50,7 +49,7 @@
                     }
                     const x = [
                         '<li>',
-                        `<a class="position-relative py-2 dropdown-item notification-link" href="${data.url}">`,
+                        `<a class="position-relative py-2 dropdown-item notification-link" href="${data.url}" onclick="notifSeen(${data.id})">`,
                         `<p class="m-0 text-wrap">${data.title}</p>`,
                         `<p class="m-0 text-wrap notification-body">${data.body}</p>`,
                         `<span class="position-absolute end-0 top-50 translate-middle p-1 bg-danger border border-light rounded-circle"></span>`,
@@ -60,25 +59,36 @@
                     ]
                     $('#notifications').prepend(x.join(''))
                 }
+                updateNotificationCount("#notificationdropdown")
             })
-            function getNotificationCount() {
-                $.get(`/api/getnotificationcount?type=msg`, ({ count }) => {
+            function getNotificationCount(type) {
+                $.get(`/api/getnotificationcount?type=${type}`, ({ count }) => {
                     if (count > 0) {
                         const x = [
                             `<span class="position-absolute translate-middle badge rounded-pill bg-danger" style="font-size: 9px; top:25%;">`,
                             `${count} `,
-                            `<span class="visually-hidden">unread messages</span>`,
+                            `<span class="visually-hidden">unread ${type}s</span>`,
                             `</span>`
                         ]
-                        $('#chat-btn').append(x.join(''))
+                        if (type == 'message') {
+                            $('#chat-btn').append(x.join(''))
+                        } else if (type == 'notification') {
+                            $('#notificationdropdown').append(x.join(''))
+                        }
                     } else {
-                        $('#chat-btn').find('.badge').remove()
+                        if (type == 'message') {
+                            $('#chat-btn').find('.badge').remove()
+                        } else if (type == 'notification') {
+                            $('#notificationdropdown').find('.badge').remove()
+                        }
                     }
                 })
             }
-            getNotificationCount()
+            getNotificationCount('messages')
+            getNotificationCount('notification')
 
             function updateNotificationCount(notificationtype, operation = '+') {
+                console.log('UPDATE')
                 if ($(notificationtype).find('span').length == 0 && operation == '+') {
                     const x = [
                         `<span class="position-absolute translate-middle badge rounded-pill bg-danger" style="font-size: 9px; top:25%;">`,
@@ -150,6 +160,8 @@
         })
 
     </script>
+    {{>_scripts}}
+
 </body>
 
 </html>
