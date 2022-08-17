@@ -17,7 +17,7 @@
           <span class="cart-item cart-header cart-column">ITEM</span>
           <span class="cart-price cart-header cart-column">PRICE</span>
           <span class="cart-quantity cart-header cart-column">QUANTITY</span>
-          <span class="c-t cart-header cart-column">Order Status</span>
+          <span class="c-t cart-header cart-column">ORDER STATUS</span>
         </div>
         <div class="cart-items">
           {{#each orderitems}}
@@ -38,12 +38,13 @@
               <p class="cart-total cart-column orderStatus">{{this.orderStatus}}</p>
               {{!-- <button class="hidden btn btn-secondary" style="display:none;" id="{{this.productSku}}">Confirm
                 Delivery</button> --}}
-              <button class="btn confirm-btn btn-outline btn-secondary" style="display:none;" type="submit"
+              <button class="btn confirm-btn blue-btn-10" style="display:none; font-size:0.8rem" type="submit"
                 data-bs-toggle="modal" data-bs-target="#Modal-confirm-{{this.productSku}}">Confirm
                 Delivery</button>
               {{#equals this.review 0}}
-              <button class="btn review-btn btn-outline btn-secondary" style="display:none; font-size:0.8rem" type="submit" data-bs-toggle="modal"
-                data-bs-target="#Modal-review-{{this.productSku}}">Leave a Review</button>
+              <button class="btn review-btn blue-btn-10" style="display:none; font-size:0.8rem"
+                type="submit" data-bs-toggle="modal" data-bs-target="#Modal-review-{{this.productSku}}">Leave a
+                Review</button>
               {{/equals}}
             </div>
           </div>
@@ -92,13 +93,13 @@
                       <form class="form" action="/submitProductReview" method="post">
                         <input class="star star-5" id="star-5" value="5" type="radio" name="star" />
                         <label class="star star-5" for="star-5"></label>
-                        <input class="star star-4" id="star-4" value="4"  type="radio" name="star" />
+                        <input class="star star-4" id="star-4" value="4" type="radio" name="star" />
                         <label class="star star-4" for="star-4"></label>
-                        <input class="star star-3" id="star-3" value="3"  type="radio" name="star" />
+                        <input class="star star-3" id="star-3" value="3" type="radio" name="star" />
                         <label class="star star-3" for="star-3"></label>
-                        <input class="star star-2" id="star-2" value="2"  type="radio" name="star" />
+                        <input class="star star-2" id="star-2" value="2" type="radio" name="star" />
                         <label class="star star-2" for="star-2"></label>
-                        <input class="star star-1" id="star-1" value="1"  type="radio" name="star" />
+                        <input class="star star-1" id="star-1" value="1" type="radio" name="star" />
                         <label class="star star-1" for="star-1"></label>
 
                         <input type="hidden" id="sku" name="sku" value="{{this.productSku}}">
@@ -110,8 +111,8 @@
                               <input class="title" col="20" name="title" placeholder="Review Title" id="title">
                             </tr>
                             <tr>
-                              <textarea class="review" col="70" name="review"
-                                placeholder="Review Description" id="text"></textarea>
+                              <textarea class="review" col="70" name="review" placeholder="Review Description"
+                                id="text"></textarea>
                             </tr>
                           </table>
                           <button type="submit" class="green-btn-25" value="">Submit Review</button>
@@ -164,9 +165,12 @@
       if (orderStatus == "Delivered") {
         btn = cartRow.getElementsByClassName("confirm-btn")[0]
         btn.style.display = "block"
-      } else if(orderStatus == "Delivery Confirmed") {
+      } else if (orderStatus == "Delivery Confirmed") {
         btn = cartRow.getElementsByClassName("review-btn")[0]
-        btn.style.display = "block"
+        if (typeof (btn) != "undefined") {
+          console.log(btn)
+          btn.style.display = "block"
+        }
       }
 
     }

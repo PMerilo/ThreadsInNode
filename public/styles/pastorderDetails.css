@@ -140,13 +140,13 @@ input.star:checked~.rev-box {
 }
 
 .cart-price {
-    width: 25%;
+    width: 20%;
     font-size: 1.2em;
     color: #333;
 }
 
 .cart-quantity {
-    width: 30%;
+    width: 15%;
 }
 
 .cart-item-title {
@@ -219,7 +219,7 @@ input.star:checked~.rev-box {
 }
 
 .c-t {
-    width: 25%;
+    width: 45%;
 }
 
 .cart-total {
